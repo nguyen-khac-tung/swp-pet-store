@@ -119,7 +119,107 @@ namespace PetStoreProject.Repositories.Product
 			var img_id = url.Split('/')[url.Split('/').Length - 1];
 			return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/v1716019321/" + img_id;
 		}
-	}
+        public List<Models.Product> GetProductsByCategories(List<int> cateogrieIds)
+        {
+            List<Models.Product> products = (from p in _context.Products
+                                             join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                                             where cateogrieIds.Contains(pc.CategoryId)
+                                             select p).ToList();
+            return products;
+        }
+
+        public List<Models.Product> GetAllAccessaries()
+        {
+            List<int> categoryIds = [2, 5, 6];
+            return GetProductsByCategories(categoryIds);
+        }
+
+        public List<Models.Product> GetAllFoods()
+        {
+            List<int> categoryIds = [1, 3, 4];
+            return GetProductsByCategories(categoryIds);
+        }
+
+        public List<ProductOptionVM> GetProductOptionsByProductId(int productId)
+        {
+            var productOptions = (from po in _context.ProductOptions
+                                  join i in _context.Images on po.ImageId equals i.ImageId
+                                  join a in _context.Attributes on po.AttributeId equals a.AttributeId
+                                  join s in _context.Sizes on po.SizeId equals s.SizeId
+                                  where po.ProductId == productId
+                                  select new ProductOptionVM
+                                  {
+                                      Id = po.ProductOptionId,
+                                      attribute = new Attribute
+                                      {
+                                          AttributeId = a.AttributeId,
+                                          Name = a.Name,
+                                          Type = a.Type,
+                                      },
+                                      size = new Size
+                                      {
+                                          SizeId = s.SizeId,
+                                          Name = s.Name
+                                      },
+                                      price = po.Price,
+                                      img_url = i.ImageUrl
+
+                                  }).ToList();
+            return productOptions;
+        }
+
+        public List<Image> GetImagesByProductId(int productId)
+        {
+            var images = (from i in _context.Images
+                          join po in _context.ProductOptions on i.ImageId equals po.ImageId
+                          where po.ProductId == productId
+                          select i).ToList();
+            return images;
+        }
+
+        public List<Attribute> GetAttributesByProductId(int productId)
+        {
+            var attributes = (from a in _context.Attributes
+                              join po in _context.ProductOptions on a.AttributeId equals po.AttributeId
+                              where po.ProductId == productId
+                              select a).ToList();
+            return attributes;
+        }
+
+        public List<Size> GetSizesByProductId(int productId)
+        {
+            var sizes = (from s in _context.Sizes
+                         join po in _context.ProductOptions on s.SizeId equals po.SizeId
+                         where po.ProductId == productId
+                         select s).ToList();
+            return sizes;
+        }
+		public Brand GetBrandByProductId(int productId) { 
+			var brand = (from b in _context.Brands
+						 join p in _context.Products on b.BrandId equals p.BrandId
+						 where p.ProductId == productId
+						 select b).FirstOrDefault();
+			return brand;
+		}
+
+        public List<ProductDetailVM> GetProductDetailAccessaries()
+        {
+            var products = GetAllAccessaries();
+			var productDetails = products.Select(p => new ProductDetailVM
+			{
+				ProductId = p.ProductId,
+				Name = p.Name,
+				Brand = GetBrandByProductId(p.ProductId).Name,
+				productOption = GetProductOptionsByProductId(p.ProductId),
+				images = GetImagesByProductId(p.ProductId),
+				attributes = GetAttributesByProductId(p.ProductId),
+				sizes = GetSizesByProductId(p.ProductId)
+
+			}).ToList();
+            return productDetails;
+        }
+
+    }
 
 	internal record NewRecord(int ProductId, string Name, string Item);
 }

@@ -6,5 +6,8 @@ namespace PetStoreProject.Repositories.Product
 	{
 		public ProductDetailVM GetDetail(int productId);
 		public List<RelatedProductVM> getRelatedProduct(int productId);
-	}
+
+		public List<ProductDetailVM> GetProductDetailAccessaries();
+
+    }
 }

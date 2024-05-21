@@ -4,10 +4,10 @@ using Attribute = PetStoreProject.Models.Attribute;
 
 namespace PetStoreProject.Repositories.Product
 {
-	public class ProductService : IProductService
+	public class ProductRepository : IProductRepository
 	{
 		private readonly PetStoreDBContext _context;
-		public ProductService(PetStoreDBContext context)
+		public ProductRepository(PetStoreDBContext context)
 		{
 			_context = context;
 		}

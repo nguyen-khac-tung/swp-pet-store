@@ -6,9 +6,9 @@ namespace PetStoreProject.Controllers
 	[Route("[controller]/[action]")]
 	public class ProductController : Controller
 	{
-		private readonly IProductService _product;
+		private readonly IProductRepository _product;
 
-		public ProductController(IProductService product)
+		public ProductController(IProductRepository product)
 		{
 			_product = product;
 		}

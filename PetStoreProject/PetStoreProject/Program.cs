@@ -10,7 +10,7 @@ builder.Services.AddDbContext<PetStoreDBContext>(option =>
 	option.UseSqlServer(builder.Configuration.GetConnectionString("PetStoreDBContext"))
 );
 
-builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

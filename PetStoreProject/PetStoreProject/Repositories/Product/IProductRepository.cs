@@ -2,7 +2,7 @@
 
 namespace PetStoreProject.Repositories.Product
 {
-	public interface IProductService
+	public interface IProductRepository
 	{
 		public ProductDetailVM GetDetail(int productId);
 		public List<RelatedProductVM> getRelatedProduct(int productId);

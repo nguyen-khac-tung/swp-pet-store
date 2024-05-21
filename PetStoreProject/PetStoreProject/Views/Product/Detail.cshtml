@@ -168,7 +168,7 @@
 						{
 							<div class="size_color_wraper" id="attribute">
 								<div class="color clearfix mb-30">
-									<label>Color :</label>
+									<label>Attribute :</label>
 									<ul class="color-list">
 										@for (var index = 0; index < product.attributes.Count; index++)
 										{
@@ -571,8 +571,8 @@
 								<div class="col-lg-6 col-md-6">
 									<div class="product-details product_details_1">
 										<div class="product-details-img">
-											<div class="tab-content main_large_img product-details-large">
-												<div id="shop-details-1" class="tab-pane large-img-style">
+											<div class="tab-content main_large_img product-details-large" id="image_large">
+												@* <div id="shop-details-1" class="tab-pane large-img-style">
 													<img src="img/products/p1.jpg" alt="">
 												</div>
 												<div id="shop-details-2" class="tab-pane active large-img-style">
@@ -583,15 +583,15 @@
 												</div>
 												<div id="shop-details-4" class="tab-pane large-img-style">
 													<img src="img/products/p4.jpg" alt="">
-												</div>
+												</div> *@
 
 												@* <span class="sticker-sale">-25%</span>
 												<span class="sticker-new">New</span> *@
 
 											</div>
 
-											<div class="shop-details-tab nav product-details-small">
-												<a class="shop-details-overly" href="#shop-details-1" data-bs-toggle="tab">
+											<div class="shop-details-tab nav product-details-small" id="image_small">
+												@* <a class="shop-details-overly" href="#shop-details-1" data-bs-toggle="tab">
 													<img src="img/products/p1.jpg" alt="">
 												</a>
 												<a class="shop-details-overly active" href="#shop-details-2" data-bs-toggle="tab">
@@ -602,7 +602,7 @@
 												</a>
 												<a class="shop-details-overly" href="#shop-details-4" data-bs-toggle="tab">
 													<img src="img/products/p4.jpg" alt="">
-												</a>
+												</a>*@
 											</div>
 
 										</div>
@@ -612,7 +612,9 @@
 								<!-- Thumbnail Description Start -->
 								<div class="col-md-6">
 									<div class="thubnail-desc ">
-										<h3 class="product-header"><a href="#">Details Product Name Here</a></h3>
+
+										<!--Name-->
+										<h3 class="product-header"><a href="#" id="quick_name"></a></h3>
 										<ul class="rating-summary">
 											<li class="rating-pro">
 												<i class="icofont-ui-rating"></i>
@@ -624,18 +626,26 @@
 											<li class="read-review"><a href="#">View Reviews (2)</a></li>
 											<li class="write-review"><a href="#">Write Review</a></li>
 										</ul>
-										<div class="pro-thumb-price mt-20">
-											<span class="regular-price">$98.25</span><del class="discount_price">$72.00</del>
+
+										<!--Brand-->
+										<div class="rating-summary" id="quick_brand">
+											Thương hiệu : @product.Brand
 										</div>
 
+										<!--Price-->
+										<div class="pro-thumb-price mt-20">
+											<span class="regular-price" id="quick_price">$98.25</span>
+										</div>
 
+										<!--Detail-->
 										<div class="pro-desc-details">
 											Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
 										</div>
 
+										<!--Option-->
 										<div class="product-varient-wrapper">
 											<div class="product-color pv_class clearfix">
-												<label>Color :</label>
+												<label>Attribute :</label>
 												<select class="">
 													<option>Red</option>
 													<option>Green</option>
@@ -656,18 +666,9 @@
 													<option>3XL</option>
 												</select>
 											</div>
-											<div class="product-tag pv_class clearfix">
-												<label>Tags :</label>
-												<select class="">
-													<option>Cat</option>
-													<option>Dog</option>
-													<option>Fish</option>
-													<option>Horse</option>
-												</select>
-											</div>
 										</div>
 
-
+										<!--Cart-->
 										<div class="details_action_wraper">
 											<ul>
 
@@ -689,24 +690,6 @@
 											</ul>
 										</div>
 
-
-										<div class="pro-details-social">
-											<ul>
-												<li><a class="facebook" href="#" title="facebook"><i class="icofont-facebook"></i> Like</a></li>
-												<li><a class="twitter" href="#" title="twitter"><i class="icofont-twitter"></i> tweet</a></li>
-												<li><a class="pinterest" href="#" title="pinterest"><i class="icofont-pinterest"></i> save</a></li>
-												<li><a class="google-plus" href="#" title="google +"><i class="icofont-google-plus"></i> share</a></li>
-												<li><a class="linkedin" href="#" title="linkedin"><i class="icofont-linkedin"></i> linked</a></li>
-											</ul>
-										</div>
-
-
-										<div class="secure_pay">
-											<h6>Guaranteed safe Pay :</h6>
-											<img src="~/img/icons/secure_pay.jpg" alt="single-product">
-										</div>
-
-
 									</div>
 								</div>
 								<!-- Thumbnail Description End -->
@@ -725,7 +708,7 @@
 
 </div>
 <!-- Main Wrapper End Here -->
-<script>
+<script >
 
 	var attributeId = @product.productOption[0].attribute.AttributeId
 	var sizeId = @product.productOption[0].size.SizeId;
@@ -780,5 +763,84 @@
 		document.getElementById("amount").innerText = amount
 	}
 
+	function quickView(productId){
+		$('#image_large').empty()
+		$('#image_small').empty()
+		$.ajax({
+			type: "POST",
+			url: "/Product/quickPreview",
+			data: { productId: productId },
+			success: function (response) {
+				$('#quick_name').html(response.name)
+				$('#quick_price').html(response.productOption[0].price)
+				$('#quick_brand').html('Thương hiệu: '+ response.brand)
+
+
+				for (var index = 0; index < response.images.length; index++) {
+					var imgDiv
+					if (index == 0) {
+						imgDiv = $('<div>', {
+							id: 'shop-details-' + response.images[index].imageId,
+							class: 'tab-pane large-img-style active'
+						});
+					}
+					else {
+						imgDiv = $('<div>', {
+							id: 'shop-details-' + response.images[index].imageId,
+							class: 'tab-pane large-img-style'
+						});
+					}
+
+					var imgElement = $('<img>', {
+						src: response.images[index].imageUrl,
+						alt: ''
+					});
+
+					imgDiv.append(imgElement);
+					$('#image_large').append(imgDiv);
+				}
+
+				for (var index = 0; index < response.images.length; index++) {
+					var imgLink
+					if (index == 0) {
+						imgLink = $('<a>', {
+							href: '#shop-details-' + response.images[index].imageId,
+							class: 'shop-details-overly active'
+						}).on('click', function () {
+							active(index);
+						});
+					}
+					else {
+						imgLink = $('<a>', {
+							href: '#shop-details-' + response.images[index].imageId,
+							class: 'shop-details-overly',
+						}).on('click', function () {
+							active(index);
+						});
+					}
+
+					var imgElement = $('<img>', {
+						src: response.images[index].imageUrl,
+						alt: ''
+					});
+
+					imgLink.append(imgElement);
+					$('#image_small').append(imgLink);
+				}
+
+			},
+			error: function (xhr, status, error) {
+				console.error('Error: ' + error);
+			}
+		});
+	}
+
+	function active(index) {
+		$('#image_large').find('.active').removeClass('active');
+		$('#image_small').find('.active').removeClass('active');
+
+		document.getElementById('image_large').querySelectorAll('div')[index].classList.add('active')
+		document.getElementById('image_small').querySelectorAll('a')[index].classList.add('active')
+	}
 
 </script>

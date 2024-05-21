@@ -6,19 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("CartItem")]
-public partial class CartItem
+[PrimaryKey("ProductId", "CustomerId")]
+[Table("FavouriteList")]
+public partial class FavouriteList
 {
     [Key]
-    public int CartItemId { get; set; }
+    public int ProductId { get; set; }
 
-    public int ProductOptionId { get; set; }
-
-    public int Quantity { get; set; }
-
+    [Key]
     public int CustomerId { get; set; }
 
     [ForeignKey("CustomerId")]
-    [InverseProperty("CartItems")]
+    [InverseProperty("FavouriteLists")]
     public virtual Customer Customer { get; set; } = null!;
 }

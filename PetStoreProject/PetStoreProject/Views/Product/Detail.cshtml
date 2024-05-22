@@ -305,7 +305,7 @@
 									</a>
 
 									<div class="item_quick_link">
-										<a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)"><i class="icofont-search"></i></a>
+										<a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)"``><i class="icofont-search"></i></a>
 									</div>
 
 									<div class="product-count-wrap">
@@ -325,11 +325,10 @@
 											<span class="regular-price">@p.Price</span>
 											@* <del class="discount_price">$75.50</del> *@
 										</div>
-
 									</div>
 									<div class="item_add_cart">
 										<a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
-										<a class="grid_cart" href="cart.html" title="Add to Cart">Add To Cart</a>
+										<a class="grid_cart" href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@p.ProductId)">Add To Cart</a>
 										<a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
 									</div>
 								</div>

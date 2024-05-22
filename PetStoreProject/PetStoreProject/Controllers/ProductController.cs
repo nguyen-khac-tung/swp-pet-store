@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Helper;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
-using PetStoreProject.Helper;
 
 namespace PetStoreProject.Controllers
 {
@@ -36,7 +36,7 @@ namespace PetStoreProject.Controllers
         {
             int pageSize = 24;
             var productDetails = _product.GetProductDetailAccessaries();
-            return View(PaginatedList<ProductDetailVM>.Create(productDetails,pageNumber ?? 1, pageSize));
+            return View(PaginatedList<ProductDetailVM>.Create(productDetails, pageNumber ?? 1, pageSize));
         }
 
     }

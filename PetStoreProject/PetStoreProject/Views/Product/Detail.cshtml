@@ -54,37 +54,6 @@
 		<div class="container">
 			<div class="row">
 
-				@* <div class="col-lg-6 col-md-6 col-12">
-				<div class="product-details product_details_1">
-				<div class="product-details-img">
-				<div class="tab-content main_large_img product-details-large">
-				@foreach(var image in product.images)
-				{
-				<div id="shop-details-@image.imageid" class="tab-pane large-img-style">
-				<img src="@image.imageurl" alt="">
-				<div class="img-popup-wrap">
-				<a class="img-popup" href="@image.imageurl"><i class="icofont-expand"></i></a>
-				</div>
-				</div>
-				}
-
-				<span class="sticker-sale">-25%</span>
-				<span class="sticker-new">new</span>
-
-				</div>
-
-				<div class="shop-details-tab nav thumb_slider_active product-details-small default_arrow mini_arrow">
-				@foreach(var image in product.images){
-				<a class="shop-details-overly" href="#shop-details-@image.imageid" data-bs-toggle="tab">
-				<img src="@image.imageurl" alt="">
-				</a>
-				}
-				</div>
-
-				</div>
-				</div>
-				</div> *@
-
 				<div class="col-lg-6 col-md-12 col-12">
 					<div class="product-details-img product-details-tab product_details_2 left_side">
 						<div id="gallery" class="product-dec-slider-2 thumb_image_small mini_arrow_var">
@@ -94,7 +63,6 @@
 									<img src="@image.ImageUrl" alt="">
 								</a>
 							}
-
 
 						</div>
 						<!--Large image-->
@@ -149,51 +117,47 @@
 							<span class="regular-price" id="price">@product.productOption[0].price</span>
 						</div>
 
-
-						<!--
-						<div class="product-size mtb-30 clearfix">
-							<label>Size</label>
-							<select class="">
-								<option>S</option>
-								<option>M</option>
-								<option>L</option>
-								<option>XL</option>
-								<option>XXL</option>
-								<option>3XL</option>
-							</select>
-						</div>
-						-->
 						<!--Attribute-->
+						<div class="size_color_wraper" id="attribute">
+
 						@if (product.attributes[0].Name != null)
 						{
-							<div class="size_color_wraper" id="attribute">
 								<div class="color clearfix mb-30">
 									<label>Attribute :</label>
 									<ul class="color-list">
 										@for (var index = 0; index < product.attributes.Count; index++)
 										{
-											<li onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
+											if(product.attributes[index].Name != null)
+											{
+												<li onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
+											}
+											
 										}
 									</ul>
 								</div>
-							</div>
 						}
+						</div>
+
 
 						<!--Size-->
+						<div class="theme_size clearfix" id="size">
 						@if (product.sizes[0].Name != null)
 						{
-							<div class="theme_size clearfix" id="size">
 								<label>Size :</label>
 								<div class="color-list size_list">
 									<ul class="color-list size_list">
 										@for (var index = 0; index < product.sizes.Count; index++)
 										{
-											<li onclick="size_selected(@index, @product.sizes[index].SizeId)">@product.sizes[index].Name</li>
+											if(product.sizes[index].Name != null)
+											{
+												<li onclick="size_selected(@index, @product.sizes[index].SizeId)">@product.sizes[index].Name</li>
+											}
+											
 										}
 									</ul>
 								</div>
-							</div>
 						}
+						</div>
 
 						<div>
 							Tổng số tiền: <span id="amount">@product.productOption[0].price</span>
@@ -334,7 +298,7 @@
 									@* <span class="sticker-sale">-25%</span>
 									<span class="sticker-new">New</span> *@
 
-									<a href="product-details.html">
+									<a href="/product/detail/@p.ProductId">
 										<img class="primary-img" src="@p.images[0].ImageUrl" alt="single-product">
 										@* <img class="secondary-img" src="img/products/p24.jpg" alt="single-product"> *@
 									</a>
@@ -375,183 +339,6 @@
 			</div>
 		</div>
 	</div>
-	<!-- collective product Area Start Here -->
-	@* <div class="modal fade common_class_modal measurment_modal_wrapper" id="measurment" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header justify-content-end">
-					<button type="button" data-bs-dismiss="modal" aria-label="Close"><i class="icofont-close"></i> </button>
-				</div>
-				<div class="modal-body">
-					<table class="table-size-guide responsive-table table-center">
-						<tbody>
-							<tr>
-								<th>INTERNATIONAL</th>
-								<th>XS</th>
-								<th>S</th>
-								<th>M</th>
-								<th>L</th>
-								<th>XL</th>
-								<th>XXL</th>
-								<th>XXXL</th>
-							</tr>
-							<tr>
-								<td>EUROPE</td>
-								<td>32</td>
-								<td>34</td>
-								<td>36</td>
-								<td>38</td>
-								<td>40</td>
-								<td>42</td>
-								<td>44</td>
-							</tr>
-							<tr>
-								<td>US</td>
-								<td>0</td>
-								<td>2</td>
-								<td>4</td>
-								<td>6</td>
-								<td>8</td>
-								<td>10</td>
-								<td>12</td>
-							</tr>
-							<tr>
-								<td>CHEST FIT (INCHES)</td>
-								<td>28"</td>
-								<td>30"</td>
-								<td>32"</td>
-								<td>34"</td>
-								<td>36"</td>
-								<td>38"</td>
-								<td>40"</td>
-							</tr>
-							<tr>
-								<td>CHEST FIT (CM)</td>
-								<td>716</td>
-								<td>76</td>
-								<td>81</td>
-								<td>86</td>
-								<td>91.5</td>
-								<td>96.5</td>
-								<td>101.1</td>
-							</tr>
-							<tr>
-								<td>WAIST FIR (INCHES)</td>
-								<td>21"</td>
-								<td>23"</td>
-								<td>25"</td>
-								<td>27"</td>
-								<td>29"</td>
-								<td>31"</td>
-								<td>33"</td>
-							</tr>
-							<tr>
-								<td>WAIST FIR (CM)</td>
-								<td>53.5</td>
-								<td>58.5</td>
-								<td>63.5</td>
-								<td>68.5</td>
-								<td>74</td>
-								<td>79</td>
-								<td>84</td>
-							</tr>
-							<tr>
-								<td>HIPS FIR (INCHES)</td>
-								<td>33"</td>
-								<td>34"</td>
-								<td>36"</td>
-								<td>38"</td>
-								<td>40"</td>
-								<td>42"</td>
-								<td>44"</td>
-							</tr>
-							<tr>
-								<td>HIPS FIR (CM)</td>
-								<td>81.5</td>
-								<td>86.5</td>
-								<td>91.5</td>
-								<td>96.5</td>
-								<td>101</td>
-								<td>106.5</td>
-								<td>111.5</td>
-							</tr>
-							<tr>
-								<td>SKORT LENGTHS (SM)</td>
-								<td>36.5</td>
-								<td>38</td>
-								<td>39.5</td>
-								<td>41</td>
-								<td>42.5</td>
-								<td>44</td>
-								<td>45.5</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div> *@<!-- Modal -->
-
-	@* <div class="modal fade common_class_modal modal_shipping_wrapper" id="shipping_policy" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header justify-content-end">
-					<button type="button" data-bs-dismiss="modal" aria-label="Close"><i class="icofont-close"></i> </button>
-				</div>
-				<div class="modal-body">
-					<h4># Shipping Policy</h4>
-					<ul>
-						<li>See the delivery FAQs for details on shipping methods</li>
-						<li>In-store collection available within 1 to 7 business days</li>
-						<li>Next-day and Express delivery options also loerm isp available</li>
-						<li>Purchases are delivered in an orange box tied with a Bolduc ribbon, with the exception of certain items</li>
-						<li>See the delivery FAQs for details on shipping methods, costs and delivery times</li>
-					</ul>
-					<h4># Return & Exchanges Policy</h4>
-					<ul>
-						<li>Easy and complimentary, within 7 days</li>
-						<li>See conditions and procedure in our return FAQs</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div> *@<!-- Modal -->
-
-	@* <div class="modal fade common_class_modal modal_opinion_wrapper" id="product_oponion" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-md modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLongTitle">Have Any Query?</h5>
-					<button type="button" data-bs-dismiss="modal" aria-label="Close"><i class="icofont-close"></i> </button>
-				</div>
-				<div class="modal-body">
-					<form method="post" action="https://html.themewin.com/contact#contact_form" id="contact_form" accept-charset="UTF-8" class="product_oponion_form">
-						<input type="hidden" name="form_type" value="contact" /><input type="hidden" name="utf8" value="✓" />
-						<div class="row">
-							<div class="col-12">
-							</div>
-							<div class="col-md-12 mb-40">
-								<input type="text" required placeholder="Name *" class="" name="contact[name]" id="ContactFormName" value="">
-							</div>
-							<div class="col-md-12 mb-40">
-								<input type="email" required placeholder="Email *" class="" name="contact[email]" id="ContactFormEmail" value="">
-							</div>
-							<div class="col-lg-12 mb-40">
-								<input type="text" id="ContactFormSubject" name="contact[subject]" placeholder="Phone Number *" value="">
-							</div>
-							<div class="col-lg-12 mb-40">
-								<textarea placeholder="Your Message *" class="custom-textarea" name="contact[body]" id="ContactFormMessage"></textarea>
-							</div>
-							<div class="col-lg-12 text-center">
-								<button type="submit" value="submit" class="query_button">Send Query</button>
-							</div>
-						</div>
-					</form>
-
-				</div>
-			</div>
-		</div>
-	</div> *@
 
 	<!-- Quick View Content Start -->
 	<div class="main-product-thumbnail quick-thumb-content">
@@ -571,38 +358,12 @@
 								<div class="col-lg-6 col-md-6">
 									<div class="product-details product_details_1">
 										<div class="product-details-img">
-											<div class="tab-content main_large_img product-details-large" id="image_large">
-												@* <div id="shop-details-1" class="tab-pane large-img-style">
-													<img src="img/products/p1.jpg" alt="">
-												</div>
-												<div id="shop-details-2" class="tab-pane active large-img-style">
-													<img src="img/products/p2.jpg" alt="">
-												</div>
-												<div id="shop-details-3" class="tab-pane large-img-style">
-													<img src="img/products/p3.jpg" alt="">
-												</div>
-												<div id="shop-details-4" class="tab-pane large-img-style">
-													<img src="img/products/p4.jpg" alt="">
-												</div> *@
-
-												@* <span class="sticker-sale">-25%</span>
-												<span class="sticker-new">New</span> *@
+											<div class="tab-content main_large_img product-details-large" id="quick_image">
 
 											</div>
 
 											<div class="shop-details-tab nav product-details-small" id="image_small">
-												@* <a class="shop-details-overly" href="#shop-details-1" data-bs-toggle="tab">
-													<img src="img/products/p1.jpg" alt="">
-												</a>
-												<a class="shop-details-overly active" href="#shop-details-2" data-bs-toggle="tab">
-													<img src="img/products/p2.jpg" alt="">
-												</a>
-												<a class="shop-details-overly" href="#shop-details-3" data-bs-toggle="tab">
-													<img src="img/products/p3.jpg" alt="">
-												</a>
-												<a class="shop-details-overly" href="#shop-details-4" data-bs-toggle="tab">
-													<img src="img/products/p4.jpg" alt="">
-												</a>*@
+											
 											</div>
 
 										</div>
@@ -637,35 +398,27 @@
 											<span class="regular-price" id="quick_price">$98.25</span>
 										</div>
 
-										<!--Detail-->
+@* 										<!--Detail-->
 										<div class="pro-desc-details">
 											Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
-										</div>
+										</div> *@
 
 										<!--Option-->
-										<div class="product-varient-wrapper">
-											<div class="product-color pv_class clearfix">
-												<label>Attribute :</label>
-												<select class="">
-													<option>Red</option>
-													<option>Green</option>
-													<option>Blue</option>
-													<option>Black</option>
-													<option>Yellow</option>
-													<option>Pink</option>
-												</select>
+										<div class="thubnail-desc" id="quick_option">
+											
+											<div class="size_color_wraper" id="quick_attribute">
+												
 											</div>
-											<div class="product-size pv_class clearfix">
-												<label>Size :</label>
-												<select class="">
-													<option>S</option>
-													<option>M</option>
-													<option>L</option>
-													<option>XL</option>
-													<option>XXL</option>
-													<option>3XL</option>
-												</select>
+											
+											<!--Size-->
+
+											<div class="theme_size clearfix" id="quick_size">
+												
 											</div>
+										</div>
+
+										<div>
+											Tổng số tiền: <span id="quick_amount"></span>
 										</div>
 
 										<!--Cart-->
@@ -673,8 +426,8 @@
 											<ul>
 
 												<li class="box-quantity">
-													<form action="#">
-														<input class="quantity" type="number" min="1" value="1">
+													<form action="#" onclick="quick_total_price()">
+														<input class="quantity" type="number" min="1" value="1" id="quick_quantity">
 													</form>
 												</li>
 												<li>
@@ -709,7 +462,6 @@
 </div>
 <!-- Main Wrapper End Here -->
 <script >
-
 	var attributeId = @product.productOption[0].attribute.AttributeId
 	var sizeId = @product.productOption[0].size.SizeId;
 	var price = @product.productOption[0].price
@@ -719,8 +471,15 @@
 		updatePriceAndImage();
 	};
 
-	document.getElementById('size').querySelectorAll('li')[0].classList.add('select');
-	document.getElementById('attribute').querySelectorAll('li')[0].classList.add('select');
+	var list_size = document.getElementById('size').querySelectorAll('li')
+	var list_attribute = document.getElementById('attribute').querySelectorAll('li')
+	if(list_size.length > 0){
+		list_size[0].classList.add('select')
+	}
+
+	if (list_attribute.length > 0) {
+		list_attribute[0].classList.add('select')
+	}
 
 	function size_selected(index, size_id) {
 		var list_li = document.getElementById('size').querySelectorAll('li');
@@ -763,71 +522,92 @@
 		document.getElementById("amount").innerText = amount
 	}
 
-	function quickView(productId){
-		$('#image_large').empty()
-		$('#image_small').empty()
+	function quickView(productId) {
+		$('#quick_attribute').empty();
+		$('#quick_size').empty();
 		$.ajax({
 			type: "POST",
 			url: "/Product/quickPreview",
 			data: { productId: productId },
 			success: function (response) {
-				$('#quick_name').html(response.name)
-				$('#quick_price').html(response.productOption[0].price)
-				$('#quick_brand').html('Thương hiệu: '+ response.brand)
+				$('#quick_name').html(response.name);
+				$('#quick_price').html(response.productOption[0].price);
+				$('#quick_image').empty();
+				$('#quick_amount').html(response.productOption[0].price);
 
+				var imgDiv = $('<div>', {
+					class: 'tab-pane large-img-style active'
+				});
+				var imgElement = $('<img>', {
+					src: response.productOption[0].img_url,
+					alt: ''
+				});
+				imgDiv.append(imgElement);
+				$('#quick_image').append(imgDiv);
 
-				for (var index = 0; index < response.images.length; index++) {
-					var imgDiv
-					if (index == 0) {
-						imgDiv = $('<div>', {
-							id: 'shop-details-' + response.images[index].imageId,
-							class: 'tab-pane large-img-style active'
-						});
-					}
-					else {
-						imgDiv = $('<div>', {
-							id: 'shop-details-' + response.images[index].imageId,
-							class: 'tab-pane large-img-style'
-						});
-					}
+				$('#quick_brand').html('Thương hiệu: ' + response.brand);
+				var jsonStr = JSON.stringify(response.productOption);
 
-					var imgElement = $('<img>', {
-						src: response.images[index].imageUrl,
-						alt: ''
+				if (response.attributes[0].name != null) {
+					var divContainer = $('<div>', {
+						class: 'color clearfix mb-30'
 					});
-
-					imgDiv.append(imgElement);
-					$('#image_large').append(imgDiv);
+					var label = $('<label>').text('Attribute');
+					var ul = $('<ul>', {
+						class: 'color-list'
+					});
+					var list = ""
+					for (var index = 0; index < response.attributes.length; index++) {
+						if (response.attributes[index].name != null) {
+							list += "<li onclick='quick_attribute_selected(" + index + "," + response.attributes[index].attributeId + "," + jsonStr + ")'" + "data = '" + response.attributes[index].attributeId + "'>" + response.attributes[index].name + "</li>"
+						}
+						else {
+							index -= 1
+						}
+					}
+					ul.append(list)
+					divContainer.append(label);
+					divContainer.append(ul);
+					$('#quick_attribute').append(divContainer);
 				}
 
-				for (var index = 0; index < response.images.length; index++) {
-					var imgLink
-					if (index == 0) {
-						imgLink = $('<a>', {
-							href: '#shop-details-' + response.images[index].imageId,
-							class: 'shop-details-overly active'
-						}).on('click', function () {
-							active(index);
-						});
-					}
-					else {
-						imgLink = $('<a>', {
-							href: '#shop-details-' + response.images[index].imageId,
-							class: 'shop-details-overly',
-						}).on('click', function () {
-							active(index);
-						});
-					}
-
-					var imgElement = $('<img>', {
-						src: response.images[index].imageUrl,
-						alt: ''
+				if (response.sizes[0].name != null) {
+					var sizeLabel = $('<label>').text('Size');
+					var sizeDiv = $('<div>', {
+						class: 'color-list size_list'
 					});
-
-					imgLink.append(imgElement);
-					$('#image_small').append(imgLink);
+					var sizeUl = $('<ul>', {
+						class: 'color-list size_list'
+					});
+					
+					var list = ""
+					for (var index = 0; index < response.sizes.length; index++) {
+						if (response.sizes[index].name != null) { 
+							list += "<li onclick='quick_size_selected(" + index + "," + response.sizes[index].sizeId + "," + jsonStr + ")'" + "data = '" + response.sizes[index].sizeId + "'>" + response.sizes[index].name + "</li>"
+						}
+						else{
+							index -= 1
+						}
+						
+					}
+					sizeUl.append(list)
+					sizeDiv.append(sizeUl);
+					$('#quick_size').append(sizeLabel);
+					$('#quick_size').append(sizeDiv);
 				}
 
+				var list_quick_size = document.getElementById('quick_size').querySelectorAll('li');
+				var list_quick_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
+				if (list_quick_size.length > 0) {
+					list_quick_size[0].classList.add('select');
+				}
+
+				if (list_quick_attribute.length > 0) {
+					list_quick_attribute[0].classList.add('select');
+				} 
+				document.getElementById('quick_quantity').value = 1
+				
+				console.log(response);
 			},
 			error: function (xhr, status, error) {
 				console.error('Error: ' + error);
@@ -835,12 +615,68 @@
 		});
 	}
 
-	function active(index) {
-		$('#image_large').find('.active').removeClass('active');
-		$('#image_small').find('.active').removeClass('active');
+	function quick_size_selected(index, size_id, productOption) {
+		console.log(productOption)
+		var list_li = document.getElementById('quick_size').querySelectorAll('li');
+		list_li.forEach(function (li) {
+			li.classList.remove('select');
+		});
+		list_li[index].classList.add('select');
 
-		document.getElementById('image_large').querySelectorAll('div')[index].classList.add('active')
-		document.getElementById('image_small').querySelectorAll('a')[index].classList.add('active')
+		var attribute_id 
+		try {
+			attribute_id = document.getElementById('quick_attribute').querySelectorAll('li.select')[0].getAttribute('data')
+		}catch(error){
+			attribute_id = 1
+		}
+
+		quick_updatePriceAndImage(size_id, attribute_id, productOption);
 	}
+
+	function quick_attribute_selected(index, attribute_id, productOption) {
+		console.log(productOption)
+		var list_li = document.getElementById('quick_attribute').querySelectorAll('li');
+		list_li.forEach(function (li) {
+			li.classList.remove('select');
+		});
+		list_li[index].classList.add('select');
+
+		var size_id
+		try {
+			size_id = document.getElementById('quick_size').querySelectorAll('li.select')[0].getAttribute('data')
+		} catch (error) {
+			size_id = 1
+		}
+
+		quick_updatePriceAndImage(size_id, attribute_id, productOption);
+	}
+
+	function quick_updatePriceAndImage(size_id, attribute_id, productOptions_json) {
+		console.log(size_id)
+		console.log(attribute_id)
+		var quick_price, quick_img_url;
+
+		for (var id = 0; id < productOptions_json.length; id++) {
+			if (productOptions_json[id]['attribute']['attributeId'] == attribute_id && productOptions_json[id]['size']['sizeId'] == size_id) {
+				quick_price = productOptions_json[id].price;
+				quick_img_url = productOptions_json[id].img_url;
+				break;
+			}
+		}
+		console.log(quick_img_url)
+
+		document.querySelector('#quick_image img').setAttribute('src', quick_img_url);
+		document.getElementById('quick_price').innerText = quick_price;
+		quick_total_price();
+	}
+
+	function quick_total_price() {
+		var quick_quantity = parseFloat(document.getElementById('quick_quantity').value);
+		var quick_price = parseFloat(document.getElementById('quick_price').innerText);
+		console.log(quick_price)
+		var quick_amount = quick_price * quick_quantity;
+		document.getElementById("quick_amount").innerText = quick_amount;
+	}
+
 
 </script>

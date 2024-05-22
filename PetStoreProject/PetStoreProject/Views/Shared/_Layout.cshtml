@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Home</title>
+    <title>@ViewData["Title"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Favicons -->
@@ -38,6 +38,8 @@
 
     <!-- Modernizer js -->
     <script src="~/js/vendor/modernizr-3.5.0.min.js"></script>
+
+    @RenderSection("HeadOptional", required: false)
 </head>
 
 <body>
@@ -63,10 +65,10 @@
                         <nav>
                             <ul class="header-menu-list text-center">
                                 <li class="active">
-                                    <a href="index.html">Home</a>
+                                    <a asp-controller="Home" asp-action="Index">Trang Chủ</a>
                                 </li>
                                 <li class="static_class">
-                                    <a class="drop-icon" href="shop.html">All Products</a>
+                                    <a class="drop-icon" href="shop.html">Sản Phẩm</a>
                                     <!--  Mega-Menu Start -->
                                     <ul class="common_ddown megamenu mega_style_2">
                                         <!-- Single Column Start -->
@@ -164,9 +166,9 @@
                                     </ul>
                                     <!-- Mega-Menu End -->
                                 </li>
-                                <li><a href="shop.html">Shop</a></li>
+                                <!-- <li><a href="shop.html">Shop</a></li> -->
                                 <li>
-                                    <a class="drop-icon" href="#">Services</a>
+                                    <a class="drop-icon" href="#">Dịch Vụ</a>
                                     <!-- Home Version Dropdown Start -->
                                     <ul class="common_ddown">
                                         <li>
@@ -191,31 +193,37 @@
                                     <!-- Home Version Dropdown End -->
                                 </li>
                                 <li><a href="blog.html">Blog</a></li>
-                                <li><a href="about.html">about us</a></li>
-                                <li><a href="contact.html">Contact us</a></li>
+                                <li><a href="about.html">Giới Thiệu</a></li>
+                                <li><a href="contact.html">Liên Hệ</a></li>
                             </ul>
                         </nav>
                     </div>
 
-                    <!-- Cart Box Start Here -->
+                    <!-- Option Box Start Here -->
                     <div class="col-xl-2 col-lg-2 col-6">
                         <div class="cart-box">
                             <ul>
-                                <!-- Search Box Start Here -->
+                                <!-- Search Box Start -->
                                 <li class="drodown-show">
-                                    <a href="#"><span class="icofont-search"></span></a>
+                                    <a href="#"><span class="icofont-search-1"></span></a>
                                     <div class="dropdown categorie-search-box">
                                         <form action="#">
                                             <input type="text" name="search" placeholder="Search our item">
                                             <button>
-                                                <span class="icofont-search"></span>
+                                                <span class="icofont-search-1"></span>
                                             </button>
                                         </form>
                                     </div>
                                 </li>
-                                <!-- Categorie Search Box End Here -->
+                                <!-- Search Box End -->
+                                <!--Wish List Start-->
+                                <li>
+                                    <a href="#"><span class="icofont-heart"></span></a>
+                                </li>
+                                <!--Wish List End-->
+                                <!-- Stored Cart Start -->
                                 <li class="drodown-show">
-                                    <a href="#"><span class="icofont-cart-alt"></span><span class="total-pro">2</span></a>
+                                    <a href="#"><span class="icofont-shopping-cart"></span><span class="total-pro">2</span></a>
                                     <ul class="dropdown cart-box-width">
                                         <li>
                                             <!-- Cart Box Start -->
@@ -281,53 +289,14 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="drodown-show">
-                                    <a href="#"><span class="icofont-gear"></span></a>
-                                    <!-- Currency & Language Selection Start -->
-                                    <ul class="dropdown cart-box-width currency-selector">
-                                        <li>
-                                            <div class="single-select-block">
-                                                <h3>My Account</h3>
-                                                <select>
-                                                    <option value="1">Register</option>
-                                                    <option value="2">Login</option>
-                                                    <option value="3">My Account</option>
-                                                </select>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="single-select-block">
-                                                <h3>Currency</h3>
-                                                <select>
-                                                    <option value="1">USD - US Dollar</option>
-                                                    <option value="2">EUR - Euro</option>
-                                                    <option value="3">GBP - British Pound</option>
-                                                    <option value="3">Ruppe - Indian Ruppe</option>
-                                                    <option value="3">Bath - Indonisan Bath</option>
-                                                    <option value="3">Egitp - Misorian</option>
-                                                </select>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="single-select-block">
-                                                <h3>Language</h3>
-                                                <select>
-                                                    <option value="1">English</option>
-                                                    <option value="2">French</option>
-                                                    <option value="3">Mandrin</option>
-                                                    <option value="3">Arabic</option>
-                                                    <option value="3">Turkis</option>
-                                                    <option value="3">Russia</option>
-                                                </select>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <!-- Currency & Language Selection End -->
-                                </li>
+                                <!-- Stored Cart End -->
+                                <!-- Account Start -->
+                                <partial name="_Account.cshtml"/>
+                                <!-- Account End -->
                             </ul>
                         </div>
                     </div>
-                    <!-- Cart Box End Here -->
+                    <!-- Option Box End Here -->
                 </div>
                 <!-- Row End -->
                 <!-- Mobile Menu Start Here -->
@@ -335,10 +304,10 @@
                     <nav>
                         <ul>
                             <li>
-                                <a href="index.html">Home</a>
+                                <a href="index.html">Trang Chủ</a>
                             </li>
                             <li>
-                                <a href="#">All Products</a>
+                                <a href="#">Sản Phẩm</a>
                                 <!--  Mega-Menu Start -->
                                 <ul class="submobile-mega-dropdown">
                                     <li>
@@ -432,9 +401,9 @@
                                 </ul>
                                 <!--  Mega-Menu End -->
                             </li>
-                            <li><a href="shop.html">Shop</a></li>
+                            <!--<li><a href="shop.html">Shop</a></li>-->
                             <li>
-                                <a href="#">Services</a>
+                                <a href="#">Dịch Vụ</a>
                                 <!-- Home Version Dropdown Start -->
                                 <ul>
                                     <li>
@@ -459,8 +428,8 @@
                                 <!-- Home Version Dropdown End -->
                             </li>
                             <li><a href="blog.html">Blog</a></li>
-                            <li><a href="about.html">about us</a></li>
-                            <li><a href="contact.html">Contact us</a></li>
+                            <li><a href="about.html">Giới Thiệu</a></li>
+                            <li><a href="contact.html">Liên Hệ</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -470,9 +439,19 @@
             <!-- Container End -->
         </header>
         <!-- Header Area End Here -->
-
+        <!-- Breadcrumb Area Start Here -->
+        @{
+            string currentController = ViewContext.RouteData.Values["controller"].ToString();
+            string currentAction = ViewContext.RouteData.Values["action"].ToString();
+        }
+        @if (currentController != "Home" || currentAction != "Index")
+        {
+            <partial name="_BreadCumb" />
+        }
+        <!-- Breadcrumb Area End Here -->
+        <!-- Render Body Start-->
         @RenderBody()
-
+        <!-- Render Body End-->
         <!-- Footer Area Start Here -->
         <footer>
             <div class="footer_area_wrapper footer_color_bg" style="background-color:#1d2536">
@@ -614,7 +593,8 @@
     <script src="~/js/plugins.js"></script>
     <!-- Main activaion js -->
     <script src="~/js/main.js"></script>
+
+    @RenderSection("ScriptOptional", required: false)
 </body>
 
-<
 </html>

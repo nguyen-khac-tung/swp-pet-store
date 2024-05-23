@@ -12,12 +12,12 @@ namespace PetStoreProject.Repositories.Product
             _context = context;
         }
 
-        public ProductDetailVM GetDetail(int productId)
+        public ProductDetailViewModel GetDetail(int productId)
         {
             var product = (from p in _context.Products
                            join b in _context.Brands on p.BrandId equals b.BrandId
                            where p.ProductId == productId
-                           select new ProductDetailVM
+                           select new ProductDetailViewModel
                            {
                                Name = p.Name,
                                Brand = b.Name,
@@ -38,7 +38,7 @@ namespace PetStoreProject.Repositories.Product
                                   join s in _context.Sizes on po.SizeId equals s.SizeId
                                   join i in _context.Images on po.ImageId equals i.ImageId
                                   where p.ProductId == productId
-                                  select new ProductOptionVM
+                                  select new ProductOptionViewModel
                                   {
                                       Id = po.ProductOptionId,
                                       size = new Size()
@@ -78,7 +78,7 @@ namespace PetStoreProject.Repositories.Product
             return product;
         }
 
-        public List<RelatedProductVM> getRelatedProduct(int productId)
+        public List<RelatedProductViewModel> getRelatedProduct(int productId)
         {
             var cateId = (from p in _context.Products where p.ProductId == productId select p.ProductCateId).FirstOrDefault();
             var products = (from po in _context.ProductOptions
@@ -87,7 +87,7 @@ namespace PetStoreProject.Repositories.Product
                             join i in _context.Images on po.ImageId equals i.ImageId
                             where p.ProductCateId == cateId
                             group new { po, p, b, i } by new NewRecord(p.ProductId, p.Name, b.Name) into g
-                            select new RelatedProductVM
+                            select new RelatedProductViewModel
                             {
                                 ProductId = g.Key.ProductId,
                                 Name = g.Key.Name,
@@ -141,14 +141,14 @@ namespace PetStoreProject.Repositories.Product
             return GetProductsByCategories(categoryIds);
         }
 
-        public List<ProductOptionVM> GetProductOptionsByProductId(int productId)
+        public List<ProductOptionViewModel> GetProductOptionsByProductId(int productId)
         {
             var productOptions = (from po in _context.ProductOptions
                                   join i in _context.Images on po.ImageId equals i.ImageId
                                   join a in _context.Attributes on po.AttributeId equals a.AttributeId
                                   join s in _context.Sizes on po.SizeId equals s.SizeId
                                   where po.ProductId == productId
-                                  select new ProductOptionVM
+                                  select new ProductOptionViewModel
                                   {
                                       Id = po.ProductOptionId,
                                       attribute = new Attribute
@@ -204,10 +204,10 @@ namespace PetStoreProject.Repositories.Product
             return brand;
         }
 
-        public List<ProductDetailVM> GetProductDetailAccessaries()
+        public List<ProductDetailViewModel> GetProductDetailAccessaries()
         {
             var products = GetAllAccessaries();
-            var productDetails = products.Select(p => new ProductDetailVM
+            var productDetails = products.Select(p => new ProductDetailViewModel
             {
                 ProductId = p.ProductId,
                 Name = p.Name,

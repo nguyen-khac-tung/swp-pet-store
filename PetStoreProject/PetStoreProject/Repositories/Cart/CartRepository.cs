@@ -2,5 +2,9 @@
 {
     public class CartRepository : ICartRepository
     {
+        public void index()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -4,10 +4,10 @@ namespace PetStoreProject.Repositories.Product
 {
 	public interface IProductRepository
 	{
-		public ProductDetailVM GetDetail(int productId);
-		public List<RelatedProductVM> getRelatedProduct(int productId);
+		public ProductDetailViewModel GetDetail(int productId);
+		public List<RelatedProductViewModel> getRelatedProduct(int productId);
 
-		public List<ProductDetailVM> GetProductDetailAccessaries();
+		public List<ProductDetailViewModel> GetProductDetailAccessaries();
 
     }
 }

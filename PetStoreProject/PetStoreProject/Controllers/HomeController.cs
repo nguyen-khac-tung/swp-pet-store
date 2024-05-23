@@ -5,13 +5,16 @@ namespace PetStoreProject.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly PetStoreDBContext context;
+        private readonly PetStoreDBContext _context;
         public HomeController(PetStoreDBContext dbContext) {
-            context = dbContext;
+            _context = dbContext;
         }
-        public IActionResult Index()
-        {
-            return View(context.Brands.ToList()[0]);
+        public IActionResult Index(string? success)
+        {   
+            if(success != null) {
+                ViewBag.Success = success;
+            }
+            return View();
         }
     }
 }

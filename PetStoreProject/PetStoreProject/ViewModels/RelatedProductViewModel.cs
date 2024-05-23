@@ -2,7 +2,7 @@
 
 namespace PetStoreProject.ViewModels
 {
-	public class RelatedProductVM
+	public class RelatedProductViewModel
 	{
 		public int ProductId { get; set; }
 		public string Name { get; set; }

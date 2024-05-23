@@ -1,6 +1,45 @@
 ﻿@using PetStoreProject.Models
-@model Brand
 
-<h1>
-    @Model.Name
-</h1>
+@section HeadOptional {
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+}
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="material-icons">&#xE876;</i>
+                </div>
+                <h4 class="modal-title w-100">Thành Công!</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Tài khoản của bạn đã tạo thành công. Tiếp tục trải nghiệm mua sắm nhé!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success btn-block" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section ScriptOptional {
+    @if (ViewBag.Success != null)
+    {
+        <script>
+            $(document).ready(function () {
+                $("#myModal").modal("show");
+
+                $("#myModal").modal({ backdrop: true });
+            });
+        </script>
+    }
+}
+

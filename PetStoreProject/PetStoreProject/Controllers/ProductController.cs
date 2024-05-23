@@ -36,7 +36,7 @@ namespace PetStoreProject.Controllers
         {
             int pageSize = 24;
             var productDetails = _product.GetProductDetailAccessaries();
-            return View(PaginatedList<ProductDetailVM>.Create(productDetails, pageNumber ?? 1, pageSize));
+            return View(PaginatedList<ProductDetailViewModel>.Create(productDetails, pageNumber ?? 1, pageSize));
         }
 
     }

@@ -3,7 +3,7 @@ using Attribute = PetStoreProject.Models.Attribute;
 
 namespace PetStoreProject.ViewModels
 {
-    public class ProductOptionVM
+    public class ProductOptionViewModel
     {
         public int Id { get; set; }
         public Attribute attribute { get; set; }

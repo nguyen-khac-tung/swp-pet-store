@@ -119,16 +119,16 @@ namespace PetStoreProject.Repositories.Product
 			var img_id = url.Split('/')[url.Split('/').Length - 1];
 			return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/v1716019321/" + img_id;
 		}
-        public List<Models.Product> GetProductsByCategories(List<int> cateogrieIds)
+        public List<Models.Product> GetProductsByCategories(List<int> categoriesIds)
         {
             List<Models.Product> products = (from p in _context.Products
                                              join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
-                                             where cateogrieIds.Contains(pc.CategoryId)
+                                             where categoriesIds.Contains(pc.CategoryId)
                                              select p).ToList();
             return products;
         }
 
-        public List<Models.Product> GetAllAccessaries()
+        public List<Models.Product> GetAllAccessories()
         {
             List<int> categoryIds = [2, 5, 6];
             return GetProductsByCategories(categoryIds);
@@ -202,18 +202,34 @@ namespace PetStoreProject.Repositories.Product
 			return brand;
 		}
 
-        public List<ProductDetailVM> GetProductDetailAccessaries()
+		public List<Brand> GetBrandByCategoryId(List<int> categoryIds)
+		{
+           
+			var brands = (from b in _context.Brands
+						  join p in _context.Products on b.BrandId equals p.BrandId
+						  join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+						  where categoryIds.Contains(pc.CategoryId)
+						  select b).Distinct().ToList();
+			return brands;
+		}
+		public List<Brand> GetBrandAccessories()
+		{
+            List<int> categoryIds = [2, 5, 6];
+			return GetBrandByCategoryId(categoryIds);
+        }
+
+        public List<ProductDetailVM> GetProductDetailAccessories()
         {
-            var products = GetAllAccessaries();
+            var products = GetAllAccessories();
 			var productDetails = products.Select(p => new ProductDetailVM
 			{
 				ProductId = p.ProductId,
 				Name = p.Name,
-				Brand = GetBrandByProductId(p.ProductId).Name,
+				//Brand = GetBrandByProductId(p.ProductId).Name,
 				productOption = GetProductOptionsByProductId(p.ProductId),
 				images = GetImagesByProductId(p.ProductId),
-				attributes = GetAttributesByProductId(p.ProductId),
-				sizes = GetSizesByProductId(p.ProductId)
+				//attributes = GetAttributesByProductId(p.ProductId),
+				//sizes = GetSizesByProductId(p.ProductId)
 
 			}).ToList();
             return productDetails;

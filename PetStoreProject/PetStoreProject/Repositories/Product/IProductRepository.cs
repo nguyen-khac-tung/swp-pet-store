@@ -1,4 +1,5 @@
-﻿using PetStoreProject.ViewModels;
+﻿using PetStoreProject.Models;
+using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -7,7 +8,9 @@ namespace PetStoreProject.Repositories.Product
 		public ProductDetailVM GetDetail(int productId);
 		public List<RelatedProductVM> getRelatedProduct(int productId);
 
-		public List<ProductDetailVM> GetProductDetailAccessaries();
+		public List<ProductDetailVM> GetProductDetailAccessories();
+
+		public List<Brand> GetBrandAccessories();
 
     }
 }

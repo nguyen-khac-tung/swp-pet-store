@@ -4,21 +4,11 @@
 
 @using PetStoreProject.ViewModels
 @using PetStoreProject.Helper
+@using PetStoreProject.Models
 @model PaginatedList<ProductDetailVM>
 
-@*     @{
-        int count = 0;
-    }
-@foreach(var p in Model)
-{
-    <p>@p.ProductId - @p.Name - @p.Brand - @p.Description</p>
 
-	@foreach(var po in p.productOption)
-	{
-		<p>@po.price - <img style="width:50px" src="@po.img_url"/></p>
-	}
-}
-<p>Tong: @count</p> *@
+
 
 <div class="main-shop-page adp_top adp_bottom">
     <div class="container">
@@ -27,37 +17,18 @@
             <!-- Sidebar Shopping Option Start -->
             <div class="col-lg-3 order-2 order-lg-1">
                 <div class="sidebar shop-sidebar">
-
-                    <!-- Form email-->
-                    @* <div class="newsletter-box blog-details-box single_sidebar">
-                    <h3 class="sidebar-title">Search</h3>
-                    <form action="#">
-                    <input class="subscribe" placeholder="Your email address" name="email" type="email">
-                    <button type="submit" class="submit">search</button>
-                    </form>
-                    </div> *@
-
-
                     <!-- Sidebar Categorie Start -->
                     <div class="sidebar-categorie single_sidebar">
                         <h3 class="sidebar-title">Collections</h3>
-                        <ul class="sidbar-style">
-                            <li class="form-check">
-                                <input class="form-check-input" value="#" id="camera" type="checkbox">
-                                <label class="form-check-label" for="camera">Cameras <span>(6)</span></label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input" value="#" id="GamePad" type="checkbox">
-                                <label class="form-check-label" for="GamePad">GamePad <span>(9)</span></label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input" value="#" id="Digital" type="checkbox">
-                                <label class="form-check-label" for="Digital">Digital Cameras <span>(7)</span></label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input" value="#" id="Virtual" type="checkbox">
-                                <label class="form-check-label" for="Virtual"> Virtual Reality <span>(5)</span> </label>
-                            </li>
+                        <ul class="sidbar-style .scrollable-list">
+
+                            @foreach (var brand in ViewBag.Brands as List<Brand>)
+                            {
+                                <li class="form-check">
+                                    <input class="form-check-input" value="@brand.BrandId" id="camera" type="checkbox">
+                                    <label class="form-check-label" for="camera">@brand.Name</label>
+                                </li>
+                            }
                         </ul>
                     </div>
                     <!-- Sidebar Categorie Start -->
@@ -159,9 +130,6 @@
                                                 <i class="icofont-ui-rate-blank"></i>
                                                 <i class="icofont-ui-rate-blank"></i>
                                             </div>
-
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -339,11 +307,11 @@
 
 
                     <div class="single-select-block">
-                        <select>
-                            <option value="1">10</option>
-                            <option value="2">20</option>
-                            <option value="3">30</option>
-                            <option value="4">40</option>
+                        <select name="pageSize" id="pageSizeSelect" onchange="ChangePageSize()">
+                            <option selected="@(ViewBag.pageSize == 10?"selected":"")" value="10">10</option>
+                            <option selected="@(ViewBag.pageSize == 20?"selected":"")" value="20">20</option>
+                            <option selected="@(ViewBag.pageSize == 30?"selected":"")" value="30">30</option>
+                            <option selected="@(ViewBag.pageSize == 40?"selected":"")" value="40">40</option>
                         </select>
                     </div>
 
@@ -367,7 +335,7 @@
                     <!-- Grid & List Main Area End -->
                     <div class="tab-content">
                         <div id="grid-view" class="tab-pane fade show active class_grid_view">
-                            <div class="row border-hover-effect ">
+                            <div id="data-grid-view" class="row border-hover-effect ">
                                 @if (Model.Count > 0)
                                 {
                                     @foreach (var product in Model)
@@ -402,34 +370,6 @@
                                                 <div class="product_content_wrap">
                                                     <div class="product_content">
                                                         <h4 style="height:50px; padding:5px;"><a href="product-details.html">@product.Name</a></h4>
-
-                                                        @* <div class="product-rating">
-                                                <i class="icofont-ui-rating"></i>
-                                                <i class="icofont-ui-rating"></i>
-                                                <i class="icofont-ui-rating"></i>
-                                                <i class="icofont-ui-rate-blank"></i>
-                                                <i class="icofont-ui-rate-blank"></i>
-                                                </div> *@
-
-                                                        @* <div class="product_grid_varient">
-
-                                                <div class="grid_size">
-                                                <span class="active">S</span>
-                                                <span>M</span>
-                                                <span>L</span>
-                                                <span>XL</span>
-                                                <span>XXL</span>
-                                                </div>
-
-                                                <div class="grid_color">
-                                                <span class="active" style="background-color: #ffb2b0"></span>
-                                                <span style="background-color: #0271bc"></span>
-                                                <span style="background-color: #efc87c"></span>
-                                                <span style="background-color: #00c183"></span>
-                                                <span style="background-color: PowderBlue"></span>
-                                                </div>
-
-                                                </div> *@
 
                                                         <div class="grid_price">
                                                             @if (product.productOption != null && product.productOption.Count > 0)
@@ -486,31 +426,6 @@
                                                     <img class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
                                                 }
                                             </a>
-
-                                            @* <ul class="grid_color_image">
-                                    <li>
-                                    <div class="variant_img">
-                                    <a class="active" href="img/products/p1.jpg">
-                                    <img src="img/products/p1.jpg" alt="Varient Img">
-                                    </a>
-                                    </div>
-                                    </li>
-                                    <li class="">
-                                    <div class="variant_img">
-                                    <a href="img/products/p2.jpg">
-                                    <img src="img/products/p2.jpg" alt="Varient Img">
-                                    </a>
-                                    </div>
-                                    </li>
-                                    <li class="">
-                                    <div class="variant_img">
-                                    <a href="img/products/p3.jpg">
-                                    <img src="img/products/p3.jpg" alt="Varient Img">
-                                    </a>
-                                    </div>
-                                    </li>
-                                    </ul> *@
-
                                             <div class="item_quick_link">
                                                 <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View"><i class="icofont-search"></i></a>
                                             </div>
@@ -526,8 +441,6 @@
                                                 <h4><a href="product-details.html">@product.Name</a></h4>
 
                                                 <p class="list_des">@product.Description</p>
-
-
 
                                                 <div class="grid_price">
                                                     @if (product.productOption != null && product.productOption.Count > 0)
@@ -562,31 +475,55 @@
                 <div class="shop-pagination-area border-default">
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-12 pagi_left">
-                            <span class="show-items">Showing 1-15 of 45 items </span>
+                            <span class="show-items">Showing 1 - @ViewBag.page of @ViewBag.totalPage items </span>
                         </div>
-                        <div class="col-lg-8 col-md-8 col-12 pagi_right">
-                            <ul class="pfolio-breadcrumb-list text-center">
-                                <li class="float-start prev">
-                                    <a asp-action="ShopAccessary" asp-route-pageNumber="@(Model.pageIndex - 1)" class="@prevDisabled">
-                                        <i class="icofont-long-arrow-left"></i>Trước
-                                    </a>
-                                </li>
-                                <li class="active">
-                                    <a asp-action="ShopAccessary" asp-route-pageNumber="1">Trang đầu</a>
-                                </li>
-                                @for (int i = 2; i <= Model.totalPage; i++)
-                                {
-                                    <li class="active">
-                                        <a asp-action="ShopAccessary" asp-route-pageNumber="@i">@i</a>
-                                    </li>
-                                }
-                                <li class="float-end next">
-                                    <a asp-action="ShopAccessary" asp-route-pageNumber="@(Model.pageIndex+1)" class="@nextDisabled">
-                                        Sau
-                                        <i class="icofont-long-arrow-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
+                        <div id="pagination" class="col-lg-8 col-md-8 col-12 pagi_right">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    @if (ViewBag.currentPage > 1)
+                                    {
+                                        <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.currentPage - 1),@ViewBag.pageSize)" href="javascript:void(0);">Previous</a></li>
+                                    }
+                                    @{
+                                        var startPage = Math.Max(1, @ViewBag.currentPage - 2);
+                                        var endPage = Math.Min(@ViewBag.totalPage, @ViewBag.currentPage + 2);
+                                    }
+                                    @if (@startPage > 1)
+                                    {
+                                        <li class="page-item"><a class="page-link" onclick="NextPage(1,@ViewBag.pageSize)" href="javascript:void(0);">1</a></li>
+                                        if (@startPage > 2)
+                                        {
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        }
+                                    }
+                                    @for (var i = startPage; i <= endPage; i++)
+                                    {
+                                        @if (@ViewBag.currentPage == i)
+                                        {
+                                            <li class="page-item active"><a class="page-link" href="javascript:void(0);">@i</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item"><a class="page-link" onclick="NextPage(@i,@ViewBag.pageSize)" href="javascript:void(0);">@i</a></li>
+                                        }
+                                    }
+                                    @if (@ViewBag.page >= endPage + 1)
+                                    {
+                                        @if (@ViewBag.page >= endPage + 2)
+                                        {
+
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        }
+
+                                        <li class="page-item"><a class="page-link" onclick="NextPage(@ViewBag.page},@ViewBag.pageSize})" href="javascript:void(0);">@ViewBag.page</a></li>
+                                    }
+                                    @if (@ViewBag.currentPage != @ViewBag.page)
+                                    {
+
+                                        <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.currentPage + 1)},@ViewBag.pageSize)" href="javascript:void(0);">Next</a></li>
+                                    }
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -599,3 +536,125 @@
     <!-- Container End -->
 </div>
 <!-- Shop Page End -->
+<script>
+
+
+    function LoadData(pageSize, page) {
+        $('#data-grid-view').empty();
+        $.ajax({
+            url: '/Product/Shop',
+            type: 'get',
+            data: { pageSize: pageSize, page: page },
+            success: function (response) {
+                if (response.data.length > 0) {
+                    var html = "";
+                    var items = response.data;
+                    for (var index = 0; index < items.length; index++) {
+                        html += "<!-- Single Product Start -->";
+                        html += "<div class='col-xl-4 col-lg-6 col-md-6'>";
+                        html += "<div class='single-template-product sold_out_grid'>";
+                        html += "<!-- Product Image Start -->";
+                        html += "<div class='pro-img'>";
+                        html += "<span class='sticker-sale'>-25%</span>";
+                        html += "<span class='sticker-new'>New</span>";
+                        html += "<a href='product-details.html'>";
+
+                        if (items[index].productOption && items[index].productOption.length > 0) {
+                            html += "<img style='max-height: 300px' class='primary-img' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
+                        }
+
+                        html += "</a>";
+                        html += "<div class='item_quick_link'>";
+                        html += "<a href='#' data-bs-toggle='modal' data-bs-target='#myModal' title='Quick View'><i class='icofont-search'></i></a>";
+                        html += "</div>";
+                        html += "<div class='product-count-wrap'>";
+                        html += "<div class='product-countdown' data-countdown='2022/06/01'></div>";
+                        html += "</div>";
+                        html += "</div>";
+                        html += "<!-- Product Image End -->";
+                        html += "<!-- Product Content Start -->";
+                        html += "<div class='product_content_wrap'>";
+                        html += "<div class='product_content'>";
+                        html += "<h4 style='height: 50px; padding: 5px;'><a href='product-details.html'>" + items[index].name + "</a></h4>";
+                        html += "<div class='grid_price'>";
+
+                        if (items[index].productOption && items[index].productOption.length > 0) {
+                            html += "<span class='regular-price'>" + items[index].productOption[0].price + "</span>";
+                            html += "<del class='discount_price'>$75.50</del>";
+                        }
+
+                        html += "</div>";
+                        html += "</div>";
+                        html += "<div class='item_add_cart'>";
+                        html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
+                        html += "<a class='grid_cart cart_disable' href='#' title='Sold Out'>Sold Out</a>";
+                        html += "<a class='grid_wishlist' href='wishlist.html' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
+                        html += "</div>";
+                        html += "</div>";
+                        html += "<!-- Product Content End -->";
+                        html += "</div>";
+                        html += "</div>";
+                        html += "<!-- Single Product End -->";
+
+                    }
+                    console.log("pageSize:" + response.pageSize);
+                    $('#data-grid-view').html(html);
+                    Pagination(response.currentPage, response.numberPage, response.pageSize);
+                } else {
+                    console.error("Unexpected response structure:", response);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", xhr.responseText);
+            }
+
+        });
+    }
+
+    function Pagination(currentPage, numberPage, pageSize) {
+        if (numberPage > 0) {
+            var str = `<nav aria-label="Page navigation example"> <ul class="pagination">`;
+            if (currentPage != 1) {
+                str += `<li class="page-item"><a class="page-link" onclick="NextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Previous</a></li>`;
+            }
+            var startPage = Math.max(1, currentPage - 2);
+            var endPage = Math.min(numberPage, currentPage + 2);
+            if (startPage > 1) {
+                str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${1},${pageSize})" href="javascript:void(0);">1</a></li>`;
+                if (startPage > 2) {
+                    str += ` <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>`;
+                }
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                if (currentPage === i) {
+                    str += ` <li class="page-item active"><a class="page-link" href="javascript:void(0);">${i}</a></li>`;
+                }
+                else {
+                    str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${i},${pageSize})" href="javascript:void(0);">${i}</a></li>`;
+                }
+            }
+            if (numberPage >= endPage + 1) {
+                if (numberPage >= endPage + 2) {
+                    str += ` <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>`;
+                }
+                str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${numberPage},${pageSize})" href="javascript:void(0);">${numberPage}</a></li>`;
+            }
+            if (currentPage != numberPage)
+                str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Next</a></li>`;
+            str += "</ul></nav>";
+            $('#pagination').html(str);
+        }
+    }
+
+    function NextPage(page, pageSize) {
+        LoadData(pageSize, page);
+    }
+    function ChangePageSize() {
+        var selectElement = document.getElementById("pageSizeSelect");
+        var pageSize = parseInt(selectElement.value);
+        console.log(pageSize);
+        LoadData(pageSize, 1);
+    }
+
+</script>
+

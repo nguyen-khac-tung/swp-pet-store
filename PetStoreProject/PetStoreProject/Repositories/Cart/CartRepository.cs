@@ -14,7 +14,7 @@ namespace PetStoreProject.Repositories.Cart
         }
 
 
-        public CartItemVM GetCartItemVM(int productOptionId)
+        public CartItemViewModel GetCartItemVM(int productOptionId)
         {
             var productOption = (from po in _context.ProductOptions
                                  join p in _context.Products on po.ProductId equals p.ProductId
@@ -22,7 +22,7 @@ namespace PetStoreProject.Repositories.Cart
                                  join s in _context.Sizes on po.SizeId equals s.SizeId
                                  join i in _context.Images on po.ImageId equals i.ImageId
                                  where po.ProductOptionId == productOptionId
-                                 select new CartItemVM()
+                                 select new CartItemViewModel()
                                  {
                                      ProductOptionId = productOptionId,
                                      Name = p.Name,

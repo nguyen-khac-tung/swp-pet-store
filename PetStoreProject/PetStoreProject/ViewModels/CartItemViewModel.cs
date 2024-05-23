@@ -2,7 +2,7 @@
 using Size = PetStoreProject.Models.Size;
 namespace PetStoreProject.ViewModels
 {
-    public class CartItemVM
+    public class CartItemViewModel
     {
         public int ProductId { get; set; }
         public int ProductOptionId { get; set; }

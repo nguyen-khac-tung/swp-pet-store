@@ -43,7 +43,7 @@ namespace PetStoreProject.CartController
                         isExistsItem = true;
                         if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
                         {
-                            var cartItem = JsonConvert.DeserializeObject<CartItemVM>(cookieItem);
+                            var cartItem = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
                             cartItem.Quantity += 1;
                             Response.Cookies.Append($"Item_{itemId}", JsonConvert.SerializeObject(cartItem), cookieOptions);
                             return Json(cartItem);
@@ -66,7 +66,7 @@ namespace PetStoreProject.CartController
         public ActionResult GetCartItems()
         {
             List<int> cookiesId = new List<int>();
-            List<CartItemVM> cartItems = new List<CartItemVM>();
+            List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
 
             if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
             {
@@ -75,7 +75,7 @@ namespace PetStoreProject.CartController
                 {
                     if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
                     {
-                        var item = JsonConvert.DeserializeObject<CartItemVM>(cookieItem);
+                        var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
                         cartItems.Add(item);
                     }
                 }

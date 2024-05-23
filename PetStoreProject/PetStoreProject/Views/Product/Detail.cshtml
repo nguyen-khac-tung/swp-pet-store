@@ -1,6 +1,6 @@
 ﻿@using PetStoreProject.ViewModels
 @{
-	ViewData["Title"] = "Sản Phẩm chi tiết";
+	ViewData["Title"] = "Chi tiết Sản Phẩm";
 	var product = ViewData["product_detail"] as ProductDetailViewModel;
 	var productOptions = Newtonsoft.Json.JsonConvert.SerializeObject(product.productOption);
 	var related_products = ViewData["related_products"] as List<RelatedProductViewModel>;

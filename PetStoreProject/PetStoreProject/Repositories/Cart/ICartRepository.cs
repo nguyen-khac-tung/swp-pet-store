@@ -4,6 +4,6 @@ namespace PetStoreProject.Repositories.Cart
 {
     public interface ICartRepository
     {
-        public CartItemVM GetCartItemVM(int productOptionId);
+        public CartItemViewModel GetCartItemVM(int productOptionId);
     }
 }

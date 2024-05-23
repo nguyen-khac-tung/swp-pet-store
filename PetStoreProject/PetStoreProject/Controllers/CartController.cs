@@ -98,6 +98,28 @@ namespace PetStoreProject.CartController
 			}
 			return Json(cartItems);
 		}
+
+
+		[HttpGet]
+		public ActionResult Detail()
+		{
+			List<int> cookiesId = new List<int>();
+			List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
+			if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+			{
+				cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
+				foreach (var itemId in cookiesId)
+				{
+					if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
+					{
+						var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
+						cartItems.Add(item);
+					}
+				}
+			}
+			ViewData["cartItems"] = cartItems;
+			return View();
+		}
 	}
 
 

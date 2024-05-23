@@ -172,7 +172,9 @@
 									</form>
 								</li>
 								<li>
-									<a class="details_cart" href="cart.html" title="" data-original-title="Add to Cart" tabindex="0">Add To Cart</a>
+									<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId)" style="cursor: pointer;">
+										Add To Cart
+									</a>
 								</li>
 								<li>
 									<a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
@@ -268,6 +270,7 @@
 							</div>
 
 						</div>
+
 						<!-- Product Thumbnail Tab Content End -->
 					</div>
 				</div>
@@ -433,7 +436,10 @@
 													</form>
 												</li>
 												<li>
-													<a class="details_cart" href="cart.html" title="" data-original-title="Add to Cart" tabindex="0">Add To Cart</a>
+													<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="quick_add_to_cart" onclick="addToCart(this.dataset.productOptionId)" style="cursor: pointer;">
+
+														Add To Cart
+													</a>
 												</li>
 												<li>
 													<a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
@@ -509,6 +515,7 @@
 			if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
 				price = productOptions_json[id].price
 				img_url = productOptions_json[id].img_url
+				$('#add_to_cart').attr('data-product-option-id', productOptions_json[id].Id)
 				break
 			}
 		}
@@ -536,6 +543,7 @@
 				$('#quick_price').html(response.productOption[0].price);
 				$('#quick_image').empty();
 				$('#quick_amount').html(response.productOption[0].price);
+				$('#quick_add_to_cart').attr('data-product-option-id', response.productOption[0].id)
 
 				var imgDiv = $('<div>', {
 					class: 'tab-pane large-img-style active'
@@ -662,6 +670,7 @@
 			if (productOptions_json[id]['attribute']['attributeId'] == attribute_id && productOptions_json[id]['size']['sizeId'] == size_id) {
 				quick_price = productOptions_json[id].price;
 				quick_img_url = productOptions_json[id].img_url;
+				$('#quick_add_to_cart').attr('data-product-option-id', productOptions_json[id].id)
 				break;
 			}
 		}

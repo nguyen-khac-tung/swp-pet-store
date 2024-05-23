@@ -36,19 +36,6 @@
 		</div>
 	</div>
 
-	<!-- Breadcrumb Area Start Here -->
-	<div class="breadcrumb-area" style="background-image: url(img/bg/breadcrumb_bg_2.jpg)">
-		<div class="container text-center">
-			<h3>Breadcrumb Title</h3>
-			<ol class="breadcrumb breadcrumb-list">
-				<li class="breadcrumb-item">
-					<a href="index.html">Home</a>
-				</li>
-				<li class="breadcrumb-item active">Product Details</li>
-			</ol>
-		</div>
-	</div>
-	<!-- Breadcrumb Area End Here -->
 	<!-- Product Thumbnail Start -->
 	<div class="main-product-thumbnail product_details_wrap_1 adp_top adp_bottom">
 		<div class="container">
@@ -131,7 +118,7 @@
 										{
 											if(product.attributes[index].Name != null)
 											{
-												<li onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
+												<li style="cursor:pointer" onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
 											}
 											
 										}
@@ -152,7 +139,7 @@
 										{
 											if(product.sizes[index].Name != null)
 											{
-												<li onclick="size_selected(@index, @product.sizes[index].SizeId)">@product.sizes[index].Name</li>
+												<li style="cursor:pointer" onclick="size_selected(@index, @product.sizes[index].SizeId)">@product.sizes[index].Name</li>
 											}
 										}
 									</ul>
@@ -569,7 +556,7 @@
 					var list = ""
 					for (var index = 0; index < response.attributes.length; index++) {
 						if (response.attributes[index].name != null) {
-							list += "<li onclick='quick_attribute_selected(" + index + "," + response.attributes[index].attributeId + "," + jsonStr + ")'" + "data = '" + response.attributes[index].attributeId + "'>" + response.attributes[index].name + "</li>"
+							list += "<li style = 'cursor:pointer' onclick='quick_attribute_selected(" + index + "," + response.attributes[index].attributeId + "," + jsonStr + ")'" + "data = '" + response.attributes[index].attributeId + "'>" + response.attributes[index].name + "</li>"
 						}
 						else {
 							index -= 1
@@ -593,7 +580,7 @@
 					var list = ""
 					for (var index = 0; index < response.sizes.length; index++) {
 						if (response.sizes[index].name != null) { 
-							list += "<li onclick='quick_size_selected(" + index + "," + response.sizes[index].sizeId + "," + jsonStr + ")'" + "data = '" + response.sizes[index].sizeId + "'>" + response.sizes[index].name + "</li>"
+							list += "<li style = 'cursor:pointer' onclick='quick_size_selected(" + index + "," + response.sizes[index].sizeId + "," + jsonStr + ")'" + "data = '" + response.sizes[index].sizeId + "'>" + response.sizes[index].name + "</li>"
 						}
 						else{
 							index -= 1

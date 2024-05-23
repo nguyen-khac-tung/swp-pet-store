@@ -63,11 +63,21 @@ function getCartItems() {
 
 				var h6 = $('<h6>')
 				var aTitle = $('<a>', {
-					href: 'product/detail/'+response[index].productId
+					href: 'http://localhost:5206/product/detail/'+response[index].productId
 				}).text(response[index].name)
-
-				var spanOption = $('<span>').text(response[index].size.name + ',' + response[index].attribute.name)
-				var spanPrice = $('<span>').text(response[index].price + 'x' + response[index].quantity)
+				var option = "";
+				if (!(response[index].size.name == null && response[index].attribute.name == null)) {
+					if (response[index].size.name != null && response[index].attribute.name != null) {
+						option += response[index].size.name + ', ' + response[index].attribute.name
+					}
+					else if (response[index].size.name == null) {
+						option += response[index].attribute.name
+					} else {
+						option += response[index].size.name
+					}
+				}
+				var spanOption = $('<div>').text(option)
+				var spanPrice = $('<span>').text(response[index].price + ' x ' + response[index].quantity)
 				h6.append(aTitle)
 				divCartImg.append(img)
 				divCartContent.append(h6)

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
+using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Product;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,9 @@ builder.Services.AddSession(option =>
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
+
+builder.Services.AddTransient<ICartRepository, CartRepository>();
+
 
 var app = builder.Build();
 

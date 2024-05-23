@@ -32,11 +32,50 @@ namespace PetStoreProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult ShopAccessary(int? pageNumber)
+        public ActionResult ShopAccessary(int? pageSize, int? page)
         {
-            int pageSize = 24;
-            var productDetails = _product.GetProductDetailAccessaries();
-            return View(PaginatedList<ProductDetailViewModel>.Create(productDetails, pageNumber ?? 1, pageSize));
+//<<<<<<< HEAD
+            var productDetails = _product.GetProductDetailAccessories();
+            ViewBag.Brands = _product.GetBrandAccessories();
+            var totalPage = productDetails.Count();
+            
+            ViewBag.totalPage = totalPage;
+            var _page = page ?? 1;
+            var _pageSize = pageSize ?? 20;
+            ViewBag.currentPage = _page;
+            ViewBag.pageSize = _pageSize;
+            ViewBag.page = _pageSize;
+            return View(PaginatedList<ProductDetailVM>.Create(productDetails, _page, _pageSize));
+        }
+
+        [HttpGet]
+        public ActionResult Shop(int? pageSize, int? page)
+        {
+            var productDetails = _product.GetProductDetailAccessories();
+            var _pageSize = pageSize ?? 20;
+            var pageIndex = page ?? 1;
+            var totalPage = productDetails.Count();
+            var numberPage = Math.Ceiling((float)totalPage / _pageSize);
+            var productDetail = productDetails.Skip((pageIndex - 1) * _pageSize).Take(_pageSize).ToList();
+
+            ViewBag.pageSize = _pageSize;
+            ViewBag.totalPage = totalPage;
+            ViewBag.currentPage = page;
+
+            //return Json(productDetails);
+            return new JsonResult(new
+            {
+                Data = productDetail,
+                TotaItems = totalPage,
+                CurrentPage = pageIndex,
+                NumberPage = numberPage,
+                PageSize = _pageSize,
+            });
+//=======
+//            int pageSize = 24;
+//            var productDetails = _product.GetProductDetailAccessaries();
+//            return View(PaginatedList<ProductDetailVM>.Create(productDetails, pageNumber ?? 1, pageSize));
+//>>>>>>> d093f1849af4a8332a01ff7adf6b14250534d2bb
         }
 
     }

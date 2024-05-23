@@ -34,7 +34,7 @@ namespace PetStoreProject.Controllers
         [HttpGet]
         public ActionResult ShopAccessary(int? pageSize, int? page)
         {
-<<<<<<< HEAD
+//<<<<<<< HEAD
             var productDetails = _product.GetProductDetailAccessories();
             ViewBag.Brands = _product.GetBrandAccessories();
             var totalPage = productDetails.Count();
@@ -71,11 +71,11 @@ namespace PetStoreProject.Controllers
                 NumberPage = numberPage,
                 PageSize = _pageSize,
             });
-=======
-            int pageSize = 24;
-            var productDetails = _product.GetProductDetailAccessaries();
-            return View(PaginatedList<ProductDetailVM>.Create(productDetails, pageNumber ?? 1, pageSize));
->>>>>>> d093f1849af4a8332a01ff7adf6b14250534d2bb
+//=======
+//            int pageSize = 24;
+//            var productDetails = _product.GetProductDetailAccessaries();
+//            return View(PaginatedList<ProductDetailVM>.Create(productDetails, pageNumber ?? 1, pageSize));
+//>>>>>>> d093f1849af4a8332a01ff7adf6b14250534d2bb
         }
 
     }

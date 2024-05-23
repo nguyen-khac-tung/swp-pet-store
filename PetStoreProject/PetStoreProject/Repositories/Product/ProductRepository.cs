@@ -120,16 +120,8 @@ namespace PetStoreProject.Repositories.Product
             return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/v1716019321/" + img_id;
         }
 
-<<<<<<< HEAD
-		public string formatUrl(string url)
-		{
-			var img_id = url.Split('/')[url.Split('/').Length - 1];
-			return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/v1716019321/" + img_id;
-		}
         public List<Models.Product> GetProductsByCategories(List<int> categoriesIds)
-=======
-        public List<Models.Product> GetProductsByCategories(List<int> cateogrieIds)
->>>>>>> d093f1849af4a8332a01ff7adf6b14250534d2bb
+
         {
             List<Models.Product> products = (from p in _context.Products
                                              join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
@@ -231,7 +223,7 @@ namespace PetStoreProject.Repositories.Product
 
         public List<ProductDetailVM> GetProductDetailAccessories()
         {
-<<<<<<< HEAD
+
             var products = GetAllAccessories();
 			var productDetails = products.Select(p => new ProductDetailVM
 			{
@@ -242,18 +234,7 @@ namespace PetStoreProject.Repositories.Product
 				images = GetImagesByProductId(p.ProductId),
 				//attributes = GetAttributesByProductId(p.ProductId),
 				//sizes = GetSizesByProductId(p.ProductId)
-=======
-            var products = GetAllAccessaries();
-            var productDetails = products.Select(p => new ProductDetailVM
-            {
-                ProductId = p.ProductId,
-                Name = p.Name,
-                Brand = GetBrandByProductId(p.ProductId).Name,
-                productOption = GetProductOptionsByProductId(p.ProductId),
-                images = GetImagesByProductId(p.ProductId),
-                attributes = GetAttributesByProductId(p.ProductId),
-                sizes = GetSizesByProductId(p.ProductId)
->>>>>>> d093f1849af4a8332a01ff7adf6b14250534d2bb
+
 
             }).ToList();
             return productDetails;

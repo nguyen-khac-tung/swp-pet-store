@@ -172,7 +172,7 @@
 									</form>
 								</li>
 								<li>
-									<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId)" style="cursor: pointer;">
+									<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quantity').value)" style="cursor: pointer;">
 										Add To Cart
 									</a>
 								</li>
@@ -436,7 +436,7 @@
 													</form>
 												</li>
 												<li>
-													<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="quick_add_to_cart" onclick="addToCart(this.dataset.productOptionId)" style="cursor: pointer;">
+													<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="quick_add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quick_quantity').value)" style="cursor: pointer;">
 
 														Add To Cart
 													</a>

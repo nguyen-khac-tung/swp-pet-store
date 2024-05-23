@@ -1,12 +1,17 @@
-﻿function addToCart(productOptionId) {
+﻿function addToCart(productOptionId, quantity) {
 	console.log(productOptionId);
 	$.ajax({
 		type: "POST",
 		url: "/cart/AddItem",
-		data: { productOptionId: productOptionId },
+		data: { productOptionId: productOptionId, quantity: quantity },
 		success: function (response) {
-			console.log(response)
-			getCartItems();
+			if (response.message != 'success') {
+				alert(response.message)
+			}
+			else {
+				getCartItems();
+			}
+
 		},
 		error: function (xhr, status, error) {
 			console.error('The request failed!', status, error);

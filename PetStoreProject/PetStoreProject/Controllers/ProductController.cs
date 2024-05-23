@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Helper;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
-using PetStoreProject.Helper;
 
 namespace PetStoreProject.Controllers
 {
@@ -34,6 +34,7 @@ namespace PetStoreProject.Controllers
         [HttpGet]
         public ActionResult ShopAccessary(int? pageSize, int? page)
         {
+<<<<<<< HEAD
             var productDetails = _product.GetProductDetailAccessories();
             ViewBag.Brands = _product.GetBrandAccessories();
             var totalPage = productDetails.Count();
@@ -70,6 +71,11 @@ namespace PetStoreProject.Controllers
                 NumberPage = numberPage,
                 PageSize = _pageSize,
             });
+=======
+            int pageSize = 24;
+            var productDetails = _product.GetProductDetailAccessaries();
+            return View(PaginatedList<ProductDetailVM>.Create(productDetails, pageNumber ?? 1, pageSize));
+>>>>>>> d093f1849af4a8332a01ff7adf6b14250534d2bb
         }
 
     }

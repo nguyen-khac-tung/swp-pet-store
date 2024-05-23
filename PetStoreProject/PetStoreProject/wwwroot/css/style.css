@@ -30,6 +30,7 @@ Version: 1.0.0;
     26. 404 Page CSS
     27. FAQ Page CSS
     28. Clickable Menu CSS
+    29. Account CSS
     
 ----------------------------------------------------------------------*/
 
@@ -3108,7 +3109,7 @@ ul.promotion-list {
 }
 
 .breadcrumb-item a, .breadcrumb-item {
-	font-size: 14px;
+	font-size: 25px;
 	text-transform: capitalize;
 	font-family: 'Roboto Condensed', sans-serif;
 	letter-spacing: .5px;
@@ -5306,7 +5307,7 @@ a.shipping-calculator-button:hover {
 	font-size: 26px;
 	font-weight: 500;
 	line-height: 1;
-	margin-bottom: 40px;
+	margin-bottom: 35px;
 	text-transform: inherit;
 	text-align: center;
 	margin-top: -4px;
@@ -5351,6 +5352,11 @@ a.shipping-calculator-button:hover {
     width: 100%;
 }
 
+.alert {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
 .login-details a {
     color: #303030;
     display: block;
@@ -5366,7 +5372,7 @@ a.shipping-calculator-button:hover {
     display: inline-block;
     font-size: 13px;
     font-weight: 600;
-    padding: 10px 18px 8px;
+    padding: 10px 29px 8px;
     text-transform: uppercase;
 }
 
@@ -5375,24 +5381,40 @@ a.shipping-calculator-button:hover {
     color: #fff;
 }
 
-.login-footer p a {
-    color: #303030;
+.register-btn {
+    background: #00adf6 none repeat scroll 0 0;
+    border: medium none;
+    color: #fff;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px 8px;
+    text-transform: uppercase;
 }
 
-.login-footer p,
-.login-footer a {
-    color: #555;
-    display: inline-block;
-    font-size: 15px;
+.register-btn:hover {
+    color: #fff;
+    opacity: 0.7;
 }
 
 .login-details a:hover {
     color: #00adf6;
 }
 
-.login-footer p a:hover {
+/*.login-footer p a {
+    color: #303030;
+}*/
+
+/*.login-footer p,
+.login-footer a {
+    color: #555;
+    display: inline-block;
+    font-size: 15px;
+}*/
+
+/*.login-footer p a:hover {
     color: #00adf6;
-}
+}*/
 
 .login-footer.text-center {
 	border-top: 1px solid #ebebeb;
@@ -5401,22 +5423,12 @@ a.shipping-calculator-button:hover {
 }
 
 .show-btn {
-	background: #878787 none repeat scroll 0 0;
-	border-radius: 0;
-	color: #fff;
-	font-size: 12px;
 	height: 40px;
 	position: absolute;
 	right: 15px;
 	top: 0;
-	text-transform: uppercase;
-	-webkit-transition: all 0.5s ease-in-out;
-	transition: all 0.5s ease-in-out;
 }
 
-.show-btn:hover {
-    background: #303030;
-}
 .login-form .form-control {
     height: 40px;
     background: transparent;
@@ -6656,6 +6668,32 @@ button.small-btn:hover {
 }
     .clickable-menu a:hover {
       color: #00adf6 }
+
+/*Account CSS*/
+.single-account-select {
+    -webkit-tap-highlight-color: transparent;
+    background-color: #fff;
+    border-radius: 3px;
+    border: solid 1.5px #e8e8e8;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: normal;
+    height: 42px;
+    width: 100%;
+    line-height: 40px;
+    padding-left: 18px;
+    padding-right: 30px;
+    position: relative;
+    text-align: left !important;
+    transition: all 0.2s ease-in-out;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    white-space: nowrap;
+}
+
   @media only screen and (min-width: 768px) and (max-width: 991px) {
     .clickable-menu {
       margin-top: -3px; } }

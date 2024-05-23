@@ -342,23 +342,23 @@
                                     {
                                         <!-- Single Product Start -->
                                         <div class="col-xl-4 col-lg-6 col-md-6">
-                                            <div class="single-template-product sold_out_grid">
+                                            <div class="single-template-product">
                                                 <!-- Product Image Start -->
                                                 <div class="pro-img">
 
                                                     <span class="sticker-sale">-25%</span>
                                                     <span class="sticker-new">New</span>
-                                                    <a href="product-details.html">
+                                                    <a href="/product/detail/@product.ProductId">
                                                         @if (product.productOption != null && product.productOption.Count > 0)
                                                         {
                                                             <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
                                                         }
 
-
                                                     </a>
-                                                    <div class="item_quick_link">
-                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View"><i class="icofont-search"></i></a>
-                                                    </div>
+
+                                                    @* <div class="item_quick_link">
+                                                        <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
+                                                    </div> *@
 
                                                     <div class="product-count-wrap">
                                                         <div class="product-countdown" data-countdown="2022/06/01"></div>
@@ -369,7 +369,7 @@
                                                 <!-- Product Content Start -->
                                                 <div class="product_content_wrap">
                                                     <div class="product_content">
-                                                        <h4 style="height:50px; padding:5px;"><a href="product-details.html">@product.Name</a></h4>
+                                                        <h4 style="height:50px; padding:5px;"><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
 
                                                         <div class="grid_price">
                                                             @if (product.productOption != null && product.productOption.Count > 0)
@@ -382,7 +382,8 @@
                                                     </div>
                                                     <div class="item_add_cart">
                                                         <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
-                                                        <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a>
+                                                        @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
+                                                        <a class="grid_cart" href="cart.html" title="Add to Cart">Add To Cart</a>
                                                         <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
                                                     </div>
                                                 </div>
@@ -420,7 +421,7 @@
                                             <span class="sticker-sale">-25%</span>
                                             <span class="sticker-new">New</span>
 
-                                            <a href="product-details.html">
+                                            <a href="/product/detail/@product.ProductId">
                                                 @if (product.productOption != null && product.productOption.Count > 0)
                                                 {
                                                     <img class="primary-img" src="@product.productOption[0].img_url" alt="single-product">

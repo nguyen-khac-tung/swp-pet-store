@@ -9,10 +9,12 @@ namespace PetStoreProject.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly EmailService _emailService;
 
-        public AccountController(IAccountRepository accountRepo)
+        public AccountController(IAccountRepository accountRepo, EmailService emailService)
         {
             _accountRepository = accountRepo;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -78,6 +80,62 @@ namespace PetStoreProject.Controllers
             else
             {
                 return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(string email)
+        {
+            bool isExistEmail = _accountRepository.checkEmailExist(email);
+            if (isExistEmail)
+            {
+                ViewBag.SuccessMess = "Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn. " +
+                    "Nếu không nhận được email, vui lòng nhập lại địa chỉ email và gửi lại yêu cầu.";
+
+                var resetLink = Url.Action("ResetPassword", "Account", new { userEmail = email }, Request.Scheme);
+
+                var subject = "Đặt lại mật khẩu cho tài khoản khách hàng";
+
+                var body = "<h2 style=\"font-weight:normal;font-size:24px;margin:0 0 10px\">Đặt lại mật khẩu</h2>" +
+                    "<p style=\"color:#777;line-height:150%;font-size:16px;margin:0\">Đặt lại mật khẩu cho tài khoản khách hàng " +
+                    "tại Animart Store. Nếu bạn không cần đặt mật khẩu mới, bạn có thể yên tâm xóa email này đi.</p> <br>" +
+                    $"<p style=\"font-size:20px; margin:10px 0 0;\">Hãy bấm vào <a href=\"{resetLink}\">đặt lại mật khẩu</a></p>";
+
+                _emailService.SendEmail(email, subject, body);
+                return View();
+            }
+            else
+            {
+                ViewBag.ErrorMess = "Email không hợp lệ. Vui lòng nhập lại địa chỉ email.";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string userEmail)
+        {
+            var resetPasswordVM = new ResetPasswordViewModel { Email = userEmail };
+            return View(resetPasswordVM);
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordViewModel resetPasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                _accountRepository.resetPassword(resetPasswordVM);
+                HttpContext.Session.SetString("Account", resetPasswordVM.Email);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(resetPasswordVM);
             }
         }
     }

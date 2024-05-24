@@ -15,17 +15,17 @@
 
                 <div class="login-form">
                     <h3 class="login-header">Đăng nhập tài khoản</h3>
-                    @if (ViewBag.Mess != null)
+                    @if (TempData["Mess"] != null)
                     {
                         <div class="px-sm-5">
                             <div class="alert alert-danger alert-dismissible fade show rounded-0">
-                                <span>@ViewBag.Mess</span>
+                                <span>@TempData["Mess"]</span>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         </div>
                     }
                     <form asp-controller="Account" asp-action="Login" method="post">
-                        <div class="px-sm-5">
+                        <div class="px-sm-5 pt-sm-3">
                             <div class="form-group row">
                                 <label for="email" class="col-sm-3 col-form-label">Email</label>
                                 <div class="col-sm-9 ps-sm-1">
@@ -41,12 +41,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="login-details text-center mt-2">
+                            <div class="row login-details text-center justify-content-center mt-2">
                                 <a asp-controller="Account" asp-action="ForgotPassword">Quên mật khẩu?</a>
-                                <button type="submit" class="login-btn">Đăng Nhập</button>
+                                <button type="submit" class="login-btn col-sm-11 rounded-1">Đăng Nhập</button>
                             </div>
-                            <div class="login-footer text-center">
-                                <a href="register.html" class="register-btn">Tạo Tài Khoản</a>
+                            <div class="row login-footer justify-content-around text-center">
+                                <a asp-controller="Account" asp-action="LoginGoogle" class="col-sm-5 register-btn google-btn rounded-1">
+                                    <i class="fab fa-google me-2"></i>Google
+                                </a>
+                                <a asp-controller="Account" asp-action="Register" class="col-sm-5 mt-sm-0 mt-3 register-btn rounded-1">Tạo Tài Khoản</a>
                             </div>
                         </div>
                     </form>

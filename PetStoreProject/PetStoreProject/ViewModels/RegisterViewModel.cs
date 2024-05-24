@@ -16,7 +16,7 @@ namespace PetStoreProject.ViewModels
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại của bạn")]
         [DisplayName("Số Điện Thoại")]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu của bạn")]
         [DisplayName("Mật Khẩu")]

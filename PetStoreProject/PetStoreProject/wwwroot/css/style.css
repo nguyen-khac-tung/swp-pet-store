@@ -5411,7 +5411,7 @@ a.shipping-calculator-button:hover {
     background: white none repeat scroll 0 0;
     -webkit-box-shadow: 2px 2px 11px 0 rgba(0, 0, 0, 0.1);
     box-shadow: 2px 2px 11px 0 rgba(0, 0, 0, 0.1);
-    padding: 30px 30px 20px;
+    padding: 30px 30px 30px;
 }
 
 .login-form label {
@@ -5455,7 +5455,7 @@ a.shipping-calculator-button:hover {
     color: #303030;
     display: block;
     font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-transform: capitalize;
 }
 
@@ -5471,28 +5471,8 @@ a.shipping-calculator-button:hover {
 }
 
 .login-btn:hover {
-    background: #00adf6;
     color: #fff;
-}
-
-.register-btn {
-    background: #00adf6 none repeat scroll 0 0;
-    border: medium none;
-    color: #fff;
-    display: inline-block;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 10px 23px 8px;
-    text-transform: uppercase;
-}
-
-.register-btn:hover {
-    color: #fff;
-    opacity: 0.7;
-}
-
-label em {
-    color: #e95144;
+    opacity: 0.8;
 }
 
 .login-details a:hover {
@@ -5555,6 +5535,40 @@ label em {
 
 .register-form {
     padding: 40px;
+}
+
+.register-btn {
+    background: #00adf6 none repeat scroll 0 0;
+    border: medium none;
+    color: #fff;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 23px 8px;
+    text-transform: uppercase;
+}
+
+.register-btn:hover {
+    color: #fff;
+    opacity: 0.7;
+}
+
+label em {
+    color: #e95144;
+}
+
+.google-btn {
+    background-color: #dd4b39;
+}
+
+.register-form .google-btn{
+    color: #fff;
+    font-size: 13px;
+}
+
+.register-form .google-btn:hover {
+    color: #fff;
+    opacity: 0.7;
 }
 
 .contact-form input {

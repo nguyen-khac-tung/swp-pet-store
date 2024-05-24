@@ -10,5 +10,7 @@ namespace PetStoreProject.Repositories.Accounts
         public bool checkEmailExist(string email);
 
         public void addNewCustomer(RegisterViewModel registerInfor);
+
+        public void resetPassword(ResetPasswordViewModel resetPasswordVM);
     }
 }

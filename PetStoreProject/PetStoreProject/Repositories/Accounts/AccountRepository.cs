@@ -69,5 +69,16 @@ namespace PetStoreProject.Repositories.Accounts
 
             _context.SaveChanges();
         }
+
+        public void resetPassword(ResetPasswordViewModel resetPasswordVM) {
+            var account = _context.Accounts.FirstOrDefault(acc => acc.Email == resetPasswordVM.Email);
+
+            if (account != null)
+            {
+                account.Password = BCrypt.Net.BCrypt.HashPassword(resetPasswordVM.Password);
+
+                _context.SaveChanges();
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PetStoreProject.Helper;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
@@ -18,6 +19,8 @@ builder.Services.AddSession(option =>
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
 });
+
+builder.Services.AddSingleton<EmailService>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 

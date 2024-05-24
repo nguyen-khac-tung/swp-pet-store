@@ -42,7 +42,7 @@
                                             option += "( " + item.Size.Name + " )";
                                         }
                                     }
-                                    <tr>
+                                    <tr id="@item.ProductOptionId">
                                         <td class="product-thumbnail">
                                             <a href="#"><img src="@item.ImgUrl" alt="cart-image" /></a>
                                         </td>
@@ -50,7 +50,7 @@
                                         <td class="product-price"><span class="amount">@item.Price</span></td>
                                         <td class="product-quantity"><input type="number" min="1" value="@item.Quantity" /></td>
                                         <td class="product-subtotal">@(item.Price*item.Quantity)</td>
-                                        <td class="product-remove"> <a href="#"><i class="icofont-delete-alt"></i></a></td>
+                                        <td class="product-remove"> <a style="cursor:pointer" onclick="deleteCartItem(@item.ProductOptionId)"><i class="icofont-delete-alt"></i></a></td>
                                     </tr>
                                 }
                                 
@@ -108,4 +108,3 @@
         <!-- Row End -->
     </div>
 </div>
-

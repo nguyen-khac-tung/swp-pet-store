@@ -131,7 +131,7 @@ namespace PetStoreProject.CartController
         [HttpDelete]
         public ActionResult Delete(int productOptionId)
         {
-            var cookieOptions = new CookieOptions
+            var cookieOptionDelete = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(-1)
             };
@@ -144,7 +144,7 @@ namespace PetStoreProject.CartController
 
             if (Request.Cookies.TryGetValue($"Item_{productOptionId}", out string item))
             {
-                Response.Cookies.Append($"Item_{productOptionId}", item, cookieOptions);
+                Response.Cookies.Append($"Item_{productOptionId}", item, cookieOptionDelete);
                 return Json(new
                 {
                     message = "success"
@@ -154,6 +154,55 @@ namespace PetStoreProject.CartController
             {
                 message = "Error"
             });
+        }
+
+        [HttpPut]
+        public ActionResult Edit(int oldProductOptionId, int newProductOptionId, int quantity)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
+                HttpOnly = true, // Cookie chỉ được sử dụng trong HTTP(S) requests
+                Secure = true, // Cookie chỉ được gửi qua HTTPS
+                SameSite = SameSiteMode.Strict // Chỉ gửi cookie trong cùng site
+            };
+
+            var cookieOptionDelete = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(-1)
+            };
+
+            var new_item = _cart.GetCartItemVM(newProductOptionId, quantity);
+            if (oldProductOptionId == newProductOptionId)
+            {
+                Response.Cookies.Append($"Item_{newProductOptionId}", JsonConvert.SerializeObject(new_item), cookieOptions);
+                return Json(new_item);
+            }
+
+            List<int> cookiesId = new List<int>();
+            bool isExistsItem = false;
+
+            if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+            {
+                cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
+                foreach (var id in cookiesId)
+                {
+                    if (id != oldProductOptionId && id == newProductOptionId)
+                    {
+                        return Json(new
+                        {
+                            message = "Sản phẩm đã tồn tại trong giỏ hàng!!!"
+                        });
+                    }
+                }
+            }
+
+            cookiesId.Add(newProductOptionId);
+            cookiesId.Remove(oldProductOptionId);
+            Response.Cookies.Append("Items_id", JsonConvert.SerializeObject(cookiesId), cookieOptions);
+            Response.Cookies.Append($"Item_{newProductOptionId}", JsonConvert.SerializeObject(new_item), cookieOptions);
+            Response.Cookies.Append($"Item_{oldProductOptionId}", "old", cookieOptionDelete);
+            return Json(new_item);
         }
     }
 

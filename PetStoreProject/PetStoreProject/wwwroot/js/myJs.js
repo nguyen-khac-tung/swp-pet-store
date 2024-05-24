@@ -111,6 +111,72 @@ function total_price() {
 	document.getElementById("amount").innerText = amount
 }
 
+function quickEditCartItem(oldProductOptionId, productId) {
+	$('#quick_add_to_cart').attr('data-old-product-option-id', oldProductOptionId)
+	quickView(productId)
+	$('#myModal').modal('show');
+}
+function editCartItem(oldProductOptionId, newProductOptionId, quantity) {
+	console.log(newProductOptionId)
+	$.ajax({
+		url: "http://localhost:5206/cart/Edit",
+		method: "PUT",
+		data: { oldProductOptionId: oldProductOptionId, newProductOptionId: newProductOptionId, quantity: quantity },
+		success: function (response) {
+			if (response.message != null) {
+				alert(response.message)
+			}
+			else {
+				updateCartItem(oldProductOptionId, response)
+				getCartItems()
+				$('#myModal').modal('hide');
+				amountCart();
+			}
+		}
+	});
+}
+
+function updateCartItem(oldId, cartItem) {
+	var option = "";
+	if (!(cartItem.attribute.name == null && cartItem.size.name == null)) {
+		if (cartItem.attribute.Name != null && cartItem.size.Name != null) {
+			option += "( " + cartItem.attribute.Name + ", " + cartItem.size.name + " )";
+		}
+		else if (cartItem.attribute.name != null) {
+			option += "( " + cartItem.attribute.name + " )";
+		}
+		else {
+			option += "( " + cartItem.size.name + " )";
+		}
+	}
+	// Find the row by ProductOptionId
+	var row = $('#' + oldId);
+	console.log(cartItem)
+	// Update the product name and link
+	row.find('.product-name a').attr('href', 'http://localhost:5206/product/detail/' + cartItem.productId)
+		.html(cartItem.name + '</br>' + option);
+
+	// Update the product image
+	row.find('.product-thumbnail img').attr('src', cartItem.imgUrl);
+
+	// Update the product price
+	row.find('.product-price .amount').text(cartItem.price);
+
+	// Update the product quantity
+	row.find('.product-quantity input').val(cartItem.quantity);
+
+	// Update the product subtotal
+	row.find('.product-subtotal').text(parseFloat(cartItem.price) * parseFloat(cartItem.quantity));
+
+	// Update the edit button
+	row.find('a[title="Chỉnh sửa"]').attr('onclick', `quickEditCartItem(${cartItem.productOptionId}, ${cartItem.productId})`);
+
+	// Update the delete button
+	row.find('a[title="Xóa sản phẩm"]').attr('onclick', `deleteCartItem(${cartItem.productOptionId})`);
+	row.attr('id', cartItem.productOptionId)
+}
+
+
 function quickView(productId) {
 	$('#quick_attribute').empty();
 	$('#quick_size').empty();
@@ -142,7 +208,7 @@ function quickView(productId) {
 				var divContainer = $('<div>', {
 					class: 'color clearfix mb-30'
 				});
-				var label = $('<label>').text('Attribute');
+				var label = $('<label>').text('Loại :');
 				var ul = $('<ul>', {
 					class: 'color-list'
 				});
@@ -162,7 +228,7 @@ function quickView(productId) {
 			}
 
 			if (response.sizes[0].name != null) {
-				var sizeLabel = $('<label>').text('Size');
+				var sizeLabel = $('<label>').text('Kích thước :');
 				var sizeDiv = $('<div>', {
 					class: 'color-list size_list'
 				});

@@ -112,7 +112,7 @@
 						@if (product.attributes[0].Name != null)
 						{
 								<div class="color clearfix mb-30">
-									<label>Attribute :</label>
+									<label>Loại :</label>
 									<ul class="color-list">
 										@for (var index = 0; index < product.attributes.Count; index++)
 										{
@@ -120,7 +120,6 @@
 											{
 												<li style="cursor:pointer" onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
 											}
-											
 										}
 									</ul>
 								</div>
@@ -132,7 +131,7 @@
 						<div class="theme_size clearfix" id="size">
 						@if (product.sizes[0].Name != null)
 						{
-								<label>Size :</label>
+								<label>Kích thước :</label>
 								<div class="color-list size_list">
 									<ul class="color-list size_list">
 										@for (var index = 0; index < product.sizes.Count; index++)
@@ -160,7 +159,7 @@
 								</li>
 								<li>
 									<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quantity').value)" style="cursor: pointer;">
-										Add To Cart
+										Thêm vào giỏ
 									</a>
 								</li>
 								<li>
@@ -387,7 +386,7 @@
 
 										<!--Price-->
 										<div class="pro-thumb-price mt-20">
-											<span class="regular-price" id="quick_price">$98.25</span>
+											<span class="regular-price" id="quick_price"></span>
 										</div>
 
 @* 										<!--Detail-->
@@ -424,8 +423,7 @@
 												</li>
 												<li>
 													<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="quick_add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quick_quantity').value)" style="cursor: pointer;">
-
-														Add To Cart
+														Thêm vào giỏ
 													</a>
 												</li>
 												<li>

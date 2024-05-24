@@ -2,13 +2,36 @@
     ViewData["Title"] = "Phụ kiện";
 }
 
-@using PetStoreProject.ViewModels
-@using PetStoreProject.Helper
-@model PaginatedList<ProductDetailViewModel>
-@using PetStoreProject.Models
+@using PetStoreProject.ViewModels;
+@using PetStoreProject.Helper;
+@model PaginatedList<ProductDetailViewModel>;
+@using PetStoreProject.Models;
 
+@{
+    var selectPageSize = ViewBag.pageSize;
+}
+<style>
+    .sidebar-brand-list {
+        max-height: 300px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
+    }
 
+        .sidebar-brand-list::-webkit-scrollbar {
+            width: 5px; /* Độ rộng của thanh cuộn */
+        }
 
+        /* Màu nền của thanh cuộn trên Chrome và Safari */
+        .sidebar-brand-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Màu của thanh cuộn trên Chrome và Safari */
+        .sidebar-brand-list::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+</style>
 
 <div class="main-shop-page adp_top adp_bottom">
     <div class="container">
@@ -19,32 +42,32 @@
                 <div class="sidebar shop-sidebar">
                     <!-- Sidebar Categorie Start -->
                     <div class="sidebar-categorie single_sidebar">
-                        <h3 class="sidebar-title">Collections</h3>
-                        <ul class="sidbar-style .scrollable-list">
-
-                            @foreach (var brand in ViewBag.Brands as List<Brand>)
-                            {
-                                <li class="form-check">
-                                    <input class="form-check-input" value="@brand.BrandId" id="camera" type="checkbox">
-                                    <label class="form-check-label" for="camera">@brand.Name</label>
-                                </li>
-                            }
-                        </ul>
+                        <h3 class="sidebar-title">Thương hiệu</h3>
+                        <div class="sidebar-brand-list">
+                            <ul class="sidbar-style">
+                                @foreach (var brand in ViewBag.Brands as List<Brand>)
+                                {
+                                    <li class="form-check">
+                                        <input class="form-check-input brand-checkbox" value="@brand.Name" id="@($"camera_{brand.BrandId}")" type="checkbox">
+                                        <label class="form-check-label" for="@($"camera_{brand.BrandId}")">@brand.Name</label>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </div>
                     <!-- Sidebar Categorie Start -->
                     <!-- Price Filter Options Start -->
                     <div class="search-filter single_sidebar">
-                        <h3 class="sidebar-title">filter by price</h3>
+                        <h3 class="sidebar-title">Giá</h3>
                         <form action="#" class="slider-sidebar">
                             <div id="slider-range"></div>
                             <input type="text" id="amount" class="amount-range" readonly>
-                            <input type="submit" value="Filter" />
                         </form>
                     </div>
                     <!-- Price Filter Options End -->
                     <!-- Product Size Start -->
                     <div class="size single_sidebar">
-                        <h3 class="sidebar-title">size</h3>
+                        <h3 class="sidebar-title">Kích cỡ</h3>
                         <ul class="size-list sidbar-style">
                             <li class="form-check">
                                 <input class="form-check-input" value="" id="small" type="checkbox">
@@ -71,39 +94,43 @@
                     <!-- Product Size End -->
                     <!-- Product Color Start -->
                     <div class="color single_sidebar">
-                        <h3 class="sidebar-title">color</h3>
+                        <h3 class="sidebar-title">Màu sắc</h3>
                         <ul class="color-option sidbar-style">
                             <li>
 
-                                <a href="#"><span class="black color_label"></span> Black <span>(5)</span></a>
+                                <a href="#"><span class="black color_label"></span> Đen <span>(5)</span></a>
                             </li>
                             <li>
 
-                                <a href="#"><span class="orange color_label"></span> Orange <span>(8)</span></a>
+                                <a href="#"><span class="orange color_label"></span> Cam <span>(8)</span></a>
                             </li>
                             <li>
 
-                                <a href="#"><span class="blue color_label"></span> Blue <span>(5)</span></a>
+                                <a href="#"><span class="blue color_label"></span> Xanh nước biển <span>(5)</span></a>
                             </li>
                             <li>
 
-                                <a href="#"><span class="yellow color_label"></span> Yellow <span>(6)</span></a>
+                                <a href="#"><span class="yellow color_label"></span> Vàng <span>(6)</span></a>
                             </li>
                             <li>
 
-                                <a href="#"> <span class="green color_label"></span> Green <span>(8)</span></a>
+                                <a href="#"> <span class="green color_label"></span> Xanh lá cây <span>(8)</span></a>
                             </li>
                             <li>
 
-                                <a href="#"><span class="pink color_label"></span> Pink <span>(7)</span></a>
+                                <a href="#"><span class="pink color_label"></span> Hồng <span>(7)</span></a>
                             </li>
                         </ul>
+                    </div>
+                    <div class="single_sidebar">
+                        <button class="btn btn-light" id="filter_button" >Lọc sản phẩm</button>
+                        <button class="btn btn-light" id="clear_button">Xóa bộ lọc</button>
                     </div>
                     <!-- Product Color End -->
                     <!-- Popular Product Start -->
                     <div class="polular_products single_sidebar">
                         <div class="product-widget-chunk-wrapper">
-                            <h3 class="sidebar-title">Popular Product</h3>
+                            <h3 class="sidebar-title">Sản phẩm phổ biến</h3>
 
                             <!--=======  widget product list wrapper  =======-->
                             <div class="small-list-wrapper">
@@ -308,23 +335,22 @@
 
                     <div class="single-select-block">
                         <select name="pageSize" id="pageSizeSelect" onchange="ChangePageSize()">
-                            <option selected="@(ViewBag.pageSize == 10?"selected":"")" value="10">10</option>
-                            <option selected="@(ViewBag.pageSize == 20?"selected":"")" value="20">20</option>
-                            <option selected="@(ViewBag.pageSize == 30?"selected":"")" value="30">30</option>
-                            <option selected="@(ViewBag.pageSize == 40?"selected":"")" value="40">40</option>
+                            <!option @(selectPageSize == 20 ? "selected" : "") >20</!option>
+                            <!option @(selectPageSize == 30 ? "selected" : "") >30</!option>
+                            <!option @(selectPageSize == 40 ? "selected" : "") >40</!option>
+
                         </select>
                     </div>
 
                     <!-- Toolbar Short Area Start -->
                     <div class="main-toolbar-sorter clearfix">
                         <div class="toolbar-sorter d-md-flex align-items-center">
-                            <label>Sort By:</label>
-                            <select class="sorter wide">
-                                <option value="Position">Relevance</option>
-                                <option value="Product Name">Name, A to Z</option>
-                                <option value="Product Name">Name, Z to A</option>
-                                <option value="Price">Price low to height</option>
-                                <option value="Price">Price height to low</option>
+                            <label style="width:80px">Sắp xếp:</label>
+                            <select id="selected_sort" onchange="SelectedSort()" class="sorter wide">
+                                <option value="ProductNameAZ">Tên, A tới Z</option>
+                                <option value="ProductNameZA">Tên, Z tới A</option>
+                                <option value="PriceLowToHight">Giá thấp đến cao</option>
+                                <option value="PriceHightToLow">Giá cao đến thấp</option>
                             </select>
                         </div>
                     </div>
@@ -353,12 +379,11 @@
                                                         {
                                                             <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
                                                         }
-
                                                     </a>
 
                                                     @* <div class="item_quick_link">
-                                                        <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
-                                                    </div> *@
+                                            <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
+                                            </div> *@
 
                                                     <div class="product-count-wrap">
                                                         <div class="product-countdown" data-countdown="2022/06/01"></div>
@@ -397,17 +422,13 @@
                                 {
                                     <h2>Danh sách sản phẩm trống!</h2>
                                 }
-
-
                             </div>
                             @{
                                 var prevDisabled = !Model.hasPreviousPage ? "disabled" : "";
                                 var nextDisabled = !Model.hasNextPage ? "disabled" : "";
                             }
-
                             <!-- Row End -->
                         </div>
-
                         <!-- #grid view End -->
                         <div id="list-view" class="tab-pane fade fix class_list_view">
                             @if (Model.Count > 0)
@@ -476,52 +497,54 @@
                 <div class="shop-pagination-area border-default">
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-12 pagi_left">
-                            <span class="show-items">Showing 1 - @ViewBag.page of @ViewBag.totalPage items </span>
                         </div>
                         <div id="pagination" class="col-lg-8 col-md-8 col-12 pagi_right">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination">
-                                    @if (ViewBag.currentPage > 1)
+                                    @if ((int)@ViewBag.numberPage > 1)
                                     {
-                                        <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.currentPage - 1),@ViewBag.pageSize)" href="javascript:void(0);">Previous</a></li>
-                                    }
-                                    @{
-                                        var startPage = Math.Max(1, @ViewBag.currentPage - 2);
-                                        var endPage = Math.Min(@ViewBag.totalPage, @ViewBag.currentPage + 2);
-                                    }
-                                    @if (@startPage > 1)
-                                    {
-                                        <li class="page-item"><a class="page-link" onclick="NextPage(1,@ViewBag.pageSize)" href="javascript:void(0);">1</a></li>
-                                        if (@startPage > 2)
+                                        @if ((int)ViewBag.currentPage > 1)
                                         {
-                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
-                                        }
-                                    }
-                                    @for (var i = startPage; i <= endPage; i++)
-                                    {
-                                        @if (@ViewBag.currentPage == i)
-                                        {
-                                            <li class="page-item active"><a class="page-link" href="javascript:void(0);">@i</a></li>
-                                        }
-                                        else
-                                        {
-                                            <li class="page-item"><a class="page-link" onclick="NextPage(@i,@ViewBag.pageSize)" href="javascript:void(0);">@i</a></li>
-                                        }
-                                    }
-                                    @if (@ViewBag.page >= endPage + 1)
-                                    {
-                                        @if (@ViewBag.page >= endPage + 2)
-                                        {
-
-                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.currentPage - 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang trước</a></li>
                                         }
 
-                                        <li class="page-item"><a class="page-link" onclick="NextPage(@ViewBag.page},@ViewBag.pageSize})" href="javascript:void(0);">@ViewBag.page</a></li>
-                                    }
-                                    @if (@ViewBag.currentPage != @ViewBag.page)
-                                    {
+                                        var startPage = Math.Max(1, (int)ViewBag.currentPage - 2);
+                                        var endPage = Math.Min((int)ViewBag.numberPage, (int)ViewBag.currentPage + 2);
 
-                                        <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.currentPage + 1)},@ViewBag.pageSize)" href="javascript:void(0);">Next</a></li>
+                                        @if (startPage > 1)
+                                        {
+                                            <li class="page-item"><a class="page-link" onclick="NextPage(1, @(ViewBag.pageSize))" href="javascript:void(0);">1</a></li>
+                                            if (startPage > 2)
+                                            {
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            }
+                                        }
+                                        @for (var i = startPage; i <= endPage; i++)
+                                        {
+                                            @if ((int)ViewBag.currentPage == i)
+                                            {
+                                                <li class="page-item active"><a class="page-link" href="javascript:void(0);">@i</a></li>
+                                            }
+                                            else
+                                            {
+                                                <li class="page-item"><a class="page-link" onclick="NextPage(@i, @(ViewBag.pageSize))" href="javascript:void(0);">@i</a></li>
+                                            }
+                                        }
+                                        @if ((int)ViewBag.numberPage >= endPage + 1)
+                                        {
+                                            @if ((int)ViewBag.numberPage >= endPage + 2)
+                                            {
+
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            }
+
+                                            <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.numberPage), @(ViewBag.pageSize))" href="javascript:void(0);">@(ViewBag.numberPage)</a></li>
+                                        }
+                                        @if ((int)ViewBag.currentPage != (int)ViewBag.numberPage)
+                                        {
+
+                                            <li class="page-item"><a class="page-link" onclick="NextPage(@(ViewBag.currentPage + 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang sau</a></li>
+                                        }
                                     }
                                 </ul>
                             </nav>
@@ -538,16 +561,50 @@
 </div>
 <!-- Shop Page End -->
 <script>
+    var selectBrands = [];
+    var pageSize = parseInt(document.getElementById("pageSizeSelect").value);
+    var pageIndex = 1;
+    var selectedSort = "ProductNameAZ";
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById("filter_button").addEventListener('click', function () {
+            console.log("filter");
+            var checkboxes = document.querySelectorAll(".brand-checkbox");
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    selectBrands.push(checkbox.value);
+                }
+            });
+            LoadData(pageSize, 1, selectBrands, null);
+        });
 
+        document.querySelector("#clear_button").addEventListener('click', function () {
+            var checkboxes = document.querySelectorAll(".brand-checkbox");
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+            selectBrands = [];
+            console.log("Filters cleared");
+            LoadData(pageSize, 1, [], null);
+        });
+        
+    });
 
-    function LoadData(pageSize, page) {
+    function SelectedSort() {
+        selectedSort = document.getElementById("selected_sort").value;
+        console.log("selected_sort: change" + selectedSort);
+        LoadData(pageSize, pageIndex, selectBrands, selectedSort);
+    }
+    
+    function LoadData(pageSize, page, selectedBrands, selectedSort) {
         $('#data-grid-view').empty();
+        $('#list-view').empty();
         $.ajax({
-            url: '/Product/Shop',
-            type: 'get',
-            data: { pageSize: pageSize, page: page },
+            url: '/Product/ShopAccessory_Post',
+            type: 'post',
+            data: {pageSize: pageSize, page: page, selectBrands: selectBrands, selectedSort: selectedSort},
             success: function (response) {
                 if (response.data.length > 0) {
+                    var html1 = "";
                     var html = "";
                     var items = response.data;
                     for (var index = 0; index < items.length; index++) {
@@ -597,9 +654,49 @@
                         html += "</div>";
                         html += "<!-- Single Product End -->";
 
+                        html1 += "<div class='single-template-product'>";
+                        html1 += "<!-- Product Image Start -->";
+                        html1 += "<div class='pro-img'>";
+                        html1 += "<span class='sticker-sale'>-25%</span>";
+                        html1 += "<span class='sticker-new'>New</span>";
+                        html1 += "<a href='/product/detail/" + items[index].productId + "'>";
+                        if (items[index].productOption && items[index].productOption.length > 0) {
+                            html1 += "<img class='primary-img' src=" + items[index].productOption[0].img_url + "alt='single-product'>";
+                        }
+                        html1 += "</a>";
+                        html1 += "<div class='item_quick_link'>";
+                        html1 += "<a href='#' data-bs-toggle='modal' data-bs-target='#myModal' title='Quick View'><i class='icofont-search'></i></a>";
+                        html1 += "</div>";
+                        html1 += "<div class='product - count - wrap'>";
+                        html1 += "<div class='product - countdown' data-countdown='2022 / 06 / 01'></div>";
+                        html1 += "</div>";
+                        html1 += "</div>";
+                        html1 += "<!-- Product Image End -->";
+                        html1 += "<!-- Product Content Start -->";
+                        html1 += "<div class='product_content_wrap'>";
+                        html1 += "<div class='product_content'>";
+                        html1 += "<h4><a href='product - details.html1'>" + items[index].name + "</a></h4>";
+                        html1 += "<p class='list_des'>" + items[index].description + "</p>";
+                        html1 += "<div class='grid_price'>";
+                        if (items[index].productOption && items[index].productOption.length > 0) {
+                            html1 += "<span class='regular - price'>" + items[index].productOption[0].price + "</span>";
+                            html1 += "<del class='discount_price'>$75.50</del>";
+                        }
+                        html1 += "</div>";
+                        html1 += "</div>";
+                        html1 += "<div class='item_add_cart'>";
+                        html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
+                        html1 += "<a class='grid_cart' href='cart.html1' title='Add to Cart'>Add To Cart</a>";
+                        html1 += "<a class='grid_wishlist' href='wishlist.html1' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
+                        html1 += "</div>";
+                        html1 += "</div>";
+                        html1 += "<!-- Product Content End -->";
+                        html1 += "</div>";
                     }
                     console.log("pageSize:" + response.pageSize);
                     $('#data-grid-view').html(html);
+                    $('#list-view').html(html1);
+                    pageIndex = response.currentPage;
                     Pagination(response.currentPage, response.numberPage, response.pageSize);
                 } else {
                     console.error("Unexpected response structure:", response);
@@ -610,13 +707,14 @@
             }
 
         });
+        window.scrollTo(0, 0);
     }
 
     function Pagination(currentPage, numberPage, pageSize) {
         if (numberPage > 0) {
-            var str = `<nav aria-label="Page navigation example"> <ul class="pagination">`;
-            if (currentPage != 1) {
-                str += `<li class="page-item"><a class="page-link" onclick="NextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Previous</a></li>`;
+            var str = '<nav aria-label="Page navigation example"> <ul class="pagination">';
+            if (currentPage > 1) {
+                str += `<li class="page-item"><a class="page-link" onclick="NextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Trang trước</a></li>`;
             }
             var startPage = Math.max(1, currentPage - 2);
             var endPage = Math.min(numberPage, currentPage + 2);
@@ -641,21 +739,20 @@
                 str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${numberPage},${pageSize})" href="javascript:void(0);">${numberPage}</a></li>`;
             }
             if (currentPage != numberPage)
-                str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Next</a></li>`;
+                str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Trang sau</a></li>`;
             str += "</ul></nav>";
             $('#pagination').html(str);
         }
     }
 
+
     function NextPage(page, pageSize) {
-        LoadData(pageSize, page);
+        
+        LoadData(pageSize, page, selectBrands, selectedSort);
     }
     function ChangePageSize() {
-        var selectElement = document.getElementById("pageSizeSelect");
-        var pageSize = parseInt(selectElement.value);
         console.log(pageSize);
-        LoadData(pageSize, 1);
+        LoadData(pageSize, 1, selectBrands, selectedSort);
     }
-
 </script>
 

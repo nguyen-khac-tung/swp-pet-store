@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Helper;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
@@ -32,44 +33,72 @@ namespace PetStoreProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult ShopAccessary(int? pageSize, int? page)
+        public ActionResult ShopAccessory(int? pageSize, int? page)
         {
             var productDetails = _product.GetProductDetailAccessories();
-            ViewBag.Brands = _product.GetBrandAccessories();
-            var totalPage = productDetails.Count();
-            
-            ViewBag.totalPage = totalPage;
-            var _page = page ?? 1;
+            var totalItems = productDetails.Count();
+            var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 20;
-            ViewBag.currentPage = _page;
+            var numberPage = Math.Ceiling((float)totalItems / _pageSize);
+
+            ViewBag.Brands = _product.GetBrandAccessories();
+            ViewBag.totalItems = totalItems;
+            ViewBag.currentPage = pageIndex;
             ViewBag.pageSize = _pageSize;
-            ViewBag.page = _pageSize;
-            return View(PaginatedList<ProductDetailViewModel>.Create(productDetails, _page, _pageSize));
+            ViewBag.numberPage = numberPage;
+            return View(PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 
-        [HttpGet]
-        public ActionResult Shop(int? pageSize, int? page)
+        [HttpPost]
+        public ActionResult ShopAccessory_Post(int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort)
         {
-            var productDetails = _product.GetProductDetailAccessories();
+            List<ProductDetailViewModel> productDetails = null;
+            int count = 0;
+            if (selectedBrands.IsNullOrEmpty())
+            {
+                productDetails = _product.GetProductDetailAccessories();
+            }
+            else
+            {
+                productDetails = _product.GetProductDetailAccessories().Where(p => selectedBrands.Contains(p.Brand)).ToList();
+                count = productDetails.Count();
+            }
+            if (!selectedSort.IsNullOrEmpty())
+            {
+                switch (selectedSort)
+                {
+                    case "ProductNameAZ":
+                        productDetails = productDetails.OrderBy(p => p.Name).ToList();
+                        break;
+                    case "ProductNameZA":
+                        productDetails = productDetails.OrderByDescending(p => p.Name).ToList();
+                        break;
+                    case "PriceLowToHight":
+                        productDetails = productDetails.OrderBy(p => p.productOption[0].price).ToList();
+                        break;
+                    case "PriceHightToLow":
+                        productDetails = productDetails.OrderByDescending(p => p.productOption[0].price).ToList();
+                        break;
+                }
+            }
             var _pageSize = pageSize ?? 20;
             var pageIndex = page ?? 1;
-            var totalPage = productDetails.Count();
-            var numberPage = Math.Ceiling((float)totalPage / _pageSize);
+            var totalItems = productDetails.Count();
+            var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             var productDetail = productDetails.Skip((pageIndex - 1) * _pageSize).Take(_pageSize).ToList();
+            Console.WriteLine(count);
 
-            ViewBag.pageSize = _pageSize;
-            ViewBag.totalPage = totalPage;
-            ViewBag.currentPage = page;
-
-            //return Json(productDetails);
+            TempData["pageSize"] = _pageSize;
+            TempData["totalItems"] = totalItems;
+            TempData["currentPage"] = pageIndex;
             return new JsonResult(new
             {
                 Data = productDetail,
-                TotaItems = totalPage,
                 CurrentPage = pageIndex,
                 NumberPage = numberPage,
                 PageSize = _pageSize,
             });
+
         }
 
     }

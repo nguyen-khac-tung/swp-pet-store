@@ -229,8 +229,9 @@ namespace PetStoreProject.Repositories.Product
             {
 				ProductId = p.ProductId,
 				Name = p.Name,
-				//Brand = GetBrandByProductId(p.ProductId).Name,
-				productOption = GetProductOptionsByProductId(p.ProductId),
+                Brand = GetBrandByProductId(p.ProductId).Name,
+                //Description = p.Description,
+                productOption = GetProductOptionsByProductId(p.ProductId),
 				images = GetImagesByProductId(p.ProductId),
 				//attributes = GetAttributesByProductId(p.ProductId),
 				//sizes = GetSizesByProductId(p.ProductId)

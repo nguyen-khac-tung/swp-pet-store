@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
+[Table("Attribute")]
 public partial class Attribute
 {
     [Key]

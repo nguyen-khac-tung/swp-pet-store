@@ -7182,3 +7182,8 @@ color: #fff; }
 		.text-md-right {
 	text-align: right;
 }
+
+.sidebar-brand-list {
+    max-height: 150px; /* hoặc bất kỳ giá trị nào bạn muốn */
+    overflow-y: auto;
+}

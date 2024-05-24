@@ -116,8 +116,15 @@ namespace PetStoreProject.CartController
                         cartItems.Add(item);
                     }
                 }
+
+            }
+            var total_price = 0.0;
+            foreach (var item in cartItems)
+            {
+                total_price += item.Price * item.Quantity;
             }
             ViewData["cartItems"] = cartItems;
+            ViewData["total_price"] = total_price;
             return View();
         }
 

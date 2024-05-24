@@ -1,7 +1,8 @@
 ﻿@using PetStoreProject.ViewModels
 @{
-	ViewData["Title"] = "Chi tiết Giỏ Hàng";
-	var cartItems = ViewData["cartItems"] as List<CartItemViewModel>;
+    ViewData["Title"] = "Chi tiết Giỏ Hàng";
+    var cartItems = ViewData["cartItems"] as List<CartItemViewModel>;
+    var total_price = Convert.ToSingle(ViewData["total_price"]);
 }
 
 <div class="cart-main-area adp_top adp_bottom">
@@ -76,18 +77,10 @@
                                 <br />
                                 <table>
                                     <tbody>
-                                        <tr class="cart-subtotal">
-                                            <th>Subtotal</th>
-                                            <td><span class="amount">$315.00</span></td>
-                                        </tr>
-                                        <tr class="cart-subtotal">
-                                            <th>Shipping</th>
-                                            <td><span class="amount">$10.00</span></td>
-                                        </tr>
                                         <tr class="order-total">
                                             <th>Total</th>
                                             <td>
-                                                <strong><span class="amount">$325.00</span></strong>
+                                                <strong><span class="amount" id="amount">@total_price</span></strong>
                                             </td>
                                         </tr>
                                     </tbody>

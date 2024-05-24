@@ -84,7 +84,7 @@ function getCartItems() {
 }
 
 function deleteCartItem(productOptionId) {
-	$('#' + productOptionId).hide();
+	$('#' + productOptionId).remove()
 	$.ajax({
 		url: "http://localhost:5206/cart/delete",
 		type: "DELETE",
@@ -93,6 +93,16 @@ function deleteCartItem(productOptionId) {
 			getCartItems();
 		}
 	});
+	amountCart();
+}
+
+function amountCart() {
+	var total_amount = 0.0;
+	var subTotalElements = document.getElementsByClassName('product-subtotal')
+	for (var i = 1; i < subTotalElements.length; i++) {
+		total_amount += parseFloat(subTotalElements[i].innerText)
+	}
+	$('#amount').html(total_amount)
 }
 
 function total_price() {

@@ -1,3 +1,8 @@
 ﻿.select{
     font-weight:bold;
 }
+#item{
+    max-height: 400px; /* Thiết lập chiều cao tối đa, bạn có thể thay đổi giá trị này theo ý muốn */
+    overflow-y: auto; /* Kích hoạt cuộn dọc khi nội dung vượt quá chiều cao tối đa */
+}
+

@@ -19,12 +19,12 @@ namespace PetStoreProject.CartController
         }
 
         [HttpPost]
-        public ActionResult AddItem(int productOptionId)
+        public ActionResult AddItem(int productOptionId, int quantity)
         {
             List<int> cookiesId = new List<int>();
             bool isExistsItem = false;
 
-            var new_item = _cart.GetCartItemVM(productOptionId);
+            var new_item = _cart.GetCartItemVM(productOptionId, quantity);
 
             var cookieOptions = new CookieOptions
             {
@@ -33,6 +33,7 @@ namespace PetStoreProject.CartController
                 Secure = true, // Cookie chỉ được gửi qua HTTPS
                 SameSite = SameSiteMode.Strict // Chỉ gửi cookie trong cùng site
             };
+
             if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
             {
                 cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
@@ -44,9 +45,22 @@ namespace PetStoreProject.CartController
                         if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
                         {
                             var cartItem = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
-                            cartItem.Quantity += 1;
-                            Response.Cookies.Append($"Item_{itemId}", JsonConvert.SerializeObject(cartItem), cookieOptions);
-                            return Json(cartItem);
+                            if (!(cartItem.Quantity + quantity > 10))
+                            {
+                                cartItem.Quantity += quantity;
+                                Response.Cookies.Append($"Item_{itemId}", JsonConvert.SerializeObject(cartItem), cookieOptions);
+                                return Json(new
+                                {
+                                    message = "success"
+                                });
+                            }
+                            else
+                            {
+                                return Json(new
+                                {
+                                    message = "Khoong thể mua quá 10 sản phẩm cho 1 món hàng!!! Vui lòng thanh toán để có thể mua thêm"
+                                });
+                            }
                         }
                     }
                 }
@@ -56,10 +70,12 @@ namespace PetStoreProject.CartController
                 cookiesId.Add(productOptionId);
                 Response.Cookies.Append($"Items_id", JsonConvert.SerializeObject(cookiesId), cookieOptions);
                 Response.Cookies.Append($"Item_{productOptionId}", JsonConvert.SerializeObject(new_item), cookieOptions);
-
             }
 
-            return Json(new_item);
+            return Json(new
+            {
+                message = "success"
+            });
         }
 
         [HttpPost]
@@ -81,6 +97,56 @@ namespace PetStoreProject.CartController
                 }
             }
             return Json(cartItems);
+        }
+
+
+        [HttpGet]
+        public ActionResult Detail()
+        {
+            List<int> cookiesId = new List<int>();
+            List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
+            if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+            {
+                cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
+                foreach (var itemId in cookiesId)
+                {
+                    if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
+                    {
+                        var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
+                        cartItems.Add(item);
+                    }
+                }
+            }
+            ViewData["cartItems"] = cartItems;
+            return View();
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(int productOptionId)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(-1)
+            };
+            if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+            {
+                List<int> listId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
+                listId.Remove(productOptionId);
+                Response.Cookies.Append("Items_id", JsonConvert.SerializeObject(listId));
+            }
+
+            if (Request.Cookies.TryGetValue($"Item_{productOptionId}", out string item))
+            {
+                Response.Cookies.Append($"Item_{productOptionId}", item, cookieOptions);
+                return Json(new
+                {
+                    message = "success"
+                });
+            }
+            return Json(new
+            {
+                message = "Error"
+            });
         }
     }
 

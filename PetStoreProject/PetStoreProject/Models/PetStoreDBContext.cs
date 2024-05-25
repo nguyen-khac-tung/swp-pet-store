@@ -109,6 +109,10 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.CartItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItem_Customer");
+
+            entity.HasOne(d => d.ProductOption).WithMany(p => p.CartItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CartItem_ProductOption");
         });
 
         modelBuilder.Entity<Category>(entity =>

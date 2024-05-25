@@ -13,12 +13,8 @@ public partial class Image
 {
     [Key]
     public int ImageId { get; set; }
-<<<<<<< Updated upstream
 
     [StringLength(250)]
-=======
-	[StringLength(250)]
->>>>>>> Stashed changes
     public string ImageUrl { get; set; } = null!;
 
     [InverseProperty("Image")]

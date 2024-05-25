@@ -6,17 +6,23 @@ namespace PetStoreProject.Controllers
 {
 	public class WishListController : Controller
 	{
-        private readonly IWishListRepository _wishList;
+		private readonly IWishListRepository _wishList;
 
-        public WishListController(IWishListRepository wishList)
-        {
-            _wishList = wishList;
-        }
+		public WishListController(IWishListRepository wishList)
+		{
+			_wishList = wishList;
+		}
 
-        public IActionResult Detail()
-        {
-            var listWishList = _wishList.wishListVMs(15);
-            return View(listWishList);
-        }
-    }
+		public IActionResult Detail()
+		{
+			var listWishList = _wishList.wishListVMs(15);
+			return View(listWishList);
+		}
+
+		public IActionResult Delete(int productID)
+		{
+			_wishList.DeleteFromWishList(15, productID);
+			return RedirectToAction("Detail");
+		}
+	}
 }

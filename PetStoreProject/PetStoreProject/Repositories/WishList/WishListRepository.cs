@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+
+using Microsoft.EntityFrameworkCore;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
@@ -60,5 +62,18 @@ namespace PetStoreProject.Repositories.WishList
             }
             return listVMs;
         }
-    }
+
+		public void DeleteFromWishList(int customerId, int productId)
+		{
+			var favoriteItem = _dbContext.FavouriteLists
+										  .FirstOrDefault(f => f.CustomerId == customerId && f.ProductId == productId);
+
+			if (favoriteItem != null)
+			{
+				_dbContext.FavouriteLists.Remove(favoriteItem);
+				_dbContext.SaveChanges(); 
+			}
+		}
+
+	}
 }

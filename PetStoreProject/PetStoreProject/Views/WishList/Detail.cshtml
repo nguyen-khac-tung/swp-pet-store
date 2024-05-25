@@ -4,47 +4,63 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12 col-sm-12 col-xs-12">
-				<!-- Form Start -->
-				<form action="#">
-					<!-- Table Content Start -->
-					<div class="table-content table-responsive">
-						<table>
-							<thead>
+				<!-- Table Content Start -->
+				<div class="table-content table-responsive">
+					<table>
+						<thead>
+							<tr>
+								<th class="product-remove">Remove</th>
+								<th class="product-thumbnail">Image</th>
+								<th class="product-name">Product</th>
+								<th class="product-price">Unit Price</th>
+								<th class="product-quantity">ID</th>
+								<th class="product-subtotal">add to cart</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (WishListVM wVM in Model)
+							{
 								<tr>
-									<th class="product-remove">Remove</th>
-									<th class="product-thumbnail">Image</th>
-									<th class="product-name">Product</th>
-									<th class="product-price">Unit Price</th>
-									<th class="product-quantity">Brand</th>
-									<th class="product-subtotal">add to cart</th>
+									<td class="product-remove">
+										<a onclick="confirmDelete(@wVM.produtcID)">
+											<i class="icofont-delete-alt" aria-hidden="true"></i>
+										</a>
+									</td>
+									<td class="product-thumbnail">
+										<a href="#"><img src="@wVM.img_url" alt="cart-image" /></a>
+									</td>
+									<td class="product-name"><a href="product-details.html">@wVM.productName</a></td>
+									<td class="product-price"><span class="amount">@wVM.price.ToString("N0") VND</span></td>
+									<td class="product-stock-status"><span>@wVM.produtcID</span></td>
+									<td class="product-add-to-cart"><a href="#">Add to cart</a></td>
 								</tr>
-							</thead>
-							<tbody>
-								@{
-									foreach (WishListVM wVM in Model)
-									{
-										<tr>
-											<td class="product-remove"> <a href="#"><i class="icofont-delete-alt" aria-hidden="true"></i></a></td>
-											<td class="product-thumbnail">
-												<a href="#"><img src="@wVM.img_url" alt="cart-image" /></a>
-											</td>
-											<td class="product-name"><a href="product-details.html">@wVM.productName</a></td>
-											<td class="product-price"><span class="amount">@wVM.price.ToString("N0") VND</span></td>
+							}
 
-											<td class="product-stock-status"><span>@wVM.brandName</span></td>
-											<td class="product-add-to-cart"><a href="#">Add to cart</a></td>
-										</tr>
-									}
-								}
-							</tbody>
-						</table>
-					</div>
-					<!-- Table Content Start -->
+						</tbody>
+					</table>
+				</div>
+				<!-- Table Content End -->
+				<form id="deleteForm" action="/WishList/Delete" method="post">
+					<input type="hidden" id="productId" name="productId" />
 				</form>
-				<!-- Form End -->
 			</div>
 		</div>
 		<!-- Row End -->
 	</div>
 </div>
 <!-- Wish List End -->
+<script>
+	function confirmDelete(productId) {
+		console.log("Confirm delete for product ID:", productId);
+		var confirmation = confirm("Bạn có muốn xóa sản phẩm có ID là " + productId + " không?");
+		if (confirmation) {
+			deleteProduct(productId);
+		}
+	}
+
+	function deleteProduct(productId) {
+		console.log("Deleting product ID:", productId);
+		document.getElementById("productId").value = productId;
+		document.getElementById("deleteForm").submit();
+	}
+</script>

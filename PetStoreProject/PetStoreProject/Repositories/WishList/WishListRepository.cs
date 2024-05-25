@@ -1,7 +1,4 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
-using PetStoreProject.Models;
+﻿using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.WishList
@@ -49,7 +46,7 @@ namespace PetStoreProject.Repositories.WishList
         public List<WishListVM> wishListVMs(int customerId)
         {
             List<WishListVM> listVMs = new List<WishListVM>();
-            var wishtList = _dbContext.FavouriteLists.Where(x => x.CustomerId == customerId).ToList();
+            /*var wishtList = _dbContext.FavouriteLists.Where(x => x.CustomerId == customerId).ToList();
             foreach (var w in wishtList)
             {
                 WishListVM wl = new WishListVM();
@@ -59,21 +56,21 @@ namespace PetStoreProject.Repositories.WishList
                 wl.brandName = GetBrandByProductId (w.ProductId).Name;
                 wl.img_url = GetUrlImgByProductID(w.ProductId).ImageUrl;
                 listVMs.Add(wl);
-            }
+            }*/
             return listVMs;
         }
 
-		public void DeleteFromWishList(int customerId, int productId)
-		{
-			var favoriteItem = _dbContext.FavouriteLists
+        public void DeleteFromWishList(int customerId, int productId)
+        {
+            /*var favoriteItem = _dbContext.FavouriteLists
 										  .FirstOrDefault(f => f.CustomerId == customerId && f.ProductId == productId);
 
 			if (favoriteItem != null)
 			{
 				_dbContext.FavouriteLists.Remove(favoriteItem);
 				_dbContext.SaveChanges(); 
-			}
-		}
+			}*/
+        }
 
-	}
+    }
 }

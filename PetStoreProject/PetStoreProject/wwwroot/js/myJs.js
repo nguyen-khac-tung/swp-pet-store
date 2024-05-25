@@ -45,7 +45,9 @@ function getCartItems() {
 					alt: "cart-image"
 				})
 
-				var h6 = $('<h6>')
+				var h6 = $('<h6>', {
+					style: "margin: 0px"
+				})
 				var aTitle = $('<a>', {
 					href: 'http://localhost:5206/product/detail/'+response[index].productId
 				}).text(response[index].name)
@@ -60,7 +62,9 @@ function getCartItems() {
 						option += response[index].size.name
 					}
 				}
-				var spanOption = $('<div>').text(option)
+				var spanOption = $('<div>', {
+					style: "font-size: 13px; margin-top: 3px; margin-bottom: 3px"
+				}).text(option)
 				var spanPrice = $('<span>').text(response[index].price + ' x ' + response[index].quantity)
 				h6.append(aTitle)
 				divCartImg.append(img)
@@ -212,7 +216,7 @@ function quickView(productId) {
 				});
 				var label = $('<label>').text('Loại :');
 				var ul = $('<ul>', {
-					class: 'color-list'
+					class: 'color-list scroll'
 				});
 				var list = ""
 				for (var index = 0; index < response.attributes.length; index++) {
@@ -235,7 +239,7 @@ function quickView(productId) {
 					class: 'color-list size_list'
 				});
 				var sizeUl = $('<ul>', {
-					class: 'color-list size_list'
+					class: 'color-list size_list scroll'
 				});
 
 				var list = ""

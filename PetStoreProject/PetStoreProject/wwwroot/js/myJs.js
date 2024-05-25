@@ -73,8 +73,10 @@ function getCartItems() {
 				$('#list_item').append(divSingleCart)
 
 				total_price += parseFloat(response[index].price) * parseFloat(response[index].quantity)
-				$('#total_price').html(total_price)
 			}
+			var x = total_price.toString() + " VND"
+			console.log(x)
+			$('#total_price').html(x);
 			console.log(response);
 		},
 		error: function (xhr, status, error) {

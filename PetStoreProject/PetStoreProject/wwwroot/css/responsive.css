@@ -42,103 +42,141 @@
         padding-left: 15px;
         padding-right: 15px;
     }
-    .header-menu-list>li,
-    .cart-box>ul>li {
+
+    .header-menu-list > li,
+    .cart-box > ul > li {
         padding: 20px 0;
     }
-    .header-menu-list>li>a {
-        padding: 7px 11px;
-    }
+
+        .header-menu-list > li > a {
+            padding: 7px 11px;
+        }
+
     .marketing-text p {
         font-size: 35px;
     }
+
     .quick-thumb-content .modal-lg {
         margin: 0 auto;
     }
+
     .marketing-text h3 {
         font-size: 50px;
         margin-bottom: 15px;
     }
+
     .header-menu-list ul.common_ddown.megamenu {
         left: -160px;
         width: 930px;
     }
-    .header-menu-list>li>ul.common_ddown li a {
+
+    .header-menu-list > li > ul.common_ddown li a {
         font-size: 13px;
     }
+
     .slider-area.fixed-height .single-slide .row {
         height: 600px;
     }
+
     .container-fluid .slider-content {
         max-width: 70%;
     }
+
     .slider-content h4 {
         font-size: 20px;
         margin-bottom: 15px;
     }
+
     .slider-content h1 {
         font-size: 50px;
         line-height: 60px;
         margin-bottom: 20px;
     }
+
     .slider-content .small-btn a {
         margin-top: 40px;
     }
+
     .main-feature-icon {
         height: 50px;
         width: 50px;
         line-height: 50px;
         font-size: 20px;
     }
+
     .main-feature-content h4 {
         font-size: 16px;
     }
+
     .pro-tabs-area li a {
         padding: 0 15px;
     }
+
     .footer_contact li span {
         width: 25%;
     }
+
     .promotion-content h2 {
         font-size: 40px;
     }
+
     .stroller-content h3 {
         font-size: 50px;
     }
+
     .footer_widget {
         margin-bottom: 30px;
     }
+
     .footer-top.adp_bottom {
         padding-bottom: 50px;
     }
+
     .single-feature-logo {
         margin-bottom: 30px;
     }
+
     .feature-logo-area.adp_bottom {
         padding-bottom: 30px;
     }
+
     .wrapper.wrapper-boxed-layout {
         margin: 0 50px;
         width: calc(100% - 100px);
     }
+
     .wrapper-boxed-layout .header-sticky.sticky {
         left: 50px;
         right: 50px;
     }
+
     .class_list_view .single-template-product .pro-img {
         width: 40%;
     }
+
     .class_list_view .single-template-product .product_content_wrap {
         width: 60%;
     }
+
     .product_additional_information button {
         margin-bottom: 5px;
     }
+
     .pv_class {
         min-width: 100px;
     }
+
     .quick-thumb-content .modal-lg {
-        max-width: 800px;
+        max-width: 8media (min-width: 992px) and (max-width: 1199px)
+
+{
+    .quick-thumb-content .modal-lg
+
+{
+    max-width: 860px;
+}
+
+}00px;
     }
 	.small-list-title a {
 	font-size: 14px;

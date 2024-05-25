@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\WishList\Detail.cshtml" />
     <None Include="wwwroot\js\myJs.js" />
   </ItemGroup>
 

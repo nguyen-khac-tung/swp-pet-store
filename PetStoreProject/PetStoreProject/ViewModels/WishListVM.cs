@@ -1,11 +1,13 @@
-﻿namespace PetStoreProject.ViewModels
+﻿using PetStoreProject.Models;
+
+namespace PetStoreProject.ViewModels
 {
     public class WishListVM
     {
-        public int produtcID { get; set; }
-        public string? img_url { get; set; }
-        public string? productName { get; set; }
+		public int ProductId { get; set; }
+		public string ProductName { get; set; }
+		public string Brand { get; set; }
+		public string? img_url { get; set; }
         public float price { get; set; }
-        public string? brandName { get; set; }
     }
 }

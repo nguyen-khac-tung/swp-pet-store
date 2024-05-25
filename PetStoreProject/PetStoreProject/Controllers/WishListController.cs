@@ -15,13 +15,13 @@ namespace PetStoreProject.Controllers
 
 		public IActionResult Detail()
 		{
-			var listWishList = _wishList.wishListVMs(15);
+			var listWishList = _wishList.wishListVMs(22);
 			return View(listWishList);
 		}
 
 		public IActionResult Delete(int productID)
 		{
-			_wishList.DeleteFromWishList(15, productID);
+			_wishList.DeleteFromWishList(22, productID);
 			return RedirectToAction("Detail");
 		}
 	}

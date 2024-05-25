@@ -221,7 +221,8 @@ namespace PetStoreProject.Repositories.Product
 			return GetBrandByCategoryId(categoryIds);
         }
 
-        public List<ProductDetailViewModel> GetProductDetailAccessories()
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest()
+        
         {
 
             var products = GetAllAccessories();
@@ -229,12 +230,26 @@ namespace PetStoreProject.Repositories.Product
             {
 				ProductId = p.ProductId,
 				Name = p.Name,
+                //Description = p.Description,
+                productOption = GetProductOptionsByProductId(p.ProductId),
+            }).ToList();
+            return productDetails;
+        }
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse()
+
+        {
+
+            var products = GetAllAccessories();
+            var productDetails = products.Select(p => new ProductDetailViewModel
+            {
+                ProductId = p.ProductId,
+                Name = p.Name,
                 Brand = GetBrandByProductId(p.ProductId).Name,
                 //Description = p.Description,
                 productOption = GetProductOptionsByProductId(p.ProductId),
-				images = GetImagesByProductId(p.ProductId),
-				//attributes = GetAttributesByProductId(p.ProductId),
-				//sizes = GetSizesByProductId(p.ProductId)
+                images = GetImagesByProductId(p.ProductId),
+                attributes = GetAttributesByProductId(p.ProductId),
+                sizes = GetSizesByProductId(p.ProductId)
 
 
             }).ToList();

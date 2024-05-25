@@ -7,7 +7,8 @@ namespace PetStoreProject.Repositories.Product
 	{
 		public ProductDetailViewModel GetDetail(int productId);
 		public List<RelatedProductViewModel> getRelatedProduct(int productId);
-		public List<ProductDetailViewModel> GetProductDetailAccessories();
+		public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest();
+		public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse();
         public List<Brand> GetBrandAccessories();
 
     }

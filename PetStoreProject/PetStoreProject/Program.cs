@@ -7,6 +7,7 @@ using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Product;
+using PetStoreProject.Repositories.WishList;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSingleton<EmailService>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+builder.Services.AddScoped<IWishListRepository, WishListRepository>();
 
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 

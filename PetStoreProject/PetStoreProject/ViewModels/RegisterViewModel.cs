@@ -19,7 +19,6 @@ namespace PetStoreProject.ViewModels
         public string? Phone { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu của bạn")]
-        [StringLength(20, MinimumLength = 8, ErrorMessage = "Vui lòng nhập mật khẩu có độ dài từ 8 đến 20 ký tự.")]
         [DisplayName("Mật Khẩu")]
         [DataType(DataType.Password)]
         public string Password { get; set; } 

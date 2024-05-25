@@ -13,8 +13,8 @@ public partial class Image
 {
     [Key]
     public int ImageId { get; set; }
-
-    [StringLength(250)]
+	[Column("Image_url")]
+	[StringLength(250)]
     public string ImageUrl { get; set; } = null!;
 
     [InverseProperty("Image")]

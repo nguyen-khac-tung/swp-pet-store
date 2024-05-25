@@ -71,23 +71,21 @@
                         <!-- Cart Button Start -->
                         <div class="col-md-8 col-sm-12">
                             <div class="buttons-cart">
-                                <input type="submit" value="Update Cart" />
-                                <a href="#">Continue Shopping</a>
-                                <a href="#">Clear Cart</a>
+                                <a href="/">Tiếp tục mua sắm</a>
                             </div>
                         </div>
                         <!-- Cart Button Start -->
                         <!-- Cart Totals Start -->
                         <div class="col-md-4 col-sm-12">
                             <div class="cart_totals">
-                                <h2>Cart Totals</h2>
+                                <h2>Tổng đơn hàng</h2>
                                 <br />
                                 <table>
                                     <tbody>
                                         <tr class="order-total">
-                                            <th>Total</th>
+                                            <th>Tổng</th>
                                             <td>
-                                                <strong><span class="amount" id="amount">@total_price</span></strong>
+                                                <strong><span class="amount" id="amount">@total_price</span><span class="amount">VND</span></strong>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -150,64 +148,51 @@
 											<i class="icofont-ui-rate-blank"></i>
 											<i class="icofont-ui-rate-blank"></i>
 										</li>
-										<li class="read-review"><a href="#">View Reviews (2)</a></li>
-										<li class="write-review"><a href="#">Write Review</a></li>
+										<li class="read-review"><a href="#">Xem đánh gía (2)</a></li>
+										<li class="write-review"><a href="#">Viết đánh giá</a></li>
 									</ul>
 
-									<!--Brand-->
-									<div class="rating-summary" id="quick_brand">
-										
-									</div>
+                                    <div class="rating-summary" id="quick_brand">
+                                        Thương hiệu :
+                                    </div>
 
-									<!--Price-->
-									<div class="pro-thumb-price mt-20">
-										<span class="regular-price" id="quick_price"></span>
-									</div>
+                                    <!--Price-->
+                                    <div class="pro-thumb-price mt-20">
+                                        <span class="regular-price" id="quick_price"></span>
+                                        <span class="regular-price">VND</span>
+                                    </div>
 
-									@* 										<!--Detail-->
-									<div class="pro-desc-details">
-									Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
-									</div> *@
+                                    @* 										<!--Detail-->
+                                    <div class="pro-desc-details">
+                                    Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
+                                    </div> *@
 
-									<!--Option-->
-									<div class="thubnail-desc" id="quick_option">
+                                    <!--Option-->
+                                    <div class="thubnail-desc" id="quick_option">
 
-										<div class="size_color_wraper" id="quick_attribute">
-										</div>
+                                        <div class="size_color_wraper" id="quick_attribute">
+                                        </div>
 
-										<!--Size-->
+                                        <!--Size-->
 
-										<div class="theme_size clearfix" id="quick_size">
-										</div>
-									</div>
+                                        <div class="theme_size clearfix" id="quick_size">
+                                        </div>
+                                    </div>
 
-									<div>
-										Tổng số tiền: <span id="quick_amount"></span>
-									</div>
-
-									<!--Cart-->
-									<div class="details_action_wraper">
-										<ul>
-
-											<li class="box-quantity">
-												<form action="#" onclick="quick_total_price()">
-													<input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity">
-												</form>
-											</li>
-											<li>
-                                                <a class="details_cart link" title="" data-original-title="Lưu sản phẩm" tabindex="0" data-product-option-id="" data-old-product-option-id="" id="quick_add_to_cart" onclick="editCartItem(this.dataset.oldProductOptionId, this.dataset.productOptionId, document.getElementById('quick_quantity').value)" style="cursor: pointer;">
-                                                    Lưu
-												</a>
-											</li>
-											<li>
-												<a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
-											</li>
-											<li>
-												<a class="details_compare" href="compare.html" title="" data-original-title="Compare" tabindex="0"><i class="icofont-random"></i></a>
-											</li>
-
-										</ul>
-									</div>
+                                    <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+                                        Số lượng:
+                                        <form action="#" onclick="quick_total_price()" style="border-radius: 10px">
+                                            <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px">
+                                        </form>
+                                    </div>
+                                    <div">
+                                        Tổng số tiền: <span id="quick_amount"></span>
+                                        <span>VND</span>
+                                </div>
+                                <div class="details_action_wraper">
+                                    <a class="details_cart link" title="" data-original-title="Lưu sản phẩm" tabindex="0" data-product-option-id="" data-old-product-option-id="" id="quick_add_to_cart" onclick="editCartItem(this.dataset.oldProductOptionId, this.dataset.productOptionId, document.getElementById('quick_quantity').value)" style="cursor: pointer;">Lưu sản phẩm</a>
+                                    <a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
+                                </div>
 
 								</div>
 							</div>

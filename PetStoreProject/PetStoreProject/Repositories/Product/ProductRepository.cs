@@ -21,6 +21,7 @@ namespace PetStoreProject.Repositories.Product
                            {
                                Name = p.Name,
                                Brand = b.Name,
+                               Description = p.Description
                            }).FirstOrDefault();
             var images = (from po in _context.ProductOptions
                           join i in _context.Images on po.ImageId equals i.ImageId
@@ -86,12 +87,12 @@ namespace PetStoreProject.Repositories.Product
                             join b in _context.Brands on p.BrandId equals b.BrandId
                             join i in _context.Images on po.ImageId equals i.ImageId
                             where p.ProductCateId == cateId
-                            group new { po, p, b, i } by new NewRecord(p.ProductId, p.Name, b.Name) into g
+                            group new { po, p, b, i } by new { p.ProductId, p.Name, BrandName = b.Name } into g
                             select new RelatedProductViewModel
                             {
                                 ProductId = g.Key.ProductId,
                                 Name = g.Key.Name,
-                                brand = g.Key.Name,
+                                brand = g.Key.BrandName,
                                 Price = g.Min(x => x.po.Price)
                             }).Take(12).ToList();
             foreach (var p in products)
@@ -205,20 +206,20 @@ namespace PetStoreProject.Repositories.Product
             return brand;
         }
 
-		public List<Brand> GetBrandByCategoryId(List<int> categoryIds)
-		{
-           
-			var brands = (from b in _context.Brands
-						  join p in _context.Products on b.BrandId equals p.BrandId
-						  join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
-						  where categoryIds.Contains(pc.CategoryId)
-						  select b).Distinct().ToList();
-			return brands;
-		}
-		public List<Brand> GetBrandAccessories()
-		{
+        public List<Brand> GetBrandByCategoryId(List<int> categoryIds)
+        {
+
+            var brands = (from b in _context.Brands
+                          join p in _context.Products on b.BrandId equals p.BrandId
+                          join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                          where categoryIds.Contains(pc.CategoryId)
+                          select b).Distinct().ToList();
+            return brands;
+        }
+        public List<Brand> GetBrandAccessories()
+        {
             List<int> categoryIds = [2, 5, 6];
-			return GetBrandByCategoryId(categoryIds);
+            return GetBrandByCategoryId(categoryIds);
         }
 
         public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest()
@@ -226,8 +227,9 @@ namespace PetStoreProject.Repositories.Product
         {
 
             var products = GetAllAccessories();
-			var productDetails = products.Select(p => new ProductDetailViewModel
+            var productDetails = products.Select(p => new ProductDetailViewModel
             {
+
 				ProductId = p.ProductId,
 				Name = p.Name,
                 //Description = p.Description,
@@ -250,8 +252,7 @@ namespace PetStoreProject.Repositories.Product
                 images = GetImagesByProductId(p.ProductId),
                 attributes = GetAttributesByProductId(p.ProductId),
                 sizes = GetSizesByProductId(p.ProductId)
-
-
+    
             }).ToList();
             return productDetails;
         }

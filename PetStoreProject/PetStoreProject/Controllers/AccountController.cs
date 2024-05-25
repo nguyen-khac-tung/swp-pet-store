@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Helper;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.ViewModels;
+using System.Security.Claims;
 
 namespace PetStoreProject.Controllers
 {
@@ -34,7 +39,7 @@ namespace PetStoreProject.Controllers
             }
             else
             {
-                ViewBag.Mess = "Email hoặc mật khẩu không chính xác.";
+                TempData["Mess"] = "Email hoặc mật khẩu không chính xác.";
                 ViewBag.Email = account.Email;
                 return View();
             }
@@ -138,5 +143,54 @@ namespace PetStoreProject.Controllers
                 return View(resetPasswordVM);
             }
         }
+
+        public IActionResult LoginGoogle()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse"),
+                Items = { { "prompt", "select_account" } },
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public IActionResult GoogleFailure()
+        {
+            TempData["Mess"] = "Đăng nhập tài khoản Google không thành công. Vui lòng thử lại.";
+            return RedirectToAction("Login", "Account");
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            if (result.Succeeded)
+            {
+                var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
+                var userInfo = claims.ToDictionary(claim => claim.Type, claim => claim.Value);
+
+                var fullName = userInfo[ClaimTypes.Name];
+                var email = userInfo[ClaimTypes.Email];
+                var passwordDefault = "SigninGoogle";
+
+                bool isEmailExist = _accountRepository.checkEmailExist(email);
+                if (isEmailExist)
+                {
+                    HttpContext.Session.SetString("Account", email);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    var resgister = new RegisterViewModel { FullName = fullName, Email = email, Password = passwordDefault };
+                    _accountRepository.addNewCustomer(resgister);
+                    HttpContext.Session.SetString("Account", email);
+                    return RedirectToAction("Index", "Home", new { success = "True" });
+                }
+            }
+
+            TempData["Mess"] = "Đăng nhập tài khoản Google không thành công. Vui lòng thử lại.";
+            return RedirectToAction("Login", "Account");
+        }
+
     }
 }

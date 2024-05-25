@@ -18,7 +18,7 @@ namespace PetStoreProject.Controllers
 			var listWishList = _wishList.wishListVMs(22);
 			return View(listWishList);
 		}
-
+		[HttpPost]
 		public IActionResult Delete(int productID)
 		{
 			_wishList.DeleteFromWishList(22, productID);

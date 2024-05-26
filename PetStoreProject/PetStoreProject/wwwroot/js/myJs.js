@@ -67,7 +67,7 @@ function getCartBoxItems() {
                 var spanOption = $('<div>', {
                     style: "font-size: 13px; margin-top: 3px; margin-bottom: 3px"
                 }).text(option)
-                var spanPrice = $('<span>').text(response[index].price + ' x ' + response[index].quantity)
+                var spanPrice = $('<span>').text(response[index].price.toLocaleString('en-US') + ' x ' + response[index].quantity)
                 h6.append(aTitle)
                 divCartImg.append(img)
                 divCartContent.append(h6)
@@ -108,15 +108,9 @@ function amountCart() {
     var total_amount = 0.0;
     var subTotalElements = document.getElementsByClassName('product-subtotal')
     for (var i = 1; i < subTotalElements.length; i++) {
-        total_amount += parseFloat(subTotalElements[i].innerText)
+        total_amount += parseFloat(subTotalElements[i].innerText.replace(/,/g, ''))
     }
-    $('#amount').html(total_amount)
-}
-
-function total_price() {
-    var quantity = document.getElementById("quantity").value
-    var amount = price * quantity
-    document.getElementById("amount").innerText = amount
+    $('#amount').html(total_amount.toLocaleString('en-US'))
 }
 
 function quickEditCartItem(oldProductOptionId, productId) {
@@ -168,13 +162,14 @@ function updateCartItem(oldId, cartItem) {
     row.find('.product-thumbnail img').attr('src', cartItem.imgUrl);
 
     // Update the product price
-    row.find('.product-price .amount').text(cartItem.price);
+    row.find('.product-price .amount').text(cartItem.price.toLocaleString('en-US'));
 
     // Update the product quantity
     row.find('.product-quantity input').val(cartItem.quantity);
 
     // Update the product subtotal
-    row.find('.product-subtotal').text(parseFloat(cartItem.price) * parseFloat(cartItem.quantity));
+    var sub_total = parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
+    row.find('.product-subtotal').text(sub_total.toLocaleString('en-US'))
 
     // Update the edit button
     row.find('a[title="Chỉnh sửa"]').attr('onclick', `quickEditCartItem(${cartItem.productOptionId}, ${cartItem.productId})`);
@@ -327,17 +322,14 @@ function quick_updatePriceAndImage(size_id, attribute_id, productOptions_json) {
             break;
         }
     }
-    console.log(quick_img_url)
-
     document.querySelector('#quick_image img').setAttribute('src', quick_img_url);
-    document.getElementById('quick_price').innerText = quick_price;
+    document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
     quick_total_price();
 }
 
 function quick_total_price() {
     var quick_quantity = parseFloat(document.getElementById('quick_quantity').value);
-    var quick_price = parseFloat(document.getElementById('quick_price').innerText);
-    console.log(quick_price)
+    var quick_price = parseFloat(document.getElementById('quick_price').innerText.replace(/,/g, ''));
     var quick_amount = quick_price * quick_quantity;
     document.getElementById("quick_amount").innerText = quick_amount.toLocaleString('en-US');
 }

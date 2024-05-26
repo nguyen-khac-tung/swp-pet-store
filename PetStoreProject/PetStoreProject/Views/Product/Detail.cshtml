@@ -299,7 +299,7 @@
 										</h5>
 
 										<div class="grid_price" style="text-align:center">
-											<span class="regular-price">@p.Price VND</span>
+											<span class="regular-price">@p.Price.ToString("#,###") VND</span>
 											@* <del class="discount_price">$75.50</del> *@
 										</div>
 									</div>
@@ -444,15 +444,13 @@
 <!-- Main Wrapper End Here -->
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+ @section ScriptOptional {
 <script >
 	var attributeId = @product.productOption[0].attribute.AttributeId
 	var sizeId = @product.productOption[0].size.SizeId;
-	var price = @product.productOption[0].price
+	let price = @product.productOption[0].price
 			var img_url;
-	window.onload = function () {
-		// Gọi hàm của bạn ở đây
-		updatePriceAndImage();
-	};
+	updatePriceAndImage();
 
 	var list_size = document.getElementById('size').querySelectorAll('li')
 	var list_attribute = document.getElementById('attribute').querySelectorAll('li')
@@ -495,9 +493,15 @@
 			}
 		}
 		document.getElementById('large_image').setAttribute('src', img_url)
-		document.getElementById('price').innerText = price
+		document.getElementById('price').innerText = price.toLocaleString('en-US')
 		console.log(price)
 		total_price()
+	}
+
+	function total_price() {
+		var quantity = document.getElementById("quantity").value
+		var amount = price * quantity
+		document.getElementById("amount").innerText = amount.toLocaleString('en-US')
 	}
 
 
@@ -552,3 +556,4 @@
 		});
 	});
 </script>
+}

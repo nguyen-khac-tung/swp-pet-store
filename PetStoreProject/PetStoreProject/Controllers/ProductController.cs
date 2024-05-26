@@ -44,10 +44,8 @@ namespace PetStoreProject.Controllers
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             List<int> listPID = _product.GetProductIDInWishList(22);
 
-            if(listPID.Count > 0)
-            {
-				ViewData["listPID"] = listPID;
-			}
+
+		    ViewData["listPID"] = listPID;
 			ViewBag.Brands = _product.GetBrandAccessories();
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;

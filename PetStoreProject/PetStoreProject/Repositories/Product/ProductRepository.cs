@@ -72,6 +72,7 @@ namespace PetStoreProject.Repositories.Product
             {
                 image.ImageUrl = formatUrl(image.ImageUrl);
             }
+            product.ProductId = productId;
             product.attributes = attributes;
             product.sizes = sizes;
             product.images = images;

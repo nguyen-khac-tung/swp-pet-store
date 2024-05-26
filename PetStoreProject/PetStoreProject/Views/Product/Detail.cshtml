@@ -1,473 +1,554 @@
 ﻿@using PetStoreProject.ViewModels
 @{
-    ViewData["Title"] = "Chi tiết Sản Phẩm";
-    var product = ViewData["product_detail"] as ProductDetailViewModel;
-    var productOptions = Newtonsoft.Json.JsonConvert.SerializeObject(product.productOption);
-    var related_products = ViewData["related_products"] as List<RelatedProductViewModel>;
+	ViewData["Title"] = "Chi tiết Sản Phẩm";
+	var product = ViewData["product_detail"] as ProductDetailViewModel;
+	var productOptions = Newtonsoft.Json.JsonConvert.SerializeObject(product.productOption);
+	var related_products = ViewData["related_products"] as List<RelatedProductViewModel>;
 }
 @section HeadOptional {
-    <style>
-        #dtail li {
-            margin-top: 10px;
-        }
-
-        .scroll {
-            max-height: 150px;
-            overflow-y: auto;
-        }
-    </style>
+	<style>
+		#dtail li {
+			margin-top: 10px;
+		}
+		.scroll{
+			max-height: 150px;
+			overflow-y: auto;
+		}
+		
+	</style>
 }
+<div class="wrapper">
 
-<!-- Product Thumbnail Start -->
-<div class="main-product-thumbnail product_details_wrap_1 adp_top adp_bottom" style="display:flex; justify-content:center; width:100%">
-    <div class="container" style="margin:0px; width:100%; display:flex; justify-content: space-around; flex-grow:1">
-        <div class="row" style="width:100%">
+	<!-- Product Thumbnail Start -->
+	<div class="main-product-thumbnail product_details_wrap_1 adp_top adp_bottom" style="display:flex; justify-content:center; width:100%">
+		<div class="container" style="margin:0px; width:100%; display:flex; justify-content: space-around; flex-grow:1">
+			<div class="row" style="width:100%">
 
-            <div class="col-lg-7 col-md-12 col-12">
-                <div class="product-details-img product-details-tab product_details_2 left_side">
-                    <div id="gallery" class="product-dec-slider-2 thumb_image_small mini_arrow_var">
-                        @foreach (var image in product.images)
-                        {
-                            <div>
-                                <a data-image="@image.ImageUrl" data-zoom-image="@image.ImageUrl">
-                                    <img src="@image.ImageUrl" alt="">
-                                </a>
-                            </div>
-                        }
+				<div class="col-lg-7 col-md-12 col-12">
+					<div class="product-details-img product-details-tab product_details_2 left_side">
+						<div id="gallery" class="product-dec-slider-2 thumb_image_small mini_arrow_var">
+							@foreach (var image in product.images)
+							{
+								<div>
+									<a data-image="@image.ImageUrl" data-zoom-image="@image.ImageUrl">
+										<img src="@image.ImageUrl" alt="">
+									</a>
+								</div>
+							}
 
-                    </div>
-                    <!--Large image-->
-                    <div class="zoompro-wrap zoompro-2 thumb_image_large">
-                        <div class="zoompro-border zoompro-span">
-                            <img class="zoompro" id="large_image" src="@product.productOption[0].img_url" data-zoom-image="@product.productOption[0].img_url" alt="" />
+						</div>
+						<!--Large image-->
+						<div class="zoompro-wrap zoompro-2 thumb_image_large">
+							<div class="zoompro-border zoompro-span">
+								<img class="zoompro" id="large_image" src="@product.productOption[0].img_url" data-zoom-image="@product.productOption[0].img_url" alt="" />
 
-                            @* <div class="product-video">
-                            <a class="video-popup" href="https://www.youtube.com/watch?v=pTrC_McU62Q">
-                            <i class="icofont-video-alt"></i>
-                            Explore Video
-                            </a>
-                            </div> *@
-                        </div>
+								@* <div class="product-video">
+									<a class="video-popup" href="https://www.youtube.com/watch?v=pTrC_McU62Q">
+										<i class="icofont-video-alt"></i>
+										Explore Video
+									</a>
+								</div> *@
+							</div>
 
-                        @* <span class="sticker-sale">-25%</span>
-                        <span class="sticker-new">New</span> *@
+							@* <span class="sticker-sale">-25%</span>
+							<span class="sticker-new">New</span> *@
 
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Thumbnail Description Start -->
-            <div class="col-lg-5 col-md-12 col-12">
-                <div class="thubnail-desc ">
-                    <!--name-->
-                    <h3 class="product-header">@product.Name</h3>
-                    <!--Rating-->
-                    <ul class="rating-summary">
-                        <li class="rating-pro">
-                            <i class="icofont-ui-rating"></i>
-                            <i class="icofont-ui-rating"></i>
-                            <i class="icofont-ui-rate-blank"></i>
-                            <i class="icofont-ui-rate-blank"></i>
-                            <i class="icofont-ui-rate-blank"></i>
-                        </li>
-                        <li class="read-review"><a href="#">Xem đánh gía (2)</a></li>
-                        <li class="write-review"><a href="#">Viết đánh giá</a></li>
-                    </ul>
-                    <!--
-                        <div class="pro-thumb-price mt-20">
-                        <span class="regular-price">$98.25</span><del class="discount_price">$72.00</del>
-                    </div>
-                    -->
-                    <!--Brand-->
-                    <div class="rating-summary">
-                        Thương hiệu : @product.Brand
-                    </div>
-                    <!--Price-->
-                    <div class="pro-thumb-price mt-20">
-                        <span class="regular-price" id="price">@product.productOption[0].price</span>
-                        <span class="regular-price">VND</span>
-                    </div>
-
-                    <!--Attribute-->
-                    <div class="size_color_wraper" id="attribute">
-
-                        @if (product.attributes[0].Name != null)
-                        {
-                            <div class="color clearfix mb-30">
-                                <label style="margin:0px">Loại :</label>
-                                <ul class="color-list">
-                                    @for (var index = 0; index < product.attributes.Count; index++)
-                                    {
-                                        if (product.attributes[index].Name != null)
-                                        {
-                                            <li style="cursor:pointer;" onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                        }
-                    </div>
+						</div>
+					</div>
+				</div>
 
 
-                    <!--Size-->
-                    <div class="theme_size clearfix" id="size">
-                        @if (product.sizes[0].Name != null)
-                        {
-                            <label style="margin-top: 5px; margin-bottom:0px">Kích thước :</label>
-                            <div class="color-list size_list">
-                                <ul class="color-list size_list">
-                                    @for (var index = 0; index < product.sizes.Count; index++)
-                                    {
-                                        if (product.sizes[index].Name != null)
-                                        {
-                                            <li style="cursor:pointer" onclick="size_selected(@index, @product.sizes[index].SizeId)">@product.sizes[index].Name</li>
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                        }
-                    </div>
-                    <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
-                        Số lượng:
-                        <form action="#" onclick="total_price()" style="border-radius: 10px">
-                            <input class="quantity" type="number" min="1" max="10" value="1" id="quantity" style="width:60px;height:33px; margin-left:10px">
-                        </form>
-                    </div>
+				<!-- Thumbnail Description Start -->
+				<div class="col-lg-5 col-md-12 col-12">
+					<div class="thubnail-desc ">
+						<!--name-->
+						<h3 class="product-header">@product.Name</h3>
+						<!--Rating-->
+						<ul class="rating-summary">
+							<li class="rating-pro">
+								<i class="icofont-ui-rating"></i>
+								<i class="icofont-ui-rating"></i>
+								<i class="icofont-ui-rate-blank"></i>
+								<i class="icofont-ui-rate-blank"></i>
+								<i class="icofont-ui-rate-blank"></i>
+							</li>
+							<li class="read-review"><a href="#">Xem đánh gía (2)</a></li>
+							<li class="write-review"><a href="#">Viết đánh giá</a></li>
+						</ul>
+						<!--
+							<div class="pro-thumb-price mt-20">
+							<span class="regular-price">$98.25</span><del class="discount_price">$72.00</del>
+						</div>
+						-->
+						<!--Brand-->
+						<div class="rating-summary">
+							Thương hiệu : @product.Brand
+						</div>
+						<!--Price-->
+						<div class="pro-thumb-price mt-20">
+							<span class="regular-price" id="price">@product.productOption[0].price</span>
+							<span class="regular-price">VND</span>
+						</div>
 
-                    <div>
-                        Tổng số tiền: <span id="amount">@product.productOption[0].price</span>
-                        <span>VND</span>
-                    </div>
+						<!--Attribute-->
+						<div class="size_color_wraper" id="attribute">
+
+						@if (product.attributes[0].Name != null)
+						{
+								<div class="color clearfix mb-30">
+									<label style="margin:0px">Loại :</label>
+									<ul class="color-list">
+										@for (var index = 0; index < product.attributes.Count; index++)
+										{
+											if(product.attributes[index].Name != null)
+											{
+												<li style="cursor:pointer;" onclick="attribute_selected(@index, @product.attributes[index].AttributeId)">@product.attributes[index].Name</li>
+											}
+										}
+									</ul>
+								</div>
+						}
+						</div>
+
+
+						<!--Size-->
+						<div class="theme_size clearfix" id="size">
+						@if (product.sizes[0].Name != null)
+						{
+								<label style="margin-top: 5px; margin-bottom:0px">Kích thước :</label>
+								<div class="color-list size_list">
+									<ul class="color-list size_list">
+										@for (var index = 0; index < product.sizes.Count; index++)
+										{
+											if(product.sizes[index].Name != null)
+											{
+												<li style="cursor:pointer" onclick="size_selected(@index, @product.sizes[index].SizeId)">@product.sizes[index].Name</li>
+											}
+										}
+									</ul>
+								</div>
+						}
+						</div>
+						<div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+							Số lượng:
+							<form action="#" onclick="total_price()" style="border-radius: 10px">
+								<input class="quantity" type="number" min="1" max="10" value="1" id="quantity" style="width:60px;height:33px; margin-left:10px">
+							</form>
+						</div>
+
+						<div>
+							Tổng số tiền: <span id="amount">@product.productOption[0].price</span>
+							<span>VND</span>
+						</div>
 
 
 
-                    <div class="details_action_wraper">
-                        <a class="details_cart link " title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quantity').value)" style="cursor: pointer;">
-                            Thêm Vào Giỏ Hàng
-                        </a>
-                        <a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
-                    </div>
+						<div class="details_action_wraper">
+							<a class="details_cart link " title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quantity').value)" style="cursor: pointer;">
+								Thêm Vào Giỏ Hàng
+							</a>
+							<a class="details_wishlist" title="" data-original-title="Wishlist" tabindex="0">
+								@{
+									bool isFavor = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+								}
 
-                </div>
-            </div>
-            <!-- Thumbnail Description End -->
+								<i class="icofont-heart-alt @((isFavor) ? "favorite" : "not-favorite")"
+								   data-id="@product.ProductId"
+								   style="color: @((isFavor) ? "red" : "black"); cursor: pointer;"></i>
+							</a>
+						</div>
 
-        </div>
-        <!-- Row End -->
-    </div>
-    <!-- Container End -->
+					</div>
+				</div>
+				<!-- Thumbnail Description End -->
+
+			</div>
+			<!-- Row End -->
+		</div>
+		<!-- Container End -->
+	</div>
+	<!-- Product Thumbnail End -->
+	<!-- Product Thumbnail Description Start -->
+	<div class="thumnail-desc">
+		<div class="container">
+			<div class="thumb-desc-inner">
+				<div class="row">
+					<div class="col-sm-12">
+						<ul class="main-thumb-desc nav tabs-area" role="tablist">
+							<li><a class="active" data-bs-toggle="tab" href="#dtail">Mô tả</a></li>
+							<li><a data-bs-toggle="tab" href="#review">Đánh giá</a></li>
+							<li><a data-bs-toggle="tab" href="#new_tab_1">Lưu ý</a></li>
+						</ul>
+						<!-- Product Thumbnail Tab Content Start -->
+						<div class="tab-content thumb-content">
+							<div id="dtail" class="tab-pane fade show active">
+								<p>@Html.Raw(product.Description)</p>
+							</div>
+							<div id="review" class="tab-pane fade">
+								<!-- Reviews Start -->
+								<div class="review">
+									<div class="group-title">
+										<h2>Đánh giá sản phẩm</h2>
+									</div>
+
+									<div class="riview-field">
+										<form autocomplete="off" action="#">
+											<div class="form-group">
+												<label class="req" for="sure-name">Name</label>
+												<input type="text" class="form-control" id="sure-name" required="required">
+											</div>
+											<div class="form-group">
+												<label class="req" for="subject">Email</label>
+												<input type="email" class="form-control" id="subject" required="required">
+											</div>
+
+											<div class="rating_wrap">
+												<h5>Đánh gía của bạn</h5>
+												<ul class="review-list">
+													<!-- Single Review List Start -->
+													<li>
+														<i class="icofont-ui-rating"></i>
+														<i class="icofont-ui-rating"></i>
+														<i class="icofont-ui-rating"></i>
+														<i class="icofont-ui-rating"></i>
+														<i class="icofont-ui-rate-blank"></i>
+													</li>
+													<!-- Single Review List End -->
+												</ul>
+												<!-- Reviews Field Start -->
+											</div>
+
+											<div class="form-group">
+												<label class="req" for="subject2">Title of Review</label>
+												<input type="text" class="form-control" id="subject2" required="required">
+											</div>
+											<div class="form-group">
+												<label class="req" for="comments">Your Review (1000) characters remaining </label>
+												<textarea class="form-control" rows="5" id="comments" required="required"></textarea>
+											</div>
+											<button type="submit" class="customer-btn">Submit</button>
+										</form>
+									</div>
+									<!-- Reviews Field Start -->
+								</div>
+								<!-- Reviews End -->
+							</div>
+							<div id="new_tab_1" class="tab-pane fade">
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu Donec ac tempus ante.
+
+									Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 	Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi.
+								</p>
+							</div>
+
+						</div>
+
+						<!-- Product Thumbnail Tab Content End -->
+					</div>
+				</div>
+				<!-- Row End -->
+			</div>
+		</div>
+		<!-- Container End -->
+	</div>
+	<!-- Product Thumbnail Description End -->
+	<!-- collective product Area Start Here -->
+	<div class="collective-product adp_top adp_bottom">
+		<div class="container">
+			<!-- Section Title Start Here -->
+			<div class="section-title">
+				<h2>Sản phẩm tương tự</h2>
+			</div>
+			<!-- Section Title End Here -->
+			<div class="feature-pro-active-wrapper">
+				<div class="collective-product-active-4 row default_arrow small_arrow">
+					@foreach (var p in related_products)
+					{
+						<!-- Single Product Start -->
+						<div class="col-xl-3 col-lg-4 col-md-6">
+							<div class="single-template-product">
+								<!-- Product Image Start -->
+								<div class="pro-img">
+
+									@* <span class="sticker-sale">-25%</span>
+									<span class="sticker-new">New</span> *@
+
+									<a href="/product/detail/@p.ProductId">
+										<img class="primary-img" src="@p.images[0].ImageUrl" alt="single-product">
+										@* <img class="secondary-img" src="img/products/p24.jpg" alt="single-product"> *@
+									</a>
+
+									<div class="item_quick_link">
+										<a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)"``><i class="icofont-search"></i></a>
+									</div>
+
+									@* <div class="product-count-wrap">
+										<div class="product-countdown" data-countdown="2022/06/01"></div>
+									</div> *@
+
+								</div>
+								<!-- Product Image End -->
+								<!-- Product Content Start -->
+								<div class="product_content_wrap" style="margin-right: 10px">
+									<div class="product_content" style="text-align:left; font-weight:bold; margin-left: 10px">
+										<div>
+											@p.brand
+										</div>
+										<h5 style="height:50px; padding:5px;font-size:16px; padding: 0px; margin: 0px">
+											<a href="/product/detail/@p.ProductId">@p.Name</a>
+										</h5>
+
+										<div class="grid_price" style="text-align:center">
+											<span class="regular-price">@p.Price VND</span>
+											@* <del class="discount_price">$75.50</del> *@
+										</div>
+									</div>
+									<div class="item_add_cart">
+										<a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@p.ProductId)">Thên Vào Giỏ Hàng</a>
+										<a class="grid_wishlist" title="Wishlist">
+
+											@{
+												bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(p.ProductId);
+											}
+
+											<i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+											   data-id="@p.ProductId"
+											   style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+										</a>
+									</div>
+								</div>
+								<!-- Product Content End -->
+							</div>
+						</div>
+						<!-- Single Product End -->
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Quick View Content Start -->
+	<div class="main-product-thumbnail quick-thumb-content">
+		<div class="container">
+			<!-- The Modal -->
+			<div class="modal fade" id="myModal">
+				<div class="modal-dialog modal-lg modal-dialog-centered">
+					<div class="modal-content">
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+						</div>
+						<!-- Modal body -->
+						<div class="modal-body">
+							<div class="row">
+
+								<div class="col-lg-7 col-md-7">
+									<div class="product-details product_details_1">
+										<div class="product-details-img">
+											<div class="tab-content main_large_img product-details-large" id="quick_image">
+
+											</div>
+
+											<div class="shop-details-tab nav product-details-small" id="image_small">
+											
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+								<!-- Thumbnail Description Start -->
+								<div class="col-md-5">
+									<div class="thubnail-desc ">
+
+										<!--Name-->
+										<h3 class="product-header"><a href="#" id="quick_name"></a></h3>
+										<ul class="rating-summary">
+											<li class="rating-pro">
+												<i class="icofont-ui-rating"></i>
+												<i class="icofont-ui-rating"></i>
+												<i class="icofont-ui-rate-blank"></i>
+												<i class="icofont-ui-rate-blank"></i>
+												<i class="icofont-ui-rate-blank"></i>
+											</li>
+											<li class="read-review"><a href="#">Xem đánh giá</a></li>
+											<li class="write-review"><a href="#">Viết đánh giá</a></li>
+										</ul>
+
+										<!--Brand-->
+										<div class="rating-summary" id="quick_brand">
+											Thương hiệu : @product.Brand
+										</div>
+
+										<!--Price-->
+										<div class="pro-thumb-price mt-20">
+											<span class="regular-price" id="quick_price"></span>
+											<span class="regular-price">VND</span>
+										</div>
+
+@* 										<!--Detail-->
+										<div class="pro-desc-details">
+											Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
+										</div> *@
+
+										<!--Option-->
+										<div class="thubnail-desc" id="quick_option">
+											
+											<div class="size_color_wraper" id="quick_attribute">
+												
+											</div>
+											
+											<!--Size-->
+
+											<div class="theme_size clearfix" id="quick_size">
+												
+											</div>
+										</div>
+
+										<div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+											Số lượng:
+											<form action="#" onclick="quick_total_price()" style="border-radius: 10px">
+												<input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px">
+											</form>
+										</div>
+										<div">
+											Tổng số tiền: <span id="quick_amount">@product.productOption[0].price</span>
+											<span>VND</span>
+										</div>
+
+										<!--Cart-->
+										<div class="details_action_wraper">
+											<a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="quick_add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quick_quantity').value)" style="cursor: pointer;">
+												Thêm Vào Giỏ Hàng
+											</a>
+											<a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
+										</div>
+
+									</div>
+								</div>
+								<!-- Thumbnail Description End -->
+
+
+							</div>
+							<!-- Row End -->
+						</div>
+						<!-- Modal footer -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Quick View Content End -->
+
 </div>
-<!-- Product Thumbnail End -->
-<!-- Product Thumbnail Description Start -->
-<div class="thumnail-desc">
-    <div class="container">
-        <div class="thumb-desc-inner">
-            <div class="row">
-                <div class="col-sm-12">
-                    <ul class="main-thumb-desc nav tabs-area" role="tablist">
-                        <li><a class="active" data-bs-toggle="tab" href="#dtail">Mô tả</a></li>
-                        <li><a data-bs-toggle="tab" href="#review">Đánh giá</a></li>
-                        <li><a data-bs-toggle="tab" href="#new_tab_1">Lưu ý</a></li>
-                    </ul>
-                    <!-- Product Thumbnail Tab Content Start -->
-                    <div class="tab-content thumb-content">
-                        <div id="dtail" class="tab-pane fade show active">
-                            <p>@Html.Raw(product.Description)</p>
-                        </div>
-                        <div id="review" class="tab-pane fade">
-                            <!-- Reviews Start -->
-                            <div class="review">
-                                <div class="group-title">
-                                    <h2>Đánh giá sản phẩm</h2>
-                                </div>
+<!-- Main Wrapper End Here -->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-                                <div class="riview-field">
-                                    <form autocomplete="off" action="#">
-                                        <div class="form-group">
-                                            <label class="req" for="sure-name">Name</label>
-                                            <input type="text" class="form-control" id="sure-name" required="required">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="req" for="subject">Email</label>
-                                            <input type="email" class="form-control" id="subject" required="required">
-                                        </div>
+<script >
+	var attributeId = @product.productOption[0].attribute.AttributeId
+	var sizeId = @product.productOption[0].size.SizeId;
+	var price = @product.productOption[0].price
+			var img_url;
+	window.onload = function () {
+		// Gọi hàm của bạn ở đây
+		updatePriceAndImage();
+	};
 
-                                        <div class="rating_wrap">
-                                            <h5>Đánh gía của bạn</h5>
-                                            <ul class="review-list">
-                                                <!-- Single Review List Start -->
-                                                <li>
-                                                    <i class="icofont-ui-rating"></i>
-                                                    <i class="icofont-ui-rating"></i>
-                                                    <i class="icofont-ui-rating"></i>
-                                                    <i class="icofont-ui-rating"></i>
-                                                    <i class="icofont-ui-rate-blank"></i>
-                                                </li>
-                                                <!-- Single Review List End -->
-                                            </ul>
-                                            <!-- Reviews Field Start -->
-                                        </div>
+	var list_size = document.getElementById('size').querySelectorAll('li')
+	var list_attribute = document.getElementById('attribute').querySelectorAll('li')
+	if(list_size.length > 0){
+		list_size[0].classList.add('select')
+	}
 
-                                        <div class="form-group">
-                                            <label class="req" for="subject2">Title of Review</label>
-                                            <input type="text" class="form-control" id="subject2" required="required">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="req" for="comments">Your Review (1000) characters remaining </label>
-                                            <textarea class="form-control" rows="5" id="comments" required="required"></textarea>
-                                        </div>
-                                        <button type="submit" class="customer-btn">Submit</button>
-                                    </form>
-                                </div>
-                                <!-- Reviews Field Start -->
-                            </div>
-                            <!-- Reviews End -->
-                        </div>
-                        <div id="new_tab_1" class="tab-pane fade">
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu Donec ac tempus ante.
+	if (list_attribute.length > 0) {
+		list_attribute[0].classList.add('select')
+	}
 
-                                Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 	Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi.
-                            </p>
-                        </div>
+	function size_selected(index, size_id) {
+		var list_li = document.getElementById('size').querySelectorAll('li');
+		list_li.forEach(function (li) {
+			li.classList.remove('select');
+		});
+		list_li[index].classList.add('select');
+		sizeId = size_id;
+		updatePriceAndImage();
+	}
 
-                    </div>
+	function attribute_selected(index, attribute_id) {
+		var list_li = document.getElementById('attribute').querySelectorAll('li');
+		list_li.forEach(function (li) {
+			li.classList.remove('select');
+		});
+		list_li[index].classList.add('select');
+		attributeId = attribute_id;
+		updatePriceAndImage();
+	}
 
-                    <!-- Product Thumbnail Tab Content End -->
-                </div>
-            </div>
-            <!-- Row End -->
-        </div>
-    </div>
-    <!-- Container End -->
-</div>
-<!-- Product Thumbnail Description End -->
-<!-- collective product Area Start Here -->
-<div class="collective-product adp_top adp_bottom">
-    <div class="container">
-        <!-- Section Title Start Here -->
-        <div class="section-title">
-            <h2>Sản phẩm tương tự</h2>
-        </div>
-        <!-- Section Title End Here -->
-        <div class="feature-pro-active-wrapper">
-            <div class="collective-product-active-4 row default_arrow small_arrow">
-                @foreach (var p in related_products)
-                {
-                    <!-- Single Product Start -->
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="single-template-product">
-                            <!-- Product Image Start -->
-                            <div class="pro-img">
-
-                                @* <span class="sticker-sale">-25%</span>
-                            <span class="sticker-new">New</span> *@
-
-                                <a href="/product/detail/@p.ProductId">
-                                    <img class="primary-img" src="@p.images[0].ImageUrl" alt="single-product">
-                                    @* <img class="secondary-img" src="img/products/p24.jpg" alt="single-product"> *@
-                                </a>
-
-                                <div class="item_quick_link">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)" ``><i class="icofont-search"></i></a>
-                                </div>
-
-                                @* <div class="product-count-wrap">
-                            <div class="product-countdown" data-countdown="2022/06/01"></div>
-                            </div> *@
-
-                            </div>
-                            <!-- Product Image End -->
-                            <!-- Product Content Start -->
-                            <div class="product_content_wrap" style="margin-right: 10px">
-                                <div class="product_content" style="text-align:left; font-weight:bold; margin-left: 10px">
-                                    <div>
-                                        @p.brand
-                                    </div>
-                                    <h5 style="height:50px; padding:5px;font-size:16px; padding: 0px; margin: 0px">
-                                        <a href="/product/detail/@p.ProductId">@p.Name</a>
-                                    </h5>
-
-                                    <div class="grid_price" style="text-align:center">
-                                        <span class="regular-price">@p.Price VND</span>
-                                        @* <del class="discount_price">$75.50</del> *@
-                                    </div>
-                                </div>
-                                <div class="item_add_cart">
-                                    <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@p.ProductId)">Thên Vào Giỏ Hàng</a>
-                                    <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
-                                </div>
-                            </div>
-                            <!-- Product Content End -->
-                        </div>
-                    </div>
-                    <!-- Single Product End -->
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Quick View Content Start -->
-<div class="main-product-thumbnail quick-thumb-content">
-    <div class="container">
-        <!-- The Modal -->
-        <div class="modal fade" id="myModal">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div class="modal-header">
-                        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-                    </div>
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="row">
-
-                            <div class="col-lg-7 col-md-7">
-                                <div class="product-details product_details_1">
-                                    <div class="product-details-img">
-                                        <div class="tab-content main_large_img product-details-large" id="quick_image">
-                                        </div>
-
-                                        <div class="shop-details-tab nav product-details-small" id="image_small">
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Thumbnail Description Start -->
-                            <div class="col-md-5">
-                                <div class="thubnail-desc ">
-
-                                    <!--Name-->
-                                    <h3 class="product-header"><a href="#" id="quick_name"></a></h3>
-                                    <ul class="rating-summary">
-                                        <li class="rating-pro">
-                                            <i class="icofont-ui-rating"></i>
-                                            <i class="icofont-ui-rating"></i>
-                                            <i class="icofont-ui-rate-blank"></i>
-                                            <i class="icofont-ui-rate-blank"></i>
-                                            <i class="icofont-ui-rate-blank"></i>
-                                        </li>
-                                        <li class="read-review"><a href="#">Xem đánh giá</a></li>
-                                        <li class="write-review"><a href="#">Viết đánh giá</a></li>
-                                    </ul>
-
-                                    <!--Brand-->
-                                    <div class="rating-summary" id="quick_brand">
-                                        Thương hiệu : @product.Brand
-                                    </div>
-
-                                    <!--Price-->
-                                    <div class="pro-thumb-price mt-20">
-                                        <span class="regular-price" id="quick_price"></span>
-                                        <span class="regular-price">VND</span>
-                                    </div>
-
-                                    @*<!--Detail-->
-                                    <div class="pro-desc-details">
-                                    Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
-                                    </div> *@
-
-                                    <!--Option-->
-                                    <div class="thubnail-desc" id="quick_option">
-
-                                        <div class="size_color_wraper" id="quick_attribute">
-                                        </div>
-
-                                        <!--Size-->
-
-                                        <div class="theme_size clearfix" id="quick_size">
-                                        </div>
-                                    </div>
-
-                                    <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
-                                        Số lượng:
-                                        <form action="#" onclick="quick_total_price()" style="border-radius: 10px">
-                                            <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px">
-                                        </form>
-                                    </div>
-                                    <div>
-                                        Tổng số tiền: <span id="quick_amount">@product.productOption[0].price</span>
-                                        <span>VND</span>
-                                    </div>
-
-                                    <!--Cart-->
-                                    <div class="details_action_wraper">
-                                        <a class="details_cart link" title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="" id="quick_add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quick_quantity').value)" style="cursor: pointer;">
-                                            Thêm Vào Giỏ Hàng
-                                        </a>
-                                        <a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!-- Thumbnail Description End -->
+	function updatePriceAndImage() {
+		var productOptions_json = @Html.Raw(productOptions);
+		for (var id = 0; id <= productOptions_json.length; id ++){
+			if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
+				price = productOptions_json[id].price
+				img_url = productOptions_json[id].img_url
+				$('#add_to_cart').attr('data-product-option-id', productOptions_json[id].Id)
+				break
+			}
+		}
+		document.getElementById('large_image').setAttribute('src', img_url)
+		document.getElementById('price').innerText = price
+		console.log(price)
+		total_price()
+	}
 
 
-                        </div>
-                        <!-- Row End -->
-                    </div>
-                    <!-- Modal footer -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Quick View Content End -->
-@section ScriptOptional {
-    <script>
-        var attributeId = @product.productOption[0].attribute.AttributeId
-                                    var sizeId = @product.productOption[0].size.SizeId;
-        var price = @product.productOption[0].price
-                                            var img_url;
+</script>
 
-        var list_size = document.getElementById('size').querySelectorAll('li')
-        var list_attribute = document.getElementById('attribute').querySelectorAll('li')
-        if (list_size.length > 0) {
-            list_size[0].classList.add('select')
-        }
+<script>
+	$(document).ready(function () {
+		$('.icofont-heart-alt').on('click', function () {
+			console.log('Heart clicked'); // Thêm log để kiểm tra sự kiện click
 
-        if (list_attribute.length > 0) {
-            list_attribute[0].classList.add('select')
-        }
+			var $this = $(this);
+			var productId = $this.data('id');
+			var isFavorite = $this.hasClass('favorite');
 
-        function size_selected(index, size_id) {
-            var list_li = document.getElementById('size').querySelectorAll('li');
-            list_li.forEach(function (li) {
-                li.classList.remove('select');
-            });
-            list_li[index].classList.add('select');
-            sizeId = size_id;
-            updatePriceAndImage();
-        }
+			console.log('Product ID:', productId);
+			console.log('Is Favorite:', isFavorite);
 
-        function attribute_selected(index, attribute_id) {
-            var list_li = document.getElementById('attribute').querySelectorAll('li');
-            list_li.forEach(function (li) {
-                li.classList.remove('select');
-            });
-            list_li[index].classList.add('select');
-            attributeId = attribute_id;
-            updatePriceAndImage();
-        }
+			// Toggle the favorite class
+			$this.toggleClass('favorite not-favorite');
 
-        function updatePriceAndImage() {
-            var productOptions_json = @Html.Raw(productOptions);
-            for (var id = 0; id <= productOptions_json.length; id++) {
-                if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
-                    price = productOptions_json[id].price
-                    img_url = productOptions_json[id].img_url
-                    $('#add_to_cart').attr('data-product-option-id', productOptions_json[id].Id)
-                    break
-                }
-            }
-            document.getElementById('large_image').setAttribute('src', img_url)
-            document.getElementById('price').innerText = price
-            console.log(price)
-            total_price()
-        }
-    </script>
-}
+			if (isFavorite) {
+				$this.css('color', 'black');
+			} else {
+				$this.css('color', 'red');
+			}
+
+			var token = $('input[name="__RequestVerificationToken"]').val();
+
+			// Send AJAX request to update the favorite status
+			$.ajax({
+				url: '@Url.Action("ToggleFavorite", "Product")',
+				type: 'POST',
+				headers: {
+					'RequestVerificationToken': token
+				},
+				data: { productId: productId },
+				success: function (response) {
+					console.log('AJAX success:', response);
+				},
+				error: function (error) {
+					console.error('AJAX error:', error); // Thêm log để kiểm tra lỗi
+
+					// Rollback the color change if there is an error
+					$this.toggleClass('favorite not-favorite');
+					if (isFavorite) {
+						$this.css('color', 'red');
+					} else {
+						$this.css('color', 'black');
+					}
+				}
+			});
+		});
+	});
+</script>

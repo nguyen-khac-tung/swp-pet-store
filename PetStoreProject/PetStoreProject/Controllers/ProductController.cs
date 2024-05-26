@@ -39,9 +39,13 @@ namespace PetStoreProject.Controllers
         public ActionResult Detail(int productId)
         {
             var product_detail = _product.GetDetail(productId);
-            ViewData["product_detail"] = product_detail;
+			List<int> listPID = _product.GetProductIDInWishList(22);
+
+			ViewData["product_detail"] = product_detail;
             ViewData["related_products"] = _product.getRelatedProduct(productId);
-            return View();
+			ViewData["listPID"] = listPID;
+
+			return View();
         }
 
         [HttpPost]

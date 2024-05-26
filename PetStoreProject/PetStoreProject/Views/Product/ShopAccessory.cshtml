@@ -559,7 +559,21 @@
                                                         <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart" href="cart.html" title="Add to Cart">Add To Cart</a>
-                                                        <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
+                                                        <a class="grid_wishlist" href="wishlist.html" title="Wishlist">
+                                                            @{
+                                                                bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+                                                            }
+
+                                                            @if (isFavorite)
+                                                            {
+                                                                <i class="icofont-heart-alt" style="color: red;"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="icofont-heart-alt"></i>
+                                                            }
+
+                                                        </a>
                                                     </div>
                                                 </div>
                                                 <!-- Product Content End -->

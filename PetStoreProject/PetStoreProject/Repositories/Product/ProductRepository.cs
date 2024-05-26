@@ -238,9 +238,7 @@ namespace PetStoreProject.Repositories.Product
             return productDetails;
         }
         public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse()
-
         {
-
             var products = GetAllAccessories();
             var productDetails = products.Select(p => new ProductDetailViewModel
             {
@@ -257,7 +255,16 @@ namespace PetStoreProject.Repositories.Product
             return productDetails;
         }
 
-    }
+		public List<int> GetProductIDInWishList(int customerID)
+		{
+           var list = (from c in _context.Customers
+                    where c.CustomerId == customerID
+                    from p in c.Products
+                    select p.ProductId
+                    ).ToList();
+            return list;
+		}
+	}
 
     internal record NewRecord(int ProductId, string Name, string Item);
 }

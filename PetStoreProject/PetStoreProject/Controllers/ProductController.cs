@@ -42,12 +42,19 @@ namespace PetStoreProject.Controllers
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 20;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
+            List<int> listPID = _product.GetProductIDInWishList(22);
 
-            ViewBag.Brands = _product.GetBrandAccessories();
+            if(listPID.Count > 0)
+            {
+				ViewData["listPID"] = listPID;
+			}
+			ViewBag.Brands = _product.GetBrandAccessories();
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;
             ViewBag.pageSize = _pageSize;
             ViewBag.numberPage = numberPage;
+
+
 
             var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
             var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);

@@ -5,6 +5,7 @@ var selectedSizes = [];
 var pageSize = 20;
 var pageIndex = 1;
 var selectedSort = "";
+var url = window.location.pathname;
 var rangeInput = document.querySelectorAll(".range-input input"),
     priceInput = document.querySelectorAll(".price-input input"),
     range = document.querySelector(".slider .progress");
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Color: " + selectedColors);
 
 
-        LoadData(pageSize, 1, selectedBrands, "", priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+        LoadData(url, pageSize, 1, selectedBrands, "", priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -87,15 +88,20 @@ document.addEventListener('DOMContentLoaded', function () {
             checkbox.checked = false;
         });
         selectedBrands = [];
+        // Reset price inputs
         priceInput[0].value = priceMinInit;
         priceInput[1].value = priceMaxInit;
+
+        // Update range inputs
+        rangeInput[0].value = priceMinInit;
+        rangeInput[1].value = priceMaxInit;
+
+        // Update slider progress
         range.style.left = "0%";
         range.style.right = "0%";
-        selectedColors = [];
-        selectedSizes = [];
 
         console.log("Filters cleared");
-        LoadData(pageSize, 1, [], "", priceMinInit, priceMaxInit, [], []);
+        LoadData(url, pageSize, 1, [], "", priceMinInit, priceMaxInit, [], []);
     });
 
 });
@@ -103,16 +109,16 @@ document.addEventListener('DOMContentLoaded', function () {
 function SelectedSort() {
     selectedSort = document.getElementById("selected_sort").value;
     console.log("selected_sort: change" + selectedSort);
-    LoadData(pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+    LoadData(url, pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
 }
 
-function LoadData(pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes) {
+function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
-        url: '/Product/ShopAccessory',
+        url: '/Product/Shop',
         type: 'post',
-        data: {
+        data: {url: url,
             pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectedSort,
             priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes
         },
@@ -137,7 +143,6 @@ function LoadData(pageSize, page, selectedBrands, selectedSort, priceInputMin, p
 
                     html += "</a>";
                     html += "<div class='item_quick_link'>";
-                    html += "<a href='/product/detail/" + items[index].productId + "' data-bs-toggle='modal' data-bs-target='#myModal' title='Xem chi tiết'><i class='icofont-search'></i></a>";
                     html += "</div>";
                     html += "<div class='product-count-wrap'>";
                     html += "</div>";
@@ -177,7 +182,6 @@ function LoadData(pageSize, page, selectedBrands, selectedSort, priceInputMin, p
                     }
                     html1 += "</a>";
                     html1 += "<div class='item_quick_link'>";
-                    html1 += "<a href='/product/detail/" + items[index].productId + "' data-bs-toggle='modal' data-bs-target='#myModal' title='Xem chi tiết'><i class='icofont-search'></i></a>";
                     html1 += "</div>";
                     html1 += "<div class='product - count - wrap'>";
                     html1 += "</div>";
@@ -187,10 +191,12 @@ function LoadData(pageSize, page, selectedBrands, selectedSort, priceInputMin, p
                     html1 += "<div class='product_content_wrap'>";
                     html1 += "<div class='product_content'>";
                     html1 += "<h4><a href='product - details.html1'>" + items[index].name + "</a></h4>";
-                    html1 += "<p class='list_des'>" + items[index].description + "</p>";
+                    html1 += "<div class='scrollable-description'>";
+                    html1 += "<p class='list_des' " + items[index].description + "</p>";
+                    html1 += "</div>";
                     html1 += "<div class='grid_price'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html1 += "<span class='regular - price'>" + items[index].productOption[0].price + "VND</span>";
+                        html1 += "<span class='regular-price'>" + items[index].productOption[0].price + " VND</span>";
                     }
                     html1 += "</div>";
                     html1 += "</div>";
@@ -209,7 +215,11 @@ function LoadData(pageSize, page, selectedBrands, selectedSort, priceInputMin, p
                 pageIndex = response.currentPage;
                 Pagination(response.currentPage, response.numberPage, response.pageSize);
             } else {
+                $('#data-grid-view').html("Sản phẩm hiện khách hàng lựa chọn hiện không có!");
+                $('#list-view').html("Sản phẩm hiện khách hàng lựa chọn hiện không có!");
+                $('#pagination').html("");
                 console.error("Unexpected response structure:", response);
+                
             }
         },
         error: function (xhr, status, error) {
@@ -261,7 +271,7 @@ function NextPage(page, pageSize) {
     console.log("PriceM: " + priceInput[0].value);
     console.log("PriceMax: " + priceInput[1].value);
 
-    LoadData(pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+    LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
 }
 function ChangePageSize() {
     console.log("changePageSize:");
@@ -269,5 +279,5 @@ function ChangePageSize() {
     console.log("PriceMax: " + priceInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    LoadData(pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+    LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
 }

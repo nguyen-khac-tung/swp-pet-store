@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using Attribute = PetStoreProject.Models.Attribute;
 
@@ -95,6 +96,16 @@ namespace PetStoreProject.Repositories.Cart
                            select c).FirstOrDefault();
 
             cartItem.Quantity += quantity;
+
+            _context.SaveChanges();
+        }
+
+        public void DeleteCartItem(int productOptionId, int customer) {
+            var cartItem = (from c in _context.CartItems
+                           where c.ProductOptionId == productOptionId && c.CustomerId == customer
+                           select c).FirstOrDefault();
+
+            _context.CartItems.Remove(cartItem);
 
             _context.SaveChanges();
         }

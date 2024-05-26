@@ -78,6 +78,20 @@ namespace PetStoreProject.CartController
             }
         }
 
+        [HttpDelete]
+        public ActionResult Delete(int productOptionId)
+        {
+            var customerID = getCustomerId();
+            if (customerID != -1)
+            {
+                return DeleteCartOfCustomer(productOptionId, customerID);
+            }
+            else
+            {
+                return DeleteCartOfGuest(productOptionId);
+            }
+        }
+
         public ActionResult GetCartBoxItemsOfCustomer(int customerID)
         {
             List<CartItemViewModel> cartItems = _cart.GetListCartItemsVM(customerID);
@@ -228,8 +242,13 @@ namespace PetStoreProject.CartController
             return View("~/Views/Cart/Detail.cshtml");
         }
 
-        [HttpDelete]
-        public ActionResult Delete(int productOptionId)
+        public ActionResult DeleteCartOfCustomer(int productOptionId,int customerID)
+        {
+            _cart.DeleteCartItem(productOptionId, customerID);
+            return Json(new { message = "success" });
+        }
+
+        public ActionResult DeleteCartOfGuest(int productOptionId)
         {
             var cookieOptionDelete = new CookieOptions
             {

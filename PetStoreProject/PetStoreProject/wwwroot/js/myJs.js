@@ -1,17 +1,19 @@
-﻿function addToCart(productOptionId, quantity) {
+﻿window.onload = function () {
+	getCartBoxItems();
+};
+function addToCart(productOptionId, quantity) {
 	console.log(productOptionId);
 	$.ajax({
 		type: "POST",
-		url: "/cart/AddItem",
+		url: "/cart/AddToCart",
 		data: { productOptionId: productOptionId, quantity: quantity },
 		success: function (response) {
 			if (response.message != 'success') {
 				alert(response.message)
 			}
 			else {
-				getCartItems();
+				getCartBoxItems();
 			}
-
 		},
 		error: function (xhr, status, error) {
 			console.error('The request failed!', status, error);
@@ -19,10 +21,10 @@
 	});
 }
 
-function getCartItems() {
+function getCartBoxItems() {
 	$.ajax({
 		type: "POST",
-		url: "/cart/GetCartItems",
+		url: "/cart/GetCartBoxItems",
 		success: function (response) {
 			$('#list_item').empty();
 			$('#total_item').html(response.length)
@@ -96,7 +98,7 @@ function deleteCartItem(productOptionId) {
 		type: "DELETE",
 		data: { productOptionId: productOptionId },
 		success: function (response) {
-			getCartItems();
+			getCartBoxItems();
 		}
 	});
 	amountCart();
@@ -134,7 +136,7 @@ function editCartItem(oldProductOptionId, newProductOptionId, quantity) {
 			}
 			else {
 				updateCartItem(oldProductOptionId, response)
-				getCartItems()
+				getCartBoxItems()
 				$('#myModal').modal('hide');
 				amountCart();
 			}
@@ -181,7 +183,6 @@ function updateCartItem(oldId, cartItem) {
 	row.find('a[title="Xóa sản phẩm"]').attr('onclick', `deleteCartItem(${cartItem.productOptionId})`);
 	row.attr('id', cartItem.productOptionId)
 }
-
 
 function quickView(productId) {
 	$('#quick_attribute').empty();
@@ -340,3 +341,4 @@ function quick_total_price() {
 	var quick_amount = quick_price * quick_quantity;
 	document.getElementById("quick_amount").innerText = quick_amount;
 }
+

@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using Attribute = PetStoreProject.Models.Attribute;
 
@@ -71,6 +72,7 @@ namespace PetStoreProject.Repositories.Product
             {
                 image.ImageUrl = formatUrl(image.ImageUrl);
             }
+            product.ProductId = productId;
             product.attributes = attributes;
             product.sizes = sizes;
             product.images = images;
@@ -220,7 +222,7 @@ namespace PetStoreProject.Repositories.Product
 
 
 
-        public List<ProductDetailViewModel> GetProductDetailResponse (List<Models.Product> products)
+        public List<ProductDetailViewModel> GetProductDetailResponse(List<Models.Product> products)
         {
 
             var productDetails = products.Select(p => new ProductDetailViewModel
@@ -286,6 +288,23 @@ namespace PetStoreProject.Repositories.Product
                         select p.ProductId
                     ).ToList();
             return list;
+        }
+
+        public void AddToFavorites(int customerID, int productId)
+        {
+            var product = _context.Products.FirstOrDefault(p => p.ProductId == productId);
+            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == customerID);
+            customer.Products.Add(product);
+            _context.SaveChanges();
+        }
+
+        public void RemoveFromFavorites(int customerID, int productId)
+        {
+            var customer = _context.Customers.Include(c => c.Products)
+                                             .FirstOrDefault(c => c.CustomerId == customerID);
+            var product = customer.Products.FirstOrDefault(p => p.ProductId == productId);
+            customer.Products.Remove(product);
+            _context.SaveChanges();
         }
     }
 

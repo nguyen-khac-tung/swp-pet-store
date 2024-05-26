@@ -26,16 +26,16 @@
                                 </tr>
                             </thead>
                             <tbody id="cartTable">
-                                @foreach(var item in cartItems)
+                                @foreach (var item in cartItems)
                                 {
                                     var option = "";
-                                    if(!(item.Attribute.Name == null && item.Size.Name == null))
+                                    if (!(item.Attribute.Name == null && item.Size.Name == null))
                                     {
                                         if (item.Attribute.Name != null && item.Size.Name != null)
                                         {
                                             option += "( " + item.Attribute.Name + ", " + item.Size.Name + " )";
                                         }
-                                        else if(item.Attribute.Name != null)
+                                        else if (item.Attribute.Name != null)
                                         {
                                             option += "( " + item.Attribute.Name + " )";
                                         }
@@ -50,18 +50,18 @@
                                         </td>
                                         <td class="product-name"><a href="http://localhost:5206/product/detail/@item.ProductId">@item.Name <br /> @option</a></td>
                                         <td class="product-price"><span class="amount">@item.Price</span></td>
-                                        <td class="product-quantity"><input value="@item.Quantity" readonly/></td>
-                                        <td class="product-subtotal">@(item.Price*item.Quantity)</td>
+                                        <td class="product-quantity"><input value="@item.Quantity" readonly /></td>
+                                        <td class="product-subtotal">@(item.Price * item.Quantity)</td>
                                         <td>
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Chỉnh sửa" onclick="quickEditCartItem(@item.ProductOptionId, @item.ProductId)">
                                                 <i class="icofont-edit"></i>
                                             </a>
                                         </td>
                                         <td class="product-remove"> <a style="cursor:pointer" onclick="deleteCartItem(@item.ProductOptionId)" title="Xóa sản phẩm"><i class="icofont-delete-alt"></i></a></td>
-                                        
+
                                     </tr>
                                 }
-                                
+
                             </tbody>
                         </table>
                     </div>
@@ -108,49 +108,49 @@
 </div>
 <!-- Quick View Content Start -->
 <div class="main-product-thumbnail quick-thumb-content">
-	<div class="container">
-		<!-- The Modal -->
-		<div class="modal fade" id="myModal">
-			<div class="modal-dialog modal-lg modal-dialog-centered">
-				<div class="modal-content">
-					<!-- Modal Header -->
-					<div class="modal-header">
-						<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-					</div>
-					<!-- Modal body -->
-					<div class="modal-body">
-						<div class="row">
+    <div class="container">
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row">
 
-							<div class="col-lg-6 col-md-6">
-								<div class="product-details product_details_1">
-									<div class="product-details-img">
-										<div class="tab-content main_large_img product-details-large" id="quick_image">
-										</div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="product-details product_details_1">
+                                    <div class="product-details-img">
+                                        <div class="tab-content main_large_img product-details-large" id="quick_image">
+                                        </div>
 
-										<div class="shop-details-tab nav product-details-small" id="image_small">
-										</div>
+                                        <div class="shop-details-tab nav product-details-small" id="image_small">
+                                        </div>
 
-									</div>
-								</div>
-							</div>
+                                    </div>
+                                </div>
+                            </div>
 
-							<!-- Thumbnail Description Start -->
-							<div class="col-md-6">
-								<div class="thubnail-desc ">
+                            <!-- Thumbnail Description Start -->
+                            <div class="col-md-6">
+                                <div class="thubnail-desc ">
 
-									<!--Name-->
-									<h3 class="product-header"><a href="#" id="quick_name"></a></h3>
-									<ul class="rating-summary">
-										<li class="rating-pro">
-											<i class="icofont-ui-rating"></i>
-											<i class="icofont-ui-rating"></i>
-											<i class="icofont-ui-rate-blank"></i>
-											<i class="icofont-ui-rate-blank"></i>
-											<i class="icofont-ui-rate-blank"></i>
-										</li>
-										<li class="read-review"><a href="#">Xem đánh gía (2)</a></li>
-										<li class="write-review"><a href="#">Viết đánh giá</a></li>
-									</ul>
+                                    <!--Name-->
+                                    <h3 class="product-header"><a href="#" id="quick_name"></a></h3>
+                                    <ul class="rating-summary">
+                                        <li class="rating-pro">
+                                            <i class="icofont-ui-rating"></i>
+                                            <i class="icofont-ui-rating"></i>
+                                            <i class="icofont-ui-rate-blank"></i>
+                                            <i class="icofont-ui-rate-blank"></i>
+                                            <i class="icofont-ui-rate-blank"></i>
+                                        </li>
+                                        <li class="read-review"><a href="#">Xem đánh gía (2)</a></li>
+                                        <li class="write-review"><a href="#">Viết đánh giá</a></li>
+                                    </ul>
 
                                     <div class="rating-summary" id="quick_brand">
                                         Thương hiệu :
@@ -194,18 +194,17 @@
                                     <a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
                                 </div>
 
-								</div>
-							</div>
-							<!-- Thumbnail Description End -->
+                            </div>
+                        </div>
+                        <!-- Thumbnail Description End -->
 
 
-						</div>
-						<!-- Row End -->
-					</div>
-					<!-- Modal footer -->
-				</div>
-			</div>
-		</div>
-	</div>
+                    </div>
+                    <!-- Row End -->
+                </div>
+                <!-- Modal footer -->
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Quick View Content End -->

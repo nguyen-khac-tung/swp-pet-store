@@ -104,7 +104,7 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.Property(e => e.CartItemId).ValueGeneratedNever();
+            entity.Property(e => e.CartItemId).ValueGeneratedOnAdd();
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CartItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)

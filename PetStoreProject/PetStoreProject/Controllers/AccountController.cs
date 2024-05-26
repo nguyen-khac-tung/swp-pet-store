@@ -34,7 +34,9 @@ namespace PetStoreProject.Controllers
             Account acc = _accountRepository.getAccount(account.Email, account.Password);
             if (acc != null)
             {
+                var name = _accountRepository.getCustomer(account.Email)?.FullName;
                 HttpContext.Session.SetString("Account", acc.Email);
+                HttpContext.Session.SetString("CustomerName", name ?? "");
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -79,6 +81,7 @@ namespace PetStoreProject.Controllers
                 {
                     _accountRepository.addNewCustomer(registerInfor);
                     HttpContext.Session.SetString("Account", registerInfor.Email);
+                    HttpContext.Session.SetString("CustomerName", registerInfor.FullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
                 }
             }
@@ -135,7 +138,9 @@ namespace PetStoreProject.Controllers
             if (ModelState.IsValid)
             {
                 _accountRepository.resetPassword(resetPasswordVM);
+                var name = _accountRepository.getCustomer(resetPasswordVM.Email)?.FullName;
                 HttpContext.Session.SetString("Account", resetPasswordVM.Email);
+                HttpContext.Session.SetString("CustomerName", name ?? "");
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -176,7 +181,9 @@ namespace PetStoreProject.Controllers
                 bool isEmailExist = _accountRepository.checkEmailExist(email);
                 if (isEmailExist)
                 {
+                    var name = _accountRepository.getCustomer(email)?.FullName;
                     HttpContext.Session.SetString("Account", email);
+                    HttpContext.Session.SetString("CustomerName", name ?? "");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -184,6 +191,7 @@ namespace PetStoreProject.Controllers
                     var resgister = new RegisterViewModel { FullName = fullName, Email = email, Password = passwordDefault };
                     _accountRepository.addNewCustomer(resgister);
                     HttpContext.Session.SetString("Account", email);
+                    HttpContext.Session.SetString("CustomerName", fullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
                 }
             }
@@ -191,6 +199,5 @@ namespace PetStoreProject.Controllers
             TempData["Mess"] = "Đăng nhập tài khoản Google không thành công. Vui lòng thử lại.";
             return RedirectToAction("Login", "Account");
         }
-
     }
 }

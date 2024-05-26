@@ -147,7 +147,15 @@
 							<a class="details_cart link " title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quantity').value)" style="cursor: pointer;">
 								Thêm Vào Giỏ Hàng
 							</a>
-							<a class="details_wishlist" href="wishlist.html" title="" data-original-title="Wishlist" tabindex="0"><i class="icofont-heart-alt"></i></a>
+							<a class="details_wishlist" title="" data-original-title="Wishlist" tabindex="0">
+								@{
+									bool isFavor = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+								}
+
+								<i class="icofont-heart-alt @((isFavor) ? "favorite" : "not-favorite")"
+								   data-id="@product.ProductId"
+								   style="color: @((isFavor) ? "red" : "black"); cursor: pointer;"></i>
+							</a>
 						</div>
 
 					</div>
@@ -297,7 +305,16 @@
 									</div>
 									<div class="item_add_cart">
 										<a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@p.ProductId)">Thên Vào Giỏ Hàng</a>
-										<a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
+										<a class="grid_wishlist" title="Wishlist">
+
+											@{
+												bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(p.ProductId);
+											}
+
+											<i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+											   data-id="@p.ProductId"
+											   style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+										</a>
 									</div>
 								</div>
 								<!-- Product Content End -->
@@ -425,6 +442,8 @@
 
 </div>
 <!-- Main Wrapper End Here -->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script >
 	var attributeId = @product.productOption[0].attribute.AttributeId
 	var sizeId = @product.productOption[0].size.SizeId;
@@ -482,4 +501,54 @@
 	}
 
 
+</script>
+
+<script>
+	$(document).ready(function () {
+		$('.icofont-heart-alt').on('click', function () {
+			console.log('Heart clicked'); // Thêm log để kiểm tra sự kiện click
+
+			var $this = $(this);
+			var productId = $this.data('id');
+			var isFavorite = $this.hasClass('favorite');
+
+			console.log('Product ID:', productId);
+			console.log('Is Favorite:', isFavorite);
+
+			// Toggle the favorite class
+			$this.toggleClass('favorite not-favorite');
+
+			if (isFavorite) {
+				$this.css('color', 'black');
+			} else {
+				$this.css('color', 'red');
+			}
+
+			var token = $('input[name="__RequestVerificationToken"]').val();
+
+			// Send AJAX request to update the favorite status
+			$.ajax({
+				url: '@Url.Action("ToggleFavorite", "Product")',
+				type: 'POST',
+				headers: {
+					'RequestVerificationToken': token
+				},
+				data: { productId: productId },
+				success: function (response) {
+					console.log('AJAX success:', response);
+				},
+				error: function (error) {
+					console.error('AJAX error:', error); // Thêm log để kiểm tra lỗi
+
+					// Rollback the color change if there is an error
+					$this.toggleClass('favorite not-favorite');
+					if (isFavorite) {
+						$this.css('color', 'red');
+					} else {
+						$this.css('color', 'black');
+					}
+				}
+			});
+		});
+	});
 </script>

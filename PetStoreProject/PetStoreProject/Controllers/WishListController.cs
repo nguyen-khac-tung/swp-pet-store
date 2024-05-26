@@ -12,7 +12,6 @@ namespace PetStoreProject.Controllers
 		{
 			_wishList = wishList;
 		}
-		[HttpPost]
 		public IActionResult Detail(int customerID)
 		{
 			var listWishList = _wishList.wishListVMs(22);

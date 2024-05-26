@@ -12,5 +12,11 @@ namespace PetStoreProject.Repositories.Cart
 		public void UpdateQuantityToCartItem(int productOptionId, int quantity, int customerID);
 
 		public void DeleteCartItem(int productOptionId, int customer);
+
+		public bool isExistProductOption(int newProductOptionID, int customerID);
+
+		public void UpdateNewCartItem(int oldProductOptionId, int newProductOptionId, int quantity, int customerID);
+
+		public CartItemViewModel? findCartItemViewModel(int productOptionId, int customerID);
     }
 }

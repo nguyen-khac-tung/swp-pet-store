@@ -92,22 +92,85 @@ namespace PetStoreProject.Repositories.Cart
         public void UpdateQuantityToCartItem(int productOptionId, int quantity, int customerID)
         {
             var cartItem = (from c in _context.CartItems
-                           where c.ProductOptionId == productOptionId && c.CustomerId == customerID
-                           select c).FirstOrDefault();
+                            where c.ProductOptionId == productOptionId && c.CustomerId == customerID
+                            select c).FirstOrDefault();
 
             cartItem.Quantity += quantity;
 
             _context.SaveChanges();
         }
 
-        public void DeleteCartItem(int productOptionId, int customer) {
+        public void UpdateNewCartItem(int oldProductOptionId, int newProductOptionId, int quantity, int customerID)
+        {
             var cartItem = (from c in _context.CartItems
-                           where c.ProductOptionId == productOptionId && c.CustomerId == customer
-                           select c).FirstOrDefault();
+                            where c.ProductOptionId == oldProductOptionId && c.CustomerId == customerID
+                            select c).FirstOrDefault();
+
+            cartItem.ProductOptionId = newProductOptionId;
+
+            cartItem.Quantity = quantity;
+
+            _context.SaveChanges();
+        }
+
+        public void DeleteCartItem(int productOptionId, int customer)
+        {
+            var cartItem = (from c in _context.CartItems
+                            where c.ProductOptionId == productOptionId && c.CustomerId == customer
+                            select c).FirstOrDefault();
 
             _context.CartItems.Remove(cartItem);
 
             _context.SaveChanges();
+        }
+
+        public bool isExistProductOption(int newProductOptionID, int customerID)
+        {
+            var cartItem = (from c in _context.CartItems
+                            where c.CustomerId == customerID && newProductOptionID == c.ProductOptionId
+                            select c).FirstOrDefault();
+
+            if (cartItem != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public CartItemViewModel? findCartItemViewModel(int productOptionId, int customerID)
+        {
+            var cartItem = from c in _context.CartItems
+                           join po in _context.ProductOptions on c.ProductOptionId equals po.ProductOptionId
+                           join p in _context.Products on po.ProductId equals p.ProductId
+                           join b in _context.Brands on p.BrandId equals b.BrandId
+                           join s in _context.Sizes on po.SizeId equals s.SizeId
+                           join a in _context.Attributes on po.AttributeId equals a.AttributeId
+                           join i in _context.Images on po.ImageId equals i.ImageId
+                           where c.ProductOptionId == productOptionId && c.CustomerId == customerID
+                           select new CartItemViewModel
+                           {
+                               ProductId = p.ProductId,
+                               ProductOptionId = c.ProductOptionId,
+                               Name = p.Name,
+                               Attribute = new Attribute()
+                               {
+                                   AttributeId = a.AttributeId,
+                                   Name = a.Name
+                               },
+                               Size = new Size()
+                               {
+                                   SizeId = s.SizeId,
+                                   Name = s.Name
+                               },
+                               Price = po.Price,
+                               Quantity = c.Quantity,
+                               ImgUrl = i.ImageUrl
+                           };
+
+            return cartItem.FirstOrDefault();
         }
     }
 }

@@ -18,6 +18,23 @@ namespace PetStoreProject.Controllers
             _product = product;
         }
 
+        [HttpPost]
+        public IActionResult ToggleFavorite(int productId)
+        {
+
+            var favoriteList = _product.GetProductIDInWishList(22);
+
+            if (favoriteList.Contains(productId))
+            {
+                _product.RemoveFromFavorites(22, productId);
+            }
+            else
+            {
+                _product.AddToFavorites(22, productId);
+            }
+            return Json(new { success = true });
+        }
+
         [HttpGet("{productId}")]
         public ActionResult Detail(int productId)
         {

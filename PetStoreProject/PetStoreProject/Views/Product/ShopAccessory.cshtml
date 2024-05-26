@@ -440,19 +440,16 @@
                                                         <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart" href="cart.html" title="Add to Cart">Thêm vào giỏ hàng</a>
-                                                        <a class="grid_wishlist" href="wishlist.html" title="Wishlist">
+                                                        <a class="grid_wishlist" title="Wishlist">
                                                             @{
                                                                 bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
                                                             }
 
-                                                            @if (isFavorite)
-                                                            {
-                                                                <i class="icofont-heart-alt" style="color: red;"></i>
-                                                            }
-                                                            else
-                                                            {
-                                                                <i class="icofont-heart-alt"></i>
-                                                            }
+                                                            <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+                                                               data-id="@product.ProductId"
+                                                               style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+
+
                                                         </a>
 
                                                     </div>
@@ -604,3 +601,54 @@
 </div>
 <!-- Shop Page End -->
 <script src="~/js/list-product.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.icofont-heart-alt').on('click', function () {
+            console.log('Heart clicked'); // Thêm log để kiểm tra sự kiện click
+
+            var $this = $(this);
+            var productId = $this.data('id');
+            var isFavorite = $this.hasClass('favorite');
+
+            console.log('Product ID:', productId); 
+            console.log('Is Favorite:', isFavorite); 
+
+            // Toggle the favorite class
+            $this.toggleClass('favorite not-favorite');
+
+            if (isFavorite) {
+                $this.css('color', 'black');
+            } else {
+                $this.css('color', 'red');
+            }
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Send AJAX request to update the favorite status
+            $.ajax({
+                url: '@Url.Action("ToggleFavorite", "Product")',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                data: { productId: productId },
+                success: function (response) {
+                    console.log('AJAX success:', response); 
+                },
+                error: function (error) {
+                    console.error('AJAX error:', error); // Thêm log để kiểm tra lỗi
+
+                    // Rollback the color change if there is an error
+                    $this.toggleClass('favorite not-favorite');
+                    if (isFavorite) {
+                        $this.css('color', 'red');
+                    } else {
+                        $this.css('color', 'black');
+                    }
+                }
+            });
+        });
+    });
+</script>
+

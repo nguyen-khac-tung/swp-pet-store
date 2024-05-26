@@ -7,16 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\myJs.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\myJs.js" />
+    <Content Remove="wwwroot\js\myjs.js" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\WishList\Detail.cshtml" />
-    <None Include="wwwroot\js\myJs.js" />
+    <None Include="wwwroot\js\myjs.js" />
   </ItemGroup>
 
   <ItemGroup>

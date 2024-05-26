@@ -34,6 +34,14 @@ namespace PetStoreProject.Repositories.Accounts
             }
         }
 
+        public Customer? getCustomer(string email)
+        {
+            var customer = (from user in _context.Customers
+                           where user.Email == email
+                           select user).FirstOrDefault();
+            return customer;
+        }
+
         public bool checkEmailExist(string email)
         {
             var account = (from acc in _context.Accounts

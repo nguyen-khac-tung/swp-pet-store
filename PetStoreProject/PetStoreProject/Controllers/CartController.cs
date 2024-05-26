@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using PetStoreProject.Models;
 using PetStoreProject.Repositories.Cart;
+using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
 
@@ -11,15 +13,109 @@ namespace PetStoreProject.CartController
     {
         private readonly IProductRepository _product;
         private readonly ICartRepository _cart;
+        private readonly ICustomerRepository _customer;
 
-        public CartController(IProductRepository product, ICartRepository cart)
+        public CartController(IProductRepository product, ICartRepository cart, ICustomerRepository customer)
         {
             _product = product;
             _cart = cart;
+            _customer = customer;
+        }
+
+        public int getCustomerId()
+        {
+            var email = HttpContext.Session.GetString("Account");
+            if (email != null)
+            {
+                var customerID = _customer.getCustomerId(email);
+                return customerID;
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         [HttpPost]
-        public ActionResult AddItem(int productOptionId, int quantity)
+        public ActionResult GetCartBoxItems()
+        {
+            var customerID = getCustomerId();
+            if (customerID != -1)
+            {
+                return GetCartBoxItemsOfCustomer(customerID);
+            }
+            else
+            {
+                return GetCartBoxItemsOfGuest();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddToCart(int productOptionId, int quantity)
+        {
+            var customerID = getCustomerId();
+            if (customerID != -1)
+            {
+                return AddCartItemOfCustomer(productOptionId, quantity, customerID);
+            }
+            else
+            {
+                return AddCartItemOfGuest(productOptionId, quantity);
+            }
+        }
+
+        public ActionResult GetCartBoxItemsOfCustomer(int customerID)
+        {
+            List<CartItemViewModel> cartItems = _cart.GetListCartItemsVM(customerID);
+            return Json(cartItems);
+        }
+
+        public ActionResult GetCartBoxItemsOfGuest()
+        {
+            List<int> cookiesId = new List<int>();
+            List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
+
+            if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+            {
+                cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
+                foreach (var itemId in cookiesId)
+                {
+                    if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
+                    {
+                        var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
+                        cartItems.Add(item);
+                    }
+                }
+            }
+            return Json(cartItems);
+        }
+
+        public ActionResult AddCartItemOfCustomer(int productOptionId, int quantity, int customerID)
+        {
+            var cartItems = _cart.GetListCartItemsVM(customerID);
+            var cartItem = (from item in cartItems
+                            where item.ProductOptionId == productOptionId
+                            select item).FirstOrDefault();
+            if (cartItem != null)
+            {
+                if (cartItem.Quantity + quantity > 10)
+                {
+                    return Json(new { message = "Không thể mua quá 10 sản phẩm cho 1 món hàng!!! Vui lòng thanh toán để có thể mua thêm" });
+                }
+                else
+                {
+                    _cart.UpdateQuantityToCartItem(productOptionId, quantity, customerID);
+                    return Json(new { message = "success" });
+                }
+            }
+            else
+            {
+                _cart.AddItemsToCart(productOptionId, quantity, customerID);
+                return Json(new { message = "success" });
+            }
+        }
+
+        public ActionResult AddCartItemOfGuest(int productOptionId, int quantity)
         {
             List<int> cookiesId = new List<int>();
             bool isExistsItem = false;
@@ -58,7 +154,7 @@ namespace PetStoreProject.CartController
                             {
                                 return Json(new
                                 {
-                                    message = "Khoong thể mua quá 10 sản phẩm cho 1 món hàng!!! Vui lòng thanh toán để có thể mua thêm"
+                                    message = "Không thể mua quá 10 sản phẩm cho 1 món hàng!!! Vui lòng thanh toán để có thể mua thêm"
                                 });
                             }
                         }
@@ -77,28 +173,6 @@ namespace PetStoreProject.CartController
                 message = "success"
             });
         }
-
-        [HttpPost]
-        public ActionResult GetCartItems()
-        {
-            List<int> cookiesId = new List<int>();
-            List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
-
-            if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
-            {
-                cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
-                foreach (var itemId in cookiesId)
-                {
-                    if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
-                    {
-                        var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
-                        cartItems.Add(item);
-                    }
-                }
-            }
-            return Json(cartItems);
-        }
-
 
         [HttpGet]
         public ActionResult Detail()
@@ -205,6 +279,4 @@ namespace PetStoreProject.CartController
             return Json(new_item);
         }
     }
-
-
 }

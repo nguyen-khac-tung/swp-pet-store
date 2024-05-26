@@ -1,22 +1,24 @@
 ﻿@{
-    var account = Context.Session.GetString("Account");
+    var name = Context.Session.GetString("CustomerName");
 }
+
 <!--Account Start -->
 <li class="drodown-show">
     <a href="#"><span class="icofont-ui-user"></span></a>
     <!-- Currency & Language Selection Start -->
-    <ul class="dropdown cart-box-width currency-selector">
+    <ul class="dropdown account-box-width account-box-title">
         <li>
             <div class="single-select-block">
-                <h3>Tài Khoản</h3>
                 @{
-                    if (account == null)
+                    if (name == null)
                     {
+                        <h3>Tài Khoản</h3>
                         <a asp-controller="Account" asp-action="Login" class="single-account-select">Đăng Nhập</a>
                         <a asp-controller="Account" asp-action="Register" class="single-account-select mt-2">Đăng Ký</a>
                     }
                     else
                     {
+                        <h3>@name</h3>
                         <a class="single-account-select">Thông Tin Tài Khoản</a>
                         <a asp-controller="Account" asp-action="Logout" class="single-account-select mt-2">Đăng Xuất</a>
                     }

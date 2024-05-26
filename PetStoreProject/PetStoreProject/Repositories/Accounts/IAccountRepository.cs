@@ -7,6 +7,8 @@ namespace PetStoreProject.Repositories.Accounts
     {
         public Account getAccount(string email, string password);
 
+        public Customer? getCustomer(string email);
+
         public bool checkEmailExist(string email);
 
         public void addNewCustomer(RegisterViewModel registerInfor);

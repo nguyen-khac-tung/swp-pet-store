@@ -259,9 +259,29 @@
                                     <a href="#"><span class="icofont-heart"></span></a>
                                 </li>
                                 <!--Wish List End-->
-                                <!-- Stored Cart Start -->
-                                <partial name="_CartBox.cshtml" />
-                                <!-- Stored Cart End -->
+                                <!--Cart Box Start -->
+                                <li class="drodown-show">
+                                    <a href="#"><span class="icofont-shopping-cart"></span><span class="total-pro" id="total_item"></span></a>
+                                    <ul class="dropdown cart-box-width">
+                                        <li>
+                                            <div id="list_item" style="max-height: 300px; overflow-y: auto">
+                                            </div>
+                                            <div class="cart-footer">
+                                                <ul class="price-content">
+                                                    <li style="padding-top: 20px">
+                                                        Tổng
+                                                        <span id="total_price">0</span>
+                                                    </li>
+                                                </ul>
+                                                <div class="cart-actions text-center">
+                                                    <a class="cart-checkout" href="checkout.html">Thanh toán</a>
+                                                    <a class="cart-checkout" href="/cart/detail">Xem giỏ hàng</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <!-- Cart Box Cart End -->
                                 <!-- Account Start -->
                                 <partial name="_Account.cshtml" />
                                 <!-- Account End -->
@@ -545,13 +565,6 @@
         <!-- Footer Area End Here -->
 
     </div>
-    <script>
-        window.onload = function () {
-            // Gọi hàm của bạn ở đây
-            getCartItems();
-        };
-    </script>
-
     <!-- Main Wrapper End Here -->
     <script src="~/js/myjs.js"></script>
     <!-- jquery 3.3.1 -->

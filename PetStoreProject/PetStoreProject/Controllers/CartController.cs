@@ -64,6 +64,20 @@ namespace PetStoreProject.CartController
             }
         }
 
+        [HttpGet]
+        public ActionResult Detail()
+        {
+            var customerID = getCustomerId();
+            if (customerID != -1)
+            {
+                return CartDetailOfCustomer(customerID);
+            }
+            else
+            {
+                return CartDetailOfGuest();
+            }
+        }
+
         public ActionResult GetCartBoxItemsOfCustomer(int customerID)
         {
             List<CartItemViewModel> cartItems = _cart.GetListCartItemsVM(customerID);
@@ -174,8 +188,20 @@ namespace PetStoreProject.CartController
             });
         }
 
-        [HttpGet]
-        public ActionResult Detail()
+        public ActionResult CartDetailOfCustomer(int customerID)
+        {
+            var cartItems = _cart.GetListCartItemsVM(customerID);
+            float totalPrice = 0;
+            foreach (var cartItem in cartItems)
+            {
+                totalPrice += cartItem.Price* cartItem.Quantity;
+            }
+            ViewData["cartItems"] = cartItems;
+            ViewData["total_price"] = totalPrice;
+            return View("~/Views/Cart/Detail.cshtml");
+        }
+
+        public ActionResult CartDetailOfGuest()
         {
             List<int> cookiesId = new List<int>();
             List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
@@ -199,7 +225,7 @@ namespace PetStoreProject.CartController
             }
             ViewData["cartItems"] = cartItems;
             ViewData["total_price"] = total_price;
-            return View();
+            return View("~/Views/Cart/Detail.cshtml");
         }
 
         [HttpDelete]

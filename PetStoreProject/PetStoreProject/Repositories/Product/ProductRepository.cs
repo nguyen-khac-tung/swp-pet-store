@@ -222,26 +222,16 @@ namespace PetStoreProject.Repositories.Product
             return GetBrandByCategoryId(categoryIds);
         }
 
-        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest()
-        
+        public List<Brand> GetBrandFoods()
         {
-
-            var products = GetAllAccessories();
-            var productDetails = products.Select(p => new ProductDetailViewModel
-            {
-
-				ProductId = p.ProductId,
-				Name = p.Name,
-                //Description = p.Description,
-                productOption = GetProductOptionsByProductId(p.ProductId),
-            }).ToList();
-            return productDetails;
+            List<int> categoryIds = [1,3,4];
+            return GetBrandByCategoryId(categoryIds);
         }
-        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse()
 
+
+
+        public List<ProductDetailViewModel> GetProductDetailResponse (List<Models.Product> products)
         {
-
-            var products = GetAllAccessories();
             var productDetails = products.Select(p => new ProductDetailViewModel
             {
                 ProductId = p.ProductId,
@@ -252,11 +242,50 @@ namespace PetStoreProject.Repositories.Product
                 images = GetImagesByProductId(p.ProductId),
                 attributes = GetAttributesByProductId(p.ProductId),
                 sizes = GetSizesByProductId(p.ProductId)
-    
+
             }).ToList();
             return productDetails;
         }
 
+        public List<ProductDetailViewModel> GetProductDetailRequest(List<Models.Product> products)
+        {
+            var productDetails = products.Select(p => new ProductDetailViewModel
+            {
+                ProductId = p.ProductId,
+                Name = p.Name,
+                //Description = p.Description,
+                productOption = GetProductOptionsByProductId(p.ProductId),
+
+            }).ToList();
+            return productDetails;
+        }
+
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest()
+
+        {
+
+            var products = GetAllAccessories();
+            return GetProductDetailRequest(products);
+        }
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse()
+
+        {
+
+            var products = GetAllAccessories();
+            return GetProductDetailResponse(products);
+        }
+
+        public List<ProductDetailViewModel> GetProductDetailFoodsRequest()
+        {
+            var products = GetAllFoods();
+            return GetProductDetailRequest(products);
+        }
+
+        public List<ProductDetailViewModel> GetProductDetailFoodsResponse()
+        {
+            var products = GetAllFoods();
+            return GetProductDetailResponse(products);
+        }
     }
 
     internal record NewRecord(int ProductId, string Name, string Item);

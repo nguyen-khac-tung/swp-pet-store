@@ -7,12 +7,14 @@ namespace PetStoreProject.Repositories.Product
 	{
 		public ProductDetailViewModel GetDetail(int productId);
 		public List<RelatedProductViewModel> getRelatedProduct(int productId);
-		public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest();
-		public List<ProductDetailViewModel> GetProductDetailFoodsRequest();
-		public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse();
-		public List<ProductDetailViewModel> GetProductDetailFoodsResponse();
-        public List<Brand> GetBrandAccessories();
-		public List<Brand> GetBrandFoods();
+		public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest(List<int> cateId, int productCateId);
+
+        public List<ProductDetailViewModel> GetProductDetailFoodsRequest(List<int> cateId, int productCateId);
+		public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse(List<int> cateId, int productCateId);
+
+        public List<ProductDetailViewModel> GetProductDetailFoodsResponse(List<int> cateId, int productCateId);
+		public List<Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
+		
 		public List<int> GetProductIDInWishList(int customerID);
         void AddToFavorites(int userId, int productId);
         void RemoveFromFavorites(int userId, int productId);

@@ -123,26 +123,18 @@ namespace PetStoreProject.Repositories.Product
             return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/v1716019321/" + img_id;
         }
 
-        public List<Models.Product> GetProductsByCategories(List<int> categoriesIds)
-
+        public List<Models.Product> GetProductsByCategoriesAndProductCateId(List<int> categoriesIds, int productCateId)
         {
+            
             List<Models.Product> products = (from p in _context.Products
                                              join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
                                              where categoriesIds.Contains(pc.CategoryId)
                                              select p).ToList();
+            if(productCateId != 0)
+            {
+                products = products.Where(p => p.ProductCateId == productCateId).ToList();
+            }
             return products;
-        }
-
-        public List<Models.Product> GetAllAccessories()
-        {
-            List<int> categoryIds = [2, 5, 6];
-            return GetProductsByCategories(categoryIds);
-        }
-
-        public List<Models.Product> GetAllFoods()
-        {
-            List<int> categoryIds = [1, 3, 4];
-            return GetProductsByCategories(categoryIds);
         }
 
         public List<ProductOptionViewModel> GetProductOptionsByProductId(int productId)
@@ -208,7 +200,7 @@ namespace PetStoreProject.Repositories.Product
             return brand;
         }
 
-        public List<Brand> GetBrandByCategoryId(List<int> categoryIds)
+        public List<Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
         {
 
             var brands = (from b in _context.Brands
@@ -216,18 +208,15 @@ namespace PetStoreProject.Repositories.Product
                           join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
                           where categoryIds.Contains(pc.CategoryId)
                           select b).Distinct().ToList();
+            if(productCateId != 0)
+            {
+                brands = (from b in brands
+                         join p in _context.Products on b.BrandId equals p.BrandId
+                            where p.ProductCateId == productCateId
+                            select b).ToList();
+            }
+            brands = brands.Distinct().ToList();
             return brands;
-        }
-        public List<Brand> GetBrandAccessories()
-        {
-            List<int> categoryIds = [2, 5, 6];
-            return GetBrandByCategoryId(categoryIds);
-        }
-
-        public List<Brand> GetBrandFoods()
-        {
-            List<int> categoryIds = [1, 3, 4];
-            return GetBrandByCategoryId(categoryIds);
         }
 
 
@@ -241,7 +230,7 @@ namespace PetStoreProject.Repositories.Product
                 ProductId = p.ProductId,
                 Name = p.Name,
                 Brand = GetBrandByProductId(p.ProductId).Name,
-                //Description = p.Description,
+                Description = p.Description,
                 productOption = GetProductOptionsByProductId(p.ProductId),
                 images = GetImagesByProductId(p.ProductId),
                 attributes = GetAttributesByProductId(p.ProductId),
@@ -258,37 +247,36 @@ namespace PetStoreProject.Repositories.Product
             {
                 ProductId = p.ProductId,
                 Name = p.Name,
-                //Description = p.Description,
+                Description = p.Description,
                 productOption = GetProductOptionsByProductId(p.ProductId),
 
             }).ToList();
             return productDetails;
         }
 
-        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest()
-
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest(List<int> cateId, int productCateId)
         {
 
-            var products = GetAllAccessories();
+            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
             return GetProductDetailRequest(products);
         }
-        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse()
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse(List<int> cateId, int productCateId)
 
         {
 
-            var products = GetAllAccessories();
+            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
             return GetProductDetailResponse(products);
         }
 
-        public List<ProductDetailViewModel> GetProductDetailFoodsRequest()
+        public List<ProductDetailViewModel> GetProductDetailFoodsRequest(List<int> cateId, int productCateId)
         {
-            var products = GetAllFoods();
+            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
             return GetProductDetailRequest(products);
         }
 
-        public List<ProductDetailViewModel> GetProductDetailFoodsResponse()
+        public List<ProductDetailViewModel> GetProductDetailFoodsResponse(List<int> cateId, int productCateId)
         {
-            var products = GetAllFoods();
+            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
             return GetProductDetailResponse(products);
         }
 

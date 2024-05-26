@@ -166,6 +166,18 @@
             background-color: #e9ecef;
         }
 
+    .scrollable-description {
+        max-height: 300px; /* Chiều cao tối đa của thanh cuộn */
+        overflow-y: auto; /* Hiển thị thanh cuộn dọc khi nội dung vượt quá */
+        margin-bottom: 10px;
+    }
+
+    .list_des {
+        margin: 0; /* Xóa khoảng cách của đoạn văn trong <p> mặc định */
+        padding: 10px; /* Thêm khoảng cách xung quanh nội dung cuộn */
+    }
+
+
 </style>
 
 <div class="main-shop-page adp_top adp_bottom">
@@ -238,52 +250,38 @@
                                 <input class="form-check-input size-checkboxes" value="XXL" id="dobule-extra-large" type="checkbox">
                                 <label class="form-check-label" for="dobule-extra-large">XXL</label>
                             </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="100g" id="dobule-100g" type="checkbox">
+                                <label class="form-check-label" for="dobule-100g">100g</label>
+                            </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="200g" id="dobule-200g" type="checkbox">
+                                <label class="form-check-label" for="dobule-200g">200g</label>
+                            </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="300g" id="dobule-300g" type="checkbox">
+                                <label class="form-check-label" for="dobule-300g">300g</label>
+                            </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="400g" id="dobule-400g" type="checkbox">
+                                <label class="form-check-label" for="dobule-400g">400g</label>
+                            </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="500g" id="dobule-500g" type="checkbox">
+                                <label class="form-check-label" for="dobule-500g">500g</label>
+                            </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="1kg" id="dobule-1kg" type="checkbox">
+                                <label class="form-check-label" for="dobule-1kg">1kg</label>
+                            </li>
+                            <li class="form-check">
+                                <input class="form-check-input size-checkboxes" value="500g" id="dobule-combo" type="checkbox">
+                                <label class="form-check-label" for="dobule-combo">Combo</label>
+                            </li>
+                            
                         </ul>
                     </div>
                     <!-- Product Size End -->
-                    <!-- Product Color Start -->
-                    <div class="color single_sidebar">
-                        <h3 class="sidebar-title">Màu sắc</h3>
-                        <ul class="color-option sidbar-style">
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Đen" id="color_black" type="checkbox">
-                                <label class="form-check-label" for="color_black"> Đen </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Cam" id="color_orange" type="checkbox">
-                                <label class="form-check-label" for="color_orange"> Cam </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Nâu" id="color_blue" type="checkbox">
-                                <label class="form-check-label" for="color_blue"> Nâu </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Vàng" id="color_yellow" type="checkbox">
-                                <label class="form-check-label" for="color_yellow"> Vàng </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Xanh" id="color_green" type="checkbox">
-                                <label class="form-check-label" for="color_green"> Xanh </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Hồng" id="color_prink" type="checkbox">
-                                <label class="form-check-label" for="color_prink"> Hồng </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Trắng" id="color_white" type="checkbox">
-                                <label class="form-check-label" for="color_white"> Trắng </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Tím" id="color_pupple" type="checkbox">
-                                <label class="form-check-label" for="color_pupple"> Tím </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Xám" id="color_gray" type="checkbox">
-                                <label class="form-check-label" for="color_gray"> Xám </label>
-                            </li>
-
-                        </ul>
-                    </div>
                     <div class="single_sidebar">
                         <button class="btn btn-light" id="filter_button">Lọc sản phẩm</button>
                         <button class="btn btn-light" id="clear_button">Xóa bộ lọc</button>
@@ -412,7 +410,6 @@
                                                     </a>
 
                                                     <div class="item_quick_link">
-                                                        <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
                                                     </div>
 
                                                     <div class="product-count-wrap">
@@ -488,7 +485,6 @@
                                                 }
                                             </a>
                                             <div class="item_quick_link">
-                                                <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
                                             </div>
 
                                             <div class="product-count-wrap">
@@ -499,8 +495,10 @@
                                         <div class="product_content_wrap">
                                             <div class="product_content">
                                                 <h4><a href="product-details.html">@product.Name</a></h4>
-
-                                                <p class="list_des">@product.Description</p>
+                                                <div class="scrollable-description">
+                                                    <p class="list_des">@Html.Raw(product.Description)</p>
+                                                </div>
+                                                
 
                                                 <div class="grid_price">
                                                     @if (product.productOption != null && product.productOption.Count > 0)

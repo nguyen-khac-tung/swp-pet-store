@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using Attribute = PetStoreProject.Models.Attribute;
 
@@ -222,10 +223,18 @@ namespace PetStoreProject.Repositories.Product
             return GetBrandByCategoryId(categoryIds);
         }
 
-        public List<ProductDetailViewModel> GetProductDetailAccessories()
+        public List<Brand> GetBrandFoods()
+        {
+            List<int> categoryIds = [1, 3, 4];
+            return GetBrandByCategoryId(categoryIds);
+        }
+
+
+
+
+        public List<ProductDetailViewModel> GetProductDetailResponse(List<Models.Product> products)
         {
 
-            var products = GetAllAccessories();
             var productDetails = products.Select(p => new ProductDetailViewModel
             {
                 ProductId = p.ProductId,
@@ -234,14 +243,80 @@ namespace PetStoreProject.Repositories.Product
                 //Description = p.Description,
                 productOption = GetProductOptionsByProductId(p.ProductId),
                 images = GetImagesByProductId(p.ProductId),
-                //attributes = GetAttributesByProductId(p.ProductId),
-                //sizes = GetSizesByProductId(p.ProductId)
-
+                attributes = GetAttributesByProductId(p.ProductId),
+                sizes = GetSizesByProductId(p.ProductId)
 
             }).ToList();
             return productDetails;
         }
 
+
+        public List<ProductDetailViewModel> GetProductDetailRequest(List<Models.Product> products)
+        {
+            var productDetails = products.Select(p => new ProductDetailViewModel
+            {
+                ProductId = p.ProductId,
+                Name = p.Name,
+                //Description = p.Description,
+                productOption = GetProductOptionsByProductId(p.ProductId),
+
+            }).ToList();
+            return productDetails;
+        }
+
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest()
+
+        {
+
+            var products = GetAllAccessories();
+            return GetProductDetailRequest(products);
+        }
+        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse()
+
+        {
+
+            var products = GetAllAccessories();
+            return GetProductDetailResponse(products);
+        }
+
+        public List<ProductDetailViewModel> GetProductDetailFoodsRequest()
+        {
+            var products = GetAllFoods();
+            return GetProductDetailRequest(products);
+        }
+
+        public List<ProductDetailViewModel> GetProductDetailFoodsResponse()
+        {
+            var products = GetAllFoods();
+            return GetProductDetailResponse(products);
+        }
+
+        public List<int> GetProductIDInWishList(int customerID)
+        {
+            var list = (from c in _context.Customers
+                        where c.CustomerId == customerID
+                        from p in c.Products
+                        select p.ProductId
+                    ).ToList();
+            return list;
+        }
+
+        public void AddToFavorites(int customerID, int productId)
+        {
+            var product = _context.Products.FirstOrDefault(p => p.ProductId == productId);
+            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == customerID);
+            customer.Products.Add(product);
+            _context.SaveChanges();
+        }
+
+        public void RemoveFromFavorites(int customerID, int productId)
+        {
+            var customer = _context.Customers.Include(c => c.Products)
+                                             .FirstOrDefault(c => c.CustomerId == customerID);
+            var product = customer.Products.FirstOrDefault(p => p.ProductId == productId);
+            customer.Products.Remove(product);
+            _context.SaveChanges();
+        }
     }
 
     internal record NewRecord(int ProductId, string Name, string Item);

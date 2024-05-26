@@ -13,5 +13,5 @@ namespace PetStoreProject.ViewModels
 		public List<Image> images { get; set; }
 		public List<Attribute>? attributes { get; set; }
 		public List<Size>? sizes { get; set; }
-	}
+    }
 }

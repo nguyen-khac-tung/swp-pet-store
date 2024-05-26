@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Phụ kiện";
+    ViewData["Title"] = "Thức ăn";
 }
 
 @using PetStoreProject.ViewModels;
@@ -120,11 +120,9 @@
         pointer-events: auto;
         -moz-appearance: none;
         box-shadow: 0 0 6px rgba(0,0,0,0.05);
-
     }
 
-    .primary-img
-     {
+    .primary-img {
         width: 200px; /* Thiết lập chiều rộng cố định */
         height: 250px; /* Thiết lập chiều cao cố định */
         object-fit: cover; /* Giúp hình ảnh phù hợp với khung */
@@ -251,7 +249,7 @@
                                 <input class="form-check-input color-checkboxes" value="Đen" id="color_black" type="checkbox">
                                 <label class="form-check-label" for="color_black"> Đen </label>
                             </li>
-                            <li class ="form-check">
+                            <li class="form-check">
                                 <input class="form-check-input color-checkboxes" value="Cam" id="color_orange" type="checkbox">
                                 <label class="form-check-label" for="color_orange"> Cam </label>
                             </li>
@@ -267,7 +265,7 @@
                                 <input class="form-check-input color-checkboxes" value="Xanh" id="color_green" type="checkbox">
                                 <label class="form-check-label" for="color_green"> Xanh </label>
                             </li>
-                            <li class ="form-check">
+                            <li class="form-check">
                                 <input class="form-check-input color-checkboxes" value="Hồng" id="color_prink" type="checkbox">
                                 <label class="form-check-label" for="color_prink"> Hồng </label>
                             </li>
@@ -283,7 +281,7 @@
                                 <input class="form-check-input color-checkboxes" value="Xám" id="color_gray" type="checkbox">
                                 <label class="form-check-label" for="color_gray"> Xám </label>
                             </li>
-                            
+
                         </ul>
                     </div>
                     <div class="single_sidebar">
@@ -293,43 +291,43 @@
                     <!-- Product Color End -->
                     <!-- Popular Product Start -->
                     @* <div class="polular_products single_sidebar">
-                        <div class="product-widget-chunk-wrapper">
-                            <h3 class="sidebar-title">Sản phẩm phổ biến</h3>
+                    <div class="product-widget-chunk-wrapper">
+                    <h3 class="sidebar-title">Sản phẩm phổ biến</h3>
 
-                            <!--=======  widget product list wrapper  =======-->
-                            <div class="small-list-wrapper">
+                    <!--=======  widget product list wrapper  =======-->
+                    <div class="small-list-wrapper">
 
-                                <!--=======  single widget product  =======-->
-                                <div class="small-list-product">
-                                    <div class="small-list-inner">
-                                        <div class="small-list-img">
-                                            <a href="single-product.html">
-                                                <img src="img/products/p1.jpg" class="img-fluid" alt="">
-                                            </a>
-                                        </div>
-                                        <div class="small-list-content">
-                                            <h3 class="small-list-title"> <a href="single-product.html">Small Product Title Here</a></h3>
-                                            <p class="small-list-price">
-                                                <span class="regular-price">$150.00</span>
-                                                <span class="dis-price">$250.00</span>
-                                            </p>
+                    <!--=======  single widget product  =======-->
+                    <div class="small-list-product">
+                    <div class="small-list-inner">
+                    <div class="small-list-img">
+                    <a href="single-product.html">
+                    <img src="img/products/p1.jpg" class="img-fluid" alt="">
+                    </a>
+                    </div>
+                    <div class="small-list-content">
+                    <h3 class="small-list-title"> <a href="single-product.html">Small Product Title Here</a></h3>
+                    <p class="small-list-price">
+                    <span class="regular-price">$150.00</span>
+                    <span class="dis-price">$250.00</span>
+                    </p>
 
-                                            <div class="product-rating">
-                                                <i class="icofont-ui-rating"></i>
-                                                <i class="icofont-ui-rating"></i>
-                                                <i class="icofont-ui-rating"></i>
-                                                <i class="icofont-ui-rate-blank"></i>
-                                                <i class="icofont-ui-rate-blank"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--=======  End of single widget product  =======-->
-                                
-                                <!--=======  End of widget product list wrapper  =======-->
-                            </div>
-                            <!--=======  End of product widget chunk wrapper  =======-->
-                        </div>
+                    <div class="product-rating">
+                    <i class="icofont-ui-rating"></i>
+                    <i class="icofont-ui-rating"></i>
+                    <i class="icofont-ui-rating"></i>
+                    <i class="icofont-ui-rate-blank"></i>
+                    <i class="icofont-ui-rate-blank"></i>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    <!--=======  End of single widget product  =======-->
+
+                    <!--=======  End of widget product list wrapper  =======-->
+                    </div>
+                    <!--=======  End of product widget chunk wrapper  =======-->
+                    </div>
                     </div> *@
                     <!-- Popular Product End -->
                     <!-- sidebar bannaer start -->
@@ -414,7 +412,7 @@
                                                     </a>
 
                                                     <div class="item_quick_link">
-                                                    <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
+                                                        <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
                                                     </div>
 
                                                     <div class="product-count-wrap">
@@ -440,18 +438,7 @@
                                                         <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart" href="cart.html" title="Add to Cart">Thêm vào giỏ hàng</a>
-                                                        <a class="grid_wishlist" title="Wishlist">
-                                                            @{
-                                                                bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
-                                                            }
-
-                                                            <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
-                                                               data-id="@product.ProductId"
-                                                               style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
-
-
-                                                        </a>
-
+                                                        <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
                                                     </div>
                                                 </div>
                                                 <!-- Product Content End -->
@@ -601,54 +588,5 @@
 </div>
 <!-- Shop Page End -->
 <script src="~/js/list-product.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('.icofont-heart-alt').on('click', function () {
-            console.log('Heart clicked'); // Thêm log để kiểm tra sự kiện click
 
-            var $this = $(this);
-            var productId = $this.data('id');
-            var isFavorite = $this.hasClass('favorite');
-
-            console.log('Product ID:', productId); 
-            console.log('Is Favorite:', isFavorite); 
-
-            // Toggle the favorite class
-            $this.toggleClass('favorite not-favorite');
-
-            if (isFavorite) {
-                $this.css('color', 'black');
-            } else {
-                $this.css('color', 'red');
-            }
-
-            var token = $('input[name="__RequestVerificationToken"]').val();
-
-            // Send AJAX request to update the favorite status
-            $.ajax({
-                url: '@Url.Action("ToggleFavorite", "Product")',
-                type: 'POST',
-                headers: {
-                    'RequestVerificationToken': token
-                },
-                data: { productId: productId },
-                success: function (response) {
-                    console.log('AJAX success:', response); 
-                },
-                error: function (error) {
-                    console.error('AJAX error:', error); // Thêm log để kiểm tra lỗi
-
-                    // Rollback the color change if there is an error
-                    $this.toggleClass('favorite not-favorite');
-                    if (isFavorite) {
-                        $this.css('color', 'red');
-                    } else {
-                        $this.css('color', 'black');
-                    }
-                }
-            });
-        });
-    });
-</script>
 

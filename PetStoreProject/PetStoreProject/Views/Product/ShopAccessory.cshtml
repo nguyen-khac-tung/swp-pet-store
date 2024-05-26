@@ -414,8 +414,8 @@
                                                     </a>
 
                                                     <div class="item_quick_link">
-                                            <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
-                                            </div>
+                                                    <a href="/product/detail/@product.ProductId" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết"><i class="icofont-search"></i></a>
+                                                    </div>
 
                                                     <div class="product-count-wrap">
                                                     </div>
@@ -440,19 +440,7 @@
                                                         <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart" href="cart.html" title="Add to Cart">Thêm vào giỏ hàng</a>
-                                                        <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
-                                                            @{
-                                                                bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
-                                                            }
-
-                                                            @if (isFavorite)
-                                                            {
-                                                                <i class="icofont-heart-alt" style="color: red;"></i>
-                                                            }
-                                                            else
-                                                            {
-                                                                <i class="icofont-heart-alt"></i>
-                                                            }
+                                                        <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i>
 
                                                         </a>
 

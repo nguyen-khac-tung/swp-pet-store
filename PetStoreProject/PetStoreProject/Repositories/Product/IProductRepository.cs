@@ -13,7 +13,11 @@ namespace PetStoreProject.Repositories.Product
 
 		public List<ProductDetailViewModel> GetProductDetailFoodsResponse();
         public List<Brand> GetBrandAccessories();
-		public List<Brand> GetBrandFoods();
 
-    }
+		public List<Brand> GetBrandFoods();
+		
+		public List<int> GetProductIDInWishList(int customerID);
+
+
+	}
 }

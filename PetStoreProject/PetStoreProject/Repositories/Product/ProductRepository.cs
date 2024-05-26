@@ -230,8 +230,10 @@ namespace PetStoreProject.Repositories.Product
 
 
 
+
         public List<ProductDetailViewModel> GetProductDetailResponse (List<Models.Product> products)
         {
+
             var productDetails = products.Select(p => new ProductDetailViewModel
             {
                 ProductId = p.ProductId,
@@ -246,6 +248,7 @@ namespace PetStoreProject.Repositories.Product
             }).ToList();
             return productDetails;
         }
+
 
         public List<ProductDetailViewModel> GetProductDetailRequest(List<Models.Product> products)
         {
@@ -287,6 +290,18 @@ namespace PetStoreProject.Repositories.Product
             return GetProductDetailResponse(products);
         }
     }
+
+		public List<int> GetProductIDInWishList(int customerID)
+		{
+           var list = (from c in _context.Customers
+                    where c.CustomerId == customerID
+                    from p in c.Products
+                    select p.ProductId
+                    ).ToList();
+            return list;
+		}
+	}
+
 
     internal record NewRecord(int ProductId, string Name, string Item);
 }

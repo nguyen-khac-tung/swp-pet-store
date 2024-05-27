@@ -92,6 +92,20 @@ namespace PetStoreProject.CartController
             }
         }
 
+        [HttpPut]
+        public ActionResult Edit(int oldProductOptionId, int newProductOptionId, int quantity)
+        {
+            var customerID = getCustomerId();
+            if (customerID != -1)
+            {
+                return EditCartOfCustomer(oldProductOptionId, newProductOptionId, quantity, customerID);
+            }
+            else
+            {
+                return EditCartOfGuest(oldProductOptionId, newProductOptionId, quantity);
+            }
+        }
+
         public ActionResult GetCartBoxItemsOfCustomer(int customerID)
         {
             List<CartItemViewModel> cartItems = _cart.GetListCartItemsVM(customerID);
@@ -208,7 +222,7 @@ namespace PetStoreProject.CartController
             float totalPrice = 0;
             foreach (var cartItem in cartItems)
             {
-                totalPrice += cartItem.Price* cartItem.Quantity;
+                totalPrice += cartItem.Price * cartItem.Quantity;
             }
             ViewData["cartItems"] = cartItems;
             ViewData["total_price"] = totalPrice;
@@ -242,7 +256,7 @@ namespace PetStoreProject.CartController
             return View("~/Views/Cart/Detail.cshtml");
         }
 
-        public ActionResult DeleteCartOfCustomer(int productOptionId,int customerID)
+        public ActionResult DeleteCartOfCustomer(int productOptionId, int customerID)
         {
             _cart.DeleteCartItem(productOptionId, customerID);
             return Json(new { message = "success" });
@@ -275,8 +289,31 @@ namespace PetStoreProject.CartController
             });
         }
 
-        [HttpPut]
-        public ActionResult Edit(int oldProductOptionId, int newProductOptionId, int quantity)
+        public ActionResult EditCartOfCustomer(int oldProductOptionId, int newProductOptionId, int quantity, int customerID)
+        {
+            if (oldProductOptionId == newProductOptionId)
+            {
+                _cart.UpdateNewCartItem(oldProductOptionId, newProductOptionId, quantity, customerID);
+                var newItem = _cart.findCartItemViewModel(oldProductOptionId, customerID);
+                return Json(newItem);
+            }
+            else
+            {
+                bool isExist = _cart.isExistProductOption(newProductOptionId, customerID);
+                if (isExist)
+                {
+                    return Json(new { message = "Sản phẩm đã tồn tại trong giỏ hàng!!!" });
+                }
+                else
+                {
+                    _cart.UpdateNewCartItem(oldProductOptionId, newProductOptionId, quantity, customerID);
+                    var cartItem = _cart.findCartItemViewModel(newProductOptionId, customerID);
+                    return Json(cartItem);
+                }
+            }
+        }
+
+        public ActionResult EditCartOfGuest(int oldProductOptionId, int newProductOptionId, int quantity)
         {
             var cookieOptions = new CookieOptions
             {

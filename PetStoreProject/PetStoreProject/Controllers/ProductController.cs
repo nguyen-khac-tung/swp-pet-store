@@ -66,10 +66,7 @@ namespace PetStoreProject.Controllers
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             List<int> listPID = _product.GetProductIDInWishList(22);
 
-            if (listPID.Count > 0)
-            {
-                ViewData["listPID"] = listPID;
-            }
+            ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;
@@ -95,10 +92,7 @@ namespace PetStoreProject.Controllers
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             List<int> listPID = _product.GetProductIDInWishList(22);
 
-            if (listPID.Count > 0)
-            {
-                ViewData["listPID"] = listPID;
-            }
+            ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;
@@ -125,10 +119,7 @@ namespace PetStoreProject.Controllers
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             List<int> listPID = _product.GetProductIDInWishList(22);
 
-            if (listPID.Count > 0)
-            {
-                ViewData["listPID"] = listPID;
-            }
+            ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;
@@ -154,10 +145,7 @@ namespace PetStoreProject.Controllers
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             List<int> listPID = _product.GetProductIDInWishList(22);
 
-            if (listPID.Count > 0)
-            {
-                ViewData["listPID"] = listPID;
-            }
+            ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;

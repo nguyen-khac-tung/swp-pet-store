@@ -169,7 +169,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html += "</div>";
                     html += "<div class='item_add_cart'>";
                     //html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
-                    html += "<a class='grid_cart' href = 'cart.html' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
+                    html += "<a class='grid_cart' href = '/product/detail/" + items[index].productId + "' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
                     html += "<a class='grid_wishlist' href='wishlist.html' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
                     html += "</div>";
                     html += "</div>";
@@ -208,7 +208,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html1 += "</div>";
                     html1 += "<div class='item_add_cart'>";
                     //html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
-                    html1 += "<a class='grid_cart' href='cart.html1' title='Add to Cart'>Thêm vào giỏ hàng</a>";
+                    html1 += "<a class='grid_cart' href='/product/detail/" + items[index].productId + "' title='Add to Cart'>Thêm vào giỏ hàng</a>";
                     html1 += "<a class='grid_wishlist' href='wishlist.html1' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
                     html1 += "</div>";
                     html1 += "</div>";

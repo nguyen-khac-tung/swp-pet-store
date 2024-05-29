@@ -41,8 +41,6 @@ namespace PetStoreProject.Controllers
             }
             else
             {
-
-
                 return RedirectToAction("Index", "Home");
             }
 			

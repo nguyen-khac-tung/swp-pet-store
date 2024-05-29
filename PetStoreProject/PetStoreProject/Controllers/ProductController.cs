@@ -6,6 +6,7 @@ using PetStoreProject.ViewModels;
 using System.Drawing;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Customers;
+using System.Net;
 
 namespace PetStoreProject.Controllers
 {
@@ -20,7 +21,13 @@ namespace PetStoreProject.Controllers
             _product = product;
             _customer = customer;
         }
-
+        public IActionResult Search(string key)
+        {
+            ViewData["key"] = key;
+            List<SearchViewModel> listSearch = _product.GetListProductsByKeyWords(key);
+            ViewData["listSearch"] = listSearch;
+            return View(listSearch);
+        }
         public int getCustomerId()
         {
             var email = HttpContext.Session.GetString("Account");
@@ -38,7 +45,12 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult ToggleFavorite(int productId)
         {
-
+            int cusomerID = getCustomerId();
+            if (cusomerID == -1)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return Content("Bạn cần đăng nhập để thực hiện thao tác này.");
+            }
             var favoriteList = _product.GetProductIDInWishList(getCustomerId());
 
             if (favoriteList.Contains(productId))

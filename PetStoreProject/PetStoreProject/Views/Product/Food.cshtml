@@ -448,7 +448,7 @@
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart" href="cart.html" title="Add to Cart">Thêm vào giỏ hàng</a>
                                                         <a class="grid_wishlist" title="Wishlist">
-                                                            @* @{
+                                                             @{
                                                     bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
                                                     }
 
@@ -456,7 +456,7 @@
                                                     data-id="@product.ProductId"
                                                     style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
 
-                                                    *@
+                                                   
                                                         </a>
                                                     </div>
                                                 </div>
@@ -613,7 +613,7 @@
 <script>
     $(document).ready(function () {
         $('.icofont-heart-alt').on('click', function () {
-            console.log('Heart clicked'); // Thêm log để kiểm tra sự kiện click
+            console.log('Heart clicked');
 
             var $this = $(this);
             var productId = $this.data('id');
@@ -644,8 +644,37 @@
                 success: function (response) {
                     console.log('AJAX success:', response);
                 },
-                error: function (error) {
-                    console.error('AJAX error:', error); // Thêm log để kiểm tra lỗi
+                error: function (xhr, status, error) {
+                    console.error('AJAX error:', error);
+
+                    var errorMessage;
+
+                    // Kiểm tra mã trạng thái lỗi và đặt thông báo lỗi tương ứng
+                    switch (xhr.status) {
+                        case 400:
+                            alert('Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin.');
+                            break;
+                        case 401:
+                            alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.');
+                            // Bạn có thể chuyển hướng người dùng đến trang đăng nhập nếu muốn
+                            // window.location.href = '@Url.Action("Login", "Account")';
+                            break;
+                        case 403:
+                            alert('Bạn không có quyền thực hiện thao tác này.');
+                            break;
+                        case 404:
+                            alert('Không tìm thấy sản phẩm. Vui lòng thử lại.');
+                            break;
+                        case 500:
+                            alert('Lỗi máy chủ. Vui lòng thử lại sau.');
+                            break;
+                        default:
+                            alert('Đã xảy ra lỗi không xác định. Vui lòng thử lại.');
+                    }
+
+
+                    // Hiển thị thông báo lỗi
+                    $('#error-message').text(errorMessage).show();
 
                     // Rollback the color change if there is an error
                     $this.toggleClass('favorite not-favorite');
@@ -658,6 +687,6 @@
             });
         });
     });
-</script>
 
+</script>
 

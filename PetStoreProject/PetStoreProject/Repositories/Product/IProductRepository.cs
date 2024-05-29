@@ -18,5 +18,7 @@ namespace PetStoreProject.Repositories.Product
 		public List<int> GetProductIDInWishList(int customerID);
         void AddToFavorites(int userId, int productId);
         void RemoveFromFavorites(int userId, int productId);
+
+		public List<SearchViewModel> GetListProductsByKeyWords(string key);
     }
 }

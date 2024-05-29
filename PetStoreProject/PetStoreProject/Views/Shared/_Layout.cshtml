@@ -259,8 +259,8 @@
                                 <li class="drodown-show">
                                     <a href="#"><span class="icofont-search-1"></span></a>
                                     <div class="dropdown categorie-search-box">
-                                        <form action="#">
-                                            <input type="text" name="search" placeholder="Search our item">
+                                        <form asp-action="search" asp-controller="product" method="get">
+                                            <input type="text" name="key" placeholder="Search our item">
                                             <button>
                                                 <span class="icofont-search-1"></span>
                                             </button>

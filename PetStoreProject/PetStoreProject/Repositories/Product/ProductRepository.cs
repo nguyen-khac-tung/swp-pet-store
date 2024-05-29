@@ -306,6 +306,24 @@ namespace PetStoreProject.Repositories.Product
             customer.Products.Remove(product);
             _context.SaveChanges();
         }
+
+        public List<SearchViewModel> GetListProductsByKeyWords(string key)
+        {
+            var listSearch = (from p in _context.Products
+                              join po in _context.ProductOptions on p.ProductId equals po.ProductId into productOptions
+                              from po in productOptions.OrderBy(po => po.ProductOptionId).Take(1)
+                              join i in _context.Images on po.ImageId equals i.ImageId
+                              where p.Name.Contains(key)
+                              orderby p.Name.Contains(key) ? p.Name.IndexOf(key) : p.Name.Length + 1
+                              select new SearchViewModel
+                              {
+                                  ProductId = p.ProductId,
+                                  ProductName = p.Name,
+                                  price = po.Price,
+                                  img_url = i.ImageUrl
+                              }).ToList();
+            return listSearch;
+        }
     }
 
     internal record NewRecord(int ProductId, string Name, string Item);

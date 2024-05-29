@@ -32,6 +32,10 @@ public partial class Customer
 
     public int AccountId { get; set; }
 
+    [ForeignKey("AccountId")]
+    [InverseProperty("Customers")]
+    public virtual Account Account { get; set; } = null!;
+
     [InverseProperty("Customer")]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

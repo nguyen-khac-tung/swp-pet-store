@@ -212,17 +212,17 @@ namespace PetStoreProject.Controllers
         public IActionResult ProfileDetail()
         {
             var email = HttpContext.Session.GetString("Account");
-            var cusomer = _customer.getCustomer(email);
+            var customer = _customer.getCustomer(email);
             var customerVM = new CustomerViewModel
             {
-                CustomerId = cusomer.CustomerId,
-                FullName = cusomer.FullName,
-                Gender = cusomer.Gender,
-                DoB = cusomer.DoB?.ToString("dd/MM/yyyy"),
-                Address = cusomer.Address,
-                Phone = cusomer.Phone,
-                Email = cusomer.Email,
-                AccountId = cusomer.AccountId,
+                CustomerId = customer.CustomerId,
+                FullName = customer.FullName,
+                Gender = customer.Gender,
+                DoB = customer.DoB?.ToString("dd/MM/yyyy"),
+                Address = customer.Address,
+                Phone = customer.Phone,
+                Email = customer.Email,
+                AccountId = customer.AccountId,
             };
             return View(customerVM);
         }

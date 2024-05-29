@@ -15,8 +15,6 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<AccountRole> AccountRoles { get; set; }
-
     public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Attribute> Attributes { get; set; }
@@ -55,11 +53,31 @@ public partial class PetStoreDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AccountRole>(entity =>
+        modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasOne(d => d.Role).WithMany(p => p.AccountRoles)
+            entity.HasMany(d => d.Roles).WithMany(p => p.Accounts)
+                .UsingEntity<Dictionary<string, object>>(
+                    "AccountRole",
+                    r => r.HasOne<Role>().WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_AccountRole_Role"),
+                    l => l.HasOne<Account>().WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_AccountRole_Account"),
+                    j =>
+                    {
+                        j.HasKey("AccountId", "RoleId");
+                        j.ToTable("AccountRole");
+                    });
+        });
+
+        modelBuilder.Entity<Admin>(entity =>
+        {
+            entity.HasOne(d => d.Account).WithMany(p => p.Admins)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AccountRole_Role");
+                .HasConstraintName("FK_Admin_Account");
         });
 
         modelBuilder.Entity<Attribute>(entity =>
@@ -93,6 +111,20 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(e => e.CategoryId).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasOne(d => d.Account).WithMany(p => p.Customers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Customer_Account");
+        });
+
+        modelBuilder.Entity<Employee>(entity =>
+        {
+            entity.HasOne(d => d.Account).WithMany(p => p.Employees)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Employee_Account");
         });
 
         modelBuilder.Entity<Feature>(entity =>

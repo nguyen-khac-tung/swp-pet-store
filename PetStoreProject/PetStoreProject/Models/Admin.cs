@@ -31,4 +31,8 @@ public partial class Admin
     public string Email { get; set; } = null!;
 
     public int AccountId { get; set; }
+
+    [ForeignKey("AccountId")]
+    [InverseProperty("Admins")]
+    public virtual Account Account { get; set; } = null!;
 }

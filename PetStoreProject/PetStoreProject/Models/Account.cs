@@ -19,4 +19,17 @@ public partial class Account
 
     [StringLength(150)]
     public string? Password { get; set; }
+
+    [InverseProperty("Account")]
+    public virtual ICollection<Admin> Admins { get; set; } = new List<Admin>();
+
+    [InverseProperty("Account")]
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+
+    [InverseProperty("Account")]
+    public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+
+    [ForeignKey("AccountId")]
+    [InverseProperty("Accounts")]
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

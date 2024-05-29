@@ -75,10 +75,14 @@ namespace PetStoreProject.Controllers
 
 
 
-            var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-            var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-            ViewBag.priceMin = priceMin;
-            ViewBag.priceMax = priceMax;
+            if (productDetails.Count != 0)
+            {
+                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
+                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
+                ViewBag.priceMin = priceMin;
+                ViewBag.priceMax = priceMax;
+            }
+
             return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
         [HttpGet("/Product/DogAccessory/{productCateId?}")]
@@ -100,11 +104,14 @@ namespace PetStoreProject.Controllers
             ViewBag.numberPage = numberPage;
 
 
-
-            var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-            var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-            ViewBag.priceMin = priceMin;
-            ViewBag.priceMax = priceMax;
+            if(productDetails.Count != 0)
+            {
+                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
+                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
+                ViewBag.priceMin = priceMin;
+                ViewBag.priceMax = priceMax;
+            }
+            
             return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 
@@ -128,10 +135,14 @@ namespace PetStoreProject.Controllers
 
 
 
-            var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-            var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-            ViewBag.priceMin = priceMin;
-            ViewBag.priceMax = priceMax;
+            if (productDetails.Count != 0)
+            {
+                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
+                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
+                ViewBag.priceMin = priceMin;
+                ViewBag.priceMax = priceMax;
+            }
+
             return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
         [HttpGet("/Product/CatAccessory/{productCateId?}")]
@@ -152,10 +163,14 @@ namespace PetStoreProject.Controllers
             ViewBag.pageSize = _pageSize;
             ViewBag.numberPage = numberPage;
 
-            var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-            var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-            ViewBag.priceMin = priceMin;
-            ViewBag.priceMax = priceMax;
+            if (productDetails.Count != 0)
+            {
+                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
+                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
+                ViewBag.priceMin = priceMin;
+                ViewBag.priceMax = priceMax;
+            }
+
             return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 

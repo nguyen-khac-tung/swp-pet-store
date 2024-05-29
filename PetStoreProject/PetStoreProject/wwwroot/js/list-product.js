@@ -182,6 +182,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     //html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
                     html += "<a class='grid_cart' href = '/product/detail/" + items[index].productId + "' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
                     html += "<a class='grid_wishlist' title='Wishlist'><i class='icofont-heart-alt " + favoriteClass + "' data-id='" + items[index].productId + "' style='color: " + favoriteColor + "; cursor: pointer;' onclick='ToggleFavorite(" + items[index].productId + ", this)'></i></a>";
+
                     html += "</div>";
                     html += "</div>";
                     html += "<!-- Product Content End -->";

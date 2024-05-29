@@ -7,12 +7,14 @@ namespace PetStoreProject.Repositories.Accounts
     {
         public Account getAccount(string email, string password);
 
-        public Customer? getCustomer(string email);
-
         public bool checkEmailExist(string email);
 
         public void addNewCustomer(RegisterViewModel registerInfor);
 
         public void resetPassword(ResetPasswordViewModel resetPasswordVM);
+
+        public string? getOldPassword(string email);
+
+        public void changePawword(ChangePasswordViewModel changePasswordVM);
     }
 }

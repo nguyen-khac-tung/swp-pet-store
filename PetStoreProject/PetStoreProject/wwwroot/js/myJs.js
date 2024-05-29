@@ -106,7 +106,7 @@ function deleteCartItem(productOptionId) {
 
 function amountCart() {
     var total_amount = 0.0;
-    var subTotalElements = document.getElementsByClassName('product-subtotal')
+    var subTotalElements = document.getElementsByClassName('product-subtotal');
     for (var i = 1; i < subTotalElements.length; i++) {
         total_amount += parseFloat(subTotalElements[i].innerText.replace(/,/g, ''))
     }

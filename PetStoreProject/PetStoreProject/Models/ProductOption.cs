@@ -28,6 +28,9 @@ public partial class ProductOption
     [InverseProperty("ProductOptions")]
     public virtual Attribute? Attribute { get; set; }
 
+    [InverseProperty("ProductOption")]
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
     [ForeignKey("ImageId")]
     [InverseProperty("ProductOptions")]
     public virtual Image Image { get; set; } = null!;

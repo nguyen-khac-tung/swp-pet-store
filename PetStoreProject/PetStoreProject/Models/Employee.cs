@@ -21,7 +21,7 @@ public partial class Employee
 
     public DateOnly DoB { get; set; }
 
-    [StringLength(20)]
+    [StringLength(50)]
     public string Phone { get; set; } = null!;
 
     [StringLength(250)]
@@ -30,7 +30,5 @@ public partial class Employee
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
-    [ForeignKey("Email")]
-    [InverseProperty("Employees")]
-    public virtual Account EmailNavigation { get; set; } = null!;
+    public int AccountId { get; set; }
 }

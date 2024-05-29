@@ -8,15 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("Account")]
-public partial class Account
+[PrimaryKey("AccountId", "RoleId")]
+[Table("AccountRole")]
+public partial class AccountRole
 {
     [Key]
     public int AccountId { get; set; }
 
-    [StringLength(150)]
-    public string Email { get; set; } = null!;
+    [Key]
+    public int RoleId { get; set; }
 
-    [StringLength(150)]
-    public string? Password { get; set; }
+    [ForeignKey("RoleId")]
+    [InverseProperty("AccountRoles")]
+    public virtual Role Role { get; set; } = null!;
 }

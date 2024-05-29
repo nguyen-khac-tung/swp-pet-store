@@ -22,6 +22,11 @@ namespace PetStoreProject.Repositories.Accounts
                 return null;
             }
 
+            if(account.Password == null)
+            {
+                return null;
+            }
+
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, account.Password);
 
             if (isPasswordValid == false)
@@ -32,14 +37,6 @@ namespace PetStoreProject.Repositories.Accounts
             {
                 return account;
             }
-        }
-
-        public Customer? getCustomer(string email)
-        {
-            var customer = (from user in _context.Customers
-                           where user.Email == email
-                           select user).FirstOrDefault();
-            return customer;
         }
 
         public bool checkEmailExist(string email)
@@ -60,19 +57,33 @@ namespace PetStoreProject.Repositories.Accounts
 
         public void addNewCustomer(RegisterViewModel registerInfor)
         {
-            var account = new Account
+            Account account = new Account();
+            account.Email = registerInfor.Email;
+            if (registerInfor.Password != null)
             {
-                Email = registerInfor.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(registerInfor.Password),
-            };
+                account.Password = BCrypt.Net.BCrypt.HashPassword(registerInfor.Password);
+            }
+            else
+            {
+                account.Password = null;
+            }
+
             _context.Accounts.Add(account);
+
+            _context.SaveChanges();
+
+            var accountId = (from a in _context.Accounts
+                             where a.Email == registerInfor.Email
+                             select a.AccountId).FirstOrDefault();
 
             var customer = new Customer
             {
                 FullName = registerInfor.FullName,
                 Phone = registerInfor.Phone,
                 Email = registerInfor.Email,
+                AccountId = accountId,
             };
+
             _context.Customers.Add(customer);
 
             _context.SaveChanges();
@@ -87,6 +98,25 @@ namespace PetStoreProject.Repositories.Accounts
 
                 _context.SaveChanges();
             }
+        }
+
+        public string? getOldPassword(string email)
+        {
+            var password = (from a in _context.Accounts
+                            where a.Email == email
+                            select a.Password).FirstOrDefault();
+            return password;
+        }
+
+        public void changePawword(ChangePasswordViewModel changePasswordVM)
+        {
+            var account = (from a in _context.Accounts
+                           where a.Email == changePasswordVM.Email
+                           select a).FirstOrDefault();
+
+            account.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordVM.NewPassword);
+
+            _context.SaveChanges();
         }
     }
 }

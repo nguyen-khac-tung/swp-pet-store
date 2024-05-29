@@ -1,4 +1,9 @@
 ﻿@using PetStoreProject.ViewModels
+
+@{
+	ViewData["Title"] = "Danh Sách Yêu Thích";
+}
+
 <!-- Wish List Start -->
 @if(Model.Count != 0)
 {
@@ -15,7 +20,7 @@
 									<th class="product-thumbnail">Image</th>
 									<th class="product-name">Product</th>
 									<th class="product-price">Unit Price</th>
-									<th class="product-quantity">ID</th>
+									<Brandth class="product-quantity">Brand<th>
 									<th class="product-subtotal">add to cart</th>
 								</tr>
 							</thead>

@@ -17,9 +17,8 @@ public partial class Role
     [StringLength(50)]
     public string Name { get; set; } = null!;
 
-    [ForeignKey("RoleId")]
-    [InverseProperty("Roles")]
-    public virtual ICollection<Account> Emails { get; set; } = new List<Account>();
+    [InverseProperty("Role")]
+    public virtual ICollection<AccountRole> AccountRoles { get; set; } = new List<AccountRole>();
 
     [ForeignKey("RoleId")]
     [InverseProperty("Roles")]

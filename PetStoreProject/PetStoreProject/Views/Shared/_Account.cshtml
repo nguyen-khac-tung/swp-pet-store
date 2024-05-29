@@ -18,8 +18,9 @@
                     }
                     else
                     {
-                        <h3>@name</h3>
-                        <a class="single-account-select">Thông Tin Tài Khoản</a>
+                        <img class="rounded-circle pe-2" style="height: 2.2rem" src="~/img/profile-user-2.png" alt="">
+                        <span><h3 id="menu-fullname" class="pt-1 mb-4">@name</h3></span>
+                        <a asp-controller="Account" asp-action="Profile" class="single-account-select">Tài Khoản</a>
                         <a asp-controller="Account" asp-action="Logout" class="single-account-select mt-2">Đăng Xuất</a>
                     }
                 }

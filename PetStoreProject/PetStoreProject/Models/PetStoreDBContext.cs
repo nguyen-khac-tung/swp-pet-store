@@ -15,6 +15,8 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
+    public virtual DbSet<AccountRole> AccountRoles { get; set; }
+
     public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Attribute> Attributes { get; set; }
@@ -53,36 +55,11 @@ public partial class PetStoreDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>(entity =>
+        modelBuilder.Entity<AccountRole>(entity =>
         {
-            entity.HasMany(d => d.Roles).WithMany(p => p.Emails)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AccountRole",
-                    r => r.HasOne<Role>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_AccountRole_Role"),
-                    l => l.HasOne<Account>().WithMany()
-                        .HasForeignKey("Email")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_AccountRole_Account"),
-                    j =>
-                    {
-                        j.HasKey("Email", "RoleId");
-                        j.ToTable("AccountRole");
-                        j.IndexerProperty<string>("Email").HasMaxLength(150);
-                    });
-        });
-
-        modelBuilder.Entity<Admin>(entity =>
-        {
-            entity.Property(e => e.Address).IsFixedLength();
-            entity.Property(e => e.FullName).IsFixedLength();
-            entity.Property(e => e.Phone).IsFixedLength();
-
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.Admins)
+            entity.HasOne(d => d.Role).WithMany(p => p.AccountRoles)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Admin_Account");
+                .HasConstraintName("FK_AccountRole_Role");
         });
 
         modelBuilder.Entity<Attribute>(entity =>
@@ -104,38 +81,18 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.Property(e => e.CartItemId).ValueGeneratedOnAdd();
-
             entity.HasOne(d => d.Customer).WithMany(p => p.CartItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItem_Customer");
+
+            entity.HasOne(d => d.ProductOption).WithMany(p => p.CartItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CartItem_ProductOption");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(e => e.CategoryId).ValueGeneratedNever();
-        });
-
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.Property(e => e.Address).IsFixedLength();
-            entity.Property(e => e.FullName).IsFixedLength();
-            entity.Property(e => e.Phone).IsFixedLength();
-
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.Customers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Customer_Account");
-        });
-
-        modelBuilder.Entity<Employee>(entity =>
-        {
-            entity.Property(e => e.Address).IsFixedLength();
-            entity.Property(e => e.FullName).IsFixedLength();
-            entity.Property(e => e.Phone).IsFixedLength();
-
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.Employees)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Employee_Account");
         });
 
         modelBuilder.Entity<Feature>(entity =>

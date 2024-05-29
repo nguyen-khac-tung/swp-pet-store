@@ -4,6 +4,8 @@
 @{
 }
 @using PetStoreProject.ViewModels
+@using System.Globalization
+
 @{
     ViewData["Title"] = "Tìm kiếm";
 }
@@ -32,14 +34,26 @@
                             <div class="product_content">
                                 <h4><a href="product-details.html">@p.ProductName</a></h4>
                                 <div class="grid_price">
-                                    <span class="regular-price">@p.price</span>
+                                    <span class="regular-price">@p.price.ToString("#,###", CultureInfo.GetCultureInfo("vi-VN")) VND</span>
                                 </div>
                             </div>
                         </div>
                         <div class="item_add_cart">
                             <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
                             <a class="grid_cart" href="cart.html" title="Add to Cart">Add To Cart</a>
-                            <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt" style="color: red;"></i></a>
+                            <a class="grid_wishlist" title="Wishlist">
+                                @if (ViewData["listPID"] != null)
+                                {
+                                    <i class="icofont-heart-alt @( ((List<int>)ViewData["listPID"]).Contains(p.ProductId) ? "favorite" : "not-favorite" )"
+                                       data-id="@p.ProductId"
+                                       style="color: @( ((List<int>)ViewData["listPID"]).Contains(p.ProductId) ? "red" : "black" ); cursor: pointer;"
+                                       onclick="Toggle(@p.ProductId, this)"></i>
+                                }
+                                else
+                                {
+                                    <i class="icofont-heart-alt" onclick="Toggle(@p.ProductId, this)"></i>
+                                }
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -95,3 +109,64 @@ else
             }
     </style>
 }
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function Toggle(productId, element) {
+        var $this = $(element); 
+        var isFavorite = $this.hasClass('favorite');
+
+
+        $this.toggleClass('favorite not-favorite');
+
+
+        if (isFavorite) {
+            $this.css('color', 'black');
+        } else {
+            $this.css('color', 'red');
+        }
+
+        $.ajax({
+            url: '@Url.Action("ToggleFavorite", "Product")',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (response) {
+                console.log('AJAX success:', response);
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX error:', error);
+
+                var errorMessage;
+                switch (xhr.status) {
+                    case 400:
+                        errorMessage = 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin.';
+                        break;
+                    case 401:
+                        errorMessage = 'Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.';
+                        break;
+                    case 403:
+                        errorMessage = 'Bạn không có quyền thực hiện thao tác này.';
+                        break;
+                    case 404:
+                        errorMessage = 'Không tìm thấy sản phẩm. Vui lòng thử lại.';
+                        break;
+                    case 500:
+                        errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau.';
+                        break;
+                    default:
+                        errorMessage = 'Đã xảy ra lỗi không xác định. Vui lòng thử lại.';
+                }
+
+                alert(errorMessage);
+
+                // Revert the favorite status on error
+                $this.toggleClass('favorite not-favorite');
+                if (isFavorite) {
+                    $this.css('color', 'red');
+                } else {
+                    $this.css('color', 'black');
+                }
+            }
+        });
+    }
+</script>

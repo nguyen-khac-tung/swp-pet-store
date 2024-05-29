@@ -23,6 +23,15 @@ namespace PetStoreProject.Controllers
         }
         public IActionResult Search(string key)
         {
+            int cusomerID = getCustomerId();
+            if (cusomerID != -1)
+            {
+                List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+                ViewData["listPID"] = listPID;
+            } else
+            {
+                ViewData["listPID"] = null;
+            }
             ViewData["key"] = key;
             List<SearchViewModel> listSearch = _product.GetListProductsByKeyWords(key);
             ViewData["listSearch"] = listSearch;

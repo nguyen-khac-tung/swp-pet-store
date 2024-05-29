@@ -96,7 +96,7 @@ namespace PetStoreProject.Controllers
             var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
             ViewBag.priceMin = priceMin;
             ViewBag.priceMax = priceMax;
-            return View("ShopFood", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
+            return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
         [HttpGet("/Product/DogAccessory/{productCateId?}")]
         public ActionResult DogAccessory(int? productCateId, int? pageSize, int? page)
@@ -122,7 +122,7 @@ namespace PetStoreProject.Controllers
             var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
             ViewBag.priceMin = priceMin;
             ViewBag.priceMax = priceMax;
-            return View("ShopFood", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
+            return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 
         [HttpGet("/Product/CatFood/{productCateId?}")]
@@ -149,7 +149,7 @@ namespace PetStoreProject.Controllers
             var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
             ViewBag.priceMin = priceMin;
             ViewBag.priceMax = priceMax;
-            return View("ShopAccessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
+            return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
         [HttpGet("/Product/CatAccessory/{productCateId?}")]
         public ActionResult CatAccessory(int? productCateId ,int? pageSize, int? page)
@@ -173,7 +173,7 @@ namespace PetStoreProject.Controllers
             var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
             ViewBag.priceMin = priceMin;
             ViewBag.priceMax = priceMax;
-            return View("ShopAccessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
+            return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 
         [HttpPost]

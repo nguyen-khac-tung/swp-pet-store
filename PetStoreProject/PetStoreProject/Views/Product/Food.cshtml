@@ -6,11 +6,19 @@
 @using PetStoreProject.Helper;
 @model PaginatedList<ProductDetailViewModel>;
 @using PetStoreProject.Models;
+@using System.Globalization;
+
 
 @{
     var selectPageSize = ViewBag.pageSize;
 }
+
 <style>
+
+    #data-grid-view {
+        margin-left: 30px !important;
+    }
+
     .sidebar-brand-list {
         max-height: 300px;
         overflow-y: auto;
@@ -167,7 +175,7 @@
         }
 
     .scrollable-description {
-        max-height: 300px; /* Chiều cao tối đa của thanh cuộn */
+        max-height: 150px; /* Chiều cao tối đa của thanh cuộn */
         overflow-y: auto; /* Hiển thị thanh cuộn dọc khi nội dung vượt quá */
         margin-bottom: 10px;
     }
@@ -387,7 +395,11 @@
                 <div class="shop-area mb-all-40">
                     <!-- Grid & List Main Area End -->
                     <div class="tab-content">
+                        <div id="no-products" style="text-align: center; margin-top: 20px;">
+                        </div>
                         <div id="grid-view" class="tab-pane fade show active class_grid_view">
+
+
                             <div id="data-grid-view" class="row border-hover-effect ">
                                 @if (Model.Count > 0)
                                 {
@@ -399,8 +411,7 @@
                                                 <!-- Product Image Start -->
                                                 <div class="pro-img">
 
-                                                    <span class="sticker-sale">-25%</span>
-                                                    <span class="sticker-new">Mới</span>
+
                                                     <a href="/product/detail/@product.ProductId">
                                                         @if (product.productOption != null && product.productOption.Count > 0)
                                                         {
@@ -424,26 +435,28 @@
                                                         <div class="grid_price">
                                                             @if (product.productOption != null && product.productOption.Count > 0)
                                                             {
-                                                                <span class="regular-price">@product.productOption[0].price VND</span>
+                                                                float amount = @product.productOption[0].price;
+                                                                string formattedAmount = amount.ToString("#,###", CultureInfo.GetCultureInfo("en-US"));
+                                                                <span class="regular-price">@formattedAmount VND</span>
                                                                 @* <del class="discount_price">$75.50</del> *@
                                                             }
                                                         </div>
 
                                                     </div>
                                                     <div class="item_add_cart">
-                                                        <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
+                                                        @* <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a> *@
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart" href="cart.html" title="Add to Cart">Thêm vào giỏ hàng</a>
                                                         <a class="grid_wishlist" title="Wishlist">
-                                                            @{
-                                                                bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
-                                                            }
+                                                            @* @{
+                                                    bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+                                                    }
 
-                                                            <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
-                                                               data-id="@product.ProductId"
-                                                               style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+                                                    <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+                                                    data-id="@product.ProductId"
+                                                    style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
 
-
+                                                    *@
                                                         </a>
                                                     </div>
                                                 </div>
@@ -474,13 +487,10 @@
                                         <!-- Product Image Start -->
                                         <div class="pro-img">
 
-                                            <span class="sticker-sale">-25%</span>
-                                            <span class="sticker-new">Mới</span>
-
                                             <a href="/product/detail/@product.ProductId">
                                                 @if (product.productOption != null && product.productOption.Count > 0)
                                                 {
-                                                    <img class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+                                                    <img style="max-height:250px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
                                                 }
                                             </a>
                                             <div class="item_quick_link">
@@ -502,7 +512,10 @@
                                                 <div class="grid_price">
                                                     @if (product.productOption != null && product.productOption.Count > 0)
                                                     {
-                                                        <span class="regular-price">@product.productOption[0].price VND</span>
+                                                        float amount = @product.productOption[0].price;
+                                                        string formattedAmount = amount.ToString("#,###", CultureInfo.GetCultureInfo("en-US"));
+                                                        <span class="regular-price">@formattedAmount VND</span>
+                                                        @* <del class="discount_price">$75.50</del> *@
                                                     }
                                                 </div>
 
@@ -593,6 +606,7 @@
     </div>
     <!-- Container End -->
 </div>
+
 <!-- Shop Page End -->
 <script src="~/js/list-product.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

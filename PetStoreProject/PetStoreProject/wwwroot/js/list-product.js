@@ -36,6 +36,9 @@ rangeInput.forEach(input => {
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("filter_button").addEventListener('click', function () {
+        selectedBrands = [];
+        selectedColors = [];
+        selectedSizes = [];
 
         //---brands
         var checkboxesBrands = document.querySelectorAll(".brand-checkbox");
@@ -71,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("Color: " + selectedColors);
 
 
-        LoadData(url, pageSize, 1, selectedBrands, "", priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+        LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -125,16 +128,20 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
         success: function (response) {
             if (response.data.length > 0) {
                 var html1 = "";
+                var htmlGridView = "";
                 var html = "";
                 var items = response.data;
                 for (var index = 0; index < items.length; index++) {
+                    const amount = items[index].productOption[0].price;
+                    const formattedAmount = formatVND(amount);
+                    htmlGridView += "<div id='data-grid-view' class='row border-hover-effect'>";
+                    htmlGridView += "</div>";
                     html += "<!-- Single Product Start -->";
                     html += "<div class='col-xl-4 col-lg-6 col-md-6'>";
                     html += "<div class='single-template-product'>";
                     html += "<!-- Product Image Start -->";
                     html += "<div class='pro-img'>";
-                    html += "<span class='sticker-sale'>-25%</span>";
-                    html += "<span class='sticker-new'>Mới</span>";
+
                     html += "<a href='/product/detail/" + items[index].productId + "'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
@@ -151,17 +158,17 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html += "<!-- Product Content Start -->";
                     html += "<div class='product_content_wrap'>";
                     html += "<div class='product_content'>";
-                    html += "<h4 style='height: 50px; padding: 5px;'><a href='product-details.html'>" + items[index].name + "</a></h4>";
+                    html += "<h4><a style='height: 50px;  href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
                     html += "<div class='grid_price'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html += "<span class='regular-price'>" + items[index].productOption[0].price + " VND</span>";
+                        html += "<span class='regular-price'>" + formattedAmount + " VND</span>";
                     }
 
                     html += "</div>";
                     html += "</div>";
                     html += "<div class='item_add_cart'>";
-                    html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
+                    //html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
                     html += "<a class='grid_cart' href = 'cart.html' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
                     html += "<a class='grid_wishlist' href='wishlist.html' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
                     html += "</div>";
@@ -174,8 +181,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html1 += "<div class='single-template-product'>";
                     html1 += "<!-- Product Image Start -->";
                     html1 += "<div class='pro-img'>";
-                    html1 += "<span class='sticker-sale'>-25%</span>";
-                    html1 += "<span class='sticker-new'>Mới</span>";
+
                     html1 += "<a href='/product/detail/" + items[index].productId + "'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         html1 += "<img class='primary-img' src=" + items[index].productOption[0].img_url + "alt='single-product'>";
@@ -190,18 +196,18 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html1 += "<!-- Product Content Start -->";
                     html1 += "<div class='product_content_wrap'>";
                     html1 += "<div class='product_content'>";
-                    html1 += "<h4><a href='product - details.html1'>" + items[index].name + "</a></h4>";
+                    html1 += "<h4><a href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
                     html1 += "<div class='scrollable-description'>";
                     html1 += "<p class='list_des' " + items[index].description + "</p>";
                     html1 += "</div>";
                     html1 += "<div class='grid_price'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html1 += "<span class='regular-price'>" + items[index].productOption[0].price + " VND</span>";
+                        html1 += "<span class='regular-price'>" + formattedAmount + " VND</span>";
                     }
                     html1 += "</div>";
                     html1 += "</div>";
                     html1 += "<div class='item_add_cart'>";
-                    html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
+                    //html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
                     html1 += "<a class='grid_cart' href='cart.html1' title='Add to Cart'>Thêm vào giỏ hàng</a>";
                     html1 += "<a class='grid_wishlist' href='wishlist.html1' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
                     html1 += "</div>";
@@ -210,13 +216,17 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html1 += "</div>";
                 }
                 console.log("pageSize:" + response.pageSize);
+                $('#grid-view').html(htmlGridView);
                 $('#data-grid-view').html(html);
                 $('#list-view').html(html1);
                 pageIndex = response.currentPage;
                 Pagination(response.currentPage, response.numberPage, response.pageSize);
             } else {
-                $('#data-grid-view').html("Sản phẩm hiện khách hàng lựa chọn hiện không có!");
-                $('#list-view').html("Sản phẩm hiện khách hàng lựa chọn hiện không có!");
+                $('#grid-view').empty();
+                var gridView = document.getElementById('grid-view');
+                var htmlAnnounce = "<div id='no-products' style='text-align: center; margin-left: 20px;'><h4>Sản phẩm khách hàng lựa chọn hiện không có!</h4></div>";
+                $('#grid-view').html(htmlAnnounce);
+                $('#list-view').html(htmlAnnounce);
                 $('#pagination').html("");
                 console.error("Unexpected response structure:", response);
                 
@@ -280,4 +290,8 @@ function ChangePageSize() {
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
     LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+}
+
+function formatVND(amount) {
+    return amount.toLocaleString('en-US', '#.###');
 }

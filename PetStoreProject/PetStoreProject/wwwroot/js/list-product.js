@@ -221,7 +221,8 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html1 += "<div class='item_add_cart'>";
                     //html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
                     html1 += "<a class='grid_cart' href='/product/detail/" + items[index].productId + "' title='Add to Cart'>Thêm vào giỏ hàng</a>";
-                    html1 += "<a class='grid_wishlist' href='wishlist.html1' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
+                    html1 += "<a class='grid_wishlist' title='Wishlist'><i class='icofont-heart-alt " + favoriteClass + "' data-id='" + items[index].productId + "' style='color: " + favoriteColor + "; cursor: pointer;' onclick='ToggleFavorite(" + items[index].productId + ", this)'></i></a>";
+
                     html1 += "</div>";
                     html1 += "</div>";
                     html1 += "<!-- Product Content End -->";

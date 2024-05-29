@@ -23,4 +23,8 @@ public partial class CartItem
     [ForeignKey("CustomerId")]
     [InverseProperty("CartItems")]
     public virtual Customer Customer { get; set; } = null!;
+
+    [ForeignKey("ProductOptionId")]
+    [InverseProperty("CartItems")]
+    public virtual ProductOption ProductOption { get; set; } = null!;
 }

@@ -12,22 +12,24 @@ namespace PetStoreProject.Models;
 public partial class Account
 {
     [Key]
+    public int AccountId { get; set; }
+
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
     [StringLength(150)]
-    public string Password { get; set; } = null!;
+    public string? Password { get; set; }
 
-    [InverseProperty("EmailNavigation")]
+    [InverseProperty("Account")]
     public virtual ICollection<Admin> Admins { get; set; } = new List<Admin>();
 
-    [InverseProperty("EmailNavigation")]
+    [InverseProperty("Account")]
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
-    [InverseProperty("EmailNavigation")]
+    [InverseProperty("Account")]
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
-    [ForeignKey("Email")]
-    [InverseProperty("Emails")]
+    [ForeignKey("AccountId")]
+    [InverseProperty("Accounts")]
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

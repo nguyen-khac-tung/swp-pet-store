@@ -21,7 +21,7 @@ public partial class Admin
 
     public DateOnly DoB { get; set; }
 
-    [StringLength(20)]
+    [StringLength(50)]
     public string Phone { get; set; } = null!;
 
     [StringLength(250)]
@@ -30,7 +30,9 @@ public partial class Admin
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
-    [ForeignKey("Email")]
+    public int AccountId { get; set; }
+
+    [ForeignKey("AccountId")]
     [InverseProperty("Admins")]
-    public virtual Account EmailNavigation { get; set; } = null!;
+    public virtual Account Account { get; set; } = null!;
 }

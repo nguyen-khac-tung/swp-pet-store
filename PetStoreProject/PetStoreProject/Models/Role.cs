@@ -19,7 +19,7 @@ public partial class Role
 
     [ForeignKey("RoleId")]
     [InverseProperty("Roles")]
-    public virtual ICollection<Account> Emails { get; set; } = new List<Account>();
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 
     [ForeignKey("RoleId")]
     [InverseProperty("Roles")]

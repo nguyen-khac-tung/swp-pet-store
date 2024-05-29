@@ -19,7 +19,7 @@ public partial class Customer
 
     public bool? Gender { get; set; }
 
-    [StringLength(20)]
+    [StringLength(50)]
     public string? Phone { get; set; }
 
     public DateOnly? DoB { get; set; }
@@ -30,12 +30,14 @@ public partial class Customer
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
+    public int AccountId { get; set; }
+
+    [ForeignKey("AccountId")]
+    [InverseProperty("Customers")]
+    public virtual Account Account { get; set; } = null!;
+
     [InverseProperty("Customer")]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
-
-    [ForeignKey("Email")]
-    [InverseProperty("Customers")]
-    public virtual Account EmailNavigation { get; set; } = null!;
 
     [ForeignKey("CustomerId")]
     [InverseProperty("Customers")]

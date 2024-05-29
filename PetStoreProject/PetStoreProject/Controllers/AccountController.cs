@@ -6,20 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Helper;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
+using PetStoreProject.Repositories.Customers;
 using PetStoreProject.ViewModels;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace PetStoreProject.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IAccountRepository _accountRepository;
+        private readonly IAccountRepository _account;
         private readonly EmailService _emailService;
+        private readonly ICustomerRepository _customer;
 
-        public AccountController(IAccountRepository accountRepo, EmailService emailService)
+        public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer)
         {
-            _accountRepository = accountRepo;
+            _account = accountRepo;
             _emailService = emailService;
+            _customer = customer;
         }
 
         [HttpGet]
@@ -31,10 +35,10 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult Login(Account account)
         {
-            Account acc = _accountRepository.getAccount(account.Email, account.Password);
+            Account acc = _account.getAccount(account.Email, account.Password);
             if (acc != null)
             {
-                var name = _accountRepository.getCustomer(account.Email)?.FullName;
+                var name = _customer.getCustomer(account.Email)?.FullName;
                 HttpContext.Session.SetString("Account", acc.Email);
                 HttpContext.Session.SetString("CustomerName", name ?? "");
                 return RedirectToAction("Index", "Home");
@@ -64,7 +68,7 @@ namespace PetStoreProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isEmailExist = _accountRepository.checkEmailExist(registerInfor.Email);
+                bool isEmailExist = _account.checkEmailExist(registerInfor.Email);
                 bool isPhoneValid = PhoneNumber.isValid(registerInfor.Phone);
                 if (isEmailExist)
                 {
@@ -79,7 +83,7 @@ namespace PetStoreProject.Controllers
                 }
                 else
                 {
-                    _accountRepository.addNewCustomer(registerInfor);
+                    _account.addNewCustomer(registerInfor);
                     HttpContext.Session.SetString("Account", registerInfor.Email);
                     HttpContext.Session.SetString("CustomerName", registerInfor.FullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
@@ -100,7 +104,7 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
-            bool isExistEmail = _accountRepository.checkEmailExist(email);
+            bool isExistEmail = _account.checkEmailExist(email);
             if (isExistEmail)
             {
                 ViewBag.SuccessMess = "Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn. " +
@@ -137,8 +141,8 @@ namespace PetStoreProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _accountRepository.resetPassword(resetPasswordVM);
-                var name = _accountRepository.getCustomer(resetPasswordVM.Email)?.FullName;
+                _account.resetPassword(resetPasswordVM);
+                var name = _customer.getCustomer(resetPasswordVM.Email)?.FullName;
                 HttpContext.Session.SetString("Account", resetPasswordVM.Email);
                 HttpContext.Session.SetString("CustomerName", name ?? "");
                 return RedirectToAction("Index", "Home");
@@ -176,20 +180,19 @@ namespace PetStoreProject.Controllers
 
                 var fullName = userInfo[ClaimTypes.Name];
                 var email = userInfo[ClaimTypes.Email];
-                var passwordDefault = "SigninGoogle";
 
-                bool isEmailExist = _accountRepository.checkEmailExist(email);
+                bool isEmailExist = _account.checkEmailExist(email);
                 if (isEmailExist)
                 {
-                    var name = _accountRepository.getCustomer(email)?.FullName;
+                    var name = _customer.getCustomer(email)?.FullName;
                     HttpContext.Session.SetString("Account", email);
                     HttpContext.Session.SetString("CustomerName", name ?? "");
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    var resgister = new RegisterViewModel { FullName = fullName, Email = email, Password = passwordDefault };
-                    _accountRepository.addNewCustomer(resgister);
+                    var resgister = new RegisterViewModel { FullName = fullName, Email = email };
+                    _account.addNewCustomer(resgister);
                     HttpContext.Session.SetString("Account", email);
                     HttpContext.Session.SetString("CustomerName", fullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
@@ -198,6 +201,105 @@ namespace PetStoreProject.Controllers
 
             TempData["Mess"] = "Đăng nhập tài khoản Google không thành công. Vui lòng thử lại.";
             return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ProfileDetail()
+        {
+            var email = HttpContext.Session.GetString("Account");
+            var customer = _customer.getCustomer(email);
+            var customerVM = new CustomerViewModel
+            {
+                CustomerId = customer.CustomerId,
+                FullName = customer.FullName,
+                Gender = customer.Gender,
+                DoB = customer.DoB?.ToString("dd/MM/yyyy"),
+                Address = customer.Address,
+                Phone = customer.Phone,
+                Email = customer.Email,
+                AccountId = customer.AccountId,
+            };
+            return View(customerVM);
+        }
+
+        [HttpPost]
+        public IActionResult ProfileDetail(CustomerViewModel customer)
+        {
+            if (ModelState.IsValid)
+            {
+                var oldEmail = HttpContext.Session.GetString("Account");
+                if (oldEmail != customer.Email)
+                {
+                    bool isEmailExist = _account.checkEmailExist(customer.Email);
+                    if (isEmailExist)
+                    {
+                        ViewBag.EmailMess = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
+                        return View(customer);
+                    }
+                }
+                bool isPhoneValid = PhoneNumber.isValid(customer.Phone);
+                if (isPhoneValid == false)
+                {
+                    ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
+                    return View(customer);
+                }
+
+                HttpContext.Session.SetString("Account", customer.Email);
+                HttpContext.Session.SetString("CustomerName", customer.FullName);
+                _customer.UpdateProfile(customer);
+                return View(customer);
+            }
+            else
+            {
+                return View(customer);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            var email = HttpContext.Session.GetString("Account");
+            var changePasswordVM = new ChangePasswordViewModel { Email = email };
+            string? oldPassword = _account.getOldPassword(email);
+            if (oldPassword != null)
+            {
+                changePasswordVM.OldPassword = oldPassword;
+            }
+            else
+            {
+                changePasswordVM.OldPassword = null;
+            }
+            return View(changePasswordVM);
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePasswordViewModel changePasswordVM)
+        {
+            if (changePasswordVM.OldPassword != null)
+            {
+                var passwordStored = _account.getOldPassword(changePasswordVM.Email);
+                bool isValid = BCrypt.Net.BCrypt.Verify(changePasswordVM.OldPassword, passwordStored);
+                if (isValid == false)
+                {
+                    ViewBag.Message = "Mật khẩu cũ không chính xác. Vui lòng thử lại.";
+                    return View(changePasswordVM);
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                _account.changePawword(changePasswordVM);
+                return View(changePasswordVM);
+            }
+            else
+            {
+                return View(changePasswordVM);
+            }
         }
     }
 }

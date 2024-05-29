@@ -5,6 +5,7 @@ using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
 using System.Drawing;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.Customers;
 
 namespace PetStoreProject.Controllers
 {
@@ -12,25 +13,41 @@ namespace PetStoreProject.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository _product;
+        private readonly ICustomerRepository _customer;
 
-        public ProductController(IProductRepository product)
+        public ProductController(IProductRepository product, ICustomerRepository customer)
         {
             _product = product;
+            _customer = customer;
+        }
+
+        public int getCustomerId()
+        {
+            var email = HttpContext.Session.GetString("Account");
+            if (email != null)
+            {
+                var customerID = _customer.getCustomerId(email);
+                return customerID;
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         [HttpPost]
         public IActionResult ToggleFavorite(int productId)
         {
 
-            var favoriteList = _product.GetProductIDInWishList(22);
+            var favoriteList = _product.GetProductIDInWishList(getCustomerId());
 
             if (favoriteList.Contains(productId))
             {
-                _product.RemoveFromFavorites(22, productId);
+                _product.RemoveFromFavorites(getCustomerId(), productId);
             }
             else
             {
-                _product.AddToFavorites(22, productId);
+                _product.AddToFavorites(getCustomerId(), productId);
             }
             return Json(new { success = true });
         }
@@ -39,7 +56,7 @@ namespace PetStoreProject.Controllers
         public ActionResult Detail(int productId)
         {
             var product_detail = _product.GetDetail(productId);
-			List<int> listPID = _product.GetProductIDInWishList(22);
+			List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
 			ViewData["product_detail"] = product_detail;
             ViewData["related_products"] = _product.getRelatedProduct(productId);
@@ -64,7 +81,7 @@ namespace PetStoreProject.Controllers
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 20;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(22);
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
             ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
@@ -94,7 +111,7 @@ namespace PetStoreProject.Controllers
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 20;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(22);
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
             ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
@@ -124,7 +141,7 @@ namespace PetStoreProject.Controllers
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 20;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(22);
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
             ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
@@ -154,7 +171,7 @@ namespace PetStoreProject.Controllers
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 20;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(22);
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
             ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);

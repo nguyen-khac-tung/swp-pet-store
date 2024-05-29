@@ -134,6 +134,17 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                 for (var index = 0; index < items.length; index++) {
                     const amount = items[index].productOption[0].price;
                     const formattedAmount = formatVND(amount);
+
+                    var isFavorite = false;
+                    for (var i = 0; i < response.wishlist.length; i++) {
+                        if (response.wishlist[i] == items[index].productId) {
+                            isFavorite = true;
+                        }
+                    }
+
+                    const favoriteClass = isFavorite ? "favorite" : "not-favorite";
+                    const favoriteColor = isFavorite ? "red" : "black";
+
                     htmlGridView += "<div id='data-grid-view' class='row border-hover-effect'>";
                     htmlGridView += "</div>";
                     html += "<!-- Single Product Start -->";
@@ -169,8 +180,8 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html += "</div>";
                     html += "<div class='item_add_cart'>";
                     //html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
-                    html += "<a class='grid_cart' href = 'cart.html' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
-                    html += "<a class='grid_wishlist' href='wishlist.html' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
+                    html += "<a class='grid_cart' href = '/product/detail/" + items[index].productId + "' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
+                    html += "<a class='grid_wishlist' title='Wishlist'><i class='icofont-heart-alt " + favoriteClass + "' data-id='" + items[index].productId + "' style='color: " + favoriteColor + "; cursor: pointer;' onclick='ToggleFavorite(" + items[index].productId + ", this)'></i></a>";
                     html += "</div>";
                     html += "</div>";
                     html += "<!-- Product Content End -->";
@@ -208,7 +219,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html1 += "</div>";
                     html1 += "<div class='item_add_cart'>";
                     //html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
-                    html1 += "<a class='grid_cart' href='cart.html1' title='Add to Cart'>Thêm vào giỏ hàng</a>";
+                    html1 += "<a class='grid_cart' href='/product/detail/" + items[index].productId + "' title='Add to Cart'>Thêm vào giỏ hàng</a>";
                     html1 += "<a class='grid_wishlist' href='wishlist.html1' title='Wishlist'><i class='icofont-heart-alt'></i></a>";
                     html1 += "</div>";
                     html1 += "</div>";
@@ -294,4 +305,63 @@ function ChangePageSize() {
 
 function formatVND(amount) {
     return amount.toLocaleString('en-US', '#.###');
+}
+
+function ToggleFavorite(productId, element) {
+    var $this = $(element); // The <i> element that was clicked
+    var isFavorite = $this.hasClass('favorite');
+
+    // Toggle the favorite class
+    $this.toggleClass('favorite not-favorite');
+    // Update the color based on the new state
+    if (isFavorite) {
+        $this.css('color', 'black');
+    } else {
+        $this.css('color', 'red');
+    }
+
+    $.ajax({
+        url: '/Product/ToggleFavorite',
+        type: 'POST',
+        data: { productId: productId },
+        success: function (response) {
+            console.log('AJAX success:', response);
+        },
+        error: function (xhr, status, error) {
+            var errorMessage;
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
+            // Kiểm tra mã trạng thái lỗi và đặt thông báo lỗi tương ứng
+            switch (xhr.status) {
+                case 400:
+                    errorMessage = 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin.';
+                    break;
+                case 401:
+                    errorMessage = 'Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện thao tác này.';
+                    break;
+                case 403:
+                    errorMessage = 'Bạn không có quyền thực hiện thao tác này.';
+                    break;
+                case 404:
+                    errorMessage = 'Không tìm thấy sản phẩm. Vui lòng thử lại.';
+                    break;
+                case 500:
+                    errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau.';
+                    break;
+                default:
+                    errorMessage = 'Đã xảy ra lỗi không xác định. Vui lòng thử lại.';
+            }
+
+            alert(errorMessage);
+
+            // Revert the favorite status on error
+            $this.toggleClass('favorite not-favorite');
+            if (isFavorite) {
+                $this.css('color', 'red');
+            } else {
+                $this.css('color', 'black');
+            }
+        }
+    });
 }

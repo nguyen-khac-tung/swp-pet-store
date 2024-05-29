@@ -297,12 +297,15 @@ namespace PetStoreProject.Controllers
             var totalItems = productDetails.Count();
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             var productDetail = productDetails.Skip((pageIndex - 1) * _pageSize).Take(_pageSize).ToList();
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
+            TempData["listPID"] = listPID;
             TempData["pageSize"] = _pageSize;
             TempData["totalItems"] = totalItems;
             TempData["currentPage"] = pageIndex;
             return new JsonResult(new
             {
+                wishlist = listPID,
                 Data = productDetail,
                 CurrentPage = pageIndex,
                 NumberPage = numberPage,

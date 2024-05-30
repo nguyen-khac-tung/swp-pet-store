@@ -522,7 +522,14 @@
                                             </div>
                                             <div class="item_add_cart">
                                                 <a class="grid_cart" href="/product/detail/@product.ProductId" title="Add to Cart">Thêm vào giỏ hàng</a>
-                                                <a class="grid_wishlist" href="wishlist.html" title="Wishlist"><i class="icofont-heart-alt"></i></a>
+                                                <a class="grid_wishlist" title="Wishlist">
+                                                    @{
+                                                        bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+                                                    }
+                                                    <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+                                                       data-id="@product.ProductId"
+                                                       style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+                                                </a>
                                             </div>
                                         </div>
                                         <!-- Product Content End -->

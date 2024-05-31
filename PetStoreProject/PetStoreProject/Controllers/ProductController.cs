@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Helper;
+using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
-using System.Drawing;
-using PetStoreProject.Models;
-using PetStoreProject.Repositories.Customers;
 using System.Net;
 
 namespace PetStoreProject.Controllers
@@ -28,7 +26,8 @@ namespace PetStoreProject.Controllers
             {
                 List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
                 ViewData["listPID"] = listPID;
-            } else
+            }
+            else
             {
                 ViewData["listPID"] = null;
             }
@@ -77,13 +76,13 @@ namespace PetStoreProject.Controllers
         public ActionResult Detail(int productId)
         {
             var product_detail = _product.GetDetail(productId);
-			List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
-			ViewData["product_detail"] = product_detail;
+            ViewData["product_detail"] = product_detail;
             ViewData["related_products"] = _product.getRelatedProduct(productId);
-			ViewData["listPID"] = listPID;
+            ViewData["listPID"] = listPID;
 
-			return View();
+            return View();
         }
 
         [HttpPost]
@@ -123,10 +122,11 @@ namespace PetStoreProject.Controllers
 
             return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
+
         [HttpGet("/Product/DogAccessory/{productCateId?}")]
         public ActionResult DogAccessory(int? productCateId, int? pageSize, int? page)
         {
-            List<int> cateId = [2,5];
+            List<int> cateId = [2, 5];
             var productDetails = _product.GetProductDetailAccessoriesRequest(cateId, productCateId ?? 0); // thay doi
             var totalItems = productDetails.Count();
             var pageIndex = page ?? 1;
@@ -142,14 +142,14 @@ namespace PetStoreProject.Controllers
             ViewBag.numberPage = numberPage;
 
 
-            if(productDetails.Count != 0)
+            if (productDetails.Count != 0)
             {
                 var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
                 var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
                 ViewBag.priceMin = priceMin;
                 ViewBag.priceMax = priceMax;
             }
-            
+
             return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 
@@ -184,7 +184,7 @@ namespace PetStoreProject.Controllers
             return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
         [HttpGet("/Product/CatAccessory/{productCateId?}")]
-        public ActionResult CatAccessory(int? productCateId ,int? pageSize, int? page)
+        public ActionResult CatAccessory(int? productCateId, int? pageSize, int? page)
         {
             List<int> cateId = [2, 6];
             var productDetails = _product.GetProductDetailAccessoriesRequest(cateId, productCateId ?? 0); // thay doi
@@ -216,7 +216,7 @@ namespace PetStoreProject.Controllers
         public ActionResult Shop(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
             int priceMax, List<string>? selectedColors, List<string>? selectedSizes)
         {
-            List<int> cateId = null;
+            List<int> cateId = new List<int>();
             int productCateId = 0;
             var urlSplit = url.Split("/").ToList();
 
@@ -236,10 +236,10 @@ namespace PetStoreProject.Controllers
                     break;
             }
             if (urlSplit.Count > 3 && urlSplit[3] != null)
-                {
-                    productCateId = int.Parse(urlSplit[3]);
-                }
-            List<ProductDetailViewModel> productDetails = null;
+            {
+                productCateId = int.Parse(urlSplit[3]);
+            }
+            List<ProductDetailViewModel> productDetails = new List<ProductDetailViewModel>();
 
             //Filter brand
             if (!selectedBrands.IsNullOrEmpty())

@@ -54,7 +54,8 @@ namespace PetStoreProject.Repositories.Product
                                       {
                                           AttributeId = a.AttributeId,
                                           Name = a.Name
-                                      }
+                                      },
+                                      status = po.IsSoldOut
                                   }).ToList();
 
             var attributes = productOptions.Select(a => a.attribute)
@@ -125,12 +126,12 @@ namespace PetStoreProject.Repositories.Product
 
         public List<Models.Product> GetProductsByCategoriesAndProductCateId(List<int> categoriesIds, int productCateId)
         {
-            
+
             List<Models.Product> products = (from p in _context.Products
                                              join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
                                              where categoriesIds.Contains(pc.CategoryId)
                                              select p).ToList();
-            if(productCateId != 0)
+            if (productCateId != 0)
             {
                 products = products.Where(p => p.ProductCateId == productCateId).ToList();
             }
@@ -208,12 +209,12 @@ namespace PetStoreProject.Repositories.Product
                           join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
                           where categoryIds.Contains(pc.CategoryId)
                           select b).Distinct().ToList();
-            if(productCateId != 0)
+            if (productCateId != 0)
             {
                 brands = (from b in brands
-                         join p in _context.Products on b.BrandId equals p.BrandId
-                            where p.ProductCateId == productCateId
-                            select b).ToList();
+                          join p in _context.Products on b.BrandId equals p.BrandId
+                          where p.ProductCateId == productCateId
+                          select b).ToList();
             }
             brands = brands.Distinct().ToList();
             return brands;

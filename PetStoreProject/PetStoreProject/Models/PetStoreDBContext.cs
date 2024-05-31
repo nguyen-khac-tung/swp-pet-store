@@ -51,10 +51,18 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Size> Sizes { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("name=PetStoreDBContext");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
+            entity.ToTable("Account");
+
+            entity.Property(e => e.Email).HasMaxLength(150);
+            entity.Property(e => e.Password).HasMaxLength(150);
+
             entity.HasMany(d => d.Roles).WithMany(p => p.Accounts)
                 .UsingEntity<Dictionary<string, object>>(
                     "AccountRole",
@@ -75,7 +83,15 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Admin>(entity =>
         {
+            entity.ToTable("Admin");
+
+            entity.Property(e => e.Address).HasMaxLength(250);
+            entity.Property(e => e.Email).HasMaxLength(150);
+            entity.Property(e => e.FullName).HasMaxLength(1000);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+
             entity.HasOne(d => d.Account).WithMany(p => p.Admins)
+                .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Admin_Account");
         });
@@ -84,72 +100,134 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.HasKey(e => e.AttributeId).HasName("PK_Taste_1");
 
-            entity.Property(e => e.Name).IsFixedLength();
-            entity.Property(e => e.Type).IsFixedLength();
+            entity.ToTable("Attribute");
+
+            entity.Property(e => e.AttributeId).ValueGeneratedNever();
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsFixedLength();
+            entity.Property(e => e.Type)
+                .HasMaxLength(10)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<Brand>(entity =>
         {
             entity.HasKey(e => e.BrandId).HasName("PK_Brand_1");
 
-            entity.Property(e => e.Name).IsFixedLength();
+            entity.ToTable("Brand");
+
+            entity.Property(e => e.BrandId).ValueGeneratedNever();
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<CartItem>(entity =>
         {
+            entity.ToTable("CartItem");
+
             entity.HasOne(d => d.Customer).WithMany(p => p.CartItems)
+                .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItem_Customer");
 
             entity.HasOne(d => d.ProductOption).WithMany(p => p.CartItems)
+                .HasForeignKey(d => d.ProductOptionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartItem_ProductOption");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
+            entity.ToTable("Category");
+
             entity.Property(e => e.CategoryId).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Customer>(entity =>
         {
+            entity.ToTable("Customer");
+
+            entity.Property(e => e.Address).HasMaxLength(250);
+            entity.Property(e => e.Email).HasMaxLength(150);
+            entity.Property(e => e.FullName).HasMaxLength(250);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+
             entity.HasOne(d => d.Account).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_Account");
         });
 
         modelBuilder.Entity<Employee>(entity =>
         {
+            entity.ToTable("Employee");
+
+            entity.Property(e => e.Address).HasMaxLength(250);
+            entity.Property(e => e.Email).HasMaxLength(150);
+            entity.Property(e => e.FullName).HasMaxLength(250);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+
             entity.HasOne(d => d.Account).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Employee_Account");
         });
 
         modelBuilder.Entity<Feature>(entity =>
         {
+            entity.ToTable("Feature");
+
             entity.Property(e => e.FeatureId).ValueGeneratedNever();
-            entity.Property(e => e.Url).IsFixedLength();
+            entity.Property(e => e.Url)
+                .HasMaxLength(100)
+                .IsFixedLength();
+        });
+
+        modelBuilder.Entity<Feedback>(entity =>
+        {
+            entity.HasKey(e => new { e.FeedbackId, e.CustomerId, e.ProductId });
+
+            entity.ToTable("Feedback");
+
+            entity.Property(e => e.Content).HasMaxLength(500);
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.Property(e => e.ImageUrl).IsFixedLength();
+            entity.ToTable("Image");
+
+            entity.Property(e => e.ImageId).ValueGeneratedNever();
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(250)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<News>(entity =>
         {
             entity.Property(e => e.NewsId).ValueGeneratedNever();
+            entity.Property(e => e.Title).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.Property(e => e.Name).IsFixedLength();
+            entity.ToTable("Product");
+
+            entity.Property(e => e.ProductId).ValueGeneratedNever();
+            entity.Property(e => e.Name)
+                .HasMaxLength(200)
+                .IsFixedLength();
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
+                .HasForeignKey(d => d.BrandId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Brand");
 
             entity.HasOne(d => d.ProductCate).WithMany(p => p.Products)
+                .HasForeignKey(d => d.ProductCateId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_ProductCategory");
 
@@ -173,33 +251,54 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<ProductCategory>(entity =>
         {
+            entity.HasKey(e => e.ProductCateId);
+
+            entity.ToTable("ProductCategory");
+
             entity.Property(e => e.ProductCateId).ValueGeneratedNever();
-            entity.Property(e => e.Name).IsFixedLength();
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsFixedLength();
 
             entity.HasOne(d => d.Category).WithMany(p => p.ProductCategories)
+                .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductCategory_Category");
         });
 
         modelBuilder.Entity<ProductOption>(entity =>
         {
-            entity.HasOne(d => d.Attribute).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Attribute");
+            entity.ToTable("ProductOption");
+
+            entity.Property(e => e.ProductOptionId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Attribute).WithMany(p => p.ProductOptions)
+                .HasForeignKey(d => d.AttributeId)
+                .HasConstraintName("FK_ProductOption_Attribute");
 
             entity.HasOne(d => d.Image).WithMany(p => p.ProductOptions)
+                .HasForeignKey(d => d.ImageId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductOption_Image");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductOptions)
+                .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductOption_Product");
 
-            entity.HasOne(d => d.Size).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Size");
+            entity.HasOne(d => d.Size).WithMany(p => p.ProductOptions)
+                .HasForeignKey(d => d.SizeId)
+                .HasConstraintName("FK_ProductOption_Size");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
+            entity.ToTable("Role");
+
             entity.Property(e => e.RoleId).ValueGeneratedNever();
-            entity.Property(e => e.Name).IsFixedLength();
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsFixedLength();
 
             entity.HasMany(d => d.Features).WithMany(p => p.Roles)
                 .UsingEntity<Dictionary<string, object>>(
@@ -221,15 +320,26 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
+            entity.ToTable("Service");
+
             entity.Property(e => e.ServiceId).ValueGeneratedNever();
-            entity.Property(e => e.Name).IsFixedLength();
+            entity.Property(e => e.Name)
+                .HasMaxLength(200)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<ServiceOption>(entity =>
         {
-            entity.Property(e => e.PetType).IsFixedLength();
+            entity.HasKey(e => new { e.ServiceId, e.PetType });
+
+            entity.ToTable("ServiceOption");
+
+            entity.Property(e => e.PetType)
+                .HasMaxLength(50)
+                .IsFixedLength();
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
+                .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ServiceOption_Service");
         });
@@ -237,6 +347,11 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Size>(entity =>
         {
             entity.HasKey(e => e.SizeId).HasName("PK_Size_1");
+
+            entity.ToTable("Size");
+
+            entity.Property(e => e.SizeId).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

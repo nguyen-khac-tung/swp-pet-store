@@ -277,6 +277,7 @@ function quickView(productId) {
                 $('#quick_size').append(sizeLabel);
                 $('#quick_size').append(sizeDiv);
             }
+
             let isStill = false;
             let attributeId, sizeId, price, img_url;
             for (const element of response.productOption) {
@@ -349,7 +350,7 @@ function quickCheckOutOfStock(sizeId, attributeId, productOptions) {
     else if (list_attribute.length > 0) {
         for (const element of productOptions) {
             if (!element.status) {
-                $('quick_attribute_' + element.attribute.attributeId).addClass('out-of-stock')
+                $('#quick_attribute_' + element.attribute.attributeId).addClass('out-of-stock')
             }
         }
     }

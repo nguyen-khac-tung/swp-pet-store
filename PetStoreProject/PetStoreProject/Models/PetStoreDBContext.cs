@@ -84,7 +84,6 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.HasKey(e => e.AttributeId).HasName("PK_Taste_1");
 
-            entity.Property(e => e.AttributeId).ValueGeneratedNever();
             entity.Property(e => e.Name).IsFixedLength();
             entity.Property(e => e.Type).IsFixedLength();
         });
@@ -93,7 +92,6 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.HasKey(e => e.BrandId).HasName("PK_Brand_1");
 
-            entity.Property(e => e.BrandId).ValueGeneratedNever();
             entity.Property(e => e.Name).IsFixedLength();
         });
 
@@ -135,7 +133,6 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.Property(e => e.ImageId).ValueGeneratedNever();
             entity.Property(e => e.ImageUrl).IsFixedLength();
         });
 
@@ -146,7 +143,6 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.Property(e => e.ProductId).ValueGeneratedNever();
             entity.Property(e => e.Name).IsFixedLength();
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
@@ -187,8 +183,6 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<ProductOption>(entity =>
         {
-            entity.Property(e => e.ProductOptionId).ValueGeneratedNever();
-
             entity.HasOne(d => d.Attribute).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Attribute");
 
             entity.HasOne(d => d.Image).WithMany(p => p.ProductOptions)
@@ -243,8 +237,6 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Size>(entity =>
         {
             entity.HasKey(e => e.SizeId).HasName("PK_Size_1");
-
-            entity.Property(e => e.SizeId).ValueGeneratedNever();
         });
 
         OnModelCreatingPartial(modelBuilder);

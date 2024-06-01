@@ -68,7 +68,7 @@ namespace PetStoreProject.Repositories.Product
                                .GroupBy(s => s.SizeId) // GroupBy theo ID hoặc thuộc tính duy nhất
                                .Select(g => g.First()) // Chọn phần tử đầu tiên từ mỗi nhóm
                                .ToList();
-
+            bool isSoldOut = !(productOptions.Any(po => po.IsSoldOut == false));
 
             foreach (var image in images)
             {
@@ -79,6 +79,7 @@ namespace PetStoreProject.Repositories.Product
             product.sizes = sizes;
             product.images = images;
             product.productOption = productOptions;
+            product.IsSoldOut = isSoldOut;
 
             return product;
         }

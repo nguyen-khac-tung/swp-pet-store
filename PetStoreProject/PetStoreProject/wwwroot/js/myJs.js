@@ -207,6 +207,7 @@ function updateCartItem(oldId, cartItem) {
 function quickView(productId) {
     $('#quick_add_to_cart').removeClass('out-of-stock');
     $('#quick_add_to_cart').html('Thêm vào giỏ hàng');
+    $('#quick_quantity').attr('readonly', false);
     $('#myModal').modal('show');
     $('#quick_attribute').empty();
     $('#quick_size').empty();
@@ -222,10 +223,10 @@ function quickView(productId) {
             $('#quick_amount').html(response.productOption[0].price.toLocaleString('en-US'));
             $('#quick_add_to_cart').attr('data-product-option-id', response.productOption[0].id)
 
-            var imgDiv = $('<div>', {
+            let imgDiv = $('<div>', {
                 class: 'tab-pane large-img-style active'
             });
-            var imgElement = $('<img>', {
+            let imgElement = $('<img>', {
                 src: response.productOption[0].img_url,
                 alt: ''
             });
@@ -284,13 +285,11 @@ function quickView(productId) {
             }
 
             let isStill = false;
-            let attributeId, sizeId, price, img_url;
+            let attributeId, sizeId;
             for (const element of response.productOption) {
-                if (element.isSoldOut) { // status is boolean
+                if (!element.isSoldOut) { // status is boolean
                     attributeId = element.attribute.attributeId;
                     sizeId = element.size.sizeId;
-                    price = element.price;
-                    img_url = element.img_url;
                     isStill = true
                     break;
                 }
@@ -302,7 +301,7 @@ function quickView(productId) {
                 let list_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
 
                 if (list_size.length > 0) {
-                    var sizeElement = document.getElementById('quick_size_' + sizeId);
+                    let sizeElement = document.getElementById('quick_size_' + sizeId);
                     if (sizeElement) {
                         sizeElement.classList.add('select');
                     } else {
@@ -311,7 +310,7 @@ function quickView(productId) {
                 }
 
                 if (list_attribute.length > 0) {
-                    var attributeElement = document.getElementById('quick_attribute_' + attributeId);
+                    let attributeElement = document.getElementById('quick_attribute_' + attributeId);
                     if (attributeElement) {
                         attributeElement.classList.add('select');
                     } else {
@@ -323,9 +322,15 @@ function quickView(productId) {
                 }
             }
             else {
+                let divSoldOut = $('<div>', {
+                    class: 'overlay'
+                }).text('Hết hàng')
+                imgDiv.append(divSoldOut);
+                imgElement.addClass('out-of-stock');
                 $('#quick_add_to_cart').addClass('out-of-stock');
                 $('#quick_add_to_cart').html('Đã bán hết');
                 quickCheckOutOfStock(sizeId, attributeId, response.productOption);
+                $('#quick_quantity').attr('readonly', true);
             }
             document.getElementById('quick_quantity').value = 1
 
@@ -341,7 +346,7 @@ function quickCheckOutOfStock(sizeId, attributeId, productOptions) {
     let list_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
     if (list_size.length > 0 && list_attribute.length > 0) {
         for (const element of productOptions) {
-            if (!element.isSoldOut) {
+            if (element.isSoldOut) {
                 if (element.attribute.attributeId == attributeId) {
                     $('#quick_size_' + element.size.sizeId).addClass('out-of-stock')
                 }
@@ -353,14 +358,14 @@ function quickCheckOutOfStock(sizeId, attributeId, productOptions) {
     }
     else if (list_attribute.length > 0) {
         for (const element of productOptions) {
-            if (!element.isSoldOut) {
+            if (element.isSoldOut) {
                 $('#quick_attribute_' + element.attribute.attributeId).addClass('out-of-stock')
             }
         }
     }
     else if (list_size.length > 0) {
         for (const element of productOptions) {
-            if (!element.isSoldOut) {
+            if (element.isSoldOut) {
                 $('#quick_size_' + element.size.sizeId).addClass('out-of-stock')
             }
         }

@@ -89,7 +89,7 @@ namespace PetStoreProject.Repositories.Product
                             join p in _context.Products on po.ProductId equals p.ProductId
                             join b in _context.Brands on p.BrandId equals b.BrandId
                             join i in _context.Images on po.ImageId equals i.ImageId
-                            where p.ProductCateId == cateId
+                            where p.ProductCateId == cateId && po.IsSoldOut == false
                             group new { po, p, b, i } by new { p.ProductId, p.Name, BrandName = b.Name } into g
                             select new RelatedProductViewModel
                             {

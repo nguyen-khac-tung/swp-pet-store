@@ -64,10 +64,6 @@
         -moz-appearance: textfield;
     }
 
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-    }
 
     .price-input .separator {
         width: 130px;
@@ -185,7 +181,6 @@
 
     .img_sold_out {
         opacity:0.4;
-
     }
 
     .pro-img {
@@ -197,20 +192,7 @@
             display: block;
         }
 
-    .overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        padding: 5px 5px;
-        font-size: 1rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        text-align: center;
-        border-radius: 5px;
-    }
+    
 
 
 </style>
@@ -443,7 +425,7 @@
                                                     </a>
 
                                                     <div class="item_quick_link">
-                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" onclick="quickView(@product.ProductId)" title="Xem chi tiết"><i class="icofont-search"></i></a>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickView(@product.ProductId)"><i class="icofont-search"></i></a>
                                                     </div>
                                                     
 

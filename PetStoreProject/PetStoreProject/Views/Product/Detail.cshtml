@@ -272,7 +272,7 @@
                                 </a>
 
                                 <div class="item_quick_link">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)" ``><i class="icofont-search"></i></a>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickView(@p.ProductId)" ``><i class="icofont-search"></i></a>
                                 </div>
 
                                 @* <div class="product-count-wrap">
@@ -329,7 +329,7 @@
     var productOptions = @Html.Raw(productOptions);
     var isStill = false;
     for (var index = 0; index < productOptions.length; index++) {
-        if (productOptions[index].IsSoldOut) { // status is boolean
+        if (!productOptions[index].IsSoldOut) { // status is boolean
             attributeId = productOptions[index].attribute.AttributeId;
             sizeId = productOptions[index].size.SizeId;
             price = productOptions[index].price;
@@ -369,6 +369,7 @@
     else {
         $('#add_to_cart').addClass('out-of-stock');
         $('#add_to_cart').html('Đã bán hết')
+        $('#quantity').attr('readonly', true)
         checkOutOfStock();
     }
 
@@ -377,8 +378,7 @@
         var list_attribute = document.getElementById('attribute').querySelectorAll('li');
         if (list_size.length > 0 && list_attribute.length > 0) {
             for (var index = 0; index < productOptions.length; index++) {
-                if(!productOptions[index].IsSoldOut){
-                        console.log(productOptions[index].IsSoldOut)
+                if(productOptions[index].IsSoldOut){
                     if (productOptions[index].attribute.AttributeId == attributeId) {
                         $('#size_' + productOptions[index].size.SizeId).addClass('out-of-stock')
                     }
@@ -390,14 +390,14 @@
         }
         else if (list_attribute.length > 0) {
             for (var index = 0; index < productOptions.length; index++) {
-                if (!productOptions[index].IsSoldOut) {
+                if (productOptions[index].IsSoldOut) {
                     $('#attribute_' + productOptions[index].attribute.AttributeId).addClass('out-of-stock')
                 }
             }
         }
         else if (list_size.length > 0) {
             for (var index = 0; index < productOptions.length; index++) {
-                if (!productOptions[index].IsSoldOut) {
+                if (productOptions[index].IsSoldOut) {
                     $('#size_' + productOptions[index].size.SizeId).addClass('out-of-stock')
                 }
             }
@@ -443,7 +443,7 @@
 				price = productOptions_json[id].price
 				img_url = productOptions_json[id].img_url
 				$('#add_to_cart').attr('data-product-option-id', productOptions_json[id].Id)
-                    if (!productOptions_json[id].IsSoldOut) {
+                    if (productOptions_json[id].IsSoldOut) {
                         $('#add_to_cart').addClass('out-of-stock');
                 }
 				break

@@ -19,7 +19,7 @@ function addToCart(productOptionId, quantity) {
         }
     });
     $('#myModal').modal('hide');
-    showNotification();
+    showNotification('Thêm sản phẩm thành công', 'green');
 }
 
 function getCartBoxItems() {
@@ -127,6 +127,7 @@ function deleteCartItem(productOptionId) {
             getCartBoxItems();
         }
     });
+    showNotification('Sản phẩm đã được xóa', 'red')
     amountCart();
 }
 
@@ -158,7 +159,7 @@ function editCartItem(oldProductOptionId, newProductOptionId, quantity) {
                 getCartBoxItems()
                 $('#myModal').modal('hide');
                 amountCart();
-                showNotification();
+                showNotification('Sản phẩm đã được lưu', 'green');
             }
         }
     });
@@ -442,8 +443,10 @@ function validateQuantity(input) {
     }
 }
 
-function showNotification() {
+function showNotification(message, color) {
     let notification = document.getElementById('notification');
+    notification.innerText = message;
+    notification.style.backgroundColor = color;
     notification.style.display = 'block';
     setTimeout(function () {
         notification.style.display = 'none';

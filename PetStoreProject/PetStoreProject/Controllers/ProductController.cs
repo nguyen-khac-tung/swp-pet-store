@@ -110,6 +110,12 @@ namespace PetStoreProject.Controllers
                 case "CatAccessory":
                     categoryIds = [2, 6];
                     break;
+                case "foods":
+                    categoryIds = [1];
+                    break;
+                case "accessories":
+                    categoryIds = [2];
+                    break;
             }
             var productDetails = _product.GetProductDetailFoodsRequest(categoryIds, productCateId ?? 0); // thay doi
             var totalItems = productDetails.Count();
@@ -159,6 +165,12 @@ namespace PetStoreProject.Controllers
                     break;
                 case "CatAccessory":
                     cateId = new List<int> { 2, 6 };
+                    break;
+                case "foods":
+                    cateId = [1];
+                    break;
+                case "accessories":
+                    cateId = [2];
                     break;
             }
             if (urlSplit.Count > 3 && urlSplit[3] != null)

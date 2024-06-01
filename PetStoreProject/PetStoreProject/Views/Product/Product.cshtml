@@ -403,16 +403,16 @@
                                                     <a href="/product/detail/@product.ProductId">
                                                         @if (product.productOption != null && product.productOption.Count > 0)
                                                         {
-                                                            bool IsSoldOut = false;
+                                                            bool IsSoldOut = true;
                                                             foreach(var po in product.productOption)
                                                             {
                                                                 if(po.IsSoldOut == true)
                                                                 {
-                                                                    IsSoldOut = true;
+                                                                    IsSoldOut = false;
                                                                     break;
                                                                 }
                                                             }
-                                                            if(IsSoldOut){
+                                                            if(IsSoldOut == false){
                                                                 <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
 
                                                             }
@@ -498,16 +498,16 @@
                                             <a href="/product/detail/@product.ProductId">
                                                 @if (product.productOption != null && product.productOption.Count > 0)
                                                 {
-                                                    bool IsSoldOut = false;
+                                                    bool IsSoldOut = true;
                                                     foreach (var po in product.productOption)
                                                     {
-                                                        if (po.IsSoldOut == true)
+                                                        if (po.IsSoldOut == false)
                                                         {
-                                                            IsSoldOut = true;
+                                                            IsSoldOut = false;
                                                             break;
                                                         }
                                                     }
-                                                    if (IsSoldOut)
+                                                    if (IsSoldOut == false)
                                                     {
                                                         <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
 

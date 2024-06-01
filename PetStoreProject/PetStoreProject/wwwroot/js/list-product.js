@@ -174,14 +174,14 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                     html += "<a href='/product/detail/" + items[index].productId + "'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        var isSoldOutAll = false;
+                        var isSoldOutAll = true;
                         for (var i = 0; i < items[index].productOption.length; i++) {
                             if (items[index].productOption[i].isSoldOut == true) {
-                                isSoldOutAll = true;
+                                isSoldOutAll = false;
                                 break;
                             }
                         }
-                        if (isSoldOutAll == true) {
+                        if (isSoldOutAll == false) {
                             html += "<img style='max-height: 300px' class='primary-img' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
                         }
                         else {
@@ -230,14 +230,14 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
 
                     html1 += "<a href='/product/detail/" + items[index].productId + "'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        var isSoldOutAll = false;
+                        var isSoldOutAll = true;
                         for (var i = 0; i < items[index].productOption.length; i++) {
                             if (items[index].productOption[i].isSoldOut == true) {
-                                isSoldOutAll = true;
+                                isSoldOutAll = false;
                                 break;
                             }
                         }
-                        if (isSoldOutAll == true) {
+                        if (isSoldOutAll == false) {
                             html1 += "<img style='max-height: 300px' class='primary-img' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
                         }
                         else {

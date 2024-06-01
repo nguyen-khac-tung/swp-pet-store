@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# S6967: ModelState.IsValid should be called in controller actions
+dotnet_diagnostic.S6967.severity = silent

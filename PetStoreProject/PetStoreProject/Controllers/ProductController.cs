@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Helper;
+using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
-using System.Drawing;
-using PetStoreProject.Models;
-using PetStoreProject.Repositories.Customers;
 using System.Net;
 
 namespace PetStoreProject.Controllers
@@ -144,7 +142,7 @@ namespace PetStoreProject.Controllers
         public ActionResult ListProduct(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
             int priceMax, List<string>? selectedColors, List<string>? selectedSizes, List<string>? selectedStatus)
         {
-            List<int> cateId = null;
+            List<int> cateId = new List<int>();
             int productCateId = 0;
             var urlSplit = url.Split("/").ToList();
 

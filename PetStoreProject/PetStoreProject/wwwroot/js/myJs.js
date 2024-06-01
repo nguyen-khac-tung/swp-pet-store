@@ -2,7 +2,6 @@
     getCartBoxItems();
 };
 function addToCart(productOptionId, quantity) {
-    console.log(productOptionId);
     $.ajax({
         type: "POST",
         url: "/cart/AddToCart",
@@ -19,6 +18,8 @@ function addToCart(productOptionId, quantity) {
             console.error('The request failed!', status, error);
         }
     });
+    $('#myModal').modal('hide');
+    showNotification('Thêm sản phẩm thành công', 'green');
 }
 
 function getCartBoxItems() {
@@ -26,64 +27,69 @@ function getCartBoxItems() {
         type: "POST",
         url: "/cart/GetCartBoxItems",
         success: function (response) {
+            console.log(response.length)
             $('#list_item').empty();
             $('#total_item').html(response.length)
-            var total_price = 0;
-            for (var index = 0; index < response.length; index++) {
-                var divSingleCart = $('<div>', {
-                    class: "single-cart-box"
-                })
-
-                var divCartImg = $('<div>', {
-                    class: "cart-img"
-                })
-
-                var divCartContent = $('<div>', {
-                    class: "cart-content"
-                })
-
-                var img = $('<img>', {
-                    src: response[index].imgUrl,
-                    alt: "cart-image"
-                })
-
-                var h6 = $('<h6>', {
-                    style: "margin: 0px"
-                })
-                var aTitle = $('<a>', {
-                    href: 'http://localhost:5206/product/detail/' + response[index].productId
-                }).text(response[index].name)
-                var option = "";
-                if (!(response[index].size.name == null && response[index].attribute.name == null)) {
-                    if (response[index].size.name != null && response[index].attribute.name != null) {
-                        option += response[index].size.name + ', ' + response[index].attribute.name
-                    }
-                    else if (response[index].size.name == null) {
-                        option += response[index].attribute.name
-                    } else {
-                        option += response[index].size.name
-                    }
-                }
-                var spanOption = $('<div>', {
-                    style: "font-size: 13px; margin-top: 3px; margin-bottom: 3px"
-                }).text(option)
-                var spanPrice = $('<span>').text(response[index].price.toLocaleString('en-US') + ' x ' + response[index].quantity)
-                h6.append(aTitle)
-                divCartImg.append(img)
-                divCartContent.append(h6)
-                divCartContent.append(spanOption)
-                divCartContent.append(spanPrice)
-
-                divSingleCart.append(divCartImg)
-                divSingleCart.append(divCartContent)
-                $('#list_item').append(divSingleCart)
-
-                total_price += parseFloat(response[index].price) * parseFloat(response[index].quantity)
+            let total_price = 0;
+            if (response.length == 0) {
+                $('#list_item').html('<p>Không có sản phẩm nào trong giỏ hàng</p>')
             }
-            var x = total_price.toLocaleString('en-US') + " VND"
-            console.log(x)
+            else {
+                for (const element of response) {
+                    let divSingleCart = $('<div>', {
+                        class: "single-cart-box"
+                    })
+
+                    let divCartImg = $('<div>', {
+                        class: "cart-img"
+                    })
+
+                    let divCartContent = $('<div>', {
+                        class: "cart-content"
+                    })
+
+                    let img = $('<img>', {
+                        src: element.imgUrl,
+                        alt: "cart-image"
+                    })
+
+                    let h6 = $('<h6>', {
+                        style: "margin: 0px"
+                    })
+                    let aTitle = $('<a>', {
+                        href: 'http://localhost:5206/product/detail/' + element.productId
+                    }).text(element.name)
+                    let option = "";
+                    if (!(element.size.name == null && element.attribute.name == null)) {
+                        if (element.size.name != null && element.attribute.name != null) {
+                            option += element.size.name + ', ' + element.attribute.name
+                        }
+                        else if (element.size.name == null) {
+                            option += element.attribute.name
+                        } else {
+                            option += element.size.name
+                        }
+                    }
+                    let spanOption = $('<div>', {
+                        style: "font-size: 13px; margin-top: 3px; margin-bottom: 3px"
+                    }).text(option)
+                    let spanPrice = $('<span>').text(element.price.toLocaleString('en-US') + ' x ' + element.quantity)
+                    h6.append(aTitle)
+                    divCartImg.append(img)
+                    divCartContent.append(h6)
+                    divCartContent.append(spanOption)
+                    divCartContent.append(spanPrice)
+
+                    divSingleCart.append(divCartImg)
+                    divSingleCart.append(divCartContent)
+                    $('#list_item').append(divSingleCart)
+
+                    total_price += parseFloat(element.price) * parseFloat(element.quantity)
+                }
+            }
+            let x = total_price.toLocaleString('en-US') + " VND"
             $('#total_price').html(x);
-            console.log(response);
+            
         },
         error: function (xhr, status, error) {
             console.error('Error: ' + error);
@@ -93,6 +99,26 @@ function getCartBoxItems() {
 
 function deleteCartItem(productOptionId) {
     $('#' + productOptionId).remove()
+    let list = document.getElementsByClassName('item');
+    if (list.length == 0) {
+        let x = `
+                <div class="container" style="width: 100%; align-items: center; padding-top: 20px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-warning" role="alert">
+                                <h4 class="alert-heading">Giỏ hàng trống!</h4>
+                                <p>Giỏ hàng của bạn đang trống, hãy chọn sản phẩm để mua sắm.</p>
+                                <hr>
+                                <p class="mb-0">
+                                    Nhấn vào <a href="/home/index" style="text-decoration:underline">đây</a> để quay lại trang chủ.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+        $('#cart_content').html(x);
+    }
     $.ajax({
         url: "http://localhost:5206/cart/delete",
         type: "DELETE",
@@ -101,13 +127,14 @@ function deleteCartItem(productOptionId) {
             getCartBoxItems();
         }
     });
+    showNotification('Sản phẩm đã được xóa', 'red')
     amountCart();
 }
 
 function amountCart() {
-    var total_amount = 0.0;
-    var subTotalElements = document.getElementsByClassName('product-subtotal');
-    for (var i = 1; i < subTotalElements.length; i++) {
+    let total_amount = 0.0;
+    let subTotalElements = document.getElementsByClassName('product-subtotal');
+    for (let i = 1; i < subTotalElements.length; i++) {
         total_amount += parseFloat(subTotalElements[i].innerText.replace(/,/g, ''))
     }
     $('#amount').html(total_amount.toLocaleString('en-US'))
@@ -119,7 +146,6 @@ function quickEditCartItem(oldProductOptionId, productId) {
     $('#myModal').modal('show');
 }
 function editCartItem(oldProductOptionId, newProductOptionId, quantity) {
-    console.log(newProductOptionId)
     $.ajax({
         url: "http://localhost:5206/cart/Edit",
         method: "PUT",
@@ -133,13 +159,14 @@ function editCartItem(oldProductOptionId, newProductOptionId, quantity) {
                 getCartBoxItems()
                 $('#myModal').modal('hide');
                 amountCart();
+                showNotification('Sản phẩm đã được lưu', 'green');
             }
         }
     });
 }
 
 function updateCartItem(oldId, cartItem) {
-    var option = "";
+    let option = "";
     if (!(cartItem.attribute.name == null && cartItem.size.name == null)) {
         if (cartItem.attribute.Name != null && cartItem.size.Name != null) {
             option += "( " + cartItem.attribute.Name + ", " + cartItem.size.name + " )";
@@ -152,8 +179,7 @@ function updateCartItem(oldId, cartItem) {
         }
     }
     // Find the row by ProductOptionId
-    var row = $('#' + oldId);
-    console.log(cartItem)
+    let row = $('#' + oldId);
     // Update the product name and link
     row.find('.product-name a').attr('href', 'http://localhost:5206/product/detail/' + cartItem.productId)
         .html(cartItem.name + '</br>' + option);
@@ -168,7 +194,7 @@ function updateCartItem(oldId, cartItem) {
     row.find('.product-quantity input').val(cartItem.quantity);
 
     // Update the product subtotal
-    var sub_total = parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
+    let sub_total = parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
     row.find('.product-subtotal').text(sub_total.toLocaleString('en-US'))
 
     // Update the edit button
@@ -180,6 +206,8 @@ function updateCartItem(oldId, cartItem) {
 }
 
 function quickView(productId) {
+    $('#quick_add_to_cart').removeClass('out-of-stock');
+    $('#myModal').modal('show');
     $('#quick_attribute').empty();
     $('#quick_size').empty();
     $.ajax({
@@ -204,20 +232,20 @@ function quickView(productId) {
             $('#quick_image').append(imgDiv);
 
             $('#quick_brand').html('Thương hiệu: ' + response.brand);
-            var jsonStr = JSON.stringify(response.productOption);
+            let jsonStr = JSON.stringify(response.productOption);
 
             if (response.attributes[0].name != null) {
-                var divContainer = $('<div>', {
+                let divContainer = $('<div>', {
                     class: 'color clearfix mb-30'
                 });
-                var label = $('<label>').text('Loại :');
-                var ul = $('<ul>', {
+                let label = $('<label>').text('Loại :');
+                let ul = $('<ul>', {
                     class: 'color-list scroll'
                 });
-                var list = ""
-                for (var index = 0; index < response.attributes.length; index++) {
+                let list = ""
+                for (let index = 0; index < response.attributes.length; index++) {
                     if (response.attributes[index].name != null) {
-                        list += "<li style = 'cursor:pointer' onclick='quick_attribute_selected(" + index + "," + response.attributes[index].attributeId + "," + jsonStr + ")'" + "data = '" + response.attributes[index].attributeId + "'>" + response.attributes[index].name + "</li>"
+                        list += "<li id='quick_attribute_" + response.attributes[index].attributeId + "' style = 'cursor:pointer' onclick='quick_attribute_selected(" + index + "," + response.attributes[index].attributeId + "," + jsonStr + ")'" + "data = '" + response.attributes[index].attributeId + "'>" + response.attributes[index].name + "</li>"
                     }
                     else {
                         index -= 1
@@ -230,18 +258,18 @@ function quickView(productId) {
             }
 
             if (response.sizes[0].name != null) {
-                var sizeLabel = $('<label>').text('Kích thước :');
-                var sizeDiv = $('<div>', {
+                let sizeLabel = $('<label>').text('Kích thước :');
+                let sizeDiv = $('<div>', {
                     class: 'color-list size_list'
                 });
-                var sizeUl = $('<ul>', {
+                let sizeUl = $('<ul>', {
                     class: 'color-list size_list scroll'
                 });
 
-                var list = ""
-                for (var index = 0; index < response.sizes.length; index++) {
+                let list = ""
+                for (let index = 0; index < response.sizes.length; index++) {
                     if (response.sizes[index].name != null) {
-                        list += "<li style = 'cursor:pointer' onclick='quick_size_selected(" + index + "," + response.sizes[index].sizeId + "," + jsonStr + ")'" + "data = '" + response.sizes[index].sizeId + "'>" + response.sizes[index].name + "</li>"
+                        list += "<li id='quick_size_" + response.sizes[index].sizeId + "' style = 'cursor:pointer' onclick='quick_size_selected(" + index + "," + response.sizes[index].sizeId + "," + jsonStr + ")'" + "data = '" + response.sizes[index].sizeId + "'>" + response.sizes[index].name + "</li>"
                     }
                     else {
                         index -= 1
@@ -254,18 +282,52 @@ function quickView(productId) {
                 $('#quick_size').append(sizeDiv);
             }
 
-            var list_quick_size = document.getElementById('quick_size').querySelectorAll('li');
-            var list_quick_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
-            if (list_quick_size.length > 0) {
-                list_quick_size[0].classList.add('select');
-            }
+            let isStill = false;
+            let attributeId, sizeId, price, img_url;
+            for (const element of response.productOption) {
+                if (element.status) { // status is boolean
+                    attributeId = element.attribute.attributeId;
+                    sizeId = element.size.sizeId;
+                    price = element.price;
+                    img_url = element.img_url;
+                    isStill = true
+                    break;
+                }
 
-            if (list_quick_attribute.length > 0) {
-                list_quick_attribute[0].classList.add('select');
+            }
+            // updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
+            if (isStill) {
+                console.log('Con hang')
+                let list_size = document.getElementById('quick_size').querySelectorAll('li');
+                let list_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
+
+                if (list_size.length > 0) {
+                    var sizeElement = document.getElementById('quick_size_' + sizeId);
+                    if (sizeElement) {
+                        sizeElement.classList.add('select');
+                    } else {
+                        console.warn('Size element not found: size_' + sizeId);
+                    }
+                }
+
+                if (list_attribute.length > 0) {
+                    var attributeElement = document.getElementById('quick_attribute_' + attributeId);
+                    if (attributeElement) {
+                        attributeElement.classList.add('select');
+                    } else {
+                        console.warn('Attribute element not found: attribute_' + attributeId);
+                    }
+                }
+                if (list_attribute.length > 0 || list_size.length > 0) {
+                    quickUpdatePriceAndImage(sizeId, attributeId, response.productOption)
+                }
+            }
+            else {
+                $('#quick_add_to_cart').addClass('out-of-stock');
+                quickCheckOutOfStock(sizeId, attributeId, response.productOption);
             }
             document.getElementById('quick_quantity').value = 1
 
-            console.log(response);
         },
         error: function (xhr, status, error) {
             console.error('Error: ' + error);
@@ -273,58 +335,97 @@ function quickView(productId) {
     });
 }
 
-function quick_size_selected(index, size_id, productOption) {
-    console.log(productOption)
-    var list_li = document.getElementById('quick_size').querySelectorAll('li');
-    list_li.forEach(function (li) {
-        li.classList.remove('select');
-    });
-    list_li[index].classList.add('select');
+function quickCheckOutOfStock(sizeId, attributeId, productOptions) {
+    let list_size = document.getElementById('quick_size').querySelectorAll('li');
+    let list_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
+    if (list_size.length > 0 && list_attribute.length > 0) {
+        for (const element of productOptions) {
+            if (!element.status) {
+                console.log(element.status)
+                if (element.attribute.attributeId == attributeId) {
+                    $('#quick_size_' + element.size.sizeId).addClass('out-of-stock')
+                }
+                else if (element.size.sizeId == sizeId) {
+                    $('#quick_attribute_' + element.attribute.attributeId).addClass('out-of-stock')
+                }
+            }
+        }
+    }
+    else if (list_attribute.length > 0) {
+        for (const element of productOptions) {
+            if (!element.status) {
+                $('#quick_attribute_' + element.attribute.attributeId).addClass('out-of-stock')
+            }
+        }
+    }
+    else if (list_size.length > 0) {
+        for (const element of productOptions) {
+            if (!element.status) {
+                $('#quick_size_' + element.size.sizeId).addClass('out-of-stock')
+            }
+        }
+    }
+}
 
-    var attribute_id
+function quick_size_selected(index, size_id, productOption) {
+    let list_size = document.getElementById('quick_size').querySelectorAll('li');
+    let list_attr = document.getElementById('quick_attribute').querySelectorAll('li');
+    list_size.forEach(function (li) {
+        li.classList.remove('select');
+        li.classList.remove('out-of-stock')
+    });
+    list_attr.forEach(function (li) {
+        li.classList.remove('out-of-stock')
+    });
+    list_size[index].classList.add('select');
+
+    let attribute_id
     try {
         attribute_id = document.getElementById('quick_attribute').querySelectorAll('li.select')[0].getAttribute('data')
     } catch (error) {
         attribute_id = 1
     }
 
-    quick_updatePriceAndImage(size_id, attribute_id, productOption);
+    quickUpdatePriceAndImage(size_id, attribute_id, productOption);
 }
 
 function quick_attribute_selected(index, attribute_id, productOption) {
-    console.log(productOption)
-    var list_li = document.getElementById('quick_attribute').querySelectorAll('li');
-    list_li.forEach(function (li) {
+    let list_attr = document.getElementById('quick_attribute').querySelectorAll('li');
+    let list_size = document.getElementById('quick_size').querySelectorAll('li');
+    list_attr.forEach(function (li) {
         li.classList.remove('select');
+        li.classList.remove('out-of-stock')
     });
-    list_li[index].classList.add('select');
+    list_size.forEach(function (li) {
+        li.classList.remove('out-of-stock')
+    });
+    list_attr[index].classList.add('select');
 
-    var size_id
+    let size_id
     try {
         size_id = document.getElementById('quick_size').querySelectorAll('li.select')[0].getAttribute('data')
     } catch (error) {
         size_id = 1
     }
 
-    quick_updatePriceAndImage(size_id, attribute_id, productOption);
+    quickUpdatePriceAndImage(size_id, attribute_id, productOption);
 }
 
-function quick_updatePriceAndImage(size_id, attribute_id, productOptions_json) {
-    console.log(size_id)
-    console.log(attribute_id)
-    var quick_price, quick_img_url;
+function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
+    let quick_price, quick_img_url;
 
-    for (var id = 0; id < productOptions_json.length; id++) {
-        if (productOptions_json[id]['attribute']['attributeId'] == attribute_id && productOptions_json[id]['size']['sizeId'] == size_id) {
-            quick_price = productOptions_json[id].price;
-            quick_img_url = productOptions_json[id].img_url;
-            $('#quick_add_to_cart').attr('data-product-option-id', productOptions_json[id].id)
+    for (const element of productOptions_json) {
+        if (element['attribute']['attributeId'] == attribute_id && element['size']['sizeId'] == size_id) {
+            quick_price = element.price;
+            quick_img_url = element.img_url;
+            $('#quick_add_to_cart').attr('data-product-option-id', element.id)
             break;
         }
     }
     document.querySelector('#quick_image img').setAttribute('src', quick_img_url);
     document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
     quick_total_price();
+    quickCheckOutOfStock(size_id, attribute_id, productOptions_json);
 }
 
 function quick_total_price() {
@@ -332,5 +433,23 @@ function quick_total_price() {
     var quick_price = parseFloat(document.getElementById('quick_price').innerText.replace(/,/g, ''));
     var quick_amount = quick_price * quick_quantity;
     document.getElementById("quick_amount").innerText = quick_amount.toLocaleString('en-US');
+}
+
+function validateQuantity(input) {
+    let value = parseInt(input.value);
+
+    if (isNaN(value) || value < 1 || value > 10) {
+        input.value = 1; // Đặt giá trị về 1 khi nhập sai
+    }
+}
+
+function showNotification(message, color) {
+    let notification = document.getElementById('notification');
+    notification.innerText = message;
+    notification.style.backgroundColor = color;
+    notification.style.display = 'block';
+    setTimeout(function () {
+        notification.style.display = 'none';
+    }, 2000);
 }
 

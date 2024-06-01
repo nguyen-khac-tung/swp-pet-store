@@ -16,12 +16,12 @@
 						<table>
 							<thead>
 								<tr>
-									<th class="product-remove">Remove</th>
-									<th class="product-thumbnail">Image</th>
-									<th class="product-name">Product</th>
-									<th class="product-price">Unit Price</th>
-									<Brandth class="product-quantity">Brand<th>
-									<th class="product-subtotal">add to cart</th>
+									<th class="product-remove">Xóa</th>
+									<th class="product-thumbnail">Ảnh</th>
+									<th class="product-name">Tên sản phẩm</th>
+									<th class="product-price">Giá</th>
+									<th class="product-quantity">Thương hiệu<th>
+									<th class="product-subtotal">Thêm vào giỏ hàng</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -39,7 +39,7 @@
 										<td class="product-name"><a href="/product/detail/@wVM.ProductId">@wVM.ProductName</a></td>
 										<td class="product-price"><span class="amount">@wVM.price.ToString("N0") VND</span></td>
 										<td class="product-stock-status"><span>@wVM.Brand</span></td>
-                                        <td class="product-add-to-cart"><a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@wVM.ProductId)" ``><i class="icofont-shopping-cart"></i></a></td>
+                                        <td class="product-add-to-cart"><a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@wVM.ProductId)">Thêm Vào Giỏ Hàng</a></td>
 									</tr>
 								}
 
@@ -132,7 +132,7 @@
                                         <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
                                             Số lượng:
                                             <form action="#" onclick="quick_total_price()" style="border-radius: 10px">
-                                                <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px">
+                                                <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
                                             </form>
                                         </div>
                                         <div>
@@ -162,6 +162,7 @@
         </div>
     </div>
 	<!-- Wish List End -->
+	@Html.Partial("_QuickView")
 	<script>
 		function confirmDelete(productId) {
 			console.log("Confirm delete for product ID:", productId);

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using PetStoreProject.Models;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;

@@ -24,7 +24,7 @@
                         <div class="pro-img">
                             <span class="sticker-sale">-25%</span>
                             <span class="sticker-new">New</span>
-                            <a href="product-details.html">
+                            <a href="detail/@p.ProductId">
                                 <img class="primary-img" src="@p.img_url" alt="single-product">
                             </a>
                         </div>
@@ -32,15 +32,14 @@
                         <!-- Product Content Start -->
                         <div class="product_content_wrap flex-grow-1">
                             <div class="product_content">
-                                <h4><a href="product-details.html">@p.ProductName</a></h4>
+                                <h4><a href="detail/@p.ProductId">@p.ProductName</a></h4>
                                 <div class="grid_price">
                                     <span class="regular-price">@p.price.ToString("#,###", CultureInfo.GetCultureInfo("vi-VN")) VND</span>
                                 </div>
                             </div>
                         </div>
                         <div class="item_add_cart">
-                            <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a>
-                            <a class="grid_cart" href="cart.html" title="Add to Cart">Add To Cart</a>
+                            <a class="grid_cart" href="#" title="Add to Cart">Add To Cart</a>
                             <a class="grid_wishlist" title="Wishlist">
                                 @if (ViewData["listPID"] != null)
                                 {
@@ -69,47 +68,10 @@ else
             <p>Rất tiếc, chúng tôi không thể tìm thấy sản phẩm bạn yêu cầu.</p>
             <a asp-action="Index" asp-controller="Home" class="btn">Quay lại trang chủ</a>
         </div>
-		<img src="~/img/search/e7e8bc8f4f2ced9334d4a439118a5fb4.jpg" style="margin: 100px"/>
+		<img src="~/img/e7e8bc8f4f2ced9334d4a439118a5fb4.jpg" />
     </div>
-
-    <style>
-        .container-search {
-            text-align: center;
-        }
-
-        .message-box {
-            background-color: #ffffff;
-            padding: 30px;
-        }
-
-            .message-box h1 {
-                font-size: 24px;
-                color: #333;
-                margin-bottom: 10px;
-            }
-
-            .message-box p {
-                font-size: 16px;
-                color: #666;
-                margin-bottom: 20px;
-            }
-
-            .message-box .btn {
-                display: inline-block;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 5px;
-                transition: background-color 0.3s;
-            }
-
-            .message-box .btn:hover {
-                    background-color: #0056b3;
-            }
-    </style>
 }
-
+<link href="~/css/search.css" rel="stylesheet" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     function Toggle(productId, element) {

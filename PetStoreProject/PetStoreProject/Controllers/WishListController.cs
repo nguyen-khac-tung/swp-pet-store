@@ -41,6 +41,7 @@ namespace PetStoreProject.Controllers
             }
             else
             {
+                TempData["WishList_ErrorMessage"] = "Bạn cần phải đăng nhập để xem chi tiết.";
                 return RedirectToAction("Index", "Home");
             }
 			

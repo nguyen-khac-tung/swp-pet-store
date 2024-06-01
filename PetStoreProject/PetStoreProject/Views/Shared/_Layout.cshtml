@@ -1,4 +1,6 @@
-﻿<!doctype html>
+﻿@using System.Text.Json
+
+<!doctype html>
 <html class="no-js" lang="vi">
 
 <!-- Mirrored from html.themewin.com/animart-tm-preview/animart/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 15 May 2024 14:33:43 GMT -->
@@ -269,6 +271,13 @@
                                 </li>
                                 <!-- Search Box End -->
                                 <!--Wish List Start-->
+                                @if (TempData["WishList_ErrorMessage"] != null)
+                                {
+                                    <script>
+                                        var errorMessage = @Html.Raw(Json.Serialize(TempData["WishList_ErrorMessage"]));
+                                        alert(errorMessage);
+                                    </script>
+                                }
                                 <li>
                                     <a asp-controller="WishList" asp-action="Detail"><span class="icofont-heart"></span></a>
                                 </li>

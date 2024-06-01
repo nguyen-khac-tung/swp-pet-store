@@ -33,8 +33,18 @@
                     <!--Large image-->
                     <div class="zoompro-wrap zoompro-2 thumb_image_large">
                         <div class="zoompro-border zoompro-span">
-                            <img class="zoompro" id="large_image" src="@product.productOption[0].img_url" data-zoom-image="@product.productOption[0].img_url" alt="" />
+                            @{
+                                var isOutOfStock = "";
+                                if (product.IsSoldOut != null && product.IsSoldOut == true)
+                                {
+                                    <div class="overlay">Hết hàng</div>
+                                    isOutOfStock = "out-of-stock";
+                                }
 
+                            }
+                            
+                            <img class="zoompro @isOutOfStock" id="large_image" src="@product.productOption[0].img_url" data-zoom-image="@product.productOption[0].img_url" alt="" />
+                            
                             @* <div class="product-video">
                             <a class="video-popup" href="https://www.youtube.com/watch?v=pTrC_McU62Q">
                             <i class="icofont-video-alt"></i>

@@ -102,7 +102,6 @@ public partial class PetStoreDBContext : DbContext
 
             entity.ToTable("Attribute");
 
-            entity.Property(e => e.AttributeId).ValueGeneratedNever();
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .IsFixedLength();
@@ -117,7 +116,6 @@ public partial class PetStoreDBContext : DbContext
 
             entity.ToTable("Brand");
 
-            entity.Property(e => e.BrandId).ValueGeneratedNever();
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsFixedLength();
@@ -200,7 +198,6 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.ToTable("Image");
 
-            entity.Property(e => e.ImageId).ValueGeneratedNever();
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(250)
                 .IsFixedLength();
@@ -216,7 +213,6 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.ToTable("Product");
 
-            entity.Property(e => e.ProductId).ValueGeneratedNever();
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
                 .IsFixedLength();
@@ -269,8 +265,6 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<ProductOption>(entity =>
         {
             entity.ToTable("ProductOption");
-
-            entity.Property(e => e.ProductOptionId).ValueGeneratedNever();
 
             entity.HasOne(d => d.Attribute).WithMany(p => p.ProductOptions)
                 .HasForeignKey(d => d.AttributeId)
@@ -350,7 +344,6 @@ public partial class PetStoreDBContext : DbContext
 
             entity.ToTable("Size");
 
-            entity.Property(e => e.SizeId).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 

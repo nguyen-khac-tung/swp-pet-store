@@ -15,9 +15,9 @@ public partial class ProductOption
 
     public float Price { get; set; }
 
-    public int ImageId { get; set; }
-
     public bool? IsSoldOut { get; set; }
+
+    public int ImageId { get; set; }
 
     public virtual Attribute? Attribute { get; set; }
 

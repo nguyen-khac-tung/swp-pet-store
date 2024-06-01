@@ -15,7 +15,9 @@ namespace PetStoreProject.Repositories.Product
         public List<ProductDetailViewModel> GetProductDetailFoodsResponse(List<int> cateId, int productCateId);
 		public List<Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
 		
-		public List<int> GetProductIDInWishList(int customerID);
+		public List<Size> GetSizesByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
+
+        public List<int> GetProductIDInWishList(int customerID);
         void AddToFavorites(int userId, int productId);
         void RemoveFromFavorites(int userId, int productId);
 

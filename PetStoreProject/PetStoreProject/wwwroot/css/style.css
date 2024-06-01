@@ -1810,16 +1810,19 @@ h6 {
 }
 .product_content_wrap {
 	padding-top: 15px;
-	padding-bottom: 30px;
+	padding-bottom: 25px;
 	border-top: 1px solid #eee;
 	background: #fff;
 }
 .product_content h4 {
-	margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
 }
 .product_content h4 a {
+    padding:0px 13px;
 	display: block;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: 500;
 	line-height: 20px;
 	text-transform: capitalize;

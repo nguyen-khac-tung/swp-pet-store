@@ -28,7 +28,8 @@ namespace PetStoreProject.Controllers
             {
                 List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
                 ViewData["listPID"] = listPID;
-            } else
+            }
+            else
             {
                 ViewData["listPID"] = null;
             }
@@ -77,13 +78,13 @@ namespace PetStoreProject.Controllers
         public ActionResult Detail(int productId)
         {
             var product_detail = _product.GetDetail(productId);
-			List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
-			ViewData["product_detail"] = product_detail;
+            ViewData["product_detail"] = product_detail;
             ViewData["related_products"] = _product.getRelatedProduct(productId);
-			ViewData["listPID"] = listPID;
+            ViewData["listPID"] = listPID;
 
-			return View();
+            return View();
         }
 
         [HttpPost]
@@ -93,25 +94,40 @@ namespace PetStoreProject.Controllers
             return Json(product_detail);
         }
 
-        [HttpGet("/Product/DogFood/{productCateId?}")]
-        public ActionResult DogFood(int? productCateId, int? pageSize, int? page)
+        [HttpGet("/Product/{CategoryId}/{productCateId?}")]
+        public ActionResult ListProduct(string CategoryId, int? productCateId, int? pageSize, int? page)
         {
-            List<int> cateId = [1, 3];
-            var productDetails = _product.GetProductDetailFoodsRequest(cateId, productCateId ?? 0); // thay doi
+            List<int> categoryIds = null;
+            switch (CategoryId)
+            {
+                case "DogFood":
+                    categoryIds = [1, 3];
+                    break;
+                case "CatFood":
+                    categoryIds = [1, 4];
+                    break;
+                case "DogAccessory":
+                    categoryIds = [2, 5];
+                    break;
+                case "CatAccessory":
+                    categoryIds = [2, 6];
+                    break;
+            }
+            var productDetails = _product.GetProductDetailFoodsRequest(categoryIds, productCateId ?? 0); // thay doi
             var totalItems = productDetails.Count();
             var pageIndex = page ?? 1;
-            var _pageSize = pageSize ?? 20;
+            var _pageSize = pageSize ?? 21;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 
             ViewData["listPID"] = listPID;
-            ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
+            ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(categoryIds, productCateId ?? 0);
             ViewBag.totalItems = totalItems;
             ViewBag.currentPage = pageIndex;
             ViewBag.pageSize = _pageSize;
             ViewBag.numberPage = numberPage;
 
-
+            ViewBag.Sizes = _product.GetSizesByCategoryIdsAndProductCateId(categoryIds, productCateId ?? 0);
 
             if (productDetails.Count != 0)
             {
@@ -121,100 +137,12 @@ namespace PetStoreProject.Controllers
                 ViewBag.priceMax = priceMax;
             }
 
-            return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
-        }
-        [HttpGet("/Product/DogAccessory/{productCateId?}")]
-        public ActionResult DogAccessory(int? productCateId, int? pageSize, int? page)
-        {
-            List<int> cateId = [2,5];
-            var productDetails = _product.GetProductDetailAccessoriesRequest(cateId, productCateId ?? 0); // thay doi
-            var totalItems = productDetails.Count();
-            var pageIndex = page ?? 1;
-            var _pageSize = pageSize ?? 20;
-            var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
-
-            ViewData["listPID"] = listPID;
-            ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
-            ViewBag.totalItems = totalItems;
-            ViewBag.currentPage = pageIndex;
-            ViewBag.pageSize = _pageSize;
-            ViewBag.numberPage = numberPage;
-
-
-            if(productDetails.Count != 0)
-            {
-                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-                ViewBag.priceMin = priceMin;
-                ViewBag.priceMax = priceMax;
-            }
-            
-            return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
-        }
-
-        [HttpGet("/Product/CatFood/{productCateId?}")]
-        public ActionResult CatFood(int? productCateId, int? pageSize, int? page)
-        {
-            List<int> cateId = [1, 4];
-            var productDetails = _product.GetProductDetailAccessoriesRequest(cateId, productCateId ?? 0); // thay doi
-            var totalItems = productDetails.Count();
-            var pageIndex = page ?? 1;
-            var _pageSize = pageSize ?? 20;
-            var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
-
-            ViewData["listPID"] = listPID;
-            ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
-            ViewBag.totalItems = totalItems;
-            ViewBag.currentPage = pageIndex;
-            ViewBag.pageSize = _pageSize;
-            ViewBag.numberPage = numberPage;
-
-
-
-            if (productDetails.Count != 0)
-            {
-                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-                ViewBag.priceMin = priceMin;
-                ViewBag.priceMax = priceMax;
-            }
-
-            return View("Food", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
-        }
-        [HttpGet("/Product/CatAccessory/{productCateId?}")]
-        public ActionResult CatAccessory(int? productCateId ,int? pageSize, int? page)
-        {
-            List<int> cateId = [2, 6];
-            var productDetails = _product.GetProductDetailAccessoriesRequest(cateId, productCateId ?? 0); // thay doi
-            var totalItems = productDetails.Count();
-            var pageIndex = page ?? 1;
-            var _pageSize = pageSize ?? 20;
-            var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
-
-            ViewData["listPID"] = listPID;
-            ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(cateId, productCateId ?? 0);
-            ViewBag.totalItems = totalItems;
-            ViewBag.currentPage = pageIndex;
-            ViewBag.pageSize = _pageSize;
-            ViewBag.numberPage = numberPage;
-
-            if (productDetails.Count != 0)
-            {
-                var priceMax = productDetails.SelectMany(p => p.productOption).Max(po => po.price);
-                var priceMin = productDetails.SelectMany(p => p.productOption).Min(po => po.price);
-                ViewBag.priceMin = priceMin;
-                ViewBag.priceMax = priceMax;
-            }
-
-            return View("Accessory", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
+            return View("Product", PaginatedList<ProductDetailViewModel>.Create(productDetails, pageIndex, _pageSize));
         }
 
         [HttpPost]
-        public ActionResult Shop(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
-            int priceMax, List<string>? selectedColors, List<string>? selectedSizes)
+        public ActionResult ListProduct(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
+            int priceMax, List<string>? selectedColors, List<string>? selectedSizes, List<string>? selectedStatus)
         {
             List<int> cateId = null;
             int productCateId = 0;
@@ -236,9 +164,9 @@ namespace PetStoreProject.Controllers
                     break;
             }
             if (urlSplit.Count > 3 && urlSplit[3] != null)
-                {
-                    productCateId = int.Parse(urlSplit[3]);
-                }
+            {
+                productCateId = int.Parse(urlSplit[3]);
+            }
             List<ProductDetailViewModel> productDetails = null;
 
             //Filter brand
@@ -292,7 +220,26 @@ namespace PetStoreProject.Controllers
                         break;
                 }
             }
-            var _pageSize = pageSize ?? 20;
+
+            //Filter isSoldOut
+            if (!selectedStatus.IsNullOrEmpty())
+            {
+                if (selectedStatus.Count == 1 && selectedStatus[0] == "True")
+                {
+                    productDetails = productDetails
+                     .Where(p => p.productOption != null && p.productOption
+                     .Any(po => po != null && po.IsSoldOut == true))
+                     .ToList();
+                }
+                else if (selectedStatus.Count == 1 && selectedStatus[0] == "False")
+                {
+                    productDetails = productDetails
+                    .Where(p => p.productOption != null && p.productOption
+                    .All(po => po != null && po.IsSoldOut == false))
+                    .ToList();
+                }
+            }
+            var _pageSize = pageSize ?? 21;
             var pageIndex = page ?? 1;
             var totalItems = productDetails.Count();
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);

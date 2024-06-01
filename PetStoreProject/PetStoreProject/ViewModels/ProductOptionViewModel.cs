@@ -10,5 +10,6 @@ namespace PetStoreProject.ViewModels
         public Size size { get; set; }
         public float price { get; set; }
         public string? img_url { get; set; }
+        public bool? IsSoldOut { get; set; }
     }
 }

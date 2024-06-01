@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Phụ kiện";
+    ViewData["Title"] = "Thức ăn";
 }
 
 @using PetStoreProject.ViewModels;
@@ -8,29 +8,34 @@
 @using PetStoreProject.Models;
 @using System.Globalization;
 
-
 @{
     var selectPageSize = ViewBag.pageSize;
 }
+
 <style>
-    .sidebar-brand-list {
+
+    #data-grid-view {
+        margin-left: 30px !important;
+    }
+
+    .sidebar-scroll-list {
         max-height: 300px;
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: #888 #f1f1f1;
     }
 
-        .sidebar-brand-list::-webkit-scrollbar {
+        .sidebar-scroll-list::-webkit-scrollbar {
             width: 5px; /* Độ rộng của thanh cuộn */
         }
 
         /* Màu nền của thanh cuộn trên Chrome và Safari */
-        .sidebar-brand-list::-webkit-scrollbar-track {
+    .sidebar-scroll-list::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
 
         /* Màu của thanh cuộn trên Chrome và Safari */
-        .sidebar-brand-list::-webkit-scrollbar-thumb {
+    .sidebar-scroll-list::-webkit-scrollbar-thumb {
             background: #888;
         }
 
@@ -128,7 +133,6 @@
         width: 200px; /* Thiết lập chiều rộng cố định */
         height: 250px; /* Thiết lập chiều cao cố định */
         object-fit: cover; /* Giúp hình ảnh phù hợp với khung */
-        border: 1px solid #ccc; /* Viền cho hình ảnh */
     }
 
     .primary-img {
@@ -179,6 +183,36 @@
         padding: 10px; /* Thêm khoảng cách xung quanh nội dung cuộn */
     }
 
+    .img_sold_out {
+        opacity:0.4;
+
+    }
+
+    .pro-img {
+        position: relative;
+        display: inline-block;
+    }
+
+        .pro-img img {
+            display: block;
+        }
+
+    .overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 5px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+
 </style>
 
 <div class="main-shop-page adp_top adp_bottom">
@@ -191,7 +225,7 @@
                     <!-- Sidebar Categorie Start -->
                     <div class="sidebar-categorie single_sidebar">
                         <h3 class="sidebar-title">Thương hiệu</h3>
-                        <div class="sidebar-brand-list">
+                        <div class="sidebar-scroll-list">
                             <ul class="sidbar-style">
                                 @foreach (var brand in ViewBag.Brands as List<Brand>)
                                 {
@@ -219,7 +253,7 @@
                             </div>
                         </div>
                         <div class="slider">
-                            <div class="progress"></div>
+                            <div class="progress" style="left:0%; right:0%"></div>
                         </div>
                         <div class="range-input">
                             <input type="range" class="range-min" min="@ViewBag.priceMin" max="@ViewBag.priceMax" value="@ViewBag.priceMin" step="1000">
@@ -230,73 +264,37 @@
                     <!-- Product Size Start -->
                     <div class="size single_sidebar">
                         <h3 class="sidebar-title">Kích cỡ</h3>
-                        <ul class="size-list sidbar-style">
+                        <div class="sidebar-scroll-list">
+                            <ul class="size-list sidbar-style">
+                                
+                                @foreach (var size in ViewBag.Sizes as List<Size>)
+                                {
+                                    if(size.Name != null)
+                                    {
+                                        <li class="form-check">
+                                            <input class="form-check-input size-checkboxes" value="@size.Name" id="dobule_combo_@size.SizeId" type="checkbox">
+                                            <label class="form-check-label" for="dobule_combo_@size.SizeId">@size.Name</label>
+                                        </li>
+                                    }
+                                }
+
+
+                            </ul>
+                        </div>
+                        
+                    </div>
+                    <div class="single_sidebar">
+                        <h3 class="sidebar-title">Tình trạng</h3>
+                        <ul class="status-option sidbar-style">
                             <li class="form-check">
-                                <input class="form-check-input size-checkboxes" value="S" id="small" type="checkbox">
-                                <label class="form-check-label" for="small">S</label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input size-checkboxes" value="M" id="medium" type="checkbox">
-                                <label class="form-check-label" for="medium">M</label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input size-checkboxes" value="L" id="large" type="checkbox">
-                                <label class="form-check-label" for="large">L</label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input size-checkboxes" value="XL" id="xtra-large" type="checkbox">
-                                <label class="form-check-label" for="xtra-large">XL</label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input size-checkboxes" value="XXL" id="dobule-extra-large" type="checkbox">
-                                <label class="form-check-label" for="dobule-extra-large">XXL</label>
+                                <input class="form-check-input status-checkboxes" value="True" id="con_hang" type="checkbox">
+                                <label class="form-check-label" for="con_hang"> Còn hàng </label>
+                                <input class="form-check-input status-checkboxes" value="False" id="het_hang" type="checkbox">
+                                <label class="form-check-label" for="het_hang"> Hết hàng </label>
                             </li>
                         </ul>
                     </div>
                     <!-- Product Size End -->
-                    <!-- Product Color Start -->
-                    <div class="color single_sidebar">
-                        <h3 class="sidebar-title">Màu sắc</h3>
-                        <ul class="color-option sidbar-style">
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Đen" id="color_black" type="checkbox">
-                                <label class="form-check-label" for="color_black"> Đen </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Cam" id="color_orange" type="checkbox">
-                                <label class="form-check-label" for="color_orange"> Cam </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Nâu" id="color_blue" type="checkbox">
-                                <label class="form-check-label" for="color_blue"> Nâu </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Vàng" id="color_yellow" type="checkbox">
-                                <label class="form-check-label" for="color_yellow"> Vàng </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Xanh" id="color_green" type="checkbox">
-                                <label class="form-check-label" for="color_green"> Xanh </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Hồng" id="color_prink" type="checkbox">
-                                <label class="form-check-label" for="color_prink"> Hồng </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Trắng" id="color_white" type="checkbox">
-                                <label class="form-check-label" for="color_white"> Trắng </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Tím" id="color_pupple" type="checkbox">
-                                <label class="form-check-label" for="color_pupple"> Tím </label>
-                            </li>
-                            <li class="form-check">
-                                <input class="form-check-input color-checkboxes" value="Xám" id="color_gray" type="checkbox">
-                                <label class="form-check-label" for="color_gray"> Xám </label>
-                            </li>
-
-                        </ul>
-                    </div>
                     <div class="single_sidebar">
                         <button class="btn btn-light" id="filter_button">Lọc sản phẩm</button>
                         <button class="btn btn-light" id="clear_button">Xóa bộ lọc</button>
@@ -377,9 +375,9 @@
 
                     <div class="single-select-block">
                         <select name="pageSize" id="pageSizeSelect" onchange="ChangePageSize()">
-                            <!option @(selectPageSize == 20 ? "selected" : "") >20</!option>
-                            <!option @(selectPageSize == 30 ? "selected" : "") >30</!option>
-                            <!option @(selectPageSize == 40 ? "selected" : "") >40</!option>
+                            <!option @(selectPageSize == 20 ? "selected" : "") value="21">20</!option>
+                            <!option @(selectPageSize == 30 ? "selected" : "") value="30">30</!option>
+                            <!option @(selectPageSize == 40 ? "selected" : "") value="39">40</!option>>
 
                         </select>
                     </div>
@@ -403,7 +401,11 @@
                 <div class="shop-area mb-all-40">
                     <!-- Grid & List Main Area End -->
                     <div class="tab-content">
+                        <div id="no-products" style="text-align: center; margin-top: 20px;">
+                        </div>
                         <div id="grid-view" class="tab-pane fade show active class_grid_view">
+
+
                             <div id="data-grid-view" class="row border-hover-effect ">
                                 @if (Model.Count > 0)
                                 {
@@ -415,26 +417,46 @@
                                                 <!-- Product Image Start -->
                                                 <div class="pro-img">
 
-     
+
                                                     <a href="/product/detail/@product.ProductId">
                                                         @if (product.productOption != null && product.productOption.Count > 0)
                                                         {
-                                                            <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+                                                            bool IsSoldOut = false;
+                                                            foreach(var po in product.productOption)
+                                                            {
+                                                                if(po.IsSoldOut == true)
+                                                                {
+                                                                    IsSoldOut = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if(IsSoldOut){
+                                                                <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <img style="max-height: 300px" class="primary-img img_sold_out" src="@product.productOption[0].img_url" alt="single-product">
+                                                                <div class="overlay">Hết hàng</div>
+                                                            }
                                                         }
                                                     </a>
 
                                                     <div class="item_quick_link">
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" onclick="quickView(@product.ProductId)" title="Xem chi tiết"><i class="icofont-search"></i></a>
                                                     </div>
+                                                    
 
                                                     <div class="product-count-wrap">
                                                     </div>
 
                                                 </div>
+
                                                 <!-- Product Image End -->
                                                 <!-- Product Content Start -->
                                                 <div class="product_content_wrap">
                                                     <div class="product_content">
-                                                        <h4 style="height:50px; padding:5px;"><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
+                                                        <h4 style="height:40px;"><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
 
                                                         <div class="grid_price">
                                                             @if (product.productOption != null && product.productOption.Count > 0)
@@ -442,6 +464,7 @@
                                                                 float amount = @product.productOption[0].price;
                                                                 string formattedAmount = amount.ToString("#,###", CultureInfo.GetCultureInfo("en-US"));
                                                                 <span class="regular-price">@formattedAmount VND</span>
+                                                                @* <del class="discount_price">$75.50</del> *@
                                                             }
                                                         </div>
 
@@ -452,13 +475,15 @@
                                                         <a class="grid_cart" href="/product/detail/@product.ProductId" title="Add to Cart">Thêm vào giỏ hàng</a>
                                                         <a class="grid_wishlist" title="Wishlist">
                                                              @{
-                                                                bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
-                                                            }
-                                                            <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
-                                                               data-id="@product.ProductId"
-                                                               style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
-                                                        </a>
+                                                    bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+                                                    }
 
+                                                    <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+                                                    data-id="@product.ProductId"
+                                                    style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+
+                                                   
+                                                        </a>
                                                     </div>
                                                 </div>
                                                 <!-- Product Content End -->
@@ -488,14 +513,32 @@
                                         <!-- Product Image Start -->
                                         <div class="pro-img">
 
-
                                             <a href="/product/detail/@product.ProductId">
                                                 @if (product.productOption != null && product.productOption.Count > 0)
                                                 {
-                                                    <img class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+                                                    bool IsSoldOut = false;
+                                                    foreach (var po in product.productOption)
+                                                    {
+                                                        if (po.IsSoldOut == true)
+                                                        {
+                                                            IsSoldOut = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (IsSoldOut)
+                                                    {
+                                                        <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <img style="max-height: 300px" class="primary-img img_sold_out" src="@product.productOption[0].img_url" alt="single-product">
+                                                        <div class="overlay">Hết hàng</div>
+                                                    }
                                                 }
                                             </a>
                                             <div class="item_quick_link">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" onclick="quickView(@product.ProductId)" title="Xem chi tiết"><i class="icofont-search"></i></a>
                                             </div>
 
                                             <div class="product-count-wrap">
@@ -506,10 +549,10 @@
                                         <div class="product_content_wrap">
                                             <div class="product_content">
                                                 <h4><a href="product-details.html">@product.Name</a></h4>
-
                                                 <div class="scrollable-description">
                                                     <p class="list_des">@Html.Raw(product.Description)</p>
                                                 </div>
+
 
                                                 <div class="grid_price">
                                                     @if (product.productOption != null && product.productOption.Count > 0)
@@ -517,6 +560,7 @@
                                                         float amount = @product.productOption[0].price;
                                                         string formattedAmount = amount.ToString("#,###", CultureInfo.GetCultureInfo("en-US"));
                                                         <span class="regular-price">@formattedAmount VND</span>
+                                                        @* <del class="discount_price">$75.50</del> *@
                                                     }
                                                 </div>
 
@@ -613,8 +657,10 @@
     </div>
     <!-- Container End -->
 </div>
+
 <!-- Shop Page End -->
 <script src="~/js/list-product.js"></script>
+<script src="~/js/myjs.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {

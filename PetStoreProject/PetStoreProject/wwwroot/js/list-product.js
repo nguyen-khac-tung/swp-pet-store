@@ -2,7 +2,8 @@
 var selectedBrands = [];
 var selectedColors = [];
 var selectedSizes = [];
-var pageSize = 20;
+var selectedStatus = [];
+var pageSize = 21;
 var pageIndex = 1;
 var selectedSort = "";
 var url = window.location.pathname;
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedBrands = [];
         selectedColors = [];
         selectedSizes = [];
-
+        selectedStatus = [];
         //---brands
         var checkboxesBrands = document.querySelectorAll(".brand-checkbox");
         checkboxesBrands.forEach(function (checkbox) {
@@ -73,8 +74,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         console.log("Color: " + selectedColors);
 
+        //---status
+        var checkboxesStatus = document.querySelectorAll(".status-checkboxes");
+        checkboxesStatus.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedStatus.push(checkbox.value);
+            }
+        });
+        console.log("status: " + selectedColors);
 
-        LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+
+        LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -90,6 +100,12 @@ document.addEventListener('DOMContentLoaded', function () {
         checkboxes.forEach(function (checkbox) {
             checkbox.checked = false;
         });
+
+        var checkboxes = document.querySelectorAll(".status-checkboxes");
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+        selectedStatus = [];
         selectedBrands = [];
         // Reset price inputs
         priceInput[0].value = priceMinInit;
@@ -104,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         range.style.right = "0%";
 
         console.log("Filters cleared");
-        LoadData(url, pageSize, 1, [], "", priceMinInit, priceMaxInit, [], []);
+        LoadData(url, pageSize, 1, [], selectedSort, priceMinInit, priceMaxInit, [], [], []);
     });
 
 });
@@ -112,18 +128,20 @@ document.addEventListener('DOMContentLoaded', function () {
 function SelectedSort() {
     selectedSort = document.getElementById("selected_sort").value;
     console.log("selected_sort: change" + selectedSort);
-    LoadData(url, pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+    LoadData(url, pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 
-function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes) {
+function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
-        url: '/Product/Shop',
+        url: '/Product/ListProduct',
         type: 'post',
-        data: {url: url,
+        data: {
+            url: url,
             pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectedSort,
-            priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes
+            priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes,
+            selectedStatus: selectedStatus
         },
         success: function (response) {
             if (response.data.length > 0) {
@@ -156,11 +174,27 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html += "<a href='/product/detail/" + items[index].productId + "'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html += "<img style='max-height: 300px' class='primary-img' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
+                        var isSoldOutAll = false;
+                        for (var i = 0; i < items[index].productOption.length; i++) {
+                            if (items[index].productOption[i].isSoldOut == true) {
+                                isSoldOutAll = true;
+                                break;
+                            }
+                        }
+                        if (isSoldOutAll == true) {
+                            html += "<img style='max-height: 300px' class='primary-img' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
+                        }
+                        else {
+                            //html += "<div class ='product'>";
+                            html += "<img style='max-height: 300px' class='primary-img img_sold_out ' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
+                            html += "<div class='overlay'>Hết hàng</div>";
+                            //html += "</div>";
+                        }
                     }
 
                     html += "</a>";
                     html += "<div class='item_quick_link'>";
+                    html += "<a href='quick-view.html' title='Xem chi tiết' onclick='quickView(240)' ><i class='icofont-search'></i></a>";
                     html += "</div>";
                     html += "<div class='product-count-wrap'>";
                     html += "</div>";
@@ -169,7 +203,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                     html += "<!-- Product Content Start -->";
                     html += "<div class='product_content_wrap'>";
                     html += "<div class='product_content'>";
-                    html += "<h4><a style='height: 50px;  href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
+                    html += "<h4><a style='height: 40px;  href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
                     html += "<div class='grid_price'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
@@ -196,12 +230,26 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
 
                     html1 += "<a href='/product/detail/" + items[index].productId + "'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html1 += "<img class='primary-img' src=" + items[index].productOption[0].img_url + "alt='single-product'>";
+                        var isSoldOutAll = false;
+                        for (var i = 0; i < items[index].productOption.length; i++) {
+                            if (items[index].productOption[i].isSoldOut == true) {
+                                isSoldOutAll = true;
+                                break;
+                            }
+                        }
+                        if (isSoldOutAll == true) {
+                            html1 += "<img style='max-height: 300px' class='primary-img' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
+                        }
+                        else {
+                            html1 += "<img style='max-height: 300px' class='primary-img img_sold_out ' src='" + items[index].productOption[0].img_url + "' alt='single-product'>";
+                            html1 += "<div class='overlay'>Hết hàng</div>";
+                        }
                     }
                     html1 += "</a>";
                     html1 += "<div class='item_quick_link'>";
+                    html1 += "<a href='quick-view.html' title='Xem chi tiết' onclick='quickView(240)'><i class='icofont-search'></i></a>";
                     html1 += "</div>";
-                    html1 += "<div class='product - count - wrap'>";
+                    html1 += "<div class='product-count-wrap'>";
                     html1 += "</div>";
                     html1 += "</div>";
                     html1 += "<!-- Product Image End -->";
@@ -242,7 +290,7 @@ function LoadData(url,pageSize, page, selectedBrands, selectedSort, priceInputMi
                 $('#list-view').html(htmlAnnounce);
                 $('#pagination').html("");
                 console.error("Unexpected response structure:", response);
-                
+
             }
         },
         error: function (xhr, status, error) {
@@ -294,7 +342,7 @@ function NextPage(page, pageSize) {
     console.log("PriceM: " + priceInput[0].value);
     console.log("PriceMax: " + priceInput[1].value);
 
-    LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+    LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 function ChangePageSize() {
     console.log("changePageSize:");
@@ -302,7 +350,7 @@ function ChangePageSize() {
     console.log("PriceMax: " + priceInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes);
+    LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 
 function formatVND(amount) {

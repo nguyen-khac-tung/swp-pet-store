@@ -159,8 +159,9 @@ namespace PetStoreProject.Repositories.Product
                                           Name = s.Name
                                       },
                                       price = po.Price,
-                                      img_url = i.ImageUrl
+                                      img_url = i.ImageUrl,
 
+                                      IsSoldOut = po.IsSoldOut
                                   }).ToList();
             return productOptions;
         }
@@ -191,6 +192,7 @@ namespace PetStoreProject.Repositories.Product
                          select s).ToList();
             return sizes;
         }
+
         public Brand GetBrandByProductId(int productId)
         {
             var brand = (from b in _context.Brands
@@ -219,6 +221,27 @@ namespace PetStoreProject.Repositories.Product
             return brands;
         }
 
+        public List<Size> GetSizesByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
+        {
+
+           var sizes = (from s in _context.Sizes
+                         join po in _context.ProductOptions on s.SizeId equals po.SizeId
+                         join p in _context.Products on po.ProductId equals p.ProductId
+                         join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                         where categoryIds.Contains(pc.CategoryId)
+                         select s).Distinct().ToList();
+            if(productCateId != 0)
+            {
+                sizes = (from s in sizes
+                         join po in _context.ProductOptions on s.SizeId equals po.SizeId
+                         join p in _context.Products on po.ProductId equals p.ProductId
+                         where p.ProductCateId == productCateId
+                         select s).Distinct().ToList();
+            }
+            sizes = sizes.Distinct().ToList();
+            return sizes;
+        }
+
 
 
 
@@ -232,9 +255,9 @@ namespace PetStoreProject.Repositories.Product
                 Brand = GetBrandByProductId(p.ProductId).Name,
                 Description = p.Description,
                 productOption = GetProductOptionsByProductId(p.ProductId),
-                images = GetImagesByProductId(p.ProductId),
-                attributes = GetAttributesByProductId(p.ProductId),
-                sizes = GetSizesByProductId(p.ProductId)
+                //images = GetImagesByProductId(p.ProductId),
+                //attributes = GetAttributesByProductId(p.ProductId),
+                //sizes = GetSizesByProductId(p.ProductId)
 
             }).ToList();
             return productDetails;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using Attribute = PetStoreProject.Models.Attribute;
@@ -67,7 +68,7 @@ namespace PetStoreProject.Repositories.Product
                                .GroupBy(s => s.SizeId) // GroupBy theo ID hoặc thuộc tính duy nhất
                                .Select(g => g.First()) // Chọn phần tử đầu tiên từ mỗi nhóm
                                .ToList();
-
+            bool isSoldOut = !(productOptions.Any(po => po.IsSoldOut == false));
 
             foreach (var image in images)
             {
@@ -78,6 +79,7 @@ namespace PetStoreProject.Repositories.Product
             product.sizes = sizes;
             product.images = images;
             product.productOption = productOptions;
+            product.IsSoldOut = isSoldOut;
 
             return product;
         }
@@ -333,12 +335,13 @@ namespace PetStoreProject.Repositories.Product
 
         public List<SearchViewModel> GetListProductsByKeyWords(string key)
         {
+            //Search with key accented
             var listSearch = (from p in _context.Products
                               join po in _context.ProductOptions on p.ProductId equals po.ProductId into productOptions
                               from po in productOptions.OrderBy(po => po.ProductOptionId).Take(1)
                               join i in _context.Images on po.ImageId equals i.ImageId
                               where p.Name.Contains(key)
-                              orderby p.Name.Contains(key) ? p.Name.IndexOf(key) : p.Name.Length + 1
+                              orderby p.Name.IndexOf(key)
                               select new SearchViewModel
                               {
                                   ProductId = p.ProductId,
@@ -346,9 +349,66 @@ namespace PetStoreProject.Repositories.Product
                                   price = po.Price,
                                   img_url = i.ImageUrl
                               }).ToList();
+
+
+            if (listSearch.IsNullOrEmpty())
+            {
+                string removeAccentKey = RemoveVietnameseAccents(key);
+
+                //Search with key witfout accented 
+                List<SearchViewModel> listP = (from p in _context.Products
+                                               join po in _context.ProductOptions on p.ProductId equals po.ProductId into productOptions
+                                               from po in productOptions.OrderBy(po => po.ProductOptionId).Take(1)
+                                               join i in _context.Images on po.ImageId equals i.ImageId
+                                               select new SearchViewModel
+                                               {
+                                                   ProductId = p.ProductId,
+                                                   ProductName = RemoveVietnameseAccents(p.Name),
+                                                   price = po.Price,
+                                                   img_url = i.ImageUrl
+                                               }).ToList();
+
+                listSearch = listP.Where(p => p.ProductName.Contains(removeAccentKey, StringComparison.OrdinalIgnoreCase))
+                                  .OrderBy(p => p.ProductName.IndexOf(removeAccentKey, StringComparison.OrdinalIgnoreCase))
+                                  .ToList();
+                foreach (var item in listSearch)
+                {
+                    item.ProductName = _context.Products
+                                                .Where(p => p.ProductId == item.ProductId)
+                                                .Select(p => p.Name)
+                                                .SingleOrDefault() ?? "Default Product Name";
+                }
+            }
             return listSearch;
         }
-    }
+        private static string RemoveVietnameseAccents(string input)
+        {
+            string[] vietnameseSigns = new string[]
+            {
+            "aAeEoOuUiIdDyY",
+            "áàạảãâấầậẩẫăắằặẳẵ",
+            "ÁÀẠẢÃÂẤẦẬẨẪĂẮẰẶẲẴ",
+            "éèẹẻẽêếềệểễ",
+            "ÉÈẸẺẼÊẾỀỆỂỄ",
+            "óòọỏõôốồộổỗơớờợởỡ",
+            "ÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠ",
+            "úùụủũưứừựửữ",
+            "ÚÙỤỦŨƯỨỪỰỬỮ",
+            "íìịỉĩ",
+            "ÍÌỊỈĨ",
+            "đ",
+            "Đ",
+            "ýỳỵỷỹ",
+            "ÝỲỴỶỸ"
+            };
 
-    internal record NewRecord(int ProductId, string Name, string Item);
+            for (int i = 1; i < vietnameseSigns.Length; i++)
+            {
+                for (int j = 0; j < vietnameseSigns[i].Length; j++)
+                    input = input.Replace(vietnameseSigns[i][j], vietnameseSigns[0][i - 1]);
+            }
+            return input;
+        }
+    }
+        internal record NewRecord(int ProductId, string Name, string Item);
 }

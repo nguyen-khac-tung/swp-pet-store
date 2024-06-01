@@ -145,8 +145,8 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
         },
         success: function (response) {
             if (response.data.length > 0) {
-                var html1 = "";
-                var htmlGridView = "";
+                let html1 = "";
+                let htmlGridView = "";
                 var html = "";
                 var items = response.data;
                 for (var index = 0; index < items.length; index++) {
@@ -176,7 +176,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         var isSoldOutAll = true;
                         for (var i = 0; i < items[index].productOption.length; i++) {
-                            if (items[index].productOption[i].isSoldOut == true) {
+                            if (items[index].productOption[i].isSoldOut == false) {
                                 isSoldOutAll = false;
                                 break;
                             }
@@ -194,7 +194,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
 
                     html += "</a>";
                     html += "<div class='item_quick_link'>";
-                    html += "<a href='quick-view.html' title='Xem chi tiết' onclick='quickView(240)' ><i class='icofont-search'></i></a>";
+                    html += "<a href='#' title='Xem chi tiết' onclick='quickView(" + items[index].productId + ")' ><i class='icofont-search'></i></a>";
                     html += "</div>";
                     html += "<div class='product-count-wrap'>";
                     html += "</div>";
@@ -214,7 +214,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                     html += "</div>";
                     html += "<div class='item_add_cart'>";
                     //html += "<a class='grid_compare' href='compare.html' title='Compare'><i class='icofont-random'></i></a>";
-                    html += "<a class='grid_cart' href = '/product/detail/" + items[index].productId + "' title = 'Add to Cart' > Thêm vào giỏ hàng </a>";
+                    html += '<a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(' + items[index].productId + ')">Thêm Vào Giỏ Hàng</a>';
                     html += "<a class='grid_wishlist' title='Wishlist'><i class='icofont-heart-alt " + favoriteClass + "' data-id='" + items[index].productId + "' style='color: " + favoriteColor + "; cursor: pointer;' onclick='ToggleFavorite(" + items[index].productId + ", this)'></i></a>";
 
                     html += "</div>";
@@ -232,7 +232,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         var isSoldOutAll = true;
                         for (var i = 0; i < items[index].productOption.length; i++) {
-                            if (items[index].productOption[i].isSoldOut == true) {
+                            if (items[index].productOption[i].isSoldOut == false) {
                                 isSoldOutAll = false;
                                 break;
                             }
@@ -247,7 +247,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                     }
                     html1 += "</a>";
                     html1 += "<div class='item_quick_link'>";
-                    html1 += "<a href='quick-view.html' title='Xem chi tiết' onclick='quickView(240)'><i class='icofont-search'></i></a>";
+                    html1 += "<a href='#' title='Xem chi tiết' onclick='quickView(" + items[index].productId + ")'><i class='icofont-search'></i></a>";
                     html1 += "</div>";
                     html1 += "<div class='product-count-wrap'>";
                     html1 += "</div>";
@@ -268,7 +268,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                     html1 += "</div>";
                     html1 += "<div class='item_add_cart'>";
                     //html1 += "<a class='grid_compare' href='compare.html1' title='Compare'><i class='icofont-random'></i></a>";
-                    html1 += "<a class='grid_cart' href='/product/detail/" + items[index].productId + "' title='Add to Cart'>Thêm vào giỏ hàng</a>";
+                    html1 += '<a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(' + items[index].productId + ')">Thêm Vào Giỏ Hàng</a>';
                     html1 += "<a class='grid_wishlist' title='Wishlist'><i class='icofont-heart-alt " + favoriteClass + "' data-id='" + items[index].productId + "' style='color: " + favoriteColor + "; cursor: pointer;' onclick='ToggleFavorite(" + items[index].productId + ", this)'></i></a>";
 
                     html1 += "</div>";

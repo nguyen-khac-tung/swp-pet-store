@@ -238,14 +238,14 @@ namespace PetStoreProject.Controllers
                 {
                     productDetails = productDetails
                      .Where(p => p.productOption != null && p.productOption
-                     .Any(po => po != null && po.IsSoldOut == true))
+                     .Any(po => po != null && po.IsSoldOut == false))
                      .ToList();
                 }
                 else if (selectedStatus.Count == 1 && selectedStatus[0] == "False")
                 {
                     productDetails = productDetails
                     .Where(p => p.productOption != null && p.productOption
-                    .All(po => po != null && po.IsSoldOut == false))
+                    .All(po => po != null && po.IsSoldOut == true))
                     .ToList();
                 }
             }

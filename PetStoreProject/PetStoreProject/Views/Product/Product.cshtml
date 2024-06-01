@@ -406,7 +406,7 @@
                                                             bool IsSoldOut = true;
                                                             foreach(var po in product.productOption)
                                                             {
-                                                                if(po.IsSoldOut == true)
+                                                                if(po.IsSoldOut == false)
                                                                 {
                                                                     IsSoldOut = false;
                                                                     break;
@@ -454,7 +454,7 @@
                                                     <div class="item_add_cart">
                                                         @* <a class="grid_compare" href="compare.html" title="Compare"><i class="icofont-random"></i></a> *@
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
-                                                        <a class="grid_cart" href="/product/detail/@product.ProductId" title="Add to Cart">Thêm vào giỏ hàng</a>
+                                                        <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@product.ProductId)">Thêm Vào Giỏ Hàng</a>
                                                         <a class="grid_wishlist" title="Wishlist">
                                                              @{
                                                     bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
@@ -548,7 +548,7 @@
 
                                             </div>
                                             <div class="item_add_cart">
-                                                <a class="grid_cart" href="/product/detail/@product.ProductId" title="Add to Cart">Thêm vào giỏ hàng</a>
+                                                <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@product.ProductId)">Thêm Vào Giỏ Hàng</a>
                                                 <a class="grid_wishlist" title="Wishlist">
                                                     @{
                                                         bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);

@@ -27,7 +27,6 @@ function getCartBoxItems() {
         type: "POST",
         url: "/cart/GetCartBoxItems",
         success: function (response) {
-            console.log(response.length)
             $('#list_item').empty();
             $('#total_item').html(response.length)
             let total_price = 0;
@@ -207,6 +206,7 @@ function updateCartItem(oldId, cartItem) {
 
 function quickView(productId) {
     $('#quick_add_to_cart').removeClass('out-of-stock');
+    $('#quick_add_to_cart').html('Thêm vào giỏ hàng');
     $('#myModal').modal('show');
     $('#quick_attribute').empty();
     $('#quick_size').empty();
@@ -215,6 +215,7 @@ function quickView(productId) {
         url: "/Product/quickPreview",
         data: { productId: productId },
         success: function (response) {
+            console.log(response.productOption)
             $('#quick_name').html(response.name);
             $('#quick_price').html(response.productOption[0].price.toLocaleString('en-US'));
             $('#quick_image').empty();
@@ -285,7 +286,7 @@ function quickView(productId) {
             let isStill = false;
             let attributeId, sizeId, price, img_url;
             for (const element of response.productOption) {
-                if (element.status) { // status is boolean
+                if (element.isSoldOut) { // status is boolean
                     attributeId = element.attribute.attributeId;
                     sizeId = element.size.sizeId;
                     price = element.price;
@@ -297,7 +298,6 @@ function quickView(productId) {
             }
             // updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
             if (isStill) {
-                console.log('Con hang')
                 let list_size = document.getElementById('quick_size').querySelectorAll('li');
                 let list_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
 
@@ -324,6 +324,7 @@ function quickView(productId) {
             }
             else {
                 $('#quick_add_to_cart').addClass('out-of-stock');
+                $('#quick_add_to_cart').html('Đã bán hết');
                 quickCheckOutOfStock(sizeId, attributeId, response.productOption);
             }
             document.getElementById('quick_quantity').value = 1
@@ -340,8 +341,7 @@ function quickCheckOutOfStock(sizeId, attributeId, productOptions) {
     let list_attribute = document.getElementById('quick_attribute').querySelectorAll('li');
     if (list_size.length > 0 && list_attribute.length > 0) {
         for (const element of productOptions) {
-            if (!element.status) {
-                console.log(element.status)
+            if (!element.isSoldOut) {
                 if (element.attribute.attributeId == attributeId) {
                     $('#quick_size_' + element.size.sizeId).addClass('out-of-stock')
                 }
@@ -353,14 +353,14 @@ function quickCheckOutOfStock(sizeId, attributeId, productOptions) {
     }
     else if (list_attribute.length > 0) {
         for (const element of productOptions) {
-            if (!element.status) {
+            if (!element.isSoldOut) {
                 $('#quick_attribute_' + element.attribute.attributeId).addClass('out-of-stock')
             }
         }
     }
     else if (list_size.length > 0) {
         for (const element of productOptions) {
-            if (!element.status) {
+            if (!element.isSoldOut) {
                 $('#quick_size_' + element.size.sizeId).addClass('out-of-stock')
             }
         }
@@ -385,7 +385,6 @@ function quick_size_selected(index, size_id, productOption) {
     } catch (error) {
         attribute_id = 1
     }
-
     quickUpdatePriceAndImage(size_id, attribute_id, productOption);
 }
 
@@ -407,7 +406,6 @@ function quick_attribute_selected(index, attribute_id, productOption) {
     } catch (error) {
         size_id = 1
     }
-
     quickUpdatePriceAndImage(size_id, attribute_id, productOption);
 }
 

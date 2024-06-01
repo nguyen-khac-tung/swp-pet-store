@@ -55,7 +55,7 @@ namespace PetStoreProject.Repositories.Product
                                           AttributeId = a.AttributeId,
                                           Name = a.Name
                                       },
-                                      status = po.IsSoldOut
+                                      IsSoldOut = po.IsSoldOut
                                   }).ToList();
 
             var attributes = productOptions.Select(a => a.attribute)
@@ -225,13 +225,13 @@ namespace PetStoreProject.Repositories.Product
         public List<Size> GetSizesByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
         {
 
-           var sizes = (from s in _context.Sizes
+            var sizes = (from s in _context.Sizes
                          join po in _context.ProductOptions on s.SizeId equals po.SizeId
                          join p in _context.Products on po.ProductId equals p.ProductId
                          join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
                          where categoryIds.Contains(pc.CategoryId)
                          select s).Distinct().ToList();
-            if(productCateId != 0)
+            if (productCateId != 0)
             {
                 sizes = (from s in sizes
                          join po in _context.ProductOptions on s.SizeId equals po.SizeId

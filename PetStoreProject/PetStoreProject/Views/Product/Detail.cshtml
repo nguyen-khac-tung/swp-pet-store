@@ -327,11 +327,9 @@
 <script >
     var attributeId, sizeId, price, img_url;
     var productOptions = @Html.Raw(productOptions);
-    console.log(productOptions)
     var isStill = false;
     for (var index = 0; index < productOptions.length; index++) {
-        console.log(status)
-        if (productOptions[index].status) { // status is boolean
+        if (productOptions[index].IsSoldOut) { // status is boolean
             attributeId = productOptions[index].attribute.AttributeId;
             sizeId = productOptions[index].size.SizeId;
             price = productOptions[index].price;
@@ -370,6 +368,7 @@
     }
     else {
         $('#add_to_cart').addClass('out-of-stock');
+        $('#add_to_cart').html('Đã bán hết')
         checkOutOfStock();
     }
 
@@ -378,8 +377,8 @@
         var list_attribute = document.getElementById('attribute').querySelectorAll('li');
         if (list_size.length > 0 && list_attribute.length > 0) {
             for (var index = 0; index < productOptions.length; index++) {
-                if(!productOptions[index].status){
-                    console.log(productOptions[index].status)
+                if(!productOptions[index].IsSoldOut){
+                        console.log(productOptions[index].IsSoldOut)
                     if (productOptions[index].attribute.AttributeId == attributeId) {
                         $('#size_' + productOptions[index].size.SizeId).addClass('out-of-stock')
                     }
@@ -391,14 +390,14 @@
         }
         else if (list_attribute.length > 0) {
             for (var index = 0; index < productOptions.length; index++) {
-                if (!productOptions[index].status) {
+                if (!productOptions[index].IsSoldOut) {
                     $('#attribute_' + productOptions[index].attribute.AttributeId).addClass('out-of-stock')
                 }
             }
         }
         else if (list_size.length > 0) {
             for (var index = 0; index < productOptions.length; index++) {
-                if (!productOptions[index].status) {
+                if (!productOptions[index].IsSoldOut) {
                     $('#size_' + productOptions[index].size.SizeId).addClass('out-of-stock')
                 }
             }
@@ -438,15 +437,13 @@
     }
 
 	function updatePriceAndImage() {
-        console.log(attributeId)
-        console.log(sizeId)
 		var productOptions_json = @Html.Raw(productOptions);
 		for (var id = 0; id <= productOptions_json.length; id ++){
 			if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
 				price = productOptions_json[id].price
 				img_url = productOptions_json[id].img_url
 				$('#add_to_cart').attr('data-product-option-id', productOptions_json[id].Id)
-                    if (!productOptions_json[id].status) {
+                    if (!productOptions_json[id].IsSoldOut) {
                         $('#add_to_cart').addClass('out-of-stock');
                 }
 				break

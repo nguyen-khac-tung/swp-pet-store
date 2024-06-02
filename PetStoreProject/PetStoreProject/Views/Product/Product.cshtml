@@ -30,12 +30,12 @@
         }
 
         /* Màu nền của thanh cuộn trên Chrome và Safari */
-    .sidebar-scroll-list::-webkit-scrollbar-track {
+        .sidebar-scroll-list::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
 
         /* Màu của thanh cuộn trên Chrome và Safari */
-    .sidebar-scroll-list::-webkit-scrollbar-thumb {
+        .sidebar-scroll-list::-webkit-scrollbar-thumb {
             background: #888;
         }
 
@@ -180,7 +180,7 @@
     }
 
     .img_sold_out {
-        opacity:0.4;
+        opacity: 0.4;
     }
 
     .pro-img {
@@ -191,9 +191,6 @@
         .pro-img img {
             display: block;
         }
-
-    
-
 
 </style>
 
@@ -248,10 +245,10 @@
                         <h3 class="sidebar-title">Kích cỡ</h3>
                         <div class="sidebar-scroll-list">
                             <ul class="size-list sidbar-style">
-                                
+
                                 @foreach (var size in ViewBag.Sizes as List<Size>)
                                 {
-                                    if(size.Name != null)
+                                    if (size.Name != null)
                                     {
                                         <li class="form-check">
                                             <input class="form-check-input size-checkboxes" value="@size.Name" id="dobule_combo_@size.SizeId" type="checkbox">
@@ -263,7 +260,7 @@
 
                             </ul>
                         </div>
-                        
+
                     </div>
                     <div class="single_sidebar">
                         <h3 class="sidebar-title">Tình trạng</h3>
@@ -404,15 +401,16 @@
                                                         @if (product.productOption != null && product.productOption.Count > 0)
                                                         {
                                                             bool IsSoldOut = true;
-                                                            foreach(var po in product.productOption)
+                                                            foreach (var po in product.productOption)
                                                             {
-                                                                if(po.IsSoldOut == false)
+                                                                if (po.IsSoldOut == false)
                                                                 {
                                                                     IsSoldOut = false;
                                                                     break;
                                                                 }
                                                             }
-                                                            if(IsSoldOut == false){
+                                                            if (IsSoldOut == false)
+                                                            {
                                                                 <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
 
                                                             }
@@ -427,7 +425,7 @@
                                                     <div class="item_quick_link">
                                                         <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickView(@product.ProductId)"><i class="icofont-search"></i></a>
                                                     </div>
-                                                    
+
 
                                                     <div class="product-count-wrap">
                                                     </div>
@@ -456,15 +454,15 @@
                                                         @* <a class="grid_cart cart_disable" href="#" title="Sold Out">Sold Out</a> *@
                                                         <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@product.ProductId)">Thêm Vào Giỏ Hàng</a>
                                                         <a class="grid_wishlist" title="Wishlist">
-                                                             @{
-                                                    bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
-                                                    }
+                                                            @{
+                                                                bool isFavorite = ((List<int>)ViewData["listPID"]).Contains(product.ProductId);
+                                                            }
 
-                                                    <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
-                                                    data-id="@product.ProductId"
-                                                    style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
+                                                            <i class="icofont-heart-alt @((isFavorite) ? "favorite" : "not-favorite")"
+                                                               data-id="@product.ProductId"
+                                                               style="color: @((isFavorite) ? "red" : "black"); cursor: pointer;"></i>
 
-                                                   
+
                                                         </a>
                                                     </div>
                                                 </div>

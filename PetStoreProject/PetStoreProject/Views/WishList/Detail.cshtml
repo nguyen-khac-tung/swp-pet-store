@@ -16,23 +16,18 @@
 						<table>
 							<thead>
 								<tr>
-									<th class="product-remove">Xóa</th>
 									<th class="product-thumbnail">Ảnh</th>
 									<th class="product-name">Tên sản phẩm</th>
 									<th class="product-price">Giá</th>
 									<th class="product-quantity">Thương hiệu</th>
 									<th class="product-subtotal">Thêm vào giỏ hàng</th>
+									<th class="product-remove">Xóa</th>
 								</tr>
 							</thead>
 							<tbody>
 								@foreach (WishListVM wVM in Model)
 								{
 									<tr>
-										<td class="product-remove">
-											<a onclick="confirmDelete(@wVM.ProductId)">
-												<i class="icofont-delete-alt" aria-hidden="true"></i>
-											</a>
-										</td>
 										<td class="product-thumbnail">
 											<a href="/product/detail/@wVM.ProductId"><img src="@wVM.img_url" alt="cart-image" /></a>
 										</td>
@@ -40,6 +35,11 @@
 										<td class="product-price"><span class="amount">@wVM.price.ToString("N0") VND</span></td>
 										<td class="product-stock-status"><span>@wVM.Brand</span></td>
                                         <td class="product-add-to-cart"><a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@wVM.ProductId)">Thêm Vào Giỏ Hàng</a></td>
+										<td class="product-remove">
+											<a onclick="confirmDelete(@wVM.ProductId)">
+												<i class="icofont-delete-alt" aria-hidden="true"></i>
+											</a>
+										</td>
 									</tr>
 								}
 

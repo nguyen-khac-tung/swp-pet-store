@@ -22,5 +22,11 @@ namespace PetStoreProject.Repositories.Product
         void RemoveFromFavorites(int userId, int productId);
 
 		public List<SearchViewModel> GetListProductsByKeyWords(string key);
-    }
+
+		public int GetNumberOfDogFoods();
+		public int GetNumberOfDogAccessories();
+		public int GetNumberOfCatFoods();
+		public int GetNumberOfCatAccessories();
+
+	}
 }

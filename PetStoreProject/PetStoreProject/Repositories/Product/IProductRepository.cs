@@ -15,9 +15,9 @@ namespace PetStoreProject.Repositories.Product
         void AddToFavorites(int userId, int productId);
         void RemoveFromFavorites(int userId, int productId);
 
-		public List<SearchViewModel> GetListProductsByKeyWords(string key);
+        public SearchResultViewModel GetListProductsByKeyWords(string key, int page);
 
-		public int GetNumberOfDogFoods();
+        public int GetNumberOfDogFoods();
 		public int GetNumberOfDogAccessories();
 		public int GetNumberOfCatFoods();
 		public int GetNumberOfCatAccessories();

@@ -248,9 +248,9 @@ namespace PetStoreProject.Repositories.Product
 
 
 
-        public List<ProductDetailViewModel> GetProductDetailResponse(List<Models.Product> products)
+        public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId)
         {
-
+            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
             var productDetails = products.Select(p => new ProductDetailViewModel
             {
                 ProductId = p.ProductId,
@@ -258,17 +258,15 @@ namespace PetStoreProject.Repositories.Product
                 Brand = GetBrandByProductId(p.ProductId).Name,
                 Description = p.Description,
                 productOption = GetProductOptionsByProductId(p.ProductId),
-                //images = GetImagesByProductId(p.ProductId),
-                //attributes = GetAttributesByProductId(p.ProductId),
-                //sizes = GetSizesByProductId(p.ProductId)
 
             }).ToList();
             return productDetails;
         }
 
 
-        public List<ProductDetailViewModel> GetProductDetailRequest(List<Models.Product> products)
+        public List<ProductDetailViewModel> GetProductDetailDoGet(List<int> cateId, int productCateId)
         {
+            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
             var productDetails = products.Select(p => new ProductDetailViewModel
             {
                 ProductId = p.ProductId,
@@ -278,32 +276,6 @@ namespace PetStoreProject.Repositories.Product
 
             }).ToList();
             return productDetails;
-        }
-
-        public List<ProductDetailViewModel> GetProductDetailAccessoriesRequest(List<int> cateId, int productCateId)
-        {
-
-            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
-            return GetProductDetailRequest(products);
-        }
-        public List<ProductDetailViewModel> GetProductDetailAccessoriesResponse(List<int> cateId, int productCateId)
-
-        {
-
-            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
-            return GetProductDetailResponse(products);
-        }
-
-        public List<ProductDetailViewModel> GetProductDetailFoodsRequest(List<int> cateId, int productCateId)
-        {
-            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
-            return GetProductDetailRequest(products);
-        }
-
-        public List<ProductDetailViewModel> GetProductDetailFoodsResponse(List<int> cateId, int productCateId)
-        {
-            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
-            return GetProductDetailResponse(products);
         }
 
         public List<int> GetProductIDInWishList(int customerID)

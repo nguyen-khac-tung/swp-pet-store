@@ -69,10 +69,10 @@ namespace PetStoreProject.Controllers
 			List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
 			ViewData["listPID"] = listPID;
 
-			var dogFoods = _product.GetProductDetailFoodsRequest(new List<int> { 3 }, 14);
-			var catFoods = _product.GetProductDetailFoodsRequest(new List<int> { 4 }, 20);
-			var dogAccessories = _product.GetProductDetailFoodsRequest(new List<int> { 2, 6 }, 0);
-			var catAccessories = _product.GetProductDetailFoodsRequest(new List<int> { 6 }, 0);
+			var dogFoods = _product.GetProductDetailDoGet(new List<int> { 3 }, 14);
+			var catFoods = _product.GetProductDetailDoGet(new List<int> { 4 }, 20);
+			var dogAccessories = _product.GetProductDetailDoGet(new List<int> { 2, 6 }, 0);
+			var catAccessories = _product.GetProductDetailDoGet(new List<int> { 6 }, 0);
 			var homeVM = new HomeViewModel
 			{
 				NumberOfDogFoods = _product.GetNumberOfDogFoods(),

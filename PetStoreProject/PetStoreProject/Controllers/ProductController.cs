@@ -117,7 +117,7 @@ namespace PetStoreProject.Controllers
                     categoryIds = [2];
                     break;
             }
-            var productDetails = _product.GetProductDetailFoodsRequest(categoryIds, productCateId ?? 0); // thay doi
+            var productDetails = _product.GetProductDetailDoGet(categoryIds, productCateId ?? 0); // thay doi
             var totalItems = productDetails.Count();
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 21;
@@ -181,12 +181,12 @@ namespace PetStoreProject.Controllers
 
             //Filter brand
             if (!selectedBrands.IsNullOrEmpty())
-                productDetails = _product.GetProductDetailFoodsResponse(cateId, productCateId)
+                productDetails = _product.GetProductDetailDoPost(cateId, productCateId)
                     .Where(p => selectedBrands
                     .Contains(p.Brand) && (p.productOption[0].price >= priceMin && p.productOption[0].price <= priceMax))
                     .ToList();
             else
-                productDetails = _product.GetProductDetailFoodsResponse(cateId, productCateId)
+                productDetails = _product.GetProductDetailDoPost(cateId, productCateId)
                     .Where(p => p.productOption[0].price >= priceMin && p.productOption[0].price <= priceMax)
                     .ToList();
 
@@ -234,14 +234,14 @@ namespace PetStoreProject.Controllers
             //Filter isSoldOut
             if (!selectedStatus.IsNullOrEmpty())
             {
-                if (selectedStatus.Count == 1 && selectedStatus[0] == "True")
+                if (selectedStatus.Count == 1 && selectedStatus[0] == "False")
                 {
                     productDetails = productDetails
                      .Where(p => p.productOption != null && p.productOption
                      .Any(po => po != null && po.IsSoldOut == false))
                      .ToList();
                 }
-                else if (selectedStatus.Count == 1 && selectedStatus[0] == "False")
+                else if (selectedStatus.Count == 1 && selectedStatus[0] == "True")
                 {
                     productDetails = productDetails
                     .Where(p => p.productOption != null && p.productOption

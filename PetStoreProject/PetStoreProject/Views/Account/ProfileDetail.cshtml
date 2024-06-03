@@ -51,7 +51,7 @@
                 <!-- Form Group (email address)-->
                 <div class="col-md-6">
                     <label class="label-input small mb-1" asp-for="Email">Email</label>
-                    <input class="form-control" asp-for="Email" placeholder="Nhập địa chỉ email của bạn" value="@Model.Email">
+                    <input class="form-control" asp-for="Email" type="email" placeholder="Nhập địa chỉ email của bạn" value="@Model.Email">
                     <span class="text-danger" asp-validation-for="Email"></span>
                     @if (ViewBag.EmailMess != null)
                     {
@@ -76,7 +76,7 @@
                 <span class="text-danger" asp-validation-for="Address"></span>
             </div>
             <!-- Save changes button-->
-            <input type="button" class="login-btn rounded-1 mt-3 mb-3" value="Lưu Thay Đổi" onclick="updateProfileDetail()" />
+            <input type="submit" class="login-btn rounded-1 mt-3 mb-3" value="Lưu Thay Đổi"/>
         </form>
     </div>
 </div>

@@ -25,6 +25,8 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
+    public virtual DbSet<Consultation> Consultations { get; set; }
+
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -37,11 +39,19 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<News> News { get; set; }
 
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrderItem> OrderItems { get; set; }
+
+    public virtual DbSet<OrderService> OrderServices { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ProductCategory> ProductCategories { get; set; }
 
     public virtual DbSet<ProductOption> ProductOptions { get; set; }
+
+    public virtual DbSet<ResponseFeedback> ResponseFeedbacks { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -111,6 +121,11 @@ public partial class PetStoreDBContext : DbContext
             entity.Property(e => e.CategoryId).ValueGeneratedNever();
         });
 
+        modelBuilder.Entity<Consultation>(entity =>
+        {
+            entity.HasOne(d => d.Employee).WithMany(p => p.Consultations).HasConstraintName("FK_Consultation_Employee");
+        });
+
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasOne(d => d.Account).WithMany(p => p.Customers)
@@ -131,6 +146,15 @@ public partial class PetStoreDBContext : DbContext
             entity.Property(e => e.Url).IsFixedLength();
         });
 
+        modelBuilder.Entity<Feedback>(entity =>
+        {
+            entity.HasKey(e => e.FeedbackId).HasName("PK_Feedback_1");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Feedbacks)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Feedback_Product1");
+        });
+
         modelBuilder.Entity<Image>(entity =>
         {
             entity.Property(e => e.ImageUrl).IsFixedLength();
@@ -138,13 +162,42 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<News>(entity =>
         {
-            entity.Property(e => e.NewsId).ValueGeneratedNever();
+            entity.HasOne(d => d.Employee).WithMany(p => p.News)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_News_Employee");
+
+            entity.HasOne(d => d.Image).WithMany(p => p.News).HasConstraintName("FK_News_Image");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Orders_Customer");
+        });
+
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrderItem_Orders");
+
+            entity.HasOne(d => d.ProductOption).WithMany(p => p.OrderItems)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrderItem_ProductOption");
+        });
+
+        modelBuilder.Entity<OrderService>(entity =>
+        {
+            entity.HasOne(d => d.Employee).WithMany(p => p.OrderServices).HasConstraintName("FK_OrderService_Employee");
+
+            entity.HasOne(d => d.ServiceOption).WithMany(p => p.OrderServices)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OrderService_ServiceOption");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.Property(e => e.Name).IsFixedLength();
-
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Brand");
@@ -191,9 +244,20 @@ public partial class PetStoreDBContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ProductOption_Product");
+                .HasConstraintName("FK_ProductOption_Product1");
 
             entity.HasOne(d => d.Size).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Size");
+        });
+
+        modelBuilder.Entity<ResponseFeedback>(entity =>
+        {
+            entity.HasOne(d => d.Employee).WithMany(p => p.ResponseFeedbacks)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ResponseFeedback_Employee");
+
+            entity.HasOne(d => d.Feedback).WithMany(p => p.ResponseFeedbacks)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ResponseFeedback_Feedback");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -222,16 +286,19 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Service>(entity =>
         {
             entity.Property(e => e.ServiceId).ValueGeneratedNever();
-            entity.Property(e => e.Name).IsFixedLength();
+
+            entity.HasOne(d => d.Image).WithMany(p => p.Services).HasConstraintName("FK_Service_Image");
         });
 
         modelBuilder.Entity<ServiceOption>(entity =>
         {
-            entity.Property(e => e.PetType).IsFixedLength();
+            entity.HasKey(e => e.ServiceOptionId).HasName("PK_ServiceOption_1");
+
+            entity.Property(e => e.ServiceOptionId).ValueGeneratedNever();
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ServiceOption_Service");
+                .HasConstraintName("FK_ServiceOption_Service1");
         });
 
         modelBuilder.Entity<Size>(entity =>

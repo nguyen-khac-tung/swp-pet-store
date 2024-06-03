@@ -16,6 +16,7 @@ namespace PetStoreProject.ViewModels
         public bool? Gender { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại của bạn")]
+        [RegularExpression("^\\d{10,11}$", ErrorMessage = "Số điện thoại không hợp lệ. Vui lòng nhập lại.")]
         public string? Phone { get; set; }
 
         [StringLength(100, ErrorMessage = "Địa chỉ tối đa 250 ký tự")]

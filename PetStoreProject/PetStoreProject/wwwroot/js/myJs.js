@@ -31,7 +31,7 @@ function getCartBoxItems() {
             $('#total_item').html(response.length)
             let total_price = 0;
             if (response.length == 0) {
-                $('#list_item').html('<p>Không có sản phẩm nào trong giỏ hàng</p>')
+                $('#list_item').html('<h5>Không có sản phẩm nào trong giỏ hàng</h5>')
             }
             else {
                 for (const element of response) {
@@ -101,17 +101,13 @@ function deleteCartItem(productOptionId) {
     let list = document.getElementsByClassName('item');
     if (list.length == 0) {
         let x = `
-                <div class="container" style="width: 100%; align-items: center; padding-top: 20px">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="alert alert-warning" role="alert">
-                                <h4 class="alert-heading">Giỏ hàng trống!</h4>
-                                <p>Giỏ hàng của bạn đang trống, hãy chọn sản phẩm để mua sắm.</p>
-                                <hr>
-                                <p class="mb-0">
-                                    Nhấn vào <a href="/home/index" style="text-decoration:underline">đây</a> để quay lại trang chủ.
-                                </p>
-                            </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-sm-10 text-center">
+                        <div class="text-center">
+                        <img style="width: 70%" src="/img/notfound/cart-empty.jpg" alt="Giỏ hàng trống" />
+                        </div>
+                        <div class="buttons-cart d-inline-block ">
+                            <a style="margin:0" href="/">Tiếp tục mua sắm</a>
                         </div>
                     </div>
                 </div>

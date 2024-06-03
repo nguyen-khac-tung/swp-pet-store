@@ -8,18 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[PrimaryKey("ServiceId", "PetType")]
 [Table("ServiceOption")]
 public partial class ServiceOption
 {
     [Key]
+    public int ServiceOptionId { get; set; }
+
     public int ServiceId { get; set; }
 
-    [Key]
-    [StringLength(50)]
-    public string PetType { get; set; } = null!;
+    public bool PetType { get; set; }
+
+    [StringLength(30)]
+    public string Weight { get; set; } = null!;
 
     public float Price { get; set; }
+
+    [InverseProperty("ServiceOption")]
+    public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
 
     [ForeignKey("ServiceId")]
     [InverseProperty("ServiceOptions")]

@@ -8,13 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("Feedback")]
-public partial class Feedback
+[Table("Consultation")]
+public partial class Consultation
 {
     [Key]
-    public int FeedbackId { get; set; }
-
-    public int ProductId { get; set; }
+    public int ConsultationId { get; set; }
 
     [StringLength(100)]
     public string Name { get; set; } = null!;
@@ -22,20 +20,19 @@ public partial class Feedback
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
-    public int Rating { get; set; }
+    [StringLength(150)]
+    public string Title { get; set; } = null!;
 
-    [StringLength(500)]
     public string Content { get; set; } = null!;
 
     [Column(TypeName = "datetime")]
-    public DateTime DateCreated { get; set; }
+    public DateTime Date { get; set; }
 
-    public int? ResponseId { get; set; }
+    public bool Status { get; set; }
 
-    [ForeignKey("ProductId")]
-    [InverseProperty("Feedbacks")]
-    public virtual Product Product { get; set; } = null!;
+    public int? EmployeeId { get; set; }
 
-    [InverseProperty("Feedback")]
-    public virtual ICollection<ResponseFeedback> ResponseFeedbacks { get; set; } = new List<ResponseFeedback>();
+    [ForeignKey("EmployeeId")]
+    [InverseProperty("Consultations")]
+    public virtual Employee? Employee { get; set; }
 }

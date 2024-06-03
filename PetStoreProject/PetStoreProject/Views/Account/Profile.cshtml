@@ -141,6 +141,11 @@
             profileDetail();
             initDatepicker();
 
+            $("#formProfileDetail").on("submit", function (event) {
+                event.preventDefault();
+                updateProfileDetail();
+            });
+
             $("#formChangePassword").on("submit", function (event) {
                 event.preventDefault();
                 updateChangePassword();
@@ -155,6 +160,12 @@
                 success: function (response) {
                     $("#main-content").empty();
                     $("#main-content").html(response);
+
+                    $("#formProfileDetail").on("submit", function (event) {
+                        event.preventDefault();
+                        updateProfileDetail();
+                    });
+
                     initDatepicker();
                 },
 
@@ -177,6 +188,12 @@
                     var currentName = $(response).find("#FullName").val();
                     $("#profile-full-name").text(currentName);
                     $("#menu-fullname").text(currentName);
+
+                    $("#formProfileDetail").on("submit", function (event) {
+                        event.preventDefault();
+                        updateProfileDetail();
+                    });
+
                     initDatepicker();
                 },
 

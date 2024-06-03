@@ -15,6 +15,7 @@ namespace PetStoreProject.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại của bạn")]
+        [RegularExpression("^\\d{10,11}$", ErrorMessage = "Số điện thoại không hợp lệ. Vui lòng nhập lại.")]
         [DisplayName("Số Điện Thoại")]
         public string? Phone { get; set; }
 

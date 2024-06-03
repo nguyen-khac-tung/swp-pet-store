@@ -35,4 +35,16 @@ public partial class Employee
     [ForeignKey("AccountId")]
     [InverseProperty("Employees")]
     public virtual Account Account { get; set; } = null!;
+
+    [InverseProperty("Employee")]
+    public virtual ICollection<Consultation> Consultations { get; set; } = new List<Consultation>();
+
+    [InverseProperty("Employee")]
+    public virtual ICollection<News> News { get; set; } = new List<News>();
+
+    [InverseProperty("Employee")]
+    public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
+
+    [InverseProperty("Employee")]
+    public virtual ICollection<ResponseFeedback> ResponseFeedbacks { get; set; } = new List<ResponseFeedback>();
 }

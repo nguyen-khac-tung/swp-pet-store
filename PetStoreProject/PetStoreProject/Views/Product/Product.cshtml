@@ -125,18 +125,6 @@
         box-shadow: 0 0 6px rgba(0,0,0,0.05);
     }
 
-    .primary-img {
-        width: 200px; /* Thiết lập chiều rộng cố định */
-        height: 250px; /* Thiết lập chiều cao cố định */
-        object-fit: cover; /* Giúp hình ảnh phù hợp với khung */
-    }
-
-    .primary-img {
-        display: flex; /* Flexbox để căn chỉnh các hình ảnh */
-        flex-wrap: wrap; /* Để các hình ảnh xuống hàng nếu không đủ chỗ */
-        justify-content: center; /* Căn giữa các hình ảnh */
-    }
-
     /* CSS cho nút Lọc sản phẩm và Xóa bộ lọc */
     .single_sidebar {
         margin-bottom: 20px;
@@ -174,23 +162,9 @@
         margin-bottom: 10px;
     }
 
-    .list_des {
-        margin: 0; /* Xóa khoảng cách của đoạn văn trong <p> mặc định */
-        padding: 10px; /* Thêm khoảng cách xung quanh nội dung cuộn */
-    }
-
     .img_sold_out {
         opacity: 0.4;
     }
-
-    .pro-img {
-        position: relative;
-        display: inline-block;
-    }
-
-        .pro-img img {
-            display: block;
-        }
 
 </style>
 
@@ -411,12 +385,12 @@
                                                             }
                                                             if (IsSoldOut == false)
                                                             {
-                                                                <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+                                                                <img class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
 
                                                             }
                                                             else
                                                             {
-                                                                <img style="max-height: 300px" class="primary-img img_sold_out" src="@product.productOption[0].img_url" alt="single-product">
+                                                                <img class="primary-img img_sold_out" src="@product.productOption[0].img_url" alt="single-product">
                                                                 <div class="overlay">Hết hàng</div>
                                                             }
                                                         }
@@ -436,7 +410,7 @@
                                                 <!-- Product Content Start -->
                                                 <div class="product_content_wrap">
                                                     <div class="product_content">
-                                                        <h4 style="height:40px;"><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
+                                                        <h4><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
 
                                                         <div class="grid_price">
                                                             @if (product.productOption != null && product.productOption.Count > 0)
@@ -507,12 +481,12 @@
                                                     }
                                                     if (IsSoldOut == false)
                                                     {
-                                                        <img style="max-height: 300px" class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
+                                                        <img class="primary-img" src="@product.productOption[0].img_url" alt="single-product">
 
                                                     }
                                                     else
                                                     {
-                                                        <img style="max-height: 300px" class="primary-img img_sold_out" src="@product.productOption[0].img_url" alt="single-product">
+                                                        <img class="primary-img img_sold_out" src="@product.productOption[0].img_url" alt="single-product">
                                                         <div class="overlay">Hết hàng</div>
                                                     }
                                                 }

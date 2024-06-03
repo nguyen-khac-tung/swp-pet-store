@@ -18,5 +18,11 @@ public partial class Image
     public string ImageUrl { get; set; } = null!;
 
     [InverseProperty("Image")]
+    public virtual ICollection<News> News { get; set; } = new List<News>();
+
+    [InverseProperty("Image")]
     public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
+
+    [InverseProperty("Image")]
+    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 }

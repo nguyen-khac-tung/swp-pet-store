@@ -1787,9 +1787,12 @@ h6 {
 
 .pro-img {
     position: relative;
+    display: inline-block;
 }
 
 .pro-img img {
+    display: block;
+    max-height: 300px;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-transition: all 0.5s ease-in-out 0s;
@@ -1815,6 +1818,7 @@ h6 {
 	background: #fff;
 }
 .product_content h4 {
+    height: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 5px;
@@ -3663,6 +3667,18 @@ ul.promotion-list {
     color: #00adf6;
 }
 
+.primary-img {
+    width: 200px; /* Thiết lập chiều rộng cố định */
+    height: 250px; /* Thiết lập chiều cao cố định */
+    object-fit: cover; /* Giúp hình ảnh phù hợp với khung */
+}
+
+.primary-img {
+    display: flex; /* Flexbox để căn chỉnh các hình ảnh */
+    flex-wrap: wrap; /* Để các hình ảnh xuống hàng nếu không đủ chỗ */
+    justify-content: center; /* Căn giữa các hình ảnh */
+}
+
 /*----------------------------------------*/
 /* Product Details CSS
 -----------------------------------------*/
@@ -5030,7 +5046,7 @@ p.checkout-coupon input[type="submit"] {
 }
 
 .table-content table td.product-thumbnail {
-    width: 100px;
+    width: 150px;
 }
 
 .table-content table td.product-remove a {
@@ -5059,7 +5075,7 @@ p.checkout-coupon input[type="submit"] {
 }
 
 .table-content table td.product-price {
-    width: 130px;
+    width: 170px;
 }
 
 .table-content table td.product-name a:hover,
@@ -5235,10 +5251,10 @@ a.shipping-calculator-button:hover {
 }
 
 .cart-main-area.wish-list .product-remove {
-    width: 20px;
+    width: 80px;
 }
 
-.cart-main-area.wish-list table td.product-thumbnail {
+.cart-main-area.wish-list table td.primary-img {
     width: 140px;
 }
 

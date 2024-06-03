@@ -7,7 +7,7 @@
 <div class="cart-main-area adp_top adp_bottom">
     <div class="container">
         <div class="row" id="cart_content">
-            @if(cartItems.Count > 0)
+            @if (cartItems.Count > 0)
             {
                 <div class="col-md-12 col-sm-12">
                     <!-- Form Start -->
@@ -105,14 +105,24 @@
             }
             else
             {
-                <div class="alert alert-warning" role="alert">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-sm-10 text-center">
+                        <div class="text-center">
+                        <img style="width: 70%" src="~/img/notfound/cart-empty.jpg" alt="Giỏ hàng trống" />
+                        </div>
+                        <div class="buttons-cart d-inline-block ">
+                            <a style="margin:0" href="/">Tiếp tục mua sắm</a>
+                        </div>
+                    </div>
+                </div>
+                @* <div class="alert alert-warning" role="alert">
                     <h4 class="alert-heading">Giỏ hàng trống!</h4>
                     <p>Giỏ hàng của bạn đang trống, hãy chọn sản phẩm để mua sắm.</p>
                     <hr>
                     <p class="mb-0">Nhấn vào <a href="/home/index" style="text-decoration:underline">đây</a> để quay lại trang chủ.</p>
-                </div>
+                </div> *@
             }
-            
+
         </div>
         <!-- Row End -->
     </div>
@@ -190,7 +200,7 @@
                                         </div>
                                     </div>
 
-                                    
+
                                     <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
                                         Số lượng:
                                         <form action="#" onclick="quick_total_price()" style="border-radius: 10px">

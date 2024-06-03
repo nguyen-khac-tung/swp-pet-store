@@ -20,5 +20,15 @@ public partial class News
 
     public DateOnly DatePosted { get; set; }
 
+    public int? ImageId { get; set; }
+
     public int EmployeeId { get; set; }
+
+    [ForeignKey("EmployeeId")]
+    [InverseProperty("News")]
+    public virtual Employee Employee { get; set; } = null!;
+
+    [ForeignKey("ImageId")]
+    [InverseProperty("News")]
+    public virtual Image? Image { get; set; }
 }

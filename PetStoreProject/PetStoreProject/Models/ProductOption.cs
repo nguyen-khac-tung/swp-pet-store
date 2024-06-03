@@ -22,7 +22,7 @@ public partial class ProductOption
 
     public float Price { get; set; }
 
-    public bool? IsSoldOut { get; set; }
+    public bool IsSoldOut { get; set; }
 
     public int ImageId { get; set; }
 
@@ -36,6 +36,9 @@ public partial class ProductOption
     [ForeignKey("ImageId")]
     [InverseProperty("ProductOptions")]
     public virtual Image Image { get; set; } = null!;
+
+    [InverseProperty("ProductOption")]
+    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     [ForeignKey("ProductId")]
     [InverseProperty("ProductOptions")]

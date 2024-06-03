@@ -9,28 +9,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        .primary-img {
-            width: 200px; /* Thiết lập chiều rộng cố định */
-            height: 250px; /* Thiết lập chiều cao cố định */
-            object-fit: cover; /* Giúp hình ảnh phù hợp với khung */
-        }
-
-        .primary-img {
-            display: flex; /* Flexbox để căn chỉnh các hình ảnh */
-            flex-wrap: wrap; /* Để các hình ảnh xuống hàng nếu không đủ chỗ */
-            justify-content: center; /* Căn giữa các hình ảnh */
-        }
-
-        .pro-img {
-            position: relative;
-            display: inline-block;
-        }
-
-            .pro-img img {
-                display: block;
-            }
-    </style>
 }
 
 <!--Modal Notification of Successful Account Registration Start-->
@@ -58,7 +36,7 @@
     <!-- Slider Area Start Here -->
     <div class="main-slider-active">
         <!-- Start Single Slide -->
-        <div class="single-slide slider_animate_style-02" style="background:url(img/slider/full_slider_1.jpg)">
+        <div class="single-slide slider_animate_style-02" style="background:url(/img/slider/full_slider_1.jpg)">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -76,7 +54,7 @@
         </div>
         <!-- End Single Slide -->
         <!-- Start Single Slide -->
-        <div class="single-slide slider_animate_style-02" style="background:url(img/slider/slider_10.jpg)">
+        <div class="single-slide slider_animate_style-02" style="background:url(/img/slider/slider_10.jpg)">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -94,7 +72,7 @@
         </div>
         <!-- End Single Slide -->
         <!-- Start Single Slide -->
-        <div class="single-slide slider_animate_style-02" style="background:url(img/slider/full_slider_5.jpg)">
+        <div class="single-slide slider_animate_style-02" style="background:url(/img/slider/full_slider_5.jpg)">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -123,21 +101,21 @@
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="single-banner">
                     <a href="#">
-                        <img src="img/banner/banner_5.png" alt="Banner Image">
+                        <img src="/img/banner/banner_5.png" alt="Banner Image">
                     </a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="single-banner">
                     <a href="#">
-                        <img src="img/banner/banner_6.png" alt="Banner Image">
+                        <img src="/img/banner/banner_6.png" alt="Banner Image">
                     </a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="single-banner">
                     <a href="#">
-                        <img src="img/banner/banner_7.png" alt="Banner Image">
+                        <img src="/img/banner/banner_7.png" alt="Banner Image">
                     </a>
                 </div>
             </div>
@@ -159,7 +137,7 @@
             <div class="col-md-3 text-center">
                 <div class="single-food-category">
                     <a href="/Product/DogFood" class="food-cat-img">
-                        <img src="img/icons/ctg_2.png" alt="">
+                        <img src="/img/icons/ctg_2.png" alt="">
                     </a>
                     <h4><a href="/Product/DogFood">Thức Ăn Cho Cún</a></h4>
                     <span>(@Model.NumberOfDogFoods items)</span>
@@ -168,7 +146,7 @@
             <div class="col-md-3 text-center">
                 <div class="single-food-category">
                     <a href="/Product/DogAccessory" class="food-cat-img">
-                        <img src="img/icons/ctg_7.png" alt="">
+                        <img src="/img/icons/ctg_7.png" alt="">
                     </a>
                     <h4><a href="/Product/DogAccessory">Phụ Kiện Cho Cún</a></h4>
                     <span>(@Model.NumberOfDogAccessories items)</span>
@@ -177,7 +155,7 @@
             <div class="col-md-3 text-center">
                 <div class="single-food-category">
                     <a href="/Product/CatFood" class="food-cat-img">
-                        <img src="img/icons/ctg_6.png" alt="">
+                        <img src="/img/icons/ctg_6.png" alt="">
                     </a>
                     <h4><a href="/Product/CatFood">Thức Ăn Cho Mèo</a></h4>
                     <span>(@Model.NumberOfCatFoods items)</span>
@@ -186,7 +164,7 @@
             <div class="col-md-3 text-center">
                 <div class="single-food-category">
                     <a href="/Product/CatAccessory" class="food-cat-img">
-                        <img src="img/icons/price_2.png" alt="">
+                        <img src="/img/icons/price_2.png" alt="">
                     </a>
                     <h4><a href="/Product/CatAccessory">Phụ Kiện Cho Mèo</a></h4>
                     <span>(@Model.NumberOfCatAccessories items)</span>
@@ -231,7 +209,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@dogFood.ProductId">
-                                            <img style="max-height: 300px" class="primary-img" src="@dogFood.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@dogFood.productOption[0].img_url" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -291,7 +269,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@catFood.ProductId">
-                                            <img style="max-height: 300px" class="primary-img" src="@catFood.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@catFood.productOption[0].img_url" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -399,7 +377,7 @@
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-12 col-12">
                         <div class="main-feature-center-img opacityo-img text-md-left text-center">
-                            <a href="#"><img src="img/banner/best_pet_food_1.png" alt="features-img"></a>
+                            <a href="#"><img src="/img/banner/best_pet_food_1.png" alt="features-img"></a>
                         </div>
                     </div>
                 </div>
@@ -443,7 +421,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@dogAccessory.ProductId">
-                                            <img style="max-height: 300px" class="primary-img" src="@dogAccessory.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@dogAccessory.productOption[0].img_url" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -503,7 +481,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@catAccessory.ProductId">
-                                            <img style="max-height: 300px" class="primary-img" src="@catAccessory.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@catAccessory.productOption[0].img_url" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -572,7 +550,7 @@
             <div class="col-lg-3 col-md-6 mb-all-40">
                 <div class="single-service">
                     <div class="service-feature-img">
-                        <img src="img/icons/care_01.png" alt="service-icon">
+                        <img src="/img/icons/care_01.png" alt="service-icon">
                     </div>
                     <div class="service-content">
                         <h4>Modern Equiwipment</h4>
@@ -585,7 +563,7 @@
             <div class="col-lg-3 col-md-6 mb-all-40">
                 <div class="single-service">
                     <div class="service-feature-img">
-                        <img src="img/icons/care_02.png" alt="service-icon">
+                        <img src="/img/icons/care_02.png" alt="service-icon">
                     </div>
                     <div class="service-content">
                         <h4>Professional Checkup</h4>
@@ -598,7 +576,7 @@
             <div class="col-lg-3 col-md-6 mb-all-40">
                 <div class="single-service">
                     <div class="service-feature-img">
-                        <img src="img/icons/care_03.png" alt="service-icon">
+                        <img src="/img/icons/care_03.png" alt="service-icon">
                     </div>
                     <div class="service-content">
                         <h4>Expart Vaccination</h4>
@@ -611,7 +589,7 @@
             <div class="col-lg-3 col-md-6 mb-all-40">
                 <div class="single-service">
                     <div class="service-feature-img">
-                        <img src="img/icons/care_04.png" alt="service-icon">
+                        <img src="/img/icons/care_04.png" alt="service-icon">
                     </div>
                     <div class="service-content">
                         <h4>Book Service 24/7</h4>
@@ -625,7 +603,7 @@
 </div>
 <!-- Service Area End  Here -->
 <!-- Why Us Contact Area Start Here -->
-<div class="best_feature_area care_feature_area apointment-contact-section adp_top adp_bottom" style="background:url(img/bg/app_bg.jpg)">
+<div class="best_feature_area care_feature_area apointment-contact-section adp_top adp_bottom" style="background:url(/img/bg/app_bg.jpg)">
     <div class="container">
         <div class="row">
             <div class="col-xl-7 col-lg-7 col-md-12">
@@ -776,7 +754,7 @@
                 <div class="single-animart-blog">
                     <div class="blog-img">
                         <a href="blog-details.html">
-                            <img src="img/blog/blog_1.jpg" alt="blog-img">
+                            <img src="/img/blog/blog_1.jpg" alt="blog-img">
                         </a>
                         <div class="publish-meta-date">
                             <span>20 December, 2022</span>
@@ -808,7 +786,7 @@
                 <div class="single-animart-blog">
                     <div class="blog-img">
                         <a href="blog-details.html">
-                            <img src="img/blog/blog_2.jpg" alt="blog-img">
+                            <img src="/img/blog/blog_2.jpg" alt="blog-img">
                         </a>
                         <div class="publish-meta-date">
                             <span>20 December, 2022</span>
@@ -840,7 +818,7 @@
                 <div class="single-animart-blog">
                     <div class="blog-img">
                         <a href="blog-details.html">
-                            <img src="img/blog/blog_3.jpg" alt="blog-img">
+                            <img src="/img/blog/blog_3.jpg" alt="blog-img">
                         </a>
                         <div class="publish-meta-date">
                             <span>20 December, 2022</span>

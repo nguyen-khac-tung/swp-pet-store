@@ -32,9 +32,20 @@ namespace PetStoreProject.Controllers
                 ViewData["listPID"] = null;
             }
             ViewData["key"] = key;
-            List<SearchViewModel> listSearch = _product.GetListProductsByKeyWords(key);
-            ViewData["listSearch"] = listSearch;
+            SearchResultViewModel listSearch = _product.GetListProductsByKeyWords(key, 1);
             return View(listSearch);
+        }
+
+        [HttpPost]
+        public IActionResult LoadMoreSearch(string key, int page)
+        {
+            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            SearchResultViewModel listSearch = _product.GetListProductsByKeyWords(key, page);
+            return new JsonResult(new
+            {
+                wishlist = listPID,
+                listResult = listSearch.Results
+            });
         }
         public int getCustomerId()
         {

@@ -10,13 +10,13 @@
     ViewData["Title"] = "Tìm kiếm";
 }
 <h3 style="margin: 20px auto; text-align: center;">
-    Tìm thấy @Model.Count kết quả với từ khóa <b>"@ViewData["key"]"</b>
+    Tìm thấy @Model.TotalResults kết quả với từ khóa <b>"@ViewData["key"]"</b>
 </h3>
-@if (Model.Count > 0)
+@if (Model.Results.Count > 0)
 {
     <div class="container">
-        <div class="row">
-            @foreach (var p in Model)
+        <div class="row" id="productContainer">
+            @foreach (var p in Model.Results)
             {
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
                     <div class="single-template-product d-flex flex-column h-100">
@@ -58,6 +58,10 @@
                 </div>
             }
         </div>
+        @if (@Model.TotalResults > 20)
+        {
+            <button id="load-more" class="btn btn-primary">Xem thêm</button>
+        }
     </div>
 } 
 else
@@ -131,4 +135,98 @@ else
             }
         });
     }
+
+    var page = 1;
+    $(document).ready(function () {
+        $('#load-more').click(function () {
+            page++;
+            loadRecords('thức ăn', page);
+        });
+    });
+
+    function loadRecords(key, page) {
+        console.log(page);
+        $.ajax({
+            url: '@Url.Action("LoadMoreSearch", "Product")',
+            type: 'POST',
+            data: {
+                page: page,
+                key: key
+            },
+            success: function (response) {
+                if (!response) {
+                    console.error("Response bị null hoặc undefined");
+                    return;
+                }
+
+                if (!response.listResult.length) {
+                    console.error("Thuộc tính listResult của response bị null hoặc undefined");
+                    return;
+                }
+
+                if (!response.wishlist) {
+                    console.error("Thuộc tính wishlist của response bị null hoặc undefined");
+                    return;
+                }
+
+                var productContainer = document.getElementById("productContainer");
+                var html = "";
+                var items = response.listResult;
+                console.log(items.length);
+                for (var index = 0; index < items.length; index++) {
+                    var isFavorite = false;
+                    for (var i = 0; i < response.wishlist.length; i++) {
+                        if (response.wishlist[i] == items[index].productId) {
+                            isFavorite = true;
+                        }
+                    }
+
+                    // Thêm từng dòng HTML vào biến html
+                    html += '<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">';
+                    html += '    <div class="single-template-product d-flex flex-column h-100">';
+                    html += '        <!-- Product Image Start -->';
+                    html += '        <div class="pro-img">';
+                    html += '            <span class="sticker-sale">-25%</span>';
+                    html += '            <span class="sticker-new">New</span>';
+                    html += '            <a href="detail/' + items[index].productId + '">';
+                    html += '                <img class="primary-img" src="' + items[index].img_url + '" alt="single-product">';
+                    html += '            </a>';
+                    html += '        </div>';
+                    html += '        <!-- Product Image End -->';
+                    html += '        <!-- Product Content Start -->';
+                    html += '        <div class="product_content_wrap flex-grow-1">';
+                    html += '            <div class="product_content">';
+                    html += '                <h4><a href="detail/' + items[index].productId + '">' + items[index].productName + '</a></h4>';
+                    html += '                <div class="grid_price">';
+                    html += '                    <span class="regular-price">' + items[index].price.toLocaleString("vi-VN") + ' VND</span>';
+                    html += '                </div>';
+                    html += '            </div>';
+                    html += '        </div>';
+                    html += '        <div class="item_add_cart">';
+                    html += '            <a class="grid_cart" href="#" title="Add to Cart">Add To Cart</a>';
+                    html += '            <a class="grid_wishlist" title="Wishlist">';
+                    if (isFavorite) {
+                        html += '                <i class="icofont-heart-alt favorite"';
+                        html += '                   data-id="' + items[index].productId + '"';
+                        html += '                   style="color: red; cursor: pointer;"';
+                        html += '                   onclick="Toggle(' + items[index].productId + ', this)"></i>';
+                    } else {
+                        html += '                <i class="icofont-heart-alt not-favorite"';
+                        html += '                   data-id="' + items[index].productId + '"';
+                        html += '                   style="color: black; cursor: pointer;"';
+                        html += '                   onclick="Toggle(' + items[index].productId + ', this)"></i>';
+                    }
+                    html += '            </a>';
+                    html += '        </div>';
+                    html += '    </div>';
+                    html += '</div>';
+                }
+                productContainer.innerHTML += html;
+            },
+            error: function () {
+                alert('Đã xảy ra lỗi khi tải dữ liệu.');
+            }
+        });
+    }
+
 </script>

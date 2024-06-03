@@ -305,8 +305,10 @@ namespace PetStoreProject.Repositories.Product
             _context.SaveChanges();
         }
 
-        public List<SearchViewModel> GetListProductsByKeyWords(string key)
+        public SearchResultViewModel GetListProductsByKeyWords(string key, int page)
         {
+            SearchResultViewModel searchResultViewModel = new SearchResultViewModel();
+
             //Search with key accented
             var listSearch = (from p in _context.Products
                               join po in _context.ProductOptions on p.ProductId equals po.ProductId into productOptions
@@ -322,6 +324,12 @@ namespace PetStoreProject.Repositories.Product
                                   img_url = i.ImageUrl
                               }).ToList();
 
+
+            var pagedResult = listSearch.Skip((page - 1) * 20)
+                           .Take(20)
+                           .ToList();
+            searchResultViewModel.TotalResults = listSearch.Count;
+            searchResultViewModel.Results = pagedResult;
 
             if (listSearch.IsNullOrEmpty())
             {
@@ -343,7 +351,14 @@ namespace PetStoreProject.Repositories.Product
                 listSearch = listP.Where(p => p.ProductName.Contains(removeAccentKey, StringComparison.OrdinalIgnoreCase))
                                   .OrderBy(p => p.ProductName.IndexOf(removeAccentKey, StringComparison.OrdinalIgnoreCase))
                                   .ToList();
-                foreach (var item in listSearch)
+                pagedResult = listSearch.Skip((page - 1) * 20)
+                           .Take(20)
+                           .ToList();
+
+                searchResultViewModel.TotalResults = listSearch.Count;
+                searchResultViewModel.Results = pagedResult;
+
+                foreach (var item in pagedResult)
                 {
                     item.ProductName = _context.Products
                                                 .Where(p => p.ProductId == item.ProductId)
@@ -351,7 +366,7 @@ namespace PetStoreProject.Repositories.Product
                                                 .SingleOrDefault() ?? "Default Product Name";
                 }
             }
-            return listSearch;
+            return searchResultViewModel;
         }
         private static string RemoveVietnameseAccents(string input)
         {

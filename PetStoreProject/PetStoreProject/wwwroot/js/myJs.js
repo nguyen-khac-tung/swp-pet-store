@@ -12,6 +12,7 @@ function addToCart(productOptionId, quantity) {
             }
             else {
                 getCartBoxItems();
+                showNotification('Thêm sản phẩm thành công', 'green');
             }
         },
         error: function (xhr, status, error) {
@@ -19,7 +20,7 @@ function addToCart(productOptionId, quantity) {
         }
     });
     $('#myModal').modal('hide');
-    showNotification('Thêm sản phẩm thành công', 'green');
+    
 }
 
 function getCartBoxItems() {

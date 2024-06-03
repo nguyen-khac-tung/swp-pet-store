@@ -209,7 +209,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@dogFood.ProductId">
-                                            <img class="primary-img" src="@dogFood.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@dogFood.ImageUrl" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -224,11 +224,11 @@
                                     <!-- Product Content Start -->
                                     <div class="product_content_wrap">
                                         <div class="product_content">
-                                            <h4><a href="/product/detail/@dogFood.ProductId">@dogFood.Name</a></h4>
+                                            <h4><a href="/product/detail/@dogFood.ProductId">@dogFood.ProductName</a></h4>
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @dogFood.productOption[0].price;
+                                                    var price = @dogFood.Price;
                                                 }
                                                 <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
                                                 @* <del class="discount_price">$75.50</del> *@
@@ -269,7 +269,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@catFood.ProductId">
-                                            <img class="primary-img" src="@catFood.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@catFood.ImageUrl" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -284,11 +284,11 @@
                                     <!-- Product Content Start -->
                                     <div class="product_content_wrap">
                                         <div class="product_content">
-                                            <h4><a href="/product/detail/@catFood.ProductId">@catFood.Name</a></h4>
+                                            <h4><a href="/product/detail/@catFood.ProductId">@catFood.ProductName</a></h4>
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @catFood.productOption[0].price;
+                                                    var price = @catFood.Price;
                                                 }
                                                 <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
                                                 @* <del class="discount_price">$75.50</del> *@
@@ -421,7 +421,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@dogAccessory.ProductId">
-                                            <img class="primary-img" src="@dogAccessory.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@dogAccessory.ImageUrl" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -436,11 +436,11 @@
                                     <!-- Product Content Start -->
                                     <div class="product_content_wrap">
                                         <div class="product_content">
-                                            <h4><a href="/product/detail/@dogAccessory.ProductId">@dogAccessory.Name</a></h4>
+                                            <h4><a href="/product/detail/@dogAccessory.ProductId">@dogAccessory.ProductName</a></h4>
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @dogAccessory.productOption[0].price;
+                                                    var price = @dogAccessory.Price;
                                                 }
                                                 <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
                                                 @* <del class="discount_price">$75.50</del> *@
@@ -481,7 +481,7 @@
                                     <div class="pro-img">
 
                                         <a href="/product/detail/@catAccessory.ProductId">
-                                            <img class="primary-img" src="@catAccessory.productOption[0].img_url" alt="single-product">
+                                            <img class="primary-img" src="@catAccessory.ImageUrl" alt="single-product">
                                         </a>
 
                                         <div class="item_quick_link">
@@ -496,11 +496,11 @@
                                     <!-- Product Content Start -->
                                     <div class="product_content_wrap">
                                         <div class="product_content">
-                                            <h4><a href="/product/detail/@catAccessory.ProductId">@catAccessory.Name</a></h4>
+                                            <h4><a href="/product/detail/@catAccessory.ProductId">@catAccessory.ProductName</a></h4>
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @catAccessory.productOption[0].price;
+                                                    var price = @catAccessory.Price;
                                                 }
                                                 <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
                                                 @* <del class="discount_price">$75.50</del> *@

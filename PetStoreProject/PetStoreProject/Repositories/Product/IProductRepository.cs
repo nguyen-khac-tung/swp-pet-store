@@ -21,6 +21,7 @@ namespace PetStoreProject.Repositories.Product
 		public int GetNumberOfDogAccessories();
 		public int GetNumberOfCatFoods();
 		public int GetNumberOfCatAccessories();
-
-	}
+        public List<HomeProductViewModel> GetProductsOfHome(int cateId, int? productCateId);
+        public HomeProductViewModel GetProductInStock(HomeProductViewModel product);
+    }
 }

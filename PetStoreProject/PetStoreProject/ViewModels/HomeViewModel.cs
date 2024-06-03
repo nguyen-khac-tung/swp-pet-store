@@ -7,9 +7,9 @@
 		public int NumberOfCatFoods { get; set; }
 		public int NumberOfCatAccessories { get; set; }
 
-		public List<ProductDetailViewModel> DogFoodsDisplayed { get; set; }
-		public List<ProductDetailViewModel> CatFoodsDisplayed { get; set; }
-		public List<ProductDetailViewModel> DogAccessoriesDisplayed { get; set; }
-		public List<ProductDetailViewModel> CatAccessoriesDisplayed { get; set; }
-	}
+        public List<HomeProductViewModel> DogFoodsDisplayed { get; set; }
+        public List<HomeProductViewModel> CatFoodsDisplayed { get; set; }
+        public List<HomeProductViewModel> DogAccessoriesDisplayed { get; set; }
+        public List<HomeProductViewModel> CatAccessoriesDisplayed { get; set; }
+    }
 }

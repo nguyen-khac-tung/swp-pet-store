@@ -436,6 +436,61 @@ namespace PetStoreProject.Repositories.Product
                          select p.ProductId).Count();
             return count;
         }
+
+        public List<HomeProductViewModel> GetProductsOfHome(int cateId, int? productCateId)
+        {
+            List<HomeProductViewModel> products = new List<HomeProductViewModel>();
+            if (productCateId == null)
+            {
+                products = (from c in _context.Categories
+                            join pc in _context.ProductCategories on c.CategoryId equals pc.CategoryId
+                            join p in _context.Products on pc.ProductCateId equals p.ProductCateId
+                            where c.CategoryId == cateId
+                            select new HomeProductViewModel
+                            {
+                                ProductId = p.ProductId,
+                                ProductName = p.Name
+                            }).ToList();
+            }
+            else
+            {
+                products = (from c in _context.Categories
+                            join pc in _context.ProductCategories on c.CategoryId equals pc.CategoryId
+                            join p in _context.Products on pc.ProductCateId equals p.ProductCateId
+                            where c.CategoryId == cateId && pc.ProductCateId == productCateId
+                            select new HomeProductViewModel
+                            {
+                                ProductId = p.ProductId,
+                                ProductName = p.Name
+                            }).ToList();
+            }
+            return products;
+        }
+
+        public HomeProductViewModel GetProductInStock(HomeProductViewModel product)
+        {
+            var productOption = (from p in _context.Products
+                                 join po in _context.ProductOptions on p.ProductId equals po.ProductId
+                                 join i in _context.Images on po.ImageId equals i.ImageId
+                                 where p.ProductId == product.ProductId
+                                 select new
+                                 {
+                                     ImageUrl = i.ImageUrl,
+                                     Price = po.Price,
+                                     IsSoldOut = po.IsSoldOut
+                                 }).ToList();
+            foreach (var item in productOption)
+            {
+                if (item.IsSoldOut == true)
+                {
+                    return null;
+                }
+            }
+
+            product.Price = productOption[0].Price;
+            product.ImageUrl = productOption[0].ImageUrl;
+            return product;
+        }
     }
     //internal record NewRecord(int ProductId, string Name, string Item);
 }

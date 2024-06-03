@@ -27,6 +27,9 @@
                             <a href="detail/@p.ProductId">
                                 <img class="primary-img" src="@p.img_url" alt="single-product">
                             </a>
+                            <div class="item_quick_link">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" onclick="quickView(@p.ProductId)" title="Xem chi tiết"><i class="icofont-search"></i></a>
+                            </div>
                         </div>
                         <!-- Product Image End -->
                         <!-- Product Content Start -->
@@ -38,8 +41,9 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="item_add_cart">
-                            <a class="grid_cart" href="#" title="Add to Cart">Add To Cart</a>
+                            <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@p.ProductId)">Thêm Vào Giỏ Hàng</a>
                             <a class="grid_wishlist" title="Wishlist">
                                 @if (ViewData["listPID"] != null)
                                 {
@@ -75,6 +79,7 @@ else
 		<img src="~/img/e7e8bc8f4f2ced9334d4a439118a5fb4.jpg" />
     </div>
 }
+@Html.Partial("_QuickView")
 <link href="~/css/search.css" rel="stylesheet" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>

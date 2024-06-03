@@ -107,24 +107,31 @@ namespace PetStoreProject.Controllers
         public ActionResult ListProduct(string CategoryId, int? productCateId, int? pageSize, int? page)
         {
             List<int> categoryIds = null;
+            string url = "";
             switch (CategoryId)
             {
                 case "DogFood":
+                    url = "Thức ăn cho chó";
                     categoryIds = [1, 3];
                     break;
                 case "CatFood":
+                    url = "Thức ăn cho mèo";
                     categoryIds = [1, 4];
                     break;
                 case "DogAccessory":
+                    url = "Phụ kiện cho chó";
                     categoryIds = [2, 5];
                     break;
                 case "CatAccessory":
+                    url = "Phụ kiện cho mèo";
                     categoryIds = [2, 6];
                     break;
                 case "foods":
+                    url = "Thức ăn cho thú cưng";
                     categoryIds = [1];
                     break;
                 case "accessories":
+                    url = "Phụ kiện cho thú cưng";
                     categoryIds = [2];
                     break;
             }
@@ -141,6 +148,7 @@ namespace PetStoreProject.Controllers
             ViewBag.currentPage = pageIndex;
             ViewBag.pageSize = _pageSize;
             ViewBag.numberPage = numberPage;
+            ViewBag.title = url;
 
             ViewBag.Sizes = _product.GetSizesByCategoryIdsAndProductCateId(categoryIds, productCateId ?? 0);
 

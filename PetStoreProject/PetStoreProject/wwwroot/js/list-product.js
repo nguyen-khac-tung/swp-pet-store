@@ -14,7 +14,15 @@ var priceGap = 1000;
 
 const priceMinInit = priceInput[0].value;
 const priceMaxInit = priceInput[1].value;
+var rangeInputMin = rangeInput[0].value;
+var rangeInputMax = rangeInput[1].value;
 
+
+window.addEventListener('load', function() {
+    // Your code here
+    rangeInput[0].value = rangeInputMin;
+    rangeInput[1].value = rangeInputMax;
+});
 rangeInput.forEach(input => {
     input.addEventListener("input", e => {
         let minVal = parseInt(rangeInput[0].value),
@@ -22,13 +30,17 @@ rangeInput.forEach(input => {
 
         if ((maxVal - minVal) < priceGap) {
             if (e.target.className === "range-min") {
-                rangeInput[0].value = maxVal - priceGap
+                rangeInput[0].value = maxVal - priceGap;
+                rangeInputMin = rangeInput[0].value;
             } else {
                 rangeInput[1].value = minVal + priceGap;
+                rangeInputMax = rangeInput[1].value;
             }
         } else {
             priceInput[0].value = minVal;
             priceInput[1].value = maxVal;
+            rangeInputMin = rangeInput[0].value;
+            rangeInputMax = rangeInput[1].value;
             range.style.left = ((minVal / rangeInput[0].max) * 100) + "%";
             range.style.right = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
         }

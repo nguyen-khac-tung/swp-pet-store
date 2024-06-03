@@ -180,5 +180,25 @@
 	</script>
 } else
 {
-	<h1 style="margin: 0; display: flex; align-items: center; justify-content: center; width: 100%;">Không có sản phẩm nào</h1>
+    <div class="container-wishlist">
+        <h1>Bạn hiện chưa có sản phẩm yêu thích nào</h1>
+        <img src="~/img/cart-empty-img.8b677cb3.png" alt="Empty Cart Image">
+    </div>
+
+    <style>
+        .container-wishlist {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container-wishlist h1 {
+            margin: 20px;
+        }
+
+        .container-wishlist img {
+            margin: 30px; 
+        }
+    </style>
 }

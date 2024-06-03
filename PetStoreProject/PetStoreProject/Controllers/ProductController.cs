@@ -21,6 +21,16 @@ namespace PetStoreProject.Controllers
         }
         public IActionResult Search(string key)
         {
+            if (key.IsNullOrEmpty())
+            {
+                SearchResultViewModel list = new SearchResultViewModel
+                {
+                    TotalResults = 0,
+                    Results = new List<SearchViewModel>() 
+                };
+                return View(list);
+            }
+
             int cusomerID = getCustomerId();
             if (cusomerID != -1)
             {

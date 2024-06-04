@@ -467,9 +467,9 @@ namespace PetStoreProject.Repositories.Product
             return products;
         }
 
-        public HomeProductViewModel GetProductInStock(HomeProductViewModel product)
+        public HomeProductViewModel GetImageAndPriceOfHomeProduct(HomeProductViewModel product)
         {
-            var productOption = (from p in _context.Products
+            var productOptions = (from p in _context.Products
                                  join po in _context.ProductOptions on p.ProductId equals po.ProductId
                                  join i in _context.Images on po.ImageId equals i.ImageId
                                  where p.ProductId == product.ProductId
@@ -479,16 +479,16 @@ namespace PetStoreProject.Repositories.Product
                                      Price = po.Price,
                                      IsSoldOut = po.IsSoldOut
                                  }).ToList();
-            foreach (var item in productOption)
+            foreach (var productOption in productOptions)
             {
-                if (item.IsSoldOut == true)
+                if (productOption.IsSoldOut == true)
                 {
                     return null;
                 }
             }
 
-            product.Price = productOption[0].Price;
-            product.ImageUrl = productOption[0].ImageUrl;
+            product.Price = productOptions[0].Price;
+            product.ImageUrl = productOptions[0].ImageUrl;
             return product;
         }
     }

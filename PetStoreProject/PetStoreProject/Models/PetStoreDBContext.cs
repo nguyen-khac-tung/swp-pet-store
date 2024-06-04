@@ -157,7 +157,12 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Image>(entity =>
         {
+            entity.Property(e => e.ImageId).ValueGeneratedNever();
             entity.Property(e => e.ImageUrl).IsFixedLength();
+
+            entity.HasOne(d => d.News).WithMany(p => p.Images).HasConstraintName("FK_Image_News");
+
+            entity.HasOne(d => d.Service).WithMany(p => p.Images).HasConstraintName("FK_Image_Service");
         });
 
         modelBuilder.Entity<News>(entity =>
@@ -165,15 +170,13 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Employee).WithMany(p => p.News)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_News_Employee");
-
-            entity.HasOne(d => d.Image).WithMany(p => p.News).HasConstraintName("FK_News_Image");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Orders_Customer");
+            entity.Property(e => e.Email).IsFixedLength();
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Customer1");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -286,8 +289,6 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Service>(entity =>
         {
             entity.Property(e => e.ServiceId).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Image).WithMany(p => p.Services).HasConstraintName("FK_Service_Image");
         });
 
         modelBuilder.Entity<ServiceOption>(entity =>
@@ -298,7 +299,7 @@ public partial class PetStoreDBContext : DbContext
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ServiceOption_Service1");
+                .HasConstraintName("FK_ServiceOption_Service");
         });
 
         modelBuilder.Entity<Size>(entity =>

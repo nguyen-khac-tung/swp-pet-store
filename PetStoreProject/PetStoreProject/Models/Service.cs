@@ -19,11 +19,8 @@ public partial class Service
 
     public string? Description { get; set; }
 
-    public int? ImageId { get; set; }
-
-    [ForeignKey("ImageId")]
-    [InverseProperty("Services")]
-    public virtual Image? Image { get; set; }
+    [InverseProperty("Service")]
+    public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
     [InverseProperty("Service")]
     public virtual ICollection<ServiceOption> ServiceOptions { get; set; } = new List<ServiceOption>();

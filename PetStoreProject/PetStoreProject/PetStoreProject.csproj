@@ -12,6 +12,47 @@
 
   <ItemGroup>
     <None Include="Views\WishList\Detail.cshtml" />
+    <None Include="wwwroot\areas\icon\fonts\icomoon93d9.svg" />
+    <None Include="wwwroot\areas\js\apexcharts\apexcharts.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-1.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-10.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-11.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-12.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-13.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-14.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-15.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-16.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-17.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-18.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-19.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-2.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-20.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-21.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-22.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-3.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-4.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-5.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-6.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-7.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-8.js" />
+    <None Include="wwwroot\areas\js\apexcharts\line-chart-9.js" />
+    <None Include="wwwroot\areas\js\bootstrap-select.min.js" />
+    <None Include="wwwroot\areas\js\bootstrap.min.js" />
+    <None Include="wwwroot\areas\js\carousel.js" />
+    <None Include="wwwroot\areas\js\jquery.min.js" />
+    <None Include="wwwroot\areas\js\jvectormap-1.2.2.min.js" />
+    <None Include="wwwroot\areas\js\jvectormap-us-lcc.js" />
+    <None Include="wwwroot\areas\js\jvectormap.js" />
+    <None Include="wwwroot\areas\js\main.js" />
+    <None Include="wwwroot\areas\js\morris.js" />
+    <None Include="wwwroot\areas\js\morris.min.js" />
+    <None Include="wwwroot\areas\js\raphael.min.js" />
+    <None Include="wwwroot\areas\js\swiper-bundle.min.js" />
+    <None Include="wwwroot\areas\js\switcher.js" />
+    <None Include="wwwroot\areas\js\theme-settings.js" />
+    <None Include="wwwroot\areas\js\tinymce\tinymce-custom.js" />
+    <None Include="wwwroot\areas\js\tinymce\tinymce.min.js" />
+    <None Include="wwwroot\areas\js\zoom.js" />
     <None Include="wwwroot\js\myjs.js" />
   </ItemGroup>
 
@@ -30,6 +71,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\ViewModels\" />
+    <Folder Include="Areas\Employee\ViewModels\" />
   </ItemGroup>
 
 </Project>

@@ -74,4 +74,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}"
     );
 
+app.MapControllerRoute(
+    name: "area",
+    pattern: "{area:exists}/{controller}/{action}"
+    );
+
 app.Run();

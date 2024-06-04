@@ -1,9 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@using PetStoreProject.ViewModels
+﻿@using PetStoreProject.ViewModels
 @using System.Globalization
 
 @{
@@ -19,11 +14,9 @@
             @foreach (var p in Model.Results)
             {
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
-                    <div class="single-template-product d-flex flex-column h-100">
+                    <div class="single-template-product">
                         <!-- Product Image Start -->
                         <div class="pro-img">
-                            <span class="sticker-sale">-25%</span>
-                            <span class="sticker-new">New</span>
                             <a href="detail/@p.ProductId">
                                 <img class="primary-img" src="@p.img_url" alt="single-product">
                             </a>
@@ -33,7 +26,7 @@
                         </div>
                         <!-- Product Image End -->
                         <!-- Product Content Start -->
-                        <div class="product_content_wrap flex-grow-1">
+                        <div class="product_content_wrap">
                             <div class="product_content">
                                 <h4><a href="detail/@p.ProductId">@p.ProductName</a></h4>
                                 <div class="grid_price">
@@ -41,7 +34,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="item_add_cart">
                             <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@p.ProductId)">Thêm Vào Giỏ Hàng</a>
                             <a class="grid_wishlist" title="Wishlist">
@@ -64,10 +57,12 @@
         </div>
         @if (@Model.TotalResults > 20)
         {
-            <button id="load-more" class="btn btn-primary">Xem thêm</button>
+            <div class="row justify-content-center">
+                <button id="load-more" class="btn btn-primary col-md-3 mb-5 py-2">Xem thêm</button>
+            </div>
         }
     </div>
-} 
+}
 else
 {
     <div class="container-search">
@@ -76,7 +71,11 @@ else
             <p>Rất tiếc, chúng tôi không thể tìm thấy sản phẩm bạn yêu cầu.</p>
             <a asp-action="Index" asp-controller="Home" class="btn">Quay lại trang chủ</a>
         </div>
+<<<<<<< Updated upstream
 		<img src="~/img/e7e8bc8f4f2ced9334d4a439118a5fb4.jpg" style="margin: 50px"/>
+=======
+        <img src="~/img/e7e8bc8f4f2ced9334d4a439118a5fb4.jpg" />
+>>>>>>> Stashed changes
     </div>
 }
 @Html.Partial("_QuickView")
@@ -84,7 +83,7 @@ else
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     function Toggle(productId, element) {
-        var $this = $(element); 
+        var $this = $(element);
         var isFavorite = $this.hasClass('favorite');
 
 
@@ -188,18 +187,19 @@ else
 
                     // Thêm từng dòng HTML vào biến html
                     html += '<div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-4">';
-                    html += '    <div class="single-template-product d-flex flex-column h-100">';
+                    html += '    <div class="single-template-product">';
                     html += '        <!-- Product Image Start -->';
                     html += '        <div class="pro-img">';
-                    html += '            <span class="sticker-sale">-25%</span>';
-                    html += '            <span class="sticker-new">New</span>';
                     html += '            <a href="detail/' + items[index].productId + '">';
                     html += '                <img class="primary-img" src="' + items[index].img_url + '" alt="single-product">';
                     html += '            </a>';
+                    html += '            <div class="item_quick_link">';
+                    html += '            <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" onclick="quickView(' + items[index].productId + ')" title="Xem chi tiết"><i class="icofont-search"></i></a>';
+                    html += '            </div>';
                     html += '        </div>';
                     html += '        <!-- Product Image End -->';
                     html += '        <!-- Product Content Start -->';
-                    html += '        <div class="product_content_wrap flex-grow-1">';
+                    html += '        <div class="product_content_wrap">';
                     html += '            <div class="product_content">';
                     html += '                <h4><a href="detail/' + items[index].productId + '">' + items[index].productName + '</a></h4>';
                     html += '                <div class="grid_price">';
@@ -208,7 +208,7 @@ else
                     html += '            </div>';
                     html += '        </div>';
                     html += '        <div class="item_add_cart">';
-                    html += '            <a class="grid_cart" href="#" title="Add to Cart">Add To Cart</a>';
+                    html += '            <a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(' + items[index].productId + ')">Thêm Vào Giỏ Hàng</a>';
                     html += '            <a class="grid_wishlist" title="Wishlist">';
                     if (isFavorite) {
                         html += '                <i class="icofont-heart-alt favorite"';

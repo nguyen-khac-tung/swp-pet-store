@@ -17,12 +17,18 @@ public partial class Image
     [StringLength(250)]
     public string ImageUrl { get; set; } = null!;
 
-    [InverseProperty("Image")]
-    public virtual ICollection<News> News { get; set; } = new List<News>();
+    public int? ServiceId { get; set; }
+
+    public int? NewsId { get; set; }
+
+    [ForeignKey("NewsId")]
+    [InverseProperty("Images")]
+    public virtual News? News { get; set; }
 
     [InverseProperty("Image")]
     public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
 
-    [InverseProperty("Image")]
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+    [ForeignKey("ServiceId")]
+    [InverseProperty("Images")]
+    public virtual Service? Service { get; set; }
 }

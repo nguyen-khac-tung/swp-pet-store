@@ -13,7 +13,16 @@ public partial class Order
     [Key]
     public int OrderId { get; set; }
 
-    public int CustomerId { get; set; }
+    public int? CustomerId { get; set; }
+
+    [StringLength(250)]
+    public string FullName { get; set; } = null!;
+
+    [StringLength(50)]
+    public string Phone { get; set; } = null!;
+
+    [StringLength(150)]
+    public string? Email { get; set; }
 
     public float TotalAmount { get; set; }
 
@@ -28,7 +37,7 @@ public partial class Order
 
     [ForeignKey("CustomerId")]
     [InverseProperty("Orders")]
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual Customer? Customer { get; set; }
 
     [InverseProperty("Order")]
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

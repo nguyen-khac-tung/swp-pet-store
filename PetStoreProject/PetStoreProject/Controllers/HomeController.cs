@@ -38,7 +38,7 @@ namespace PetStoreProject.Controllers
             List<HomeProductViewModel> itemsDisplayed = new List<HomeProductViewModel>();
             foreach (var item in Items)
             {
-                var product = _product.GetProductInStock(item);
+                var product = _product.GetImageAndPriceOfHomeProduct(item);
                 if (product != null)
                 {
                     itemsDisplayed.Add(product);
@@ -65,7 +65,6 @@ namespace PetStoreProject.Controllers
             var catFoods = _product.GetProductsOfHome(4, 20);
             var dogAccessories = _product.GetProductsOfHome(2, null);
             var catAccessories = _product.GetProductsOfHome(6, null);
-            var DogFoodsDisplayed = GetListItemToDisplayed(dogFoods);
             var homeVM = new HomeViewModel
             {
                 NumberOfDogFoods = _product.GetNumberOfDogFoods(),

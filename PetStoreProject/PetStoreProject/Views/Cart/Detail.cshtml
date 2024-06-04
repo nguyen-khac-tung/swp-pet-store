@@ -55,7 +55,7 @@
                                             <td class="product-quantity"><input value="@item.Quantity" readonly /></td>
                                             <td class="product-subtotal">@totalPrice.ToString("#,###")đ</td>
                                             <td>
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Chỉnh sửa" onclick="quickEditCartItem(@item.ProductOptionId, @item.ProductId)" style="color: #666666; font-size:18px">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Chỉnh sửa" onclick="callQuickEdit(@item.ProductOptionId, @item.ProductId)" style="color: #666666; font-size:18px">
                                                     <i class="icofont-edit"></i>
                                                 </a>
                                             </td>
@@ -242,5 +242,10 @@
         if (confirmation) {
             deleteCartItem(productOptionId)
         }
+    }
+
+    function callQuickEdit(productOptionId, productId){
+        quickEditCartItem(productOptionId, productId);
+        $('#quick_add_to_cart').html('Lưu thay đổi');
     }
 </script>

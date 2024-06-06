@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Models;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
@@ -18,10 +19,13 @@ namespace PetStoreProject.Repositories.Product
         public SearchResultViewModel GetListProductsByKeyWords(string key, int page);
 
         public int GetNumberOfDogFoods();
-		public int GetNumberOfDogAccessories();
-		public int GetNumberOfCatFoods();
-		public int GetNumberOfCatAccessories();
+        public int GetNumberOfDogAccessories();
+        public int GetNumberOfCatFoods();
+        public int GetNumberOfCatAccessories();
         public List<HomeProductViewModel> GetProductsOfHome(int cateId, int? productCateId);
         public HomeProductViewModel GetImageAndPriceOfHomeProduct(HomeProductViewModel product);
+
+        public List<ProductViewForAdmin> productViewForAdmins(int pageNumber, int pageSize);
+        public Task<int> GetTotalProducts();
     }
 }

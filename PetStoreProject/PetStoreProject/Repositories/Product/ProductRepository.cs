@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using Attribute = PetStoreProject.Models.Attribute;
@@ -470,15 +471,15 @@ namespace PetStoreProject.Repositories.Product
         public HomeProductViewModel GetImageAndPriceOfHomeProduct(HomeProductViewModel product)
         {
             var productOptions = (from p in _context.Products
-                                 join po in _context.ProductOptions on p.ProductId equals po.ProductId
-                                 join i in _context.Images on po.ImageId equals i.ImageId
-                                 where p.ProductId == product.ProductId
-                                 select new
-                                 {
-                                     ImageUrl = i.ImageUrl,
-                                     Price = po.Price,
-                                     IsSoldOut = po.IsSoldOut
-                                 }).ToList();
+                                  join po in _context.ProductOptions on p.ProductId equals po.ProductId
+                                  join i in _context.Images on po.ImageId equals i.ImageId
+                                  where p.ProductId == product.ProductId
+                                  select new
+                                  {
+                                      ImageUrl = i.ImageUrl,
+                                      Price = po.Price,
+                                      IsSoldOut = po.IsSoldOut
+                                  }).ToList();
             foreach (var productOption in productOptions)
             {
                 if (productOption.IsSoldOut == true)
@@ -491,6 +492,47 @@ namespace PetStoreProject.Repositories.Product
             product.ImageUrl = productOptions[0].ImageUrl;
             return product;
         }
+
+        public List<ProductViewForAdmin> productViewForAdmins(int pageNumber, int pageSize)
+        {
+            List<ProductViewForAdmin> products = (from p in _context.Products
+                                                  select new ProductViewForAdmin
+                                                  {
+                                                      id = p.ProductId,
+                                                      name = p.Name,
+                                                  }).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            foreach (var product in products)
+            {
+                var productOptions = (from po in _context.ProductOptions
+                                      join i in _context.Images on po.ImageId equals i.ImageId
+                                      where po.ProductId == product.id
+                                      select new ProductOptionViewModel
+                                      {
+                                          img_url = i.ImageUrl,
+                                          price = po.Price,
+                                          IsSoldOut = po.IsSoldOut
+                                      }).ToList();
+                product.isSoldOut = !(productOptions.Any(po => po.IsSoldOut == false));
+                product.imgUrl = productOptions[0].img_url;
+                product.price = productOptions[0].price;
+
+                var soldQuantity = (from po in _context.ProductOptions
+                                    join or in _context.OrderItems on po.ProductOptionId equals or.ProductOptionId
+                                    where po.ProductId == product.id
+                                    select or.Quantity).Sum();
+                product.soldQuantity = soldQuantity;
+            }
+            return products;
+        }
+
+        public async Task<int> GetTotalProducts()
+        {
+            var count = await _context.Products
+                                .GroupBy(p => p.Name)
+                                .Select(g => g.Count())
+                                .SumAsync();
+            return count;
+        }
+
     }
-    //internal record NewRecord(int ProductId, string Name, string Item);
 }

@@ -1,0 +1,211 @@
+﻿@{
+    ViewData["Title"] = "ListCustomer";
+}
+@using PetStoreProject.ViewModels;
+
+@model List<AccountDetailViewModel>
+
+<div class="main-content-inner">
+    <!-- main-content-wrap -->
+    <div class="main-content-wrap">
+        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+            <h3>Tất cả người dùng</h3>
+            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                <li>
+                    <a href="index.html"><div class="text-tiny">Bảng điều khiển</div></a>
+                </li>
+                <li>
+                    <i class="icon-chevron-right"></i>
+                </li>
+                <li>
+                    <a href="#"><div class="text-tiny">Người dùng</div></a>
+                </li>
+                <li>
+                    <i class="icon-chevron-right"></i>
+                </li>
+                <li>
+                    <div class="text-tiny">Tất cả người dùng</div>
+                </li>
+            </ul>
+        </div>
+        <!-- all-user -->
+        <div class="wg-box">
+            <div class="flex items-center justify-between gap10 flex-wrap">
+                <div class="wg-filter flex-grow">
+                    <form class="form-search" onsubmit="return false;">
+                        <fieldset class="name">
+                            <input id="search-input" type="text" placeholder="Tìm kiếm theo tên người dùng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                        </fieldset>
+                        <div class="button-submit">
+                            <button onclick="searchFunction()"><i class="icon-search"></i></button>
+                        </div>
+                    </form>
+                    <div class="wg-filter">
+                        <label style="font-size: 16px">Vai trò:</label>
+                        <select id="selected_role" onchange="SelectedRole()">
+                            <option selected value="">-- Tất cả --</option>
+                            <option value="1">Quản trị viên</option>
+                            <option value="2">Nhân viên</option>
+                            <option value="3">Khách hàng</option>
+                        </select>
+                    </div>
+                </div>
+
+                <a class="tf-button style-1 w208" href="add-new-user.html"><i class="icon-plus"></i>Add new</a>
+            </div>
+            <div class="wg-table table-all-user">
+                <ul class="table-title flex gap20 mb-14">
+                    <li>
+                        <div class="body-title">Người dùng</div>
+                    </li>
+                    <li>
+                        <div class="body-title">Số điện thoại</div>
+                    </li>
+                    <li>
+                        <div class="body-title">Vai trò</div>
+                    </li>
+                    <li>
+                        <div class="body-title">Email</div>
+                    </li>
+                    <li>
+                        <div class="body-title">Hành động</div>
+                    </li>
+                </ul>
+                <ul id="list-users" class="flex flex-column">
+                </ul>
+            </div>
+            <div class="divider"></div>
+            <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
+                <div class="text-tiny"></div>
+                <div id="pagination"></div>
+            </div>
+        </div>
+        <!-- /all-user -->
+    </div>
+    <!-- /main-content-wrap -->
+</div>
+
+<script src="~/js/list-product.js"></script>
+<script>
+    var url = window.location.pathname;
+    var selectedRole = "";
+    var searchName = "";
+    window.addEventListener('load', function () {
+        Load(1, 15, "", "");
+    });
+
+    function Load(pageIndex, pageSize, selectedRole, searchName) {
+
+        $.ajax({
+            url: url,
+            type: 'Post',
+            data: {
+                pageIndex: pageIndex, pageSize: pageSize, selectedRole: selectedRole, searchName: searchName
+            },
+            success: function (response) {
+                var accounts = response.accounts;
+
+                if (response.accounts != null) {
+                    $("#list-users").empty();
+                    var html = "";
+                    for (var i = 0; i < accounts.length; i++) {
+                        html += '<li class="user-item gap20" >';
+                        html += '<div class="image" >';
+                        // html += '<img src="images/avatar/user-6.png" alt="">';
+                        html += '<img src="/areas/images/logo_user/user-avatar.svg.png" />';
+                        html += '</div>';
+                        html += '<div class="flex items-center justify-between gap20 flex-grow" >';
+                        html += '<div class="name" >';
+                        html += '<a href="#" class="body-title-2" >' + accounts[i].fullName + '</a>';
+                        // html += '<div class="text-tiny mt-3">Product name</div>';
+                        html += '</div>';
+                        if (accounts[i].phone != null) {
+                            html += '<div class="body-text" >' + accounts[i].phone + '</div>';
+                        }
+                        else {
+                            html += '<div class="body-text" style="font-weight:600;  font-style: italic; " >Trống</div>';
+                        }
+                        html += '<div class="body-text" >';
+                        if (accounts[i].roles != null || !(accounts[i].roles.empty())) {
+                            for (var j = 0; j < accounts[i].roles.length; j++) {
+                                switch (accounts[i].roles[j].roleId) {
+                                    case 1:
+                                        html += '<span>Quản trị viên</span>';
+                                        break; 
+                                    case 2:
+                                        html += '<span>Nhân viên</span>';
+                                        break;
+                                    case 3:
+                                        html += '<span>Khách hàng</span>';
+                                        break;
+                                    default:
+                                        html += '<span>Trống</span>';
+                                        break;
+                                }
+                            }
+                        } else {
+                            console.log("ahihi: " + accounts[i].roles);
+                            html += '<span>Trống</span>';
+                        }
+                        html += '</div>'
+                        html += '<div class="body-text" >' + accounts[i].email + '</div>';
+                        html += '<div class="list-icon-function" >';
+                        html += '<div class="item eye">';
+                        html += '<i class="icon-eye" ></i>';
+                        html += '</div>';
+                        html += '<div class="item edit">';
+                        html += '<i class="icon-edit-3"></i>';
+                        html += '</div>';
+                        html += '<div class="item trash">';
+                        html += '<i class="icon-trash-2"></i>';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</li>';
+                    }
+                    $("#list-users").html(html);
+                    Pagination(response.currentPage, response.numberPage, response.pageSize);
+                    console.log("data: ", response);
+                } else {
+
+                    console.error("Unexpected response structure:", response);
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", xhr.responseText);
+            }
+        });
+    }
+
+    function NextPage(pageIndex, pageSize) {
+        console.log('PageIndex: ' + pageIndex);
+        console.log('PageSize: ' + pageSize);
+        console.log('SearchName: ' + searchName);
+        Load(pageIndex, pageSize, selectedRole, searchName);
+    }
+
+    function SelectedRole() {
+        selectedRole = $("#selected_role").val();
+
+        Load(1, 15, selectedRole, searchName);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var searchInput = document.querySelector('input[name="name"]');
+
+        searchInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của form
+                searchFunction();
+            }
+        });
+    });
+
+    function searchFunction() {
+        var searchName = document.getElementById("search-input").value;
+        console.log("Search query:", searchName);
+        Load(1, 15, selectedRole, searchName);
+    }
+
+</script>

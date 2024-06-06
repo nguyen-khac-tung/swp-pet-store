@@ -965,10 +965,11 @@ a:hover, a:focus {
 }
 
 .body-title {
-  color: var(--Heading);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 20px;
+    padding: 0px 15px;
+    color: var(--Heading);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
 }
 
 .body-title-2 {
@@ -4872,7 +4873,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-user .user-item > .flex > div:first-child {
-  width: 382px;
+  width: 277px;
   flex-shrink: 0;
 }
 .wg-table.table-all-user .user-item > .flex > div:last-child {

@@ -293,7 +293,7 @@ namespace PetStoreProject.Controllers
 
             if (ModelState.IsValid)
             {
-                _account.changePawword(changePasswordVM);
+                _account.changePassword(changePasswordVM);
                 return View(changePasswordVM);
             }
             else

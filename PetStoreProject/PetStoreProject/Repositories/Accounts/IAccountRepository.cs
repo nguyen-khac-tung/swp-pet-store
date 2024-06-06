@@ -16,5 +16,9 @@ namespace PetStoreProject.Repositories.Accounts
         public string? getOldPassword(string email);
 
         public void changePawword(ChangePasswordViewModel changePasswordVM);
+        
+        public List<string> GetUserRoles(string email);
+
+        public string GetUserName(string email, string userRole);
     }
 }

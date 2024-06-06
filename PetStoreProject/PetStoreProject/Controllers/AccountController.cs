@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Filters;
 using PetStoreProject.Helper;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
@@ -38,10 +39,26 @@ namespace PetStoreProject.Controllers
             Account acc = _account.getAccount(account.Email, account.Password);
             if (acc != null)
             {
-                var name = _customer.getCustomer(account.Email)?.FullName;
-                HttpContext.Session.SetString("Account", acc.Email);
-                HttpContext.Session.SetString("CustomerName", name ?? "");
-                return RedirectToAction("Index", "Home");
+                HttpContext.Session.SetString("userEmail", acc.Email);
+                var role = _account.GetUserRoles(acc.Email);
+                if (role.Contains("Admin"))
+                {
+                    var userName = _account.GetUserName(acc.Email, "Admin");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                }
+                else if (role.Contains("Employee"))
+                {
+                    var userName = _account.GetUserName(acc.Email, "Employee");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("Index", "Home", new { area = "Employee" });
+                }
+                else
+                {
+                    var userName = _account.GetUserName(acc.Email, "Customer");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
@@ -84,8 +101,8 @@ namespace PetStoreProject.Controllers
                 else
                 {
                     _account.addNewCustomer(registerInfor);
-                    HttpContext.Session.SetString("Account", registerInfor.Email);
-                    HttpContext.Session.SetString("CustomerName", registerInfor.FullName);
+                    HttpContext.Session.SetString("userEmail", registerInfor.Email);
+                    HttpContext.Session.SetString("userName", registerInfor.FullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
                 }
             }
@@ -142,10 +159,26 @@ namespace PetStoreProject.Controllers
             if (ModelState.IsValid)
             {
                 _account.resetPassword(resetPasswordVM);
-                var name = _customer.getCustomer(resetPasswordVM.Email)?.FullName;
-                HttpContext.Session.SetString("Account", resetPasswordVM.Email);
-                HttpContext.Session.SetString("CustomerName", name ?? "");
-                return RedirectToAction("Index", "Home");
+                HttpContext.Session.SetString("userEmail", resetPasswordVM.Email);
+                var role = _account.GetUserRoles(resetPasswordVM.Email);
+                if (role.Contains("Admin"))
+                {
+                    var userName = _account.GetUserName(resetPasswordVM.Email, "Admin");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                }
+                else if (role.Contains("Employee"))
+                {
+                    var userName = _account.GetUserName(resetPasswordVM.Email, "Employee");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("Index", "Home", new { area = "Employee" });
+                }
+                else
+                {
+                    var userName = _account.GetUserName(resetPasswordVM.Email, "Customer");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
@@ -184,17 +217,33 @@ namespace PetStoreProject.Controllers
                 bool isEmailExist = _account.checkEmailExist(email);
                 if (isEmailExist)
                 {
-                    var name = _customer.getCustomer(email)?.FullName;
-                    HttpContext.Session.SetString("Account", email);
-                    HttpContext.Session.SetString("CustomerName", name ?? "");
-                    return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetString("userEmail", email);
+                    var role = _account.GetUserRoles(email);
+                    if (role.Contains("Admin"))
+                    {
+                        var userName = _account.GetUserName(email, "Admin");
+                        HttpContext.Session.SetString("userName", userName);
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    }
+                    else if (role.Contains("Employee"))
+                    {
+                        var userName = _account.GetUserName(email, "Employee");
+                        HttpContext.Session.SetString("userName", userName);
+                        return RedirectToAction("Index", "Home", new { area = "Employee" });
+                    }
+                    else
+                    {
+                        var userName = _account.GetUserName(email, "Customer");
+                        HttpContext.Session.SetString("userName", userName);
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {
                     var resgister = new RegisterViewModel { FullName = fullName, Email = email };
                     _account.addNewCustomer(resgister);
-                    HttpContext.Session.SetString("Account", email);
-                    HttpContext.Session.SetString("CustomerName", fullName);
+                    HttpContext.Session.SetString("userEmail", email);
+                    HttpContext.Session.SetString("userName", fullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
                 }
             }
@@ -203,15 +252,25 @@ namespace PetStoreProject.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        public IActionResult AccessDenied(string[] allowedRoles)
+        {
+            List<string> roles = allowedRoles.ToList();
+            return View(roles);
+        }
+
+
+        [RoleAuthorize("Customer")]
         public IActionResult Profile()
         {
             return View();
         }
 
+
+        [RoleAuthorize("Customer")]
         [HttpGet]
         public IActionResult ProfileDetail()
         {
-            var email = HttpContext.Session.GetString("Account");
+            var email = HttpContext.Session.GetString("userEmail");
             var customer = _customer.getCustomer(email);
             var customerVM = new CustomerViewModel
             {
@@ -227,12 +286,14 @@ namespace PetStoreProject.Controllers
             return View(customerVM);
         }
 
+
+        [RoleAuthorize("Customer")]
         [HttpPost]
         public IActionResult ProfileDetail(CustomerViewModel customer)
         {
             if (ModelState.IsValid)
             {
-                var oldEmail = HttpContext.Session.GetString("Account");
+                var oldEmail = HttpContext.Session.GetString("userEmail");
                 if (oldEmail != customer.Email)
                 {
                     bool isEmailExist = _account.checkEmailExist(customer.Email);
@@ -249,8 +310,8 @@ namespace PetStoreProject.Controllers
                     return View(customer);
                 }
 
-                HttpContext.Session.SetString("Account", customer.Email);
-                HttpContext.Session.SetString("CustomerName", customer.FullName);
+                HttpContext.Session.SetString("userEmail", customer.Email);
+                HttpContext.Session.SetString("userName", customer.FullName);
                 _customer.UpdateProfile(customer);
                 return View(customer);
             }
@@ -260,10 +321,12 @@ namespace PetStoreProject.Controllers
             }
         }
 
+
+        [RoleAuthorize("Customer")]
         [HttpGet]
         public ActionResult ChangePassword()
         {
-            var email = HttpContext.Session.GetString("Account");
+            var email = HttpContext.Session.GetString("userEmail");
             var changePasswordVM = new ChangePasswordViewModel { Email = email };
             string? oldPassword = _account.getOldPassword(email);
             if (oldPassword != null)
@@ -277,6 +340,8 @@ namespace PetStoreProject.Controllers
             return View(changePasswordVM);
         }
 
+
+        [RoleAuthorize("Customer")]
         [HttpPost]
         public ActionResult ChangePassword(ChangePasswordViewModel changePasswordVM)
         {

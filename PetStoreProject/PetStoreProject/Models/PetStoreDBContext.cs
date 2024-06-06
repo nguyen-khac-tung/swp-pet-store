@@ -15,6 +15,8 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
+    public virtual DbSet<AccountRole> AccountRoles { get; set; }
+
     public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Attribute> Attributes { get; set; }
@@ -30,8 +32,6 @@ public partial class PetStoreDBContext : DbContext
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
-
-    public virtual DbSet<Feature> Features { get; set; }
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
@@ -63,24 +63,15 @@ public partial class PetStoreDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Account>(entity =>
+        modelBuilder.Entity<AccountRole>(entity =>
         {
-            entity.HasMany(d => d.Roles).WithMany(p => p.Accounts)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AccountRole",
-                    r => r.HasOne<Role>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_AccountRole_Role"),
-                    l => l.HasOne<Account>().WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_AccountRole_Account"),
-                    j =>
-                    {
-                        j.HasKey("AccountId", "RoleId");
-                        j.ToTable("AccountRole");
-                    });
+            entity.HasOne(d => d.Account).WithMany(p => p.AccountRoles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_AccountRole_Account");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.AccountRoles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_AccountRole_Role");
         });
 
         modelBuilder.Entity<Admin>(entity =>
@@ -140,12 +131,6 @@ public partial class PetStoreDBContext : DbContext
                 .HasConstraintName("FK_Employee_Account");
         });
 
-        modelBuilder.Entity<Feature>(entity =>
-        {
-            entity.Property(e => e.FeatureId).ValueGeneratedNever();
-            entity.Property(e => e.Url).IsFixedLength();
-        });
-
         modelBuilder.Entity<Feedback>(entity =>
         {
             entity.HasKey(e => e.FeedbackId).HasName("PK_Feedback_1");
@@ -176,7 +161,7 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.Property(e => e.Email).IsFixedLength();
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Customer1");
+            entity.HasOne(d => d.Customer).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Customer");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -266,24 +251,6 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.Property(e => e.RoleId).ValueGeneratedNever();
-            entity.Property(e => e.Name).IsFixedLength();
-
-            entity.HasMany(d => d.Features).WithMany(p => p.Roles)
-                .UsingEntity<Dictionary<string, object>>(
-                    "RoleFeature",
-                    r => r.HasOne<Feature>().WithMany()
-                        .HasForeignKey("FeatureId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_RoleFeature_Feature"),
-                    l => l.HasOne<Role>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_RoleFeature_Role"),
-                    j =>
-                    {
-                        j.HasKey("RoleId", "FeatureId");
-                        j.ToTable("RoleFeature");
-                    });
         });
 
         modelBuilder.Entity<Service>(entity =>

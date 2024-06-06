@@ -26,7 +26,7 @@ builder.Services.AddSession(option =>
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
     .AddCookie()
     .AddGoogle(options =>
@@ -65,18 +65,20 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-
 app.UseSession();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}"
-    );
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "area",
     pattern: "{area:exists}/{controller}/{action}"
+    );
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}"
     );
 
 app.Run();

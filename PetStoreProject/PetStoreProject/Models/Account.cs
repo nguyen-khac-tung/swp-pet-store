@@ -21,6 +21,9 @@ public partial class Account
     public string? Password { get; set; }
 
     [InverseProperty("Account")]
+    public virtual ICollection<AccountRole> AccountRoles { get; set; } = new List<AccountRole>();
+
+    [InverseProperty("Account")]
     public virtual ICollection<Admin> Admins { get; set; } = new List<Admin>();
 
     [InverseProperty("Account")]
@@ -28,8 +31,4 @@ public partial class Account
 
     [InverseProperty("Account")]
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
-
-    [ForeignKey("AccountId")]
-    [InverseProperty("Accounts")]
-    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

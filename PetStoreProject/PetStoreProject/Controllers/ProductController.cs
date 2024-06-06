@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PetStoreProject.Filters;
 using PetStoreProject.Helper;
+using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
@@ -13,11 +15,13 @@ namespace PetStoreProject.Controllers
     {
         private readonly IProductRepository _product;
         private readonly ICustomerRepository _customer;
+        private readonly IAccountRepository _account;
 
-        public ProductController(IProductRepository product, ICustomerRepository customer)
+        public ProductController(IProductRepository product, ICustomerRepository customer, IAccountRepository account)
         {
             _product = product;
             _customer = customer;
+            _account = account;
         }
         public IActionResult Search(string key)
         {
@@ -26,7 +30,7 @@ namespace PetStoreProject.Controllers
                 SearchResultViewModel list = new SearchResultViewModel
                 {
                     TotalResults = 0,
-                    Results = new List<SearchViewModel>() 
+                    Results = new List<SearchViewModel>()
                 };
                 return View(list);
             }
@@ -59,16 +63,17 @@ namespace PetStoreProject.Controllers
         }
         public int getCustomerId()
         {
-            var email = HttpContext.Session.GetString("Account");
+            var email = HttpContext.Session.GetString("userEmail");
             if (email != null)
             {
-                var customerID = _customer.getCustomerId(email);
-                return customerID;
+                var roles = _account.GetUserRoles(email);
+                if (roles.Contains("Customer"))
+                {
+                    var customerID = _customer.getCustomerId(email);
+                    return customerID;
+                }
             }
-            else
-            {
-                return -1;
-            }
+            return -1;
         }
 
         [HttpPost]

@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using PetStoreProject.Filters;
+using PetStoreProject.Models;
+using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
@@ -7,40 +10,48 @@ using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.CartController
 {
-    [Route("[controller]/[action]")]
     public class CartController : Controller
     {
-        private readonly IProductRepository _product;
         private readonly ICartRepository _cart;
         private readonly ICustomerRepository _customer;
+        private readonly IAccountRepository _account;
 
-        public CartController(IProductRepository product, ICartRepository cart, ICustomerRepository customer)
+        public CartController(ICartRepository cart, ICustomerRepository customer, IAccountRepository account)
         {
-            _product = product;
             _cart = cart;
             _customer = customer;
+            _account = account;
         }
 
-        public int getCustomerId()
+        public string CheckUserRole()
         {
-            var email = HttpContext.Session.GetString("Account");
+            var email = HttpContext.Session.GetString("userEmail");
             if (email != null)
             {
-                var customerID = _customer.getCustomerId(email);
-                return customerID;
+                var roles = _account.GetUserRoles(email);
+                if (roles.Contains("Customer"))
+                {
+                    return "Customer";
+                }
+                else
+                {
+                    return "Not Guest or Customer";
+                }
             }
             else
             {
-                return -1;
+                return "Guest";
             }
         }
 
         [HttpPost]
         public ActionResult GetCartBoxItems()
         {
-            var customerID = getCustomerId();
-            if (customerID != -1)
+            var userRole = CheckUserRole();
+            if (userRole == "Customer")
             {
+                var customerEmail = HttpContext.Session.GetString("userEmail");
+                var customerID = _customer.getCustomerId(customerEmail);
                 return GetCartBoxItemsOfCustomer(customerID);
             }
             else
@@ -52,56 +63,80 @@ namespace PetStoreProject.CartController
         [HttpPost]
         public ActionResult AddToCart(int productOptionId, int quantity)
         {
-            var customerID = getCustomerId();
-            if (customerID != -1)
+            var userRole = CheckUserRole();
+            if (userRole == "Customer")
             {
+                var customerEmail = HttpContext.Session.GetString("userEmail");
+                var customerID = _customer.getCustomerId(customerEmail);
                 return AddCartItemOfCustomer(productOptionId, quantity, customerID);
+            }
+            else if (userRole == "Guest")
+            {
+                return AddCartItemOfGuest(productOptionId, quantity);
             }
             else
             {
-                return AddCartItemOfGuest(productOptionId, quantity);
+                return Json(new { message = "Tài khoản của bạn không thể sử dụng chức năng này!!!"});
             }
         }
 
         [HttpGet]
         public ActionResult Detail()
         {
-            var customerID = getCustomerId();
-            if (customerID != -1)
+            var userRole = CheckUserRole();
+            if (userRole == "Customer")
             {
+                var customerEmail = HttpContext.Session.GetString("userEmail");
+                var customerID = _customer.getCustomerId(customerEmail);
                 return CartDetailOfCustomer(customerID);
+            }
+            else if (userRole == "Guest")
+            {
+                return CartDetailOfGuest();
             }
             else
             {
-                return CartDetailOfGuest();
+                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer", "Guest" } });
             }
         }
 
         [HttpDelete]
         public ActionResult Delete(int productOptionId)
         {
-            var customerID = getCustomerId();
-            if (customerID != -1)
+            var userRole = CheckUserRole();
+            if (userRole == "Customer")
             {
+                var customerEmail = HttpContext.Session.GetString("userEmail");
+                var customerID = _customer.getCustomerId(customerEmail);
                 return DeleteCartOfCustomer(productOptionId, customerID);
+            }
+            else if (userRole == "Guest")
+            {
+                return DeleteCartOfGuest(productOptionId);
             }
             else
             {
-                return DeleteCartOfGuest(productOptionId);
+                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer", "Guest" } });
             }
         }
 
         [HttpPut]
         public ActionResult Edit(int oldProductOptionId, int newProductOptionId, int quantity)
         {
-            var customerID = getCustomerId();
-            if (customerID != -1)
+            var userRole = CheckUserRole();
+            if (userRole == "Customer")
             {
+                var customerEmail = HttpContext.Session.GetString("userEmail");
+                var customerID = _customer.getCustomerId(customerEmail);
                 return EditCartOfCustomer(oldProductOptionId, newProductOptionId, quantity, customerID);
+            }
+            else if (userRole == "Guest")
+            {
+                return EditCartOfGuest(oldProductOptionId, newProductOptionId, quantity);
             }
             else
             {
-                return EditCartOfGuest(oldProductOptionId, newProductOptionId, quantity);
+                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer", "Guest" } });
             }
         }
 
@@ -335,7 +370,6 @@ namespace PetStoreProject.CartController
             }
 
             List<int> cookiesId = new List<int>();
-            bool isExistsItem = false;
 
             if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
             {

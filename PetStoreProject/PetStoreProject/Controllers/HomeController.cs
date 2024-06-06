@@ -21,7 +21,7 @@ namespace PetStoreProject.Controllers
 
 		public int getCustomerId()
 		{
-			var email = HttpContext.Session.GetString("Account");
+			var email = HttpContext.Session.GetString("userEmail");
 			if (email != null)
 			{
 				var customerID = _customer.getCustomerId(email);

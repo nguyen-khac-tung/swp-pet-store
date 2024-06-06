@@ -30,6 +30,8 @@ public partial class Customer
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
+    public bool? IsDelete { get; set; }
+
     public int AccountId { get; set; }
 
     [ForeignKey("AccountId")]

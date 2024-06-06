@@ -19,6 +19,8 @@ public partial class ProductCategory
 
     public int CategoryId { get; set; }
 
+    public bool? IsDelete { get; set; }
+
     [ForeignKey("CategoryId")]
     [InverseProperty("ProductCategories")]
     public virtual Category Category { get; set; } = null!;

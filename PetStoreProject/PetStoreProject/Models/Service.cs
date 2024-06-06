@@ -19,6 +19,8 @@ public partial class Service
 
     public string? Description { get; set; }
 
+    public bool? IsDelete { get; set; }
+
     [InverseProperty("Service")]
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 

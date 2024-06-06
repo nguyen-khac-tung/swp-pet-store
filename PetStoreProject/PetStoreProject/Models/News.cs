@@ -20,6 +20,8 @@ public partial class News
 
     public DateOnly DatePosted { get; set; }
 
+    public bool? IsDelete { get; set; }
+
     public int EmployeeId { get; set; }
 
     [ForeignKey("EmployeeId")]

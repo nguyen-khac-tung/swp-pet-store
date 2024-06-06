@@ -63,6 +63,11 @@ public partial class PetStoreDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Account>(entity =>
+        {
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+        });
+
         modelBuilder.Entity<AccountRole>(entity =>
         {
             entity.HasOne(d => d.Account).WithMany(p => p.AccountRoles)
@@ -76,6 +81,8 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Admin>(entity =>
         {
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+
             entity.HasOne(d => d.Account).WithMany(p => p.Admins)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Admin_Account");
@@ -119,6 +126,8 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+
             entity.HasOne(d => d.Account).WithMany(p => p.Customers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_Account");
@@ -126,6 +135,8 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Employee>(entity =>
         {
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+
             entity.HasOne(d => d.Account).WithMany(p => p.Employees)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Employee_Account");
@@ -137,7 +148,7 @@ public partial class PetStoreDBContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Feedbacks)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Feedback_Product1");
+                .HasConstraintName("FK_Feedback_Product");
         });
 
         modelBuilder.Entity<Image>(entity =>
@@ -152,6 +163,8 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<News>(entity =>
         {
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+
             entity.HasOne(d => d.Employee).WithMany(p => p.News)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_News_Employee");
@@ -186,6 +199,9 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
+            entity.Property(e => e.ProductId).ValueGeneratedNever();
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Brand");
@@ -215,6 +231,7 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<ProductCategory>(entity =>
         {
             entity.Property(e => e.ProductCateId).ValueGeneratedNever();
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
             entity.Property(e => e.Name).IsFixedLength();
 
             entity.HasOne(d => d.Category).WithMany(p => p.ProductCategories)
@@ -224,6 +241,8 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<ProductOption>(entity =>
         {
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
+
             entity.HasOne(d => d.Attribute).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Attribute");
 
             entity.HasOne(d => d.Image).WithMany(p => p.ProductOptions)
@@ -232,7 +251,7 @@ public partial class PetStoreDBContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ProductOption_Product1");
+                .HasConstraintName("FK_ProductOption_Product");
 
             entity.HasOne(d => d.Size).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Size");
         });
@@ -256,6 +275,7 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Service>(entity =>
         {
             entity.Property(e => e.ServiceId).ValueGeneratedNever();
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
         });
 
         modelBuilder.Entity<ServiceOption>(entity =>
@@ -263,6 +283,7 @@ public partial class PetStoreDBContext : DbContext
             entity.HasKey(e => e.ServiceOptionId).HasName("PK_ServiceOption_1");
 
             entity.Property(e => e.ServiceOptionId).ValueGeneratedNever();
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)

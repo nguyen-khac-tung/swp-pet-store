@@ -18,7 +18,7 @@ public partial class AccountRole
     [Key]
     public int RoleId { get; set; }
 
-    [StringLength(100)]
+    [StringLength(50)]
     public string? Note { get; set; }
 
     [ForeignKey("AccountId")]

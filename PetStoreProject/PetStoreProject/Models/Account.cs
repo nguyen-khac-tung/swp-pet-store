@@ -20,6 +20,8 @@ public partial class Account
     [StringLength(150)]
     public string? Password { get; set; }
 
+    public bool? IsDelete { get; set; }
+
     [InverseProperty("Account")]
     public virtual ICollection<AccountRole> AccountRoles { get; set; } = new List<AccountRole>();
 

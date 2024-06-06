@@ -23,6 +23,8 @@ public partial class Product
 
     public string? Description { get; set; }
 
+    public bool? IsDelete { get; set; }
+
     [ForeignKey("BrandId")]
     [InverseProperty("Products")]
     public virtual Brand Brand { get; set; } = null!;

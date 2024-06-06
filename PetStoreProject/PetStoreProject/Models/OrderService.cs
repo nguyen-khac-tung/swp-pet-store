@@ -31,6 +31,8 @@ public partial class OrderService
     [StringLength(30)]
     public string Status { get; set; } = null!;
 
+    public bool IsDelete { get; set; }
+
     public int? EmployeeId { get; set; }
 
     [ForeignKey("EmployeeId")]

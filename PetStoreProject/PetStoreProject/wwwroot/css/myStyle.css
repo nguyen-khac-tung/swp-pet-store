@@ -7,7 +7,7 @@
     pointer-events: none; /* Ngăn chặn sự kiện click */
 }
 .scroll {
-    max-height: 150px;
+    max-height: 200px;
     overflow-y: auto;
 }
 .overlay {
@@ -23,4 +23,7 @@
     text-transform: uppercase;
     text-align: center;
     border-radius: 5px;
+}
+.page-link{
+    cursor: pointer;
 }

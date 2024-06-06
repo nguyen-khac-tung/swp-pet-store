@@ -210,7 +210,7 @@ function quickView(productId) {
     $('#quick_size').empty();
     $.ajax({
         type: "POST",
-        url: "/Product/quickPreview",
+        url: "http://localhost:5206/Product/quickPreview",
         data: { productId: productId },
         success: function (response) {
             console.log(response.productOption)
@@ -242,9 +242,10 @@ function quickView(productId) {
                     class: 'color-list scroll'
                 });
                 let list = ""
-                for (let index = 0; index < response.attributes.length; index++) {
+                for (let index = 0; index < response.attributes.length;) {
                     if (response.attributes[index].name != null) {
                         list += "<li id='quick_attribute_" + response.attributes[index].attributeId + "' style = 'cursor:pointer' onclick='quick_attribute_selected(" + index + "," + response.attributes[index].attributeId + "," + jsonStr + ")'" + "data = '" + response.attributes[index].attributeId + "'>" + response.attributes[index].name + "</li>"
+                        index += 1
                     }
                     else {
                         index -= 1
@@ -266,9 +267,10 @@ function quickView(productId) {
                 });
 
                 let list = ""
-                for (let index = 0; index < response.sizes.length; index++) {
+                for (let index = 0; index < response.sizes.length;) {
                     if (response.sizes[index].name != null) {
                         list += "<li id='quick_size_" + response.sizes[index].sizeId + "' style = 'cursor:pointer' onclick='quick_size_selected(" + index + "," + response.sizes[index].sizeId + "," + jsonStr + ")'" + "data = '" + response.sizes[index].sizeId + "'>" + response.sizes[index].name + "</li>"
+                        index += 1
                     }
                     else {
                         index -= 1
@@ -429,9 +431,9 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
 }
 
 function quick_total_price() {
-    var quick_quantity = parseFloat(document.getElementById('quick_quantity').value);
-    var quick_price = parseFloat(document.getElementById('quick_price').innerText.replace(/,/g, ''));
-    var quick_amount = quick_price * quick_quantity;
+    let quick_quantity = parseFloat(document.getElementById('quick_quantity').value);
+    let quick_price = parseFloat(document.getElementById('quick_price').innerText.replace(/,/g, ''));
+    let quick_amount = quick_price * quick_quantity;
     document.getElementById("quick_amount").innerText = quick_amount.toLocaleString('en-US');
 }
 
@@ -453,3 +455,160 @@ function showNotification(message, color) {
     }, 2000);
 }
 
+function generateProductList(products) {
+    let productList = $('#product-list');
+    productList.empty();
+    products.forEach(function (product) {
+        let productItem = `
+                        <li class="product-item gap14">
+                            <div class="image no-bg">
+                                <img src="${product.imgUrl}" alt="">
+                            </div>
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="name">
+                                    <a href="product-list.html" class="body-title-2">${product.name}</a>
+                                </div>
+                                <div class="body-text">#${product.id}</div>
+                                <div class="body-text">${product.price.toLocaleString()} VND</div>
+                                <div class="body-text">${product.soldQuantity}</div>
+                                <div>
+                                    <div class="${product.isSoldOut ? 'block-not-available' : 'block-available'}">
+                                        ${product.isSoldOut ? 'Hết hàng' : 'Còn hàng'}
+                                    </div>
+                                </div>
+                                <div class="list-icon-function">
+                                    <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickView(${product.id})">
+                                        <i class="icon-eye"></i>
+                                    </div>
+                                    <div class="item edit">
+                                        <i class="icon-edit-3"></i>
+                                    </div>
+                                    <div class="item trash">
+                                        <i class="icon-trash-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+        productList.append(productItem);
+    });
+}
+
+function fetchProducts(pageSize, pageNumber) {
+    $.ajax({
+        url: 'http://localhost:5206/admin/product/fetchproduct', // Replace with your API endpoint
+        type: 'POST',
+        data: { pageSize: pageSize, pageNumber: pageNumber },
+        success: function (response) {
+            generateProductList(response.products);
+            generatePageSize(response.pageSize, response.pageNumber);
+            generatePagination(response.totalPageNumber, response.pageNumber, response.pageSize)
+            console.log(response)
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching products:', error);
+        }
+    });
+}
+
+function generatePagination(totalPageNumber, currentPage, pageSize) {
+    let parentElement = $('#pageNumber');
+    parentElement.empty();
+    if (totalPageNumber > 1) {
+        if (currentPage > 1) {
+            let prevPage = currentPage - 1;
+            let prevPageLink = document.createElement('a');
+            prevPageLink.setAttribute('class', 'page-link');
+            prevPageLink.setAttribute('onclick', 'ChoosePage(' + prevPage + ', ' + pageSize + ')');
+            prevPageLink.innerText = 'Trang trước';
+            let prevPageItem = document.createElement('li');
+            prevPageItem.setAttribute('class', 'page-item');
+            prevPageItem.appendChild(prevPageLink);
+            parentElement.append(prevPageItem);
+        }
+
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPageNumber, currentPage + 2);
+
+        if (startPage > 1) {
+            let firstPageLink = document.createElement('a');
+            firstPageLink.setAttribute('class', 'page-link');
+            firstPageLink.setAttribute('onclick', 'ChoosePage(1, ' + pageSize + ')');
+            firstPageLink.innerText = '1';
+            let firstPageItem = document.createElement('li');
+            firstPageItem.setAttribute('class', 'page-item');
+            firstPageItem.appendChild(firstPageLink);
+            parentElement.append(firstPageItem);
+
+            if (startPage > 2) {
+                let ellipsisItem = document.createElement('li');
+                ellipsisItem.setAttribute('class', 'page-item');
+                ellipsisItem.innerHTML = '<a class="page-link">...</a>';
+                parentElement.append(ellipsisItem);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            if (currentPage == i) {
+                let activePageItem = document.createElement('li');
+                activePageItem.setAttribute('class', 'page-item active');
+                activePageItem.innerHTML = '<a class="page-link">' + i + '</a>';
+                parentElement.append(activePageItem);
+            } else {
+                let pageLink = document.createElement('a');
+                pageLink.setAttribute('class', 'page-link');
+                pageLink.setAttribute('onclick', 'ChoosePage(' + i + ', ' + pageSize + ')');
+                pageLink.innerText = i;
+                let pageItem = document.createElement('li');
+                pageItem.setAttribute('class', 'page-item');
+                pageItem.appendChild(pageLink);
+                parentElement.append(pageItem);
+            }
+        }
+
+        if (totalPageNumber >= endPage + 1) {
+            if (totalPageNumber >= endPage + 2) {
+                let ellipsisItem = document.createElement('li');
+                ellipsisItem.setAttribute('class', 'page-item');
+                ellipsisItem.innerHTML = '<a class="page-link">...</a>';
+                parentElement.append(ellipsisItem);
+            }
+
+            let lastPageLink = document.createElement('a');
+            lastPageLink.setAttribute('class', 'page-link');
+            lastPageLink.setAttribute('onclick', 'ChoosePage(' + totalPageNumber + ', ' + pageSize + ')');
+            lastPageLink.innerText = totalPageNumber;
+            let lastPageItem = document.createElement('li');
+            lastPageItem.setAttribute('class', 'page-item');
+            lastPageItem.appendChild(lastPageLink);
+            parentElement.append(lastPageItem);
+        }
+
+        if (currentPage != totalPageNumber) {
+            let nextPage = currentPage + 1;
+            let nextPageLink = document.createElement('a');
+            nextPageLink.setAttribute('class', 'page-link');
+            nextPageLink.setAttribute('onclick', 'ChoosePage(' + nextPage + ', ' + pageSize + ')');
+            nextPageLink.innerText = 'Trang sau';
+            let nextPageItem = document.createElement('li');
+            nextPageItem.setAttribute('class', 'page-item');
+            nextPageItem.appendChild(nextPageLink);
+            parentElement.append(nextPageItem);
+        }
+    }
+}
+
+function generatePageSize(pageSize, pageNumber) {
+    let p = $('#pageSize')
+    let pS = $('<select>', {
+        id: 'size',
+        onchange: 'ChoosePageSize(' + pageNumber + ')'
+    })
+    p.empty();
+    let pageSizeList = [10, 20, 30];
+    pageSizeList.forEach(function (size) {
+        let option = `<option value="${size}" ${pageSize==size?'selected':''}>${size}</option>`;
+        pS.append(option);
+    });
+    p.append(pS);
+}

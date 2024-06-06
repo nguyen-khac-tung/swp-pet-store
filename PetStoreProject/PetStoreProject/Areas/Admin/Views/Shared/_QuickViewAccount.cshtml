@@ -1,0 +1,148 @@
+﻿<style>
+    .modal-content .modal-header {
+        padding: 10px !important;
+    }
+
+    .container-fluid {
+        padding: 0px !important;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+        .modal-content .modal-body {
+            padding-top: 15px;
+        }
+
+    .nav-tabs .nav-link {
+        border-radius: 0;
+    }
+
+    .form-control {
+        margin: 5px 0px;
+    }
+
+    .avatar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .avatar-container img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+        }
+
+        .avatar-container .btn-change {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 5px 20px;
+            border-radius: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            .avatar-container .btn-change:hover {
+                background-color: #007bff;
+                color: white;
+            }
+
+    .modal-header .btn-close {
+        padding: 10px !important;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+
+    .user-info-main {
+        border-bottom: 1px solid grey;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+    }
+
+    .select-role {
+        width: auto;
+        padding: 5px 15px;
+    }
+</style>
+
+
+<div id="profilePopup" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" onclick="CloseQuickViewAccount()" class="btn-close" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row user-info-main">
+                        <div class="col-md-4 text-center avatar-container">
+                            <img src="/areas/images/logo_user/user-avatar.svg.png" alt="Avatar" class="rounded-circle" width="150" height="150">
+                            @* <button class="btn btn-outline-primary mt-2 btn-change">Change</button> *@
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <h3 id="user-name">Liza Doe</h3>
+                            </div>
+                            <div style="display:inline" id="role">
+                                <label for="role">Vai trò: </label>
+                                @* <select class="select-role">
+                                    <option value="1">Quản trị viên</option>/option>
+                                    <option value="2">Khách hàng</option>
+                                    <option value="3">Nhân viên</option>
+                                </select> *@
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="form-group row" id="form-dob">
+                                    <label class="col-sm-4 col-form-label" for="gender">Giới tính: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="gender" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="dob">Ngày sinh: </label>
+                                    <div class="col-sm-8">
+                                        <input type="date" class="form-control" id="dob" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="phone">Số điện thoại: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="phone" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="address">Địa chỉ: </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="address" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="email">Email: </label>
+                                    <div class="col-sm-8">
+                                        <input type="email" class="form-control" id="email" value="" readonly>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+

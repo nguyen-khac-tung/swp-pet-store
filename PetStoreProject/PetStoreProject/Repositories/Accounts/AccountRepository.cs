@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Models;
+﻿using Microsoft.Identity.Client;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Accounts
@@ -68,13 +69,6 @@ namespace PetStoreProject.Repositories.Accounts
                 account.Password = null;
             }
 
-            Role role = _context.Roles.FirstOrDefault(r => r.RoleId == 3);
-
-            List<Role> roles = new List<Role>();
-            roles.Add(role);
-
-            account.Roles = roles;
-
             _context.Accounts.Add(account);
 
             _context.SaveChanges();
@@ -82,6 +76,16 @@ namespace PetStoreProject.Repositories.Accounts
             var accountId = (from a in _context.Accounts
                              where a.Email == registerInfor.Email
                              select a.AccountId).FirstOrDefault();
+
+            AccountRole accountRole = new AccountRole()
+            {
+                RoleId = 3,
+                AccountId = accountId
+            };
+
+            _context.AccountRoles.Add(accountRole);
+
+            _context.SaveChanges();
 
             var customer = new Customer
             {
@@ -92,7 +96,7 @@ namespace PetStoreProject.Repositories.Accounts
             };
 
             _context.Customers.Add(customer);
-            
+
             _context.SaveChanges();
         }
 
@@ -163,6 +167,7 @@ namespace PetStoreProject.Repositories.Accounts
                             select c.FullName).FirstOrDefault();
             }
             return userName;
+        }
 
         public List<AccountDetailViewModel> GetAccountEmployees()
         {
@@ -176,7 +181,7 @@ namespace PetStoreProject.Repositories.Accounts
                                         Phone = e.Phone,
                                         Email = e.Email,
                                         Gender = e.Gender,
-                                        Roles = a.Roles.ToList()
+                                        Roles = _context.AccountRoles.Where(ar => ar.AccountId == e.AccountId).Select(ar => ar.Role).ToList()
                                     }).ToList();
             return accountEmployees;
         }
@@ -193,7 +198,7 @@ namespace PetStoreProject.Repositories.Accounts
                                         Phone = c.Phone,
                                         Email = c.Email,
                                         Gender = c.Gender,
-                                        Roles = a.Roles.ToList()
+                                        Roles = _context.AccountRoles.Where(ar => ar.AccountId == c.AccountId).Select(ar => ar.Role).ToList()
                                     }).ToList();
             return accountCustomers;
         }
@@ -210,7 +215,7 @@ namespace PetStoreProject.Repositories.Accounts
                                      Phone = ad.Phone,
                                      Email = ad.Email,
                                      Gender = ad.Gender,
-                                     Roles = a.Roles.ToList()
+                                     Roles = _context.AccountRoles.Where(ar => ar.AccountId == ad.AccountId).Select(ar => ar.Role).ToList()
                                  }).ToList();
             return accountAdmins;
         }

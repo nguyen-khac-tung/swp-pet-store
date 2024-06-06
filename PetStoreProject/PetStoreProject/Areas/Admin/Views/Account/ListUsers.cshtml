@@ -5,6 +5,7 @@
 
 @model List<AccountDetailViewModel>
 
+
 <div class="main-content-inner">
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
@@ -84,6 +85,9 @@
     </div>
     <!-- /main-content-wrap -->
 </div>
+</div>
+@Html.Partial("_QuickViewAccount")
+
 
 <script src="~/js/list-product.js"></script>
 <script>
@@ -126,12 +130,12 @@
                             html += '<div class="body-text" style="font-weight:600;  font-style: italic; " >Trống</div>';
                         }
                         html += '<div class="body-text" >';
-                        if (accounts[i].roles != null || !(accounts[i].roles.empty())) {
+                        if (accounts[i].roles.length > 0) {
                             for (var j = 0; j < accounts[i].roles.length; j++) {
                                 switch (accounts[i].roles[j].roleId) {
                                     case 1:
                                         html += '<span>Quản trị viên</span>';
-                                        break; 
+                                        break;
                                     case 2:
                                         html += '<span>Nhân viên</span>';
                                         break;
@@ -145,13 +149,13 @@
                             }
                         } else {
                             console.log("ahihi: " + accounts[i].roles);
-                            html += '<span>Trống</span>';
+                            html += '<span style="font-weight:600;  font-style: italic; ">Trống</span>';
                         }
                         html += '</div>'
                         html += '<div class="body-text" >' + accounts[i].email + '</div>';
                         html += '<div class="list-icon-function" >';
                         html += '<div class="item eye">';
-                        html += '<i class="icon-eye" ></i>';
+                        html += '<i class="icon-eye" onclick="QuickViewAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
                         html += '</div>';
                         html += '<div class="item edit">';
                         html += '<i class="icon-edit-3"></i>';
@@ -206,6 +210,61 @@
         var searchName = document.getElementById("search-input").value;
         console.log("Search query:", searchName);
         Load(1, 15, selectedRole, searchName);
+    }
+
+    function QuickViewAccount(accountJson) {
+        var account = JSON.parse(decodeURIComponent(accountJson));
+
+        console.log(account); 
+        $('#profilePopup').modal('show');
+        $('#user-name').empty();
+        $('#gender').empty();
+        $('#dob').empty();
+        $('#phone').empty();
+        $('#address').empty();
+        $('#email').empty();
+
+        $('#user-name').append(account.fullName);
+
+        if (account.roles.length > 0) {
+            for (var i = 0; i < account.roles.length; i++) {
+                switch (account.roles[i].roleId) {
+                    case 1:
+                        $('#role').append('<span>Quản trị viên</span>');
+                        break;
+                    case 2:
+                        $('#role').append('<span>Nhân viên</span>');
+                        break;
+                    case 3:
+                        $('#role').append('<span>Khách hàng</span>');
+                        break;
+                    default:
+                        $('#role').append('<span>Trống</span>');
+                        break;
+                }
+            }
+        } else {
+            $('#role').append('<span>Trống</span>');
+        }
+
+        if (account.gender != null) {
+            if (accounts.gender == 1) {
+                $('#gender').val("Nam");
+            } else {
+                $('#gender').val("Nữ");
+            }
+        } else {
+            $('#gender').val("Trống");
+        }
+
+        $('#dob').val(account.dob);
+        $('#phone').val(account.phone);
+        $('#address').val(account.address);
+        $('#email').val(account.email);
+    }
+
+    function CloseQuickViewAccount() {
+        $('#profilePopup').modal('hide');
     }
 
 </script>

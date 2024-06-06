@@ -68,6 +68,13 @@ namespace PetStoreProject.Repositories.Accounts
                 account.Password = null;
             }
 
+            Role role = _context.Roles.FirstOrDefault(r => r.RoleId == 3);
+
+            List<Role> roles = new List<Role>();
+            roles.Add(role);
+
+            account.Roles = roles;
+
             _context.Accounts.Add(account);
 
             _context.SaveChanges();
@@ -85,7 +92,7 @@ namespace PetStoreProject.Repositories.Accounts
             };
 
             _context.Customers.Add(customer);
-
+            
             _context.SaveChanges();
         }
 
@@ -109,7 +116,7 @@ namespace PetStoreProject.Repositories.Accounts
             return password;
         }
 
-        public void changePawword(ChangePasswordViewModel changePasswordVM)
+        public void changePassword(ChangePasswordViewModel changePasswordVM)
         {
             var account = (from a in _context.Accounts
                            where a.Email == changePasswordVM.Email
@@ -156,6 +163,84 @@ namespace PetStoreProject.Repositories.Accounts
                             select c.FullName).FirstOrDefault();
             }
             return userName;
+
+        public List<AccountDetailViewModel> GetAccountEmployees()
+        {
+            var accountEmployees = (from e in _context.Employees
+                                    join a in _context.Accounts on e.AccountId equals a.AccountId
+                                    select new AccountDetailViewModel
+                                    {
+                                        AccountId = e.AccountId,
+                                        UserId = e.EmployeeId,
+                                        FullName = e.FullName,
+                                        Phone = e.Phone,
+                                        Email = e.Email,
+                                        Gender = e.Gender,
+                                        Roles = a.Roles.ToList()
+                                    }).ToList();
+            return accountEmployees;
+        }
+
+        public List<AccountDetailViewModel> GetAccountCustomers()
+        {
+            var accountCustomers = (from c in _context.Customers
+                                    join a in _context.Accounts on c.AccountId equals a.AccountId
+                                    select new AccountDetailViewModel
+                                    {
+                                        AccountId = c.AccountId,
+                                        UserId = c.CustomerId,
+                                        FullName = c.FullName,
+                                        Phone = c.Phone,
+                                        Email = c.Email,
+                                        Gender = c.Gender,
+                                        Roles = a.Roles.ToList()
+                                    }).ToList();
+            return accountCustomers;
+        }
+
+        public List<AccountDetailViewModel> GetAccountAdmins()
+        {
+            var accountAdmins = (from ad in _context.Admins
+                                 join a in _context.Accounts on ad.AccountId equals a.AccountId
+                                 select new AccountDetailViewModel
+                                 {
+                                     AccountId = ad.AccountId,
+                                     UserId = ad.AdminId,
+                                     FullName = ad.FullName,
+                                     Phone = ad.Phone,
+                                     Email = ad.Email,
+                                     Gender = ad.Gender,
+                                     Roles = a.Roles.ToList()
+                                 }).ToList();
+            return accountAdmins;
+        }
+
+        public List<AccountDetailViewModel> GetAccounts(int userType)
+        {
+            List<AccountDetailViewModel> accounts = new List<AccountDetailViewModel>();
+            if (userType == 0)
+            {
+                accounts.AddRange(GetAccountEmployees());
+                accounts.AddRange(GetAccountCustomers());
+                accounts.AddRange(GetAccountAdmins());
+            }
+            else
+            {
+                if (userType == 2)
+                {
+                    accounts.AddRange(GetAccountAdmins());
+                }
+                else if (userType == 3)
+                {
+                    accounts.AddRange(GetAccountEmployees());
+                }
+                else
+                {
+                    accounts.AddRange(GetAccountCustomers());
+                }
+            }
+
+            return accounts;
         }
     }
 }

@@ -15,10 +15,13 @@ namespace PetStoreProject.Repositories.Accounts
 
         public string? getOldPassword(string email);
 
-        public void changePawword(ChangePasswordViewModel changePasswordVM);
-        
         public List<string> GetUserRoles(string email);
 
         public string GetUserName(string email, string userRole);
+
+        public void changePassword(ChangePasswordViewModel changePasswordVM);
+
+        public List<AccountDetailViewModel> GetAccounts(int userType);
+
     }
 }

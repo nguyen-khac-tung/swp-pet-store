@@ -351,8 +351,6 @@ function Pagination(currentPage, numberPage, pageSize) {
 
 function NextPage(page, pageSize) {
     console.log("Nextpage:");
-    console.log("PriceM: " + priceInput[0].value);
-    console.log("PriceMax: " + priceInput[1].value);
 
     LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }

@@ -19,8 +19,9 @@
     <link rel="stylesheet" type="text/css" href="/areas/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/areas/css/bootstrap-select.min.css">
     <link rel="stylesheet" type="text/css" href="/areas/css/style.css">
-
-
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/mystyle.css" rel="stylesheet" />
+    <link href="~/css/icofont.css" rel="stylesheet" />
 
     <!-- Font -->
     <link rel="stylesheet" href="/areas/font/fonts.css">
@@ -29,8 +30,8 @@
     <link rel="stylesheet" href="/areas/icon/style.css">
 
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="/areas/images/favicon.png">
-    <link rel="apple-touch-icon-precomposed" href="/areas/images/favicon.png">
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/favicon.png">
 
 </head>
 
@@ -123,7 +124,7 @@
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
-                                            <a href="product-list.html" class="">
+                                            <a href="/admin/product/index" class="">
                                                 <div class="text">Product List</div>
                                             </a>
                                         </li>
@@ -210,7 +211,7 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="all-user.html" class="">
+                                            <a href="ListUsers" class="">
                                                 <div class="text">All user</div>
                                             </a>
                                         </li>
@@ -881,7 +882,8 @@
     <script src="/areas/js/switcher.js"></script>
     <script src="/areas/js/theme-settings.js"></script>
     <script src="/areas/js/main.js"></script>
-
+    <script src="~/js/myjs.js"></script>
+    @RenderSection("ScriptOptional", required: false)
 </body>
 
 

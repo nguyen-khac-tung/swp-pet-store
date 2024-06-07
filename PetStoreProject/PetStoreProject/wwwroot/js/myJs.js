@@ -476,8 +476,13 @@ function generateProductList(products) {
                                         ${product.isSoldOut ? 'Hết hàng' : 'Còn hàng'}
                                     </div>
                                 </div>
+                                <div>
+                                    <div class="${product.isDelete ? 'block-not-available' : 'block-available'}">
+                                        ${product.isDelete ? 'Ngừng bán' : 'Còn bán'}
+                                    </div>
+                                </div>
                                 <div class="list-icon-function">
-                                    <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickView(${product.id})">
+                                    <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickViewForAdmin(${product.id})">
                                         <i class="icon-eye"></i>
                                     </div>
                                     <div class="item edit">
@@ -494,15 +499,53 @@ function generateProductList(products) {
     });
 }
 
-function fetchProducts(pageSize, pageNumber) {
+function generateFormInput() {
+    let searchForm = $('#form-search');
+    searchForm.empty();
+    let input = `<fieldset class="name">
+                     <input type="text" placeholder="Tìm tên sản phẩm..." class="" name="name" tabindex="2" value="" id="search-input">
+                 </fieldset>`
+    searchForm.append(input);
+}
+
+function fetchProducts(pageSize, pageNumber, categoryId, productCateId, key,
+                        sortPrice, sortSoldQuantity, isInStock, isDelete) {
     $.ajax({
         url: 'http://localhost:5206/admin/product/fetchproduct', // Replace with your API endpoint
         type: 'POST',
-        data: { pageSize: pageSize, pageNumber: pageNumber },
+        data: {
+            pageSize: pageSize,
+            pageNumber: pageNumber,
+            categoryId: categoryId,
+            productCateId: productCateId,
+            key: key,
+            sortPrice: sortPrice,
+            sortSoldQuantity: sortSoldQuantity,
+            isInStock: isInStock,
+            isDelete: isDelete
+        },
         success: function (response) {
-            generateProductList(response.products);
-            generatePageSize(response.pageSize, response.pageNumber);
-            generatePagination(response.totalPageNumber, response.pageNumber, response.pageSize)
+            let products = response.products;
+            let pageSize = response.pageSize;
+            let pageNumber = response.pageNumber;
+            let totalPageNumber = response.totalPageNumber;
+            let categories = response.categories;
+            let productCategories = response.productCategories;
+
+            generateProductList(products);
+
+            generatePageSize(pageSize, pageNumber, categoryId, productCateId, key, sortPrice,
+                sortSoldQuantity, isInStock, isDelete);
+
+            generatePagination(totalPageNumber, pageNumber, pageSize, categoryId, productCateId,
+                key, sortPrice, sortSoldQuantity, isInStock, isDelete)
+
+            generateCategory(pageSize, categoryId, categories, 1, null, key, sortPrice, sortSoldQuantity,
+                            isInStock, isDelete);
+
+            generateProductCategory(productCategories, pageSize, 1, categoryId, productCateId,
+                                        key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+
             console.log(response)
         },
         error: function (xhr, status, error) {
@@ -511,19 +554,20 @@ function fetchProducts(pageSize, pageNumber) {
     });
 }
 
-function generatePagination(totalPageNumber, currentPage, pageSize) {
+function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, productCateId, key,
+                            sortPrice, sortSoldQuantity, isInStock, isDelete) {
     let parentElement = $('#pageNumber');
     parentElement.empty();
     if (totalPageNumber > 1) {
         if (currentPage > 1) {
             let prevPage = currentPage - 1;
-            let prevPageLink = document.createElement('a');
-            prevPageLink.setAttribute('class', 'page-link');
-            prevPageLink.setAttribute('onclick', 'ChoosePage(' + prevPage + ', ' + pageSize + ')');
-            prevPageLink.innerText = 'Trang trước';
-            let prevPageItem = document.createElement('li');
-            prevPageItem.setAttribute('class', 'page-item');
-            prevPageItem.appendChild(prevPageLink);
+            let prevPageLink = $('<a>', {
+                class: 'page-link',
+                onclick: `ChoosePage(${prevPage}, ${pageSize}, ${categoryId}, ${productCateId}, 
+                            '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                text: 'Trang trước'
+            });
+            let prevPageItem = $('<li>', { class: 'page-item' }).append(prevPageLink);
             parentElement.append(prevPageItem);
         }
 
@@ -531,83 +575,126 @@ function generatePagination(totalPageNumber, currentPage, pageSize) {
         let endPage = Math.min(totalPageNumber, currentPage + 2);
 
         if (startPage > 1) {
-            let firstPageLink = document.createElement('a');
-            firstPageLink.setAttribute('class', 'page-link');
-            firstPageLink.setAttribute('onclick', 'ChoosePage(1, ' + pageSize + ')');
-            firstPageLink.innerText = '1';
-            let firstPageItem = document.createElement('li');
-            firstPageItem.setAttribute('class', 'page-item');
-            firstPageItem.appendChild(firstPageLink);
+            let firstPageLink = $('<a>', {
+                class: 'page-link',
+                onclick: `ChoosePage(1, ${pageSize}, ${categoryId}, ${productCateId}, ${key},
+                            ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                text: '1'
+            });
+            let firstPageItem = $('<li>', { class: 'page-item' }).append(firstPageLink);
             parentElement.append(firstPageItem);
 
             if (startPage > 2) {
-                let ellipsisItem = document.createElement('li');
-                ellipsisItem.setAttribute('class', 'page-item');
-                ellipsisItem.innerHTML = '<a class="page-link">...</a>';
+                let ellipsisItem = $('<li>', { class: 'page-item' }).html('<a class="page-link">...</a>');
                 parentElement.append(ellipsisItem);
             }
         }
 
         for (let i = startPage; i <= endPage; i++) {
-            if (currentPage == i) {
-                let activePageItem = document.createElement('li');
-                activePageItem.setAttribute('class', 'page-item active');
-                activePageItem.innerHTML = '<a class="page-link">' + i + '</a>';
+            if (currentPage === i) {
+                let activePageItem = $('<li>', { class: 'page-item active' }).html('<a class="page-link">' + i + '</a>');
                 parentElement.append(activePageItem);
             } else {
-                let pageLink = document.createElement('a');
-                pageLink.setAttribute('class', 'page-link');
-                pageLink.setAttribute('onclick', 'ChoosePage(' + i + ', ' + pageSize + ')');
-                pageLink.innerText = i;
-                let pageItem = document.createElement('li');
-                pageItem.setAttribute('class', 'page-item');
-                pageItem.appendChild(pageLink);
+                let pageLink = $('<a>', {
+                    class: 'page-link',
+                    onclick: `ChoosePage(${i}, ${pageSize}, ${categoryId}, ${productCateId}, ${key},
+                              ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                    text: i
+                });
+                let pageItem = $('<li>', { class: 'page-item' }).append(pageLink);
                 parentElement.append(pageItem);
             }
         }
 
         if (totalPageNumber >= endPage + 1) {
             if (totalPageNumber >= endPage + 2) {
-                let ellipsisItem = document.createElement('li');
-                ellipsisItem.setAttribute('class', 'page-item');
-                ellipsisItem.innerHTML = '<a class="page-link">...</a>';
+                let ellipsisItem = $('<li>', { class: 'page-item' }).html('<a class="page-link">...</a>');
                 parentElement.append(ellipsisItem);
             }
 
-            let lastPageLink = document.createElement('a');
-            lastPageLink.setAttribute('class', 'page-link');
-            lastPageLink.setAttribute('onclick', 'ChoosePage(' + totalPageNumber + ', ' + pageSize + ')');
-            lastPageLink.innerText = totalPageNumber;
-            let lastPageItem = document.createElement('li');
-            lastPageItem.setAttribute('class', 'page-item');
-            lastPageItem.appendChild(lastPageLink);
+            let lastPageLink = $('<a>', {
+                class: 'page-link',
+                onclick: `ChoosePage(${totalPageNumber}, ${pageSize}, ${categoryId}, ${productCateId},
+                        ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                text: totalPageNumber
+            });
+            let lastPageItem = $('<li>', { class: 'page-item' }).append(lastPageLink);
             parentElement.append(lastPageItem);
         }
 
         if (currentPage != totalPageNumber) {
             let nextPage = currentPage + 1;
-            let nextPageLink = document.createElement('a');
-            nextPageLink.setAttribute('class', 'page-link');
-            nextPageLink.setAttribute('onclick', 'ChoosePage(' + nextPage + ', ' + pageSize + ')');
-            nextPageLink.innerText = 'Trang sau';
-            let nextPageItem = document.createElement('li');
-            nextPageItem.setAttribute('class', 'page-item');
-            nextPageItem.appendChild(nextPageLink);
+            let nextPageLink = $('<a>', {
+                class: 'page-link',
+                onclick: `ChoosePage(${nextPage}, ${pageSize}, ${categoryId}, ${productCateId}, 
+                         ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                text: 'Trang sau'
+            });
+            let nextPageItem = $('<li>', { class: 'page-item' }).append(nextPageLink);
             parentElement.append(nextPageItem);
         }
     }
 }
 
-function generatePageSize(pageSize, pageNumber) {
-    let p = $('#pageSize')
+function generateCategory(pageSize, categoryId, categories, pageNumber, productCateId, key,
+                            sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    console.log(categories);
+    let categoryList = $('#category-list');
+    categoryList.empty();
+
+    let li = $('<li>');
+    let href = $('<a>', {
+        href: '',
+        class: ((categoryId == null || categoryId == 0) ? 'choose' : ''),
+        style: "width: 250px",
+        onclick: `ChooseCategory(${0}, ${pageSize}, ${pageNumber}, ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+    }).text('- Tất cả');
+    li.append(href);
+    categoryList.append(li);
+
+    categories.forEach(function (category) {
+        let li = $('<li>');
+        let href = $('<a>', {
+            href: '#',
+            class: (categoryId == category.id ? 'choose' : ''),
+            style: "width: 250px",
+            onclick: `ChooseCategory(${category.id}, ${pageSize}, ${pageNumber}, ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+        }).text('- ' + category.name);
+        li.append(href);
+        categoryList.append(li);
+    });
+}
+
+
+function generateProductCategory(productCategories, pageSize, pageNumber, categoryId, productCateId,
+    key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    let productCategoryList = $('#product-category-list');
+    productCategoryList.empty();
+    productCategories.forEach(function (productCategory) {
+        let li = $('<li>');
+        let href = $('<a>', {
+            href: '',
+            class: (productCateId == productCategory.id ? 'choose' : ''),
+            onclick: `chooseProductCategory(${productCategory.id}, ${pageSize}, ${pageNumber}, ${categoryId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+        }).text('- ' + productCategory.name);
+        li.append(href);
+        productCategoryList.append(li);
+    });
+}
+
+
+function generatePageSize(pageSize, pageNumber, categoryId, productCateId, key,
+                            sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    let p = $('#pageSize');
     let pS = $('<select>', {
         id: 'size',
-        onchange: 'ChoosePageSize(' + pageNumber + ')'
-    })
+        onchange: `ChoosePageSize(${pageSize}, ${pageNumber}, ${categoryId}, 
+            ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+    });
     p.empty();
     let pageSizeList = [10, 20, 30];
     pageSizeList.forEach(function (size) {
-        let option = `<option value="${size}" ${pageSize==size?'selected':''}>${size}</option>`;
+        let option = `<option value="${size}" ${pageSize == size ? 'selected' : ''}>${size}</option>`;
         pS.append(option);
     });
     p.append(pS);

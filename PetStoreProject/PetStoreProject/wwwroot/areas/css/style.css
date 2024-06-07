@@ -965,7 +965,6 @@ a:hover, a:focus {
 }
 
 .body-title {
-    padding: 0px 15px;
     color: var(--Heading);
     font-size: 14px;
     font-weight: 700;

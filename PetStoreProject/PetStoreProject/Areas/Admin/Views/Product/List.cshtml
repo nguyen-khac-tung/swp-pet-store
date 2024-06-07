@@ -4,10 +4,32 @@
 *@
 @{
     ViewData["title"] = "Danh sách sản phẩm";
-    var products = (List<ProductViewForAdmin>) ViewData["products"];
-    var totalPageNumber = (int)ViewData["totalPageNumber"];
-    var currentPage = (int)ViewData["pageNumber"];
-    var pageSize = (int)ViewData["pageSize"];
+}
+@section HeadOptional {
+    <style>
+        .choose {
+            font-weight: bold !important;
+        }
+        .productCateItem {
+            width: 150px;
+        }
+        .sort-arrows {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sort-arrow {
+            font-size: 10px;
+            line-height: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
 }
 <div class="main-content-inner">
     <!-- main-content-wrap -->
@@ -38,48 +60,78 @@
                 <i class="icon-coffee"></i>
                 <div class="body-text">Tip: Mỗi sản phẩm được cung cấp với một ID duy nhất, bạn có thể dựa vào đó để tìm chính xác sản phẩm bạn cần (#ID)</div>
             </div>
-            <div class="flex items-center justify-between gap10 flex-wrap">
-                <div class="wg-filter flex-grow">
-                    <div class="show">
-                        <div class="text-tiny">HIển thị</div>
-                        <div class="select" id="pageSize">
-                            
-                        </div>
-                        <div class="text-tiny">sản phẩm</div>
-                    </div>
-                    <form class="form-search">
-                        <fieldset class="name">
-                            <input type="text" placeholder="Tìm kiếm ở đây..." class="" name="name" tabindex="2" value="" aria-required="true" required="">
-                        </fieldset>
-                        <div class="button-submit">
-                            <button class="" type="submit"><i class="icon-search"></i></button>
-                        </div>
-                    </form>
-                </div>
-                <a class="tf-button style-1 w208" href="add-product.html"><i class="icon-plus"></i>Thêm mới</a>
+            <div class="col-xl-12 col-lg-12 d-none d-lg-block">
+                <nav>
+                    <ul class="header-menu-list text-center" style="display: flex; justify-content: space-between; align-items:center; height: 50px">
+                        <li class="active">
+                            <div class="show flex" style="align-items: center">
+                                <div class="text-tiny" style="padding-left: 12px">HIển thị </div>
+                                <div class="select" id="pageSize" style="margin: 5px; padding: 0">
+                                </div>
+                                <div class="text-tiny"> sản phẩm</div>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="drop-icon" href="#">Danh Mục</a>
+                            <!-- Home Version Dropdown Start -->
+                            <ul class="common_ddown" id="category-list" style="width: 190px">
+                                
+                            </ul>
+                            <!-- Home Version Dropdown End -->
+                        </li>
+                        <li>
+                            <a class="drop-icon" href="#">Dịch Mục Sản Phẩm</a>
+                            <!-- Home Version Dropdown Start -->
+                            <ul class="common_ddown" id="product-category-list" style="max-height:235px; overflow: auto; width:290px">
+                                
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="tf-button style-1 w208" href="add-product.html"><i class="icon-plus"></i>Thêm mới</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+            
             <div class="wg-table table-product-list">
                 <ul class="table-title flex gap20 mb-14">
                     <li>
                         <div class="body-title">Sản phẩm</div>
+                        <form class="form-search" id="form-search">
+                            
+                        </form>
                     </li>
                     <li>
                         <div class="body-title">ID</div>
                     </li>
                     <li>
                         <div class="body-title">Giá</div>
+                        @* <button id="sort-price-asc">Giá ↑</button>
+                        <button id="sort-price-desc">Giá ↓</button> *@
                     </li>
                     <li>
                         <div class="body-title">Đã bán</div>
+                        @* <div class="sort-arrows">
+                            <span class="sort-arrow" id="sort-price-asc">↑</span>
+                            <span class="sort-arrow" id="sort-price-desc">↓</span>
+                        </div> *@
                     </li>
                     <li>
                         <div class="body-title">Trong kho</div>
+                        @* <select class="filter-input" id="filter-stock" style="width:300px; height: 50px">
+                            <option value="">All</option>
+                            <option value="in-stock">Còn hàng</option>
+                            <option value="out-of-stock">Hết hàng</option>
+                        </select> *@
+                    </li>
+                    <li>
+                        <div class="body-title">Tình trạng</div>
                     </li>
                     <li>
                         <div class="body-title"></div>
                     </li>
                 </ul>
-                <div style="max-height:740px; overflow-y:auto">
+                <div style="max-height:745px; overflow-y:auto">
                     <ul class="flex flex-column" id="product-list">
                         
                     </ul>
@@ -87,7 +139,7 @@
             </div>
             <div class="divider"></div>
             <div class="flex items-center justify-between flex-wrap gap10">
-                <div class="text-tiny">Hiển thị @pageSize sản phẩm</div>
+                <div class="text-tiny" id="size-title">Hiển thị 10 sản phẩm</div>
                 @* <ul class="wg-pagination">
                     <li>
                         <a href="#"><i class="icon-chevron-left"></i></a>
@@ -149,7 +201,7 @@
 
                                     <!--Name-->
                                     <h3 class="product-header"><a href="#" id="quick_name"></a></h3>
-                                    <ul class="rating-summary">
+                                    <ul class="rating-summary hidden">
                                         <li class="rating-pro">
                                             <i class="icofont-ui-rating"></i>
                                             <i class="icofont-ui-rating"></i>
@@ -189,13 +241,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
-                                        Số lượng:
+                                    <div class="details_action_wraper hidden" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
                                         <form action="#" onclick="quick_total_price()" style="border-radius: 10px">
-                                            <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
+                                            <input class="quantity hidden" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
                                         </form>
                                     </div>
-                                    <div>
+                                    <div class="hidden">
                                         Tổng số tiền: <span id="quick_amount"></span>
                                         <span>VND</span>
                                     </div>
@@ -226,16 +277,29 @@
 
 @section ScriptOptional{
     <script>
-        ChoosePage(1, 10)
-        function ChoosePage(pageNumber, pageSize) {
-            fetchProducts(pageSize, pageNumber);
+        ChoosePageSize(10, 1)
+        function ChoosePage(pageNumber, pageSize, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
         }
 
-        function ChoosePageSize(pageNumber) {
-            let selectedSize = document.getElementById('size').value;
-            fetchProducts(selectedSize, pageNumber);
+        function ChooseCategory(categoryId, pageSize, pageNumber, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        }
+
+        function ChoosePageSize(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+            let x = $('#size').val();
+            fetchProducts(x, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        }
+        function chooseProductCategory(productCateId, pageSize, pageNumber, categoryId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        }
+        function quickViewForAdmin(productId) {
+            quickView(productId)
+            const quickAddToCartBtn = document.getElementById('quick_add_to_cart');
+            quickAddToCartBtn.classList.remove('out-of-stock');
+            quickAddToCartBtn.innerText = 'Chỉnh sửa';
+            console.log(123)
         }
 
     </script>
-
 }

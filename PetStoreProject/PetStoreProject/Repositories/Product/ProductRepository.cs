@@ -493,46 +493,112 @@ namespace PetStoreProject.Repositories.Product
             return product;
         }
 
-        public List<ProductViewForAdmin> productViewForAdmins(int pageNumber, int pageSize)
+        public async Task<ListProductForAdmin> productViewForAdmins(int pageNumber, int pageSize, int? categoryId,
+            int? productCateId, string? key, string? sortPrice, string? sortSoldQuantity, bool? isInStock,
+            bool? isDelete)
         {
-            List<ProductViewForAdmin> products = (from p in _context.Products
-                                                  select new ProductViewForAdmin
-                                                  {
-                                                      id = p.ProductId,
-                                                      name = p.Name,
-                                                  }).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            ListProductForAdmin listProductForAdmin = new ListProductForAdmin();
+
+            var query = from p in _context.Products
+                        join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                        select new ProductViewForAdmin
+                        {
+                            id = p.ProductId,
+                            name = p.Name,
+                            productCateId = p.ProductCateId,
+                            categoryId = pc.CategoryId,
+                            // Add other necessary fields
+                        };
+
+            // Apply filters
+            if (productCateId.HasValue)
+            {
+                query = query.Where(p => p.productCateId == productCateId.Value);
+            }
+            else if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.categoryId == categoryId.Value);
+            }
+
+            if (isInStock.HasValue)
+            {
+                query = query.Where(p => _context.ProductOptions.Any(po => po.ProductId == p.id && po.IsSoldOut == !isInStock.Value));
+            }
+
+            if (isDelete.HasValue)
+            {
+                query = query.Where(p => p.isDelete == isDelete.Value);
+            }
+
+            if (!string.IsNullOrEmpty(key))
+            {
+                query = query.Where(p => p.name.Contains(key));
+            }
+
+            // Sorting
+            if (!string.IsNullOrEmpty(sortPrice))
+            {
+                query = sortPrice.ToLower() == "asc" ? query.OrderBy(p => p.price) : query.OrderByDescending(p => p.price);
+            }
+            else if (!string.IsNullOrEmpty(sortSoldQuantity))
+            {
+                query = sortSoldQuantity.ToLower() == "asc" ? query.OrderBy(p => p.soldQuantity) : query.OrderByDescending(p => p.soldQuantity);
+            }
+
+            // Total products count
+            listProductForAdmin.totalProducts = await query.CountAsync();
+
+            // Apply pagination
+            var products = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            // Retrieve additional details for each product
+            var productIds = products.Select(p => p.id).ToList();
+
+            var productOptions = await (from po in _context.ProductOptions
+                                        join i in _context.Images on po.ImageId equals i.ImageId
+                                        where productIds.Contains(po.ProductId)
+                                        select new
+                                        {
+                                            po.ProductId,
+                                            po.Price,
+                                            po.IsSoldOut,
+                                            ImageUrl = i.ImageUrl
+                                        }).ToListAsync();
+
+            var soldQuantities = await (from po in _context.ProductOptions
+                                        join or in _context.OrderItems on po.ProductOptionId equals or.ProductOptionId
+                                        where productIds.Contains(po.ProductId)
+                                        group or by po.ProductId into g
+                                        select new
+                                        {
+                                            ProductId = g.Key,
+                                            SoldQuantity = g.Sum(x => x.Quantity)
+                                        }).ToListAsync();
+
             foreach (var product in products)
             {
-                var productOptions = (from po in _context.ProductOptions
-                                      join i in _context.Images on po.ImageId equals i.ImageId
-                                      where po.ProductId == product.id
-                                      select new ProductOptionViewModel
-                                      {
-                                          img_url = i.ImageUrl,
-                                          price = po.Price,
-                                          IsSoldOut = po.IsSoldOut
-                                      }).ToList();
-                product.isSoldOut = !(productOptions.Any(po => po.IsSoldOut == false));
-                product.imgUrl = productOptions[0].img_url;
-                product.price = productOptions[0].price;
+                var options = productOptions.Where(po => po.ProductId == product.id).ToList();
+                product.isSoldOut = !options.Any(po => !po.IsSoldOut);
+                var firstOption = options.FirstOrDefault();
+                if (firstOption != null)
+                {
+                    product.imgUrl = firstOption.ImageUrl;
+                    product.price = firstOption.Price;
+                }
 
-                var soldQuantity = (from po in _context.ProductOptions
-                                    join or in _context.OrderItems on po.ProductOptionId equals or.ProductOptionId
-                                    where po.ProductId == product.id
-                                    select or.Quantity).Sum();
+                var soldQuantity = soldQuantities.FirstOrDefault(sq => sq.ProductId == product.id)?.SoldQuantity ?? 0;
                 product.soldQuantity = soldQuantity;
             }
-            return products;
+
+            listProductForAdmin.products = products;
+            return listProductForAdmin;
         }
 
-        public async Task<int> GetTotalProducts()
+
+        public int GetTotalProducts(List<ProductViewForAdmin> products)
         {
-            var count = await _context.Products
-                                .GroupBy(p => p.Name)
-                                .Select(g => g.Count())
-                                .SumAsync();
+            var count = products.Count();
             return count;
         }
-
     }
 }

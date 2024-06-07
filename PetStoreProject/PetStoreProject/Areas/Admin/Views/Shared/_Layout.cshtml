@@ -32,7 +32,9 @@
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="/img/favicon.png">
     <link rel="apple-touch-icon-precomposed" href="/img/favicon.png">
+    <link href="~/css/mystyle.css" rel="stylesheet" />
 
+    @RenderSection("HeadOptional", required: false)
 </head>
 
 <body class="body">
@@ -124,7 +126,7 @@
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
-                                            <a href="/admin/product/index" class="">
+                                            <a href="/admin/product/list" class="">
                                                 <div class="text">Product List</div>
                                             </a>
                                         </li>
@@ -883,6 +885,22 @@
     <script src="/areas/js/theme-settings.js"></script>
     <script src="/areas/js/main.js"></script>
     <script src="~/js/myjs.js"></script>
+    <!-- jquery 3.3.1 -->
+    <script src="~/js/vendor/jquery-3.3.1.min.js"></script>
+    <!-- Mobile menu js -->
+    <script src="~/js/jquery.meanmenu.min.js"></script>
+    <!-- ScrollUp js -->
+    <script src="~/js/jquery.scrollUp.js"></script>
+    <!-- Jquery nice select js -->
+    <script src="~/js/jquery.nice-select.min.js"></script>
+    <!-- Jquery ui price slider js -->
+    <script src="~/js/jquery-ui.min.js"></script>
+    <!-- Bootstrap popper js -->
+    <script src="~/js/popper.min.js"></script>
+    <!-- Plugin js -->
+    <script src="~/js/plugins.js"></script>
+    <!-- Main activaion js -->
+    <script src="~/js/main.js"></script>
     @RenderSection("ScriptOptional", required: false)
 </body>
 

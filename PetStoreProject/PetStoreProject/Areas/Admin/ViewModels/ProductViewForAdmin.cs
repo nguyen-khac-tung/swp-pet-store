@@ -8,5 +8,8 @@
         public float price { get; set; }
         public bool isSoldOut { get; set; }
         public int soldQuantity { get; set; }
+        public bool? isDelete { get; set; }
+        public int? categoryId { get; set; }
+        public int? productCateId { get; set; }
     }
 }

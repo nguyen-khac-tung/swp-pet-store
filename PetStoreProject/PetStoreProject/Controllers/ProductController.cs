@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PetStoreProject.Filters;
 using PetStoreProject.Helper;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;

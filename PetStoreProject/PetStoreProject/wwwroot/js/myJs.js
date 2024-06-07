@@ -460,56 +460,67 @@ function generateProductList(products) {
     productList.empty();
     products.forEach(function (product) {
         let productItem = `
-                        <li class="product-item gap14">
-                            <div class="image no-bg">
-                                <img src="${product.imgUrl}" alt="">
+                    <li class="product-item gap14">
+                        <div class="image no-bg">
+                            <img src="${product.imgUrl}" alt="">
+                        </div>
+                        <div class="flex items-center justify-between gap20 flex-grow">
+                            <div class="name">
+                                <a href="product-list.html" class="body-title-2">${product.name}</a>
                             </div>
-                            <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name">
-                                    <a href="product-list.html" class="body-title-2">${product.name}</a>
-                                </div>
-                                <div class="body-text">#${product.id}</div>
-                                <div class="body-text">${product.price.toLocaleString()} VND</div>
-                                <div class="body-text">${product.soldQuantity}</div>
-                                <div>
-                                    <div class="${product.isSoldOut ? 'block-not-available' : 'block-available'}">
-                                        ${product.isSoldOut ? 'Hết hàng' : 'Còn hàng'}
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="${product.isDelete ? 'block-not-available' : 'block-available'}">
-                                        ${product.isDelete ? 'Ngừng bán' : 'Còn bán'}
-                                    </div>
-                                </div>
-                                <div class="list-icon-function">
-                                    <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickViewForAdmin(${product.id})">
-                                        <i class="icon-eye"></i>
-                                    </div>
-                                    <div class="item edit">
-                                        <i class="icon-edit-3"></i>
-                                    </div>
-                                    <div class="item trash">
-                                        <i class="icon-trash-2"></i>
-                                    </div>
+                            <div class="body-text">#${product.id}</div>
+                            <div class="body-text">${product.price.toLocaleString()} VND</div>
+                            <div class="body-text">${product.soldQuantity}</div>
+                            <div>
+                                <div class="${product.isSoldOut ? 'block-not-available' : 'block-available'}">
+                                    ${product.isSoldOut ? 'Hết hàng' : 'Còn hàng'}
                                 </div>
                             </div>
-                        </li>
-                    `;
+                            <div>
+                                <div class="${product.isDelete ? 'block-not-available' : 'block-available'}">
+                                    ${product.isDelete ? 'Ngừng bán' : 'Còn bán'}
+                                </div>
+                            </div>
+                            <div class="list-icon-function">
+                                <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickViewForAdmin(${product.id})">
+                                    <i class="icon-eye"></i>
+                                </div>
+                                <div class="item edit">
+                                    <i class="icon-edit-3"></i>
+                                </div>
+                                <div class="item trash">
+                                    <i class="icon-trash-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                `;
         productList.append(productItem);
     });
 }
 
-function generateFormInput() {
+function generateFormInput(pageSize, pageNumber, categoryId, productCateId, key, sortPrice,
+    sortSoldQuantity, isInStock, isDelete) {
     let searchForm = $('#form-search');
     searchForm.empty();
-    let input = `<fieldset class="name">
-                     <input type="text" placeholder="Tìm tên sản phẩm..." class="" name="name" tabindex="2" value="" id="search-input">
-                 </fieldset>`
+    let input = `<input type="text" placeholder="Tìm tên sản phẩm..." tabindex="2" value="${key}" id="search-input" style="border-radius: 10px;"
+                     onkeypress="if(event.key == 'Enter'){ chooseKey(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete}); }">
+                 `;
+    let search = `<span class="" type="submit" onclick="chooseKey(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})">
+                        <i class="icon-search"></i>
+                      </span>`;
     searchForm.append(input);
+    searchForm.append(search);
 }
 
+
 function fetchProducts(pageSize, pageNumber, categoryId, productCateId, key,
-                        sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    sortPrice, sortSoldQuantity, isInStock, isDelete) {
+
+    if (key == null) {
+        key = '';
+    }
+
     $.ajax({
         url: 'http://localhost:5206/admin/product/fetchproduct', // Replace with your API endpoint
         type: 'POST',
@@ -532,7 +543,16 @@ function fetchProducts(pageSize, pageNumber, categoryId, productCateId, key,
             let categories = response.categories;
             let productCategories = response.productCategories;
 
-            generateProductList(products);
+            if (response.products.length == 0) {
+                key = '';
+                $('#no-option').show();
+                $('#table-product').hide();
+            }
+            else {
+                generateProductList(products);
+                $('#no-option').hide();
+                $('#table-product').show();
+            }
 
             generatePageSize(pageSize, 1, categoryId, productCateId, key, sortPrice,
                 sortSoldQuantity, isInStock, isDelete);
@@ -544,8 +564,26 @@ function fetchProducts(pageSize, pageNumber, categoryId, productCateId, key,
                             isInStock, isDelete);
 
             generateProductCategory(productCategories, pageSize, 1, categoryId, productCateId,
-                                        key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+                key, sortPrice, sortSoldQuantity, isInStock, isDelete);
 
+            generateFormInput(pageSize, pageNumber, categoryId, productCateId, key, sortPrice,
+                sortSoldQuantity, isInStock, isDelete)
+
+            generateSortPrice(pageSize, pageNumber, categoryId, productCateId, key, sortPrice,
+                null, isInStock, isDelete);
+
+            generateSortSoldQuantity(pageSize, pageNumber, categoryId, productCateId, key, null,
+                sortSoldQuantity, isInStock, isDelete);
+
+            generateIsInStock(pageSize, 1, categoryId, productCateId, key, sortPrice,
+                sortSoldQuantity, isInStock, isDelete);
+
+            generateIsDelete(pageSize, 1, categoryId, productCateId, key, sortPrice,
+                sortSoldQuantity, isInStock, isDelete);
+
+            generateIsInStock(pageSize, 1, categoryId, productCateId, key, sortPrice,
+                sortSoldQuantity, isInStock, isDelete);
+            
             console.log(response)
         },
         error: function (xhr, status, error) {
@@ -567,7 +605,7 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
                             '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
                 text: 'Trang trước'
             });
-            let prevPageItem = $('<li>', { class: 'page-item' }).append(prevPageLink);
+            let prevPageItem = $('<li>', { class: 'page-item'}).append(prevPageLink);
             parentElement.append(prevPageItem);
         }
 
@@ -577,7 +615,7 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
         if (startPage > 1) {
             let firstPageLink = $('<a>', {
                 class: 'page-link',
-                onclick: `ChoosePage(1, ${pageSize}, ${categoryId}, ${productCateId}, ${key},
+                onclick: `ChoosePage(1, ${pageSize}, ${categoryId}, ${productCateId}, '${key}',
                             ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
                 text: '1'
             });
@@ -597,7 +635,7 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
             } else {
                 let pageLink = $('<a>', {
                     class: 'page-link',
-                    onclick: `ChoosePage(${i}, ${pageSize}, ${categoryId}, ${productCateId}, ${key},
+                    onclick: `ChoosePage(${i}, ${pageSize}, ${categoryId}, ${productCateId}, '${key}',
                               ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
                     text: i
                 });
@@ -615,7 +653,7 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
             let lastPageLink = $('<a>', {
                 class: 'page-link',
                 onclick: `ChoosePage(${totalPageNumber}, ${pageSize}, ${categoryId}, ${productCateId},
-                        ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                        '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
                 text: totalPageNumber
             });
             let lastPageItem = $('<li>', { class: 'page-item' }).append(lastPageLink);
@@ -627,7 +665,7 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
             let nextPageLink = $('<a>', {
                 class: 'page-link',
                 onclick: `ChoosePage(${nextPage}, ${pageSize}, ${categoryId}, ${productCateId}, 
-                         ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
+                         '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`,
                 text: 'Trang sau'
             });
             let nextPageItem = $('<li>', { class: 'page-item' }).append(nextPageLink);
@@ -647,7 +685,7 @@ function generateCategory(pageSize, categoryId, categories, pageNumber, productC
         href: '#',
         class: ((categoryId == null || categoryId == 0) ? 'choose' : ''),
         style: "width: 250px",
-        onclick: `ChooseCategory(${0}, ${pageSize}, ${pageNumber}, ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+        onclick: `ChooseCategory(${0}, ${pageSize}, ${pageNumber}, ${productCateId}, '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
     }).text('- Tất cả');
     li.append(href);
     categoryList.append(li);
@@ -658,7 +696,7 @@ function generateCategory(pageSize, categoryId, categories, pageNumber, productC
             href: '#',
             class: (categoryId == category.id ? 'choose' : ''),
             style: "width: 250px",
-            onclick: `ChooseCategory(${category.id}, ${pageSize}, ${pageNumber}, ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+            onclick: `ChooseCategory(${category.id}, ${pageSize}, ${pageNumber}, ${productCateId}, '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
         }).text('- ' + category.name);
         li.append(href);
         categoryList.append(li);
@@ -675,7 +713,8 @@ function generateProductCategory(productCategories, pageSize, pageNumber, catego
         let href = $('<a>', {
             href: '#',
             class: (productCateId == productCategory.id ? 'choose' : ''),
-            onclick: `chooseProductCategory(${productCategory.id}, ${pageSize}, ${pageNumber}, ${categoryId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+            onclick: `chooseProductCategory(${productCategory.id}, ${pageSize}, ${pageNumber}, ${categoryId}, '${key}', 
+                ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
         }).text('- ' + productCategory.name);
         li.append(href);
         productCategoryList.append(li);
@@ -689,7 +728,7 @@ function generatePageSize(pageSize, pageNumber, categoryId, productCateId, key,
     let pS = $('<select>', {
         id: 'size',
         onchange: `ChoosePageSize(${pageSize}, ${pageNumber}, ${categoryId}, 
-            ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+            ${productCateId}, '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
     });
     p.empty();
     let pageSizeList = [10, 20, 30];
@@ -698,4 +737,120 @@ function generatePageSize(pageSize, pageNumber, categoryId, productCateId, key,
         pS.append(option);
     });
     p.append(pS);
+}
+
+function generateSortPrice(pageSize, pageNumber, categoryId, productCateId, key,
+                            sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    let sort_price = $('#sort-price');
+    sort_price.empty();
+    let li = $('<li>');
+    let href = $('<a>', {
+        href: '#',
+        class: (sortPrice == null ? 'choose' : ''),
+        onclick: `ChooseSortPrice(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId}, '${key}',
+        ${null}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+    }).text('- Không sắp xếp');
+    li.append(href);
+    sort_price.append(li);
+    let sortPriceList = [true, false];
+    let sortPriceName = ['Giá: Thấp đến cao', 'Giá: Cao đến thấp'];
+    sortPriceList.forEach(function (price) {
+        li = $('<li>');
+        href = $('<a>', {
+            style: 'width: 200px',
+            href: '#',
+            class: (sortPrice == price ? 'choose' : ''),
+            onclick: `ChooseSortPrice(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId}, '${key}', 
+            ${price}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
+        }).text('- ' + sortPriceName[sortPriceList.indexOf(price)]);
+        li.append(href);
+        sort_price.append(li);
+    });
+}
+
+function generateSortSoldQuantity(pageSize, pageNumber, categoryId, productCateId, key,
+                            sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    let sort_sold_quantity = $('#sort-sold-quantity');
+    sort_sold_quantity.empty();
+    let li = $('<li>');
+    let href = $('<a>', {
+        href: '#',
+        class: (sortSoldQuantity == null ? 'choose' : ''),
+        onclick: `ChooseSortSoldQuantity(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId},
+            '${key}', ${sortPrice}, ${null}, ${isInStock}, ${isDelete})`
+        }).text('- Không sắp xếp');
+    li.append(href);
+    sort_sold_quantity.append(li);
+    let sortSoldQuantityList = [true, false];
+    let sortSoldQuantityName = ['Số lượng bán: Thấp đến cao', 'Số lượng bán: Cao đến thấp'];
+    sortSoldQuantityList.forEach(function (soldQuantity) {
+        li = $('<li>');
+        href = $('<a>', {
+            style: 'width: 230px',
+            href: '#',
+            class: (sortSoldQuantity == soldQuantity ? 'choose' : ''),
+            onclick: `ChooseSortSoldQuantity(${pageSize}, ${pageNumber}, ${categoryId},
+                ${productCateId}, '${key}', ${sortPrice}, ${soldQuantity}, ${isInStock}, ${isDelete})`
+        }).text('- ' + sortSoldQuantityName[sortSoldQuantityList.indexOf(soldQuantity)]);
+        li.append(href);
+        sort_sold_quantity.append(li);
+    });
+}
+
+function generateIsInStock(pageSize, pageNumber, categoryId, productCateId, key,
+    sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    let in_stock = $('#is-in-stock');
+    in_stock.empty();
+    let li = $('<li>');
+    let href = $('<a>', {
+        href: '#',
+        class: (isInStock == null ? 'choose' : ''),
+        onclick: `ChooseIsInStock(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId},
+            '${key}', ${sortPrice}, ${sortSoldQuantity}, ${null}, ${isDelete})`
+    }).text('- Tất cả');
+    li.append(href);
+    in_stock.append(li);
+    let isInStockList = [true, false];
+    let isInStockName = ['Còn hàng', 'Hết hàng'];
+    isInStockList.forEach(function (inStock) {
+        li = $('<li>');
+        href = $('<a>', {
+            href: '#',
+            class: (isInStock == inStock ? 'choose' : ''),
+            onclick: `ChooseIsInStock(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId},
+                '${key}', ${sortPrice}, ${sortSoldQuantity}, ${inStock}, ${isDelete})`
+        }).text('- ' + isInStockName[isInStockList.indexOf(inStock)]);
+        li.append(href);
+        in_stock.append(li);
+    }
+    );
+}
+function generateIsDelete(pageSize, pageNumber, categoryId, productCateId, key,
+    sortPrice, sortSoldQuantity, isInStock, isDelete) {
+    let is_delete = $('#is-delete');
+    is_delete.empty();
+    let li = $('<li>');
+    let href = $('<a>', {
+        style: 'width: 130px',
+        href: '#',
+        class: (isDelete == null ? 'choose' : ''),
+        onclick: `ChooseIsDelete(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId},
+        '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${null})`
+    }).text('- Tất cả');
+    li.append(href);
+    is_delete.append(li);
+    let isDeleteList = [true, false];
+    let isDeleteName = ['Ngừng bán', 'Còn bán'];
+    isDeleteList.forEach(function (isdelete) {
+        li = $('<li>');
+        href = $('<a>', {
+            href: '#',
+            style: 'width: 130px',
+            class: (isdelete == isDelete ? 'choose' : ''),
+            onclick: `ChooseIsDelete(${pageSize}, ${pageNumber}, ${categoryId}, ${productCateId},
+            '${key}', ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isdelete})`
+        }).text('- ' + isDeleteName[isDeleteList.indexOf(isdelete)]);
+        li.append(href);
+        is_delete.append(li);
+    });
 }

@@ -4621,7 +4621,7 @@ select.h40 {
   width: 72px;
 }
 .wg-table.table-product-list > * {
-  min-width: 1000px;
+  min-width: 1300px;
 }
 .wg-table.table-product-list ul.table-title {
   padding: 12px;
@@ -4635,9 +4635,13 @@ select.h40 {
   width: 430px;
   flex-shrink: 0;
 }
-.wg-table.table-product-list ul.table-title li:nth-child(5), .wg-table.table-product-list ul.table-title li:nth-child(4) {
-  width: 90px;
-  flex-shrink: 0;
+.wg-table.table-product-list ul.table-title li:nth-child(4){
+    width: 100px;
+    flex-shrink: 0;
+}
+.wg-table.table-product-list ul.table-title li:nth-child(5) {
+    width: 120px;
+    flex-shrink: 0;
 }
 .wg-table.table-product-list ul.table-title li:last-child {
   width: 110px;
@@ -4657,9 +4661,13 @@ select.h40 {
   width: 370px;
   flex-shrink: 0;
 }
-.wg-table.table-product-list .product-item > .flex > div:nth-child(5), .wg-table.table-product-list .product-item > .flex > div:nth-child(4) {
-  width: 90px;
-  flex-shrink: 0;
+.wg-table.table-product-list .product-item > .flex > div:nth-child(4){
+    width: 100px;
+    flex-shrink: 0;
+}
+.wg-table.table-product-list .product-item > .flex > div:nth-child(5) {
+    width: 120px;
+    flex-shrink: 0;
 }
 .wg-table.table-product-list .product-item > .flex > div:last-child {
   width: 110px;

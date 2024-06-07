@@ -494,20 +494,20 @@ namespace PetStoreProject.Repositories.Product
         }
 
         public async Task<ListProductForAdmin> productViewForAdmins(int pageNumber, int pageSize, int? categoryId,
-            int? productCateId, string? key, string? sortPrice, string? sortSoldQuantity, bool? isInStock,
+            int? productCateId, string? key, bool? sortPrice, bool? sortSoldQuantity, bool? isInStock,
             bool? isDelete)
         {
             ListProductForAdmin listProductForAdmin = new ListProductForAdmin();
 
             var query = from p in _context.Products
                         join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
-                        select new ProductViewForAdmin
+                        select new
                         {
                             id = p.ProductId,
-                            name = p.Name,
                             productCateId = p.ProductCateId,
                             categoryId = pc.CategoryId,
-                            // Add other necessary fields
+                            isDelete = p.IsDelete,
+                            name = p.Name
                         };
 
             // Apply filters
@@ -520,11 +520,6 @@ namespace PetStoreProject.Repositories.Product
                 query = query.Where(p => p.categoryId == categoryId.Value);
             }
 
-            if (isInStock.HasValue)
-            {
-                query = query.Where(p => _context.ProductOptions.Any(po => po.ProductId == p.id && po.IsSoldOut == !isInStock.Value));
-            }
-
             if (isDelete.HasValue)
             {
                 query = query.Where(p => p.isDelete == isDelete.Value);
@@ -535,23 +530,24 @@ namespace PetStoreProject.Repositories.Product
                 query = query.Where(p => p.name.Contains(key));
             }
 
-            // Sorting
-            if (!string.IsNullOrEmpty(sortPrice))
+            // Fetch initial filtered list
+            var initialResult = await query.ToListAsync();
+
+            // Project to ProductViewForAdmin and fetch related data in memory
+            var products = initialResult.Select(p => new ProductViewForAdmin
             {
-                query = sortPrice.ToLower() == "asc" ? query.OrderBy(p => p.price) : query.OrderByDescending(p => p.price);
-            }
-            else if (!string.IsNullOrEmpty(sortSoldQuantity))
-            {
-                query = sortSoldQuantity.ToLower() == "asc" ? query.OrderBy(p => p.soldQuantity) : query.OrderByDescending(p => p.soldQuantity);
-            }
+                id = p.id,
+                name = p.name,
+                productCateId = p.productCateId,
+                categoryId = p.categoryId,
+                // Initialize other fields to default values
+                price = 0,
+                isSoldOut = false,
+                imgUrl = string.Empty,
+                soldQuantity = 0,
+                isDelete = p.isDelete
+            }).ToList();
 
-            // Total products count
-            listProductForAdmin.totalProducts = await query.CountAsync();
-
-            // Apply pagination
-            var products = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-
-            // Retrieve additional details for each product
             var productIds = products.Select(p => p.id).ToList();
 
             var productOptions = await (from po in _context.ProductOptions
@@ -590,7 +586,27 @@ namespace PetStoreProject.Repositories.Product
                 product.soldQuantity = soldQuantity;
             }
 
-            listProductForAdmin.products = products;
+            // Apply filters and sorting in-memory
+            if (isInStock.HasValue)
+            {
+                products = products.Where(p => p.isSoldOut != isInStock.Value).ToList();
+            }
+
+            if (sortPrice.HasValue)
+            {
+                products = sortPrice.Value ? products.OrderBy(p => p.price).ToList() : products.OrderByDescending(p => p.price).ToList();
+            }
+            else if (sortSoldQuantity.HasValue)
+            {
+                products = sortSoldQuantity.Value ? products.OrderBy(p => p.soldQuantity).ToList() : products.OrderByDescending(p => p.soldQuantity).ToList();
+            }
+
+            // Total products count
+            listProductForAdmin.totalProducts = products.Count;
+
+            // Apply pagination
+            listProductForAdmin.products = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
             return listProductForAdmin;
         }
 

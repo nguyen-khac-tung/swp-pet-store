@@ -30,7 +30,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
         [HttpPost]
         public async Task<JsonResult> fetchProduct(int? categoryId, int? productCateId, string? key,
-            string? sortPrice, string? sortSoldQuantity, bool? isInStock, bool? isDelete,
+            bool? sortPrice, bool? sortSoldQuantity, bool? isInStock, bool? isDelete,
             int pageNumber = 1, int pageSize = 10)
         {
             var categories = _category.GetCategories();
@@ -56,7 +56,8 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 pageSize = pageSize,
                 totalPageNumber = totalPageNumber,
                 categories = categories,
-                productCategories = productCategories
+                productCategories = productCategories,
+                key = key
             });
         }
 

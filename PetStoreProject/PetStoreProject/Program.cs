@@ -6,8 +6,10 @@ using PetStoreProject.Helper;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
+using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
+using PetStoreProject.Repositories.ProductCategory;
 using PetStoreProject.Repositories.WishList;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +58,10 @@ builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 
 builder.Services.AddTransient<ICartRepository, CartRepository>();
+
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
 
 builder.Services.AddControllersWithViews();
 

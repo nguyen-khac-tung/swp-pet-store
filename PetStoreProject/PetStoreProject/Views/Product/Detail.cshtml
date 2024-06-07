@@ -460,6 +460,8 @@
 			}
 		}
 		document.getElementById('large_image').setAttribute('src', img_url)
+        document.getElementById('large_image').setAttribute('data-zoom-image', img_url)
+        document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
 		document.getElementById('price').innerText = price.toLocaleString('en-US')
 		total_price()
         checkOutOfStock()

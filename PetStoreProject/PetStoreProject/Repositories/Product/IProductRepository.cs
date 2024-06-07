@@ -25,7 +25,9 @@ namespace PetStoreProject.Repositories.Product
         public List<HomeProductViewModel> GetProductsOfHome(int cateId, int? productCateId);
         public HomeProductViewModel GetImageAndPriceOfHomeProduct(HomeProductViewModel product);
 
-        public List<ProductViewForAdmin> productViewForAdmins(int pageNumber, int pageSize);
-        public Task<int> GetTotalProducts();
+        public Task<ListProductForAdmin> productViewForAdmins(int pageNumber, int pageSize, int? categoryId,
+            int? productCateId, string? key, string? sortPrice, string? sortSoldQuantity, bool? isInStock, bool? isDelete);
+
+        public int GetTotalProducts(List<ProductViewForAdmin> products);
     }
 }

@@ -534,7 +534,7 @@ function fetchProducts(pageSize, pageNumber, categoryId, productCateId, key,
 
             generateProductList(products);
 
-            generatePageSize(pageSize, pageNumber, categoryId, productCateId, key, sortPrice,
+            generatePageSize(pageSize, 1, categoryId, productCateId, key, sortPrice,
                 sortSoldQuantity, isInStock, isDelete);
 
             generatePagination(totalPageNumber, pageNumber, pageSize, categoryId, productCateId,
@@ -644,7 +644,7 @@ function generateCategory(pageSize, categoryId, categories, pageNumber, productC
 
     let li = $('<li>');
     let href = $('<a>', {
-        href: '',
+        href: '#',
         class: ((categoryId == null || categoryId == 0) ? 'choose' : ''),
         style: "width: 250px",
         onclick: `ChooseCategory(${0}, ${pageSize}, ${pageNumber}, ${productCateId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
@@ -673,7 +673,7 @@ function generateProductCategory(productCategories, pageSize, pageNumber, catego
     productCategories.forEach(function (productCategory) {
         let li = $('<li>');
         let href = $('<a>', {
-            href: '',
+            href: '#',
             class: (productCateId == productCategory.id ? 'choose' : ''),
             onclick: `chooseProductCategory(${productCategory.id}, ${pageSize}, ${pageNumber}, ${categoryId}, ${key}, ${sortPrice}, ${sortSoldQuantity}, ${isInStock}, ${isDelete})`
         }).text('- ' + productCategory.name);

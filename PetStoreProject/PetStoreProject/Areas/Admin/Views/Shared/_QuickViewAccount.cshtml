@@ -81,6 +81,11 @@
         align-content: center;
         padding-left:20px;
     }
+
+    .form-check-input {
+        margin-right:5px;
+        appearance:auto;
+    }
 </style>
 
 
@@ -89,7 +94,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
-                <button type="button" onclick="CloseQuickViewAccount()" class="btn-close" aria-label="Close"></button>
+                <button type="button" onclick="closeQuickViewAccount()" class="btn-close" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -102,14 +107,14 @@
                             <div class="form-group">
                                 <h3 id="user-name">Liza Doe</h3>
                             </div>
-                            <div style="display:inline" >
+                            <div style="display:inline; margin-top:10px;" >
                                 <label>Vai trò: </label>
                                 @* <select class="select-role">
                                     <option value="1">Quản trị viên</option>/option>
                                     <option value="2">Khách hàng</option>
                                     <option value="3">Nhân viên</option>
                                 </select> *@
-                                <span id="role"></span>
+                                <div id="role" style="display:inline;"></div>
                             </div>
                         </div>
                     </div>

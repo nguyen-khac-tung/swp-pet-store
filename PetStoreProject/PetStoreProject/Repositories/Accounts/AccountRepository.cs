@@ -263,5 +263,70 @@ namespace PetStoreProject.Repositories.Accounts
 
             return accounts;
         }
+
+        public int UpdateRoleAccount(int accountId, List<int> roleAccounts)
+        {
+            int status = 0;
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Retrieve the old roles associated with the account
+                    var roleOlds = _context.AccountRoles
+                        .Where(ar => ar.AccountId == accountId)
+                        .Select(ar => ar.RoleId)
+                        .ToList();
+
+                    // Use HashSet for faster lookup
+                    var roleAccountsSet = new HashSet<int>(roleAccounts);
+                    var roleOldsSet = new HashSet<int>(roleOlds);
+
+                    // Roles to remove: old roles that are not in the new roles
+                    var rolesToRemove = roleOldsSet.Except(roleAccountsSet).ToList();
+                    // Roles to add: new roles that are not in the old roles
+                    var rolesToAdd = roleAccountsSet.Except(roleOldsSet).ToList();
+
+                    // Remove roles
+                    if (rolesToRemove.Any())
+                    {
+                        foreach (var roleId in rolesToRemove)
+                        {
+                            var roleToRemove = _context.AccountRoles
+                                .FirstOrDefault(ar => ar.AccountId == accountId && ar.RoleId == roleId);
+
+                            if (roleToRemove != null)
+                            {
+                                _context.AccountRoles.Remove(roleToRemove);
+                            }
+                        }
+                        _context.SaveChanges();
+                    }
+
+                    // Add roles
+                    if (rolesToAdd.Any())
+                    {
+                        foreach (var roleId in rolesToAdd)
+                        {
+                            _context.AccountRoles.Add(new AccountRole
+                            {
+                                AccountId = accountId,
+                                RoleId = roleId
+                            });
+                        }
+                        _context.SaveChanges();
+                    }
+
+                    transaction.Commit();
+                    status = 1;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+
+                return status;
+            }
+        }
+
     }
 }

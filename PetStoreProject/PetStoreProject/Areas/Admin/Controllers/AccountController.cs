@@ -23,7 +23,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult ListUsers(int? pageIndex, int? pageSize, int? selectedRole, string? searchName)
+        public IActionResult ListUsers(int? pageIndex, int? pageSize, int? selectedRole, string? searchName, string? sortName)
         {
             var pageIndexLocal = pageIndex ?? 1;
 
@@ -33,7 +33,17 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var numberPage = (int)Math.Ceiling(accounts.Count / (double)(pageSizeLocal));
 
+            if (sortName == "abc")
+            {
+                accounts = accounts.OrderBy(a => a.FullName).ToList();
+            }
+            else if (sortName == "zxy")
+            {
+                accounts = accounts.OrderByDescending(a => a.FullName).ToList();
+            }
+
             accounts = accounts.Skip((pageIndexLocal - 1) * pageSizeLocal).Take(pageSizeLocal).ToList();
+
 
             return new JsonResult(new
             {
@@ -41,6 +51,17 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 currentPage = pageIndexLocal,
                 pageSize = pageSizeLocal,
                 numberPage = numberPage
+            });
+        }
+
+        [HttpPost]
+        public IActionResult UpdateRoleAccount(int accountId, List<int> roleAccounts)
+        {
+            int result = _account.UpdateRoleAccount(accountId, roleAccounts);
+
+            return new JsonResult(new
+            {
+                result = result
             });
         }
     }

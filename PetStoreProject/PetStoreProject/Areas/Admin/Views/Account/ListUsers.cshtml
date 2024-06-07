@@ -5,6 +5,16 @@
 
 @model List<AccountDetailViewModel>
 
+<style>
+
+    #user-hover:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
 <div class="main-content-inner">
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
@@ -56,7 +66,7 @@
             <div class="wg-table table-all-user" id="table-content">
                 <ul class="table-title flex gap20 mb-14">
                     <li>
-                        <div class="body-title">Người dùng</div>
+                        <div id="user-hover" onclick="sortByName()" class=" body-title">Người dùng</div>
                     </li>
                     <li>
                         <div class="body-title">Số điện thoại</div>
@@ -92,17 +102,18 @@
 <script>
     var url = window.location.pathname;
     var selectedRole = 0;
+    var sortName = "";
     window.addEventListener('load', function () {
-        Load(1, 10, 0, "");
+        load(1, 10, 0, "", "");
     });
 
-    function Load(pageIndex, pageSize, selectedRole, searchName) {
+    function load(pageIndex, pageSize, selectedRole, searchName, sortName) {
 
         $.ajax({
             url: url,
             type: 'Post',
             data: {
-                pageIndex: pageIndex, pageSize: pageSize, selectedRole: selectedRole, searchName: searchName
+                pageIndex: pageIndex, pageSize: pageSize, selectedRole: selectedRole, searchName: searchName, sortName: sortName
             },
             success: function (response) {
                 var accounts = response.accounts;
@@ -161,10 +172,10 @@
                         html += '<div class="body-text" >' + accounts[i].email + '</div>';
                         html += '<div class="list-icon-function" >';
                         html += '<div class="item eye">';
-                        html += '<i class="icon-eye" onclick="QuickViewAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
+                        html += '<i class="icon-eye" onclick="quickViewAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
                         html += '</div>';
                         html += '<div class="item edit">';
-                        html += '<i class="icon-edit-3"></i>';
+                        html += '<i class="icon-edit-3" onclick="editRoleAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
                         html += '</div>';
                         html += '<div class="item trash">';
                         html += '<i class="icon-trash-2"></i>';
@@ -200,13 +211,13 @@
         console.log('PageSize: ' + pageSize);
         console.log('SearchName: ' + searchName);
 
-        Load(pageIndex, pageSize, selectedRole, searchName);
+        load(pageIndex, pageSize, selectedRole, searchName, sortName);
     }
 
     function SelectedRole() {
         selectedRole = $("#selected_role").val();
         var searchName = document.getElementById("search-input").value;
-        Load(1, 10, selectedRole, searchName);
+        load(1, 10, selectedRole, searchName, sortName);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -224,13 +235,13 @@
         var searchName = document.getElementById("search-input").value;
 
         console.log("Search query:", searchName);
-        Load(1, 10, selectedRole, searchName);
+        load(1, 10, selectedRole, searchName, sortName);
     }
 
-    function QuickViewAccount(accountJson) {
+    function quickViewAccount(accountJson) {
         var account = JSON.parse(decodeURIComponent(accountJson));
 
-        console.log(account); 
+        console.log(account);
         $('#profilePopup').modal('show');
         $('#user-name').empty();
         $('#role').empty();
@@ -291,8 +302,103 @@
         $('#email').val(account.email);
     }
 
-    function CloseQuickViewAccount() {
+    function closeQuickViewAccount() {
         $('#profilePopup').modal('hide');
+    }
+
+    function sortByName() {
+        var searchName = document.getElementById("search-input").value;
+        switch (sortName) {
+            case "":
+                sortName = "abc";
+                break;
+            case "abc":
+                sortName = "zxy";
+                break;
+            case "zxy":
+                sortName = "";
+                break;
+            default:
+                break;
+        }
+        load(1, 10, selectedRole, searchName, sortName);
+    }
+
+    function editRoleAccount(accountJson) {
+        var account = JSON.parse(decodeURIComponent(accountJson));
+
+        quickViewAccount(accountJson);
+
+        var roleAdmin = "";
+        var roleEmployee = "";
+        var roleCustomer = "";
+        var checkedAdmin = "";
+        var checkedEmployee = "";
+        var checkedCustomer = "";
+
+        if (account.roles.length > 0) { 
+            for (var i = 0; i < account.roles.length; i++) { 
+                switch (account.roles[i].roleId) {
+                    case 1:
+                        checkedAdmin = "checked";
+                        break;
+                    case 2:
+                        checkedEmployee = "checked"; 
+                        break;
+                    case 3:
+                        checkedCustomer = "checked";
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        var html = `
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" ${checkedAdmin}>
+                <label class="form-check-label" for="inlineCheckbox1">Admin</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" ${checkedEmployee}>
+                <label class="form-check-label" for="inlineCheckbox2">Employee</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" ${checkedCustomer}>
+                <label class="form-check-label" for="inlineCheckbox3">Customer</label>
+            </div>
+                <button type="button" class="btn btn-icon" onclick="updateRoleAccount('${account.accountId}')" style="background:none; border:none; padding:0; cursor:pointer;">
+                <i class="bi bi-save-fill" style="font-size: 25px; color: black;"></i>
+            </button>
+        `;
+
+        $('#role').html(html);
+    }
+
+    function updateRoleAccount(accountId) {
+        var roleAccounts = [];
+        for (var i = 1; i <= 3; i++) {
+            if($('#inlineCheckbox' + i).prop('checked')) {
+                var role = $("#inlineCheckbox" + i).val();
+                roleAccounts.push(role);
+            }
+
+        }
+        console.log("role_account: " + roleAccounts);
+        $.ajax({
+            url: "UpdateRoleAccount",
+            type: 'Post',
+            data: { accountId: accountId, roleAccounts: roleAccounts },
+            success: function (response) {
+                if (response.result == 1) {
+                    alert("Cập nhật vai trò thành công!");
+                    $('#profilePopup').modal('hide');
+                    load(1, 10, selectedRole, "", sortName);
+                } else {
+                    alert("Cập nhật vai trò thất bại!");
+                }
+            },
+        });
     }
 
 </script>

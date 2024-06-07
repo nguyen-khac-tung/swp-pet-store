@@ -23,5 +23,7 @@ namespace PetStoreProject.Repositories.Accounts
 
         public List<AccountDetailViewModel> GetAccounts(int userType, int selectedRole, string searchName);
 
+        public int UpdateRoleAccount(int accountId, List<int> roleAccounts);
+
     }
 }

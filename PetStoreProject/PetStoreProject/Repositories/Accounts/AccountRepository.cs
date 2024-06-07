@@ -1,4 +1,5 @@
-﻿using Microsoft.Identity.Client;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.Identity.Client;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
@@ -179,6 +180,8 @@ namespace PetStoreProject.Repositories.Accounts
                                         UserId = e.EmployeeId,
                                         FullName = e.FullName,
                                         Phone = e.Phone,
+                                        DoB = e.DoB,
+                                        Address = e.Address.Trim(),
                                         Email = e.Email,
                                         Gender = e.Gender,
                                         Roles = _context.AccountRoles.Where(ar => ar.AccountId == e.AccountId).Select(ar => ar.Role).ToList()
@@ -196,6 +199,8 @@ namespace PetStoreProject.Repositories.Accounts
                                         UserId = c.CustomerId,
                                         FullName = c.FullName,
                                         Phone = c.Phone,
+                                        DoB = c.DoB,
+                                        Address = c.Address.Trim(),
                                         Email = c.Email,
                                         Gender = c.Gender,
                                         Roles = _context.AccountRoles.Where(ar => ar.AccountId == c.AccountId).Select(ar => ar.Role).ToList()
@@ -213,6 +218,8 @@ namespace PetStoreProject.Repositories.Accounts
                                      UserId = ad.AdminId,
                                      FullName = ad.FullName,
                                      Phone = ad.Phone,
+                                     DoB = ad.DoB,
+                                     Address = ad.Address.Trim(),
                                      Email = ad.Email,
                                      Gender = ad.Gender,
                                      Roles = _context.AccountRoles.Where(ar => ar.AccountId == ad.AccountId).Select(ar => ar.Role).ToList()
@@ -220,7 +227,7 @@ namespace PetStoreProject.Repositories.Accounts
             return accountAdmins;
         }
 
-        public List<AccountDetailViewModel> GetAccounts(int userType)
+        public List<AccountDetailViewModel> GetAccounts(int userType, int selectedRole, string searchName)
         {
             List<AccountDetailViewModel> accounts = new List<AccountDetailViewModel>();
             if (userType == 0)
@@ -243,6 +250,15 @@ namespace PetStoreProject.Repositories.Accounts
                 {
                     accounts.AddRange(GetAccountCustomers());
                 }
+            }
+
+            if (selectedRole != 0)
+            {
+                accounts = accounts.Where(acc => acc.Roles.Any(role => role.RoleId == selectedRole)).ToList();
+            }
+            if (searchName != "")
+            {
+                accounts = accounts.Where(acc => acc.FullName.ToLower().Contains(searchName.ToLower())).ToList();
             }
 
             return accounts;

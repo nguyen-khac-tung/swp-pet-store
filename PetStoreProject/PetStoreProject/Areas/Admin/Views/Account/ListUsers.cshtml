@@ -5,7 +5,6 @@
 
 @model List<AccountDetailViewModel>
 
-
 <div class="main-content-inner">
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
@@ -43,8 +42,8 @@
                     </form>
                     <div class="wg-filter">
                         <label style="font-size: 16px">Vai trò:</label>
-                        <select id="selected_role" onchange="SelectedRole()">
-                            <option selected value="">-- Tất cả --</option>
+                        <select id="selected_role" onchange="SelectedRole()" style="width:auto">
+                            <option selected value="0">-- Tất cả --</option>
                             <option value="1">Quản trị viên</option>
                             <option value="2">Nhân viên</option>
                             <option value="3">Khách hàng</option>
@@ -54,7 +53,7 @@
 
                 <a class="tf-button style-1 w208" href="add-new-user.html"><i class="icon-plus"></i>Add new</a>
             </div>
-            <div class="wg-table table-all-user">
+            <div class="wg-table table-all-user" id="table-content">
                 <ul class="table-title flex gap20 mb-14">
                     <li>
                         <div class="body-title">Người dùng</div>
@@ -92,10 +91,9 @@
 <script src="~/js/list-product.js"></script>
 <script>
     var url = window.location.pathname;
-    var selectedRole = "";
-    var searchName = "";
+    var selectedRole = 0;
     window.addEventListener('load', function () {
-        Load(1, 15, "", "");
+        Load(1, 10, 0, "");
     });
 
     function Load(pageIndex, pageSize, selectedRole, searchName) {
@@ -109,8 +107,12 @@
             success: function (response) {
                 var accounts = response.accounts;
 
-                if (response.accounts != null) {
+                if (accounts.length > 0) {
                     $("#list-users").empty();
+                    $('.text-tiny').empty();
+                    $('.table-title').css('display', '');
+                    $('#list-users').css('display', '');
+                    $('#table-content').addClass('wg-table');
                     var html = "";
                     for (var i = 0; i < accounts.length; i++) {
                         html += '<li class="user-item gap20" >';
@@ -127,11 +129,14 @@
                             html += '<div class="body-text" >' + accounts[i].phone + '</div>';
                         }
                         else {
-                            html += '<div class="body-text" style="font-weight:600;  font-style: italic; " >Trống</div>';
+                            html += '<div class="body-text" style="font-weight:600;  font-style: italic;" > - </div>';
                         }
                         html += '<div class="body-text" >';
                         if (accounts[i].roles.length > 0) {
                             for (var j = 0; j < accounts[i].roles.length; j++) {
+                                if (j > 0) {
+                                    html += "<span>-</span>";
+                                }
                                 switch (accounts[i].roles[j].roleId) {
                                     case 1:
                                         html += '<span>Quản trị viên</span>';
@@ -143,13 +148,14 @@
                                         html += '<span>Khách hàng</span>';
                                         break;
                                     default:
-                                        html += '<span>Trống</span>';
+                                        html += '<span> - </span>';
                                         break;
                                 }
+
                             }
                         } else {
                             console.log("ahihi: " + accounts[i].roles);
-                            html += '<span style="font-weight:600;  font-style: italic; ">Trống</span>';
+                            html += '<span style="font-weight:600;  font-style: italic;">-</span>';
                         }
                         html += '</div>'
                         html += '<div class="body-text" >' + accounts[i].email + '</div>';
@@ -171,7 +177,12 @@
                     Pagination(response.currentPage, response.numberPage, response.pageSize);
                     console.log("data: ", response);
                 } else {
-
+                    $('#pagination').empty();
+                    $('.table-title').css("display", "none");
+                    $('#list-users').css("display", "none");
+                    $('#table-content').removeClass('wg-table');
+                    $('.text-tiny').empty();
+                    $('#table-content').append('<div class="text-tiny" style="text-align: center; margin-top: 20px;"><h3>Không có dữ liệu!</h3></div>');
                     console.error("Unexpected response structure:", response);
                 }
 
@@ -183,16 +194,19 @@
     }
 
     function NextPage(pageIndex, pageSize) {
+        var searchName = document.getElementById("search-input").value;
+
         console.log('PageIndex: ' + pageIndex);
         console.log('PageSize: ' + pageSize);
         console.log('SearchName: ' + searchName);
+
         Load(pageIndex, pageSize, selectedRole, searchName);
     }
 
     function SelectedRole() {
         selectedRole = $("#selected_role").val();
-
-        Load(1, 15, selectedRole, searchName);
+        var searchName = document.getElementById("search-input").value;
+        Load(1, 10, selectedRole, searchName);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -208,8 +222,9 @@
 
     function searchFunction() {
         var searchName = document.getElementById("search-input").value;
+
         console.log("Search query:", searchName);
-        Load(1, 15, selectedRole, searchName);
+        Load(1, 10, selectedRole, searchName);
     }
 
     function QuickViewAccount(accountJson) {
@@ -218,16 +233,20 @@
         console.log(account); 
         $('#profilePopup').modal('show');
         $('#user-name').empty();
-        $('#gender').empty();
-        $('#dob').empty();
-        $('#phone').empty();
-        $('#address').empty();
-        $('#email').empty();
+        $('#role').empty();
+        $('#gender').val('');
+        $('#dob').val('');
+        $('#phone').val('');
+        $('#address').val('');
+        $('#email').val('');
 
         $('#user-name').append(account.fullName);
 
         if (account.roles.length > 0) {
             for (var i = 0; i < account.roles.length; i++) {
+                if (i > 0) {
+                    $('#role').append("<span>-</span>");
+                }
                 switch (account.roles[i].roleId) {
                     case 1:
                         $('#role').append('<span>Quản trị viên</span>');
@@ -239,27 +258,36 @@
                         $('#role').append('<span>Khách hàng</span>');
                         break;
                     default:
-                        $('#role').append('<span>Trống</span>');
+                        $('#role').append('<span>-</span>');
                         break;
                 }
             }
         } else {
-            $('#role').append('<span>Trống</span>');
+            $('#role').append('<span>Chưa cập nhật</span>');
         }
 
         if (account.gender != null) {
-            if (accounts.gender == 1) {
+            if (account.gender == 1) {
                 $('#gender').val("Nam");
             } else {
                 $('#gender').val("Nữ");
             }
         } else {
-            $('#gender').val("Trống");
+            $('#gender').val("-");
         }
 
-        $('#dob').val(account.dob);
-        $('#phone').val(account.phone);
-        $('#address').val(account.address);
+        $('#dob').val(account.doB);
+        if (account.phone != null) {
+            $('#phone').val(account.phone);
+
+        } else {
+            $('#phone').val('-');
+        }
+        if (account.address != null && !(account.address.empty)) {
+            $('#address').val(account.address);
+        } else {
+            $('#address').val('-');
+        }
         $('#email').val(account.email);
     }
 

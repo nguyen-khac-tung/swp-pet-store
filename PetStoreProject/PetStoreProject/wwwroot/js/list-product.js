@@ -345,6 +345,8 @@ function Pagination(currentPage, numberPage, pageSize) {
             str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Trang sau</a></li>`;
         str += "</ul></nav>";
         $('#pagination').html(str);
+    } else {
+        $('#pagination').empty();
     }
 }
 

@@ -25,24 +25,19 @@ namespace PetStoreProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult ListUsers(int? pageIndex, int? pageSize, int? selectedRole, string? searchName)
         {
-            var accounts = _account.GetAccounts(0);
-            if(selectedRole != null)
-            {
-                accounts = accounts.Where(acc => acc.Roles.Any(role => role.RoleId == selectedRole)).ToList();
-            }
-            if(searchName != null)
-            {
-                accounts = accounts.Where(acc => acc.FullName.ToLower().Contains(searchName.ToLower())).ToList();
-            }
-
-            var numberPage = (int) Math.Ceiling(accounts.Count / (double) pageSize);
             var pageIndexLocal = pageIndex ?? 1;
-            var pageSizeLocal = pageSize ?? 15;
-            var listAccounts = accounts.Skip((pageIndexLocal - 1) * pageSizeLocal).Take(pageSizeLocal).ToList();
+
+            var pageSizeLocal = pageSize ?? 10;
+
+            var accounts = _account.GetAccounts(0, selectedRole ?? 0, searchName ?? "");
+
+            var numberPage = (int)Math.Ceiling(accounts.Count / (double)(pageSizeLocal));
+
+            accounts = accounts.Skip((pageIndexLocal - 1) * pageSizeLocal).Take(pageSizeLocal).ToList();
 
             return new JsonResult(new
             {
-                accounts = listAccounts,
+                accounts = accounts,
                 currentPage = pageIndexLocal,
                 pageSize = pageSizeLocal,
                 numberPage = numberPage

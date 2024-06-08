@@ -17,9 +17,14 @@ public partial class Service
     [StringLength(200)]
     public string Name { get; set; } = null!;
 
+    [StringLength(30)]
+    public string? Type { get; set; }
+
+    public string? SupDescription { get; set; }
+
     public string? Description { get; set; }
 
-    public bool? IsDelete { get; set; }
+    public bool IsDelete { get; set; }
 
     [InverseProperty("Service")]
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();

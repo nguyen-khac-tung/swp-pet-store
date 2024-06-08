@@ -275,7 +275,6 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Service>(entity =>
         {
             entity.Property(e => e.ServiceId).ValueGeneratedNever();
-            entity.Property(e => e.IsDelete).HasDefaultValue(false);
         });
 
         modelBuilder.Entity<ServiceOption>(entity =>

@@ -96,7 +96,7 @@ namespace PetStoreProject.CartController
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer", "Guest" } });
+                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer" } });
             }
         }
 
@@ -116,7 +116,7 @@ namespace PetStoreProject.CartController
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer", "Guest" } });
+                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer" } });
             }
         }
 
@@ -136,7 +136,7 @@ namespace PetStoreProject.CartController
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer", "Guest" } });
+                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer" } });
             }
         }
 

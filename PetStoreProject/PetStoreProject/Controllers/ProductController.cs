@@ -141,11 +141,11 @@ namespace PetStoreProject.Controllers
                     categoryIds = [2, 6];
                     break;
                 case "foods":
-                    url = "Thức ăn cho thú cưng";
+                    url = "Thức ăn thú cưng";
                     categoryIds = [1];
                     break;
                 case "accessories":
-                    url = "Phụ kiện cho thú cưng";
+                    url = "Phụ kiện thú cưng";
                     categoryIds = [2];
                     break;
             }

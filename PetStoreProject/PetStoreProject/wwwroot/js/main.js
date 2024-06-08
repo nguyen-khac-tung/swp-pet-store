@@ -352,6 +352,42 @@ NOTE: main.js, All custom script and plugin activation script in this file.
         ]
     });
 
+    $('.service-pro-active').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: false,
+        autoplaySpeed: 5000,
+        dots: false,
+        rows: 1,
+        arrows: true,
+        prevArrow: '<div class="slick-prev"><i class="icofont-long-arrow-left"></i></div>',
+        nextArrow: '<div class="slick-next"><i class="icofont-long-arrow-right"></i></div>',
+        responsive: [{
+            breakpoint: 1400,
+            settings: {
+                slidesToShow: 3,
+            }
+        },
+        {
+            breakpoint: 1200,
+            settings: {
+                slidesToShow: 3,
+            }
+        },
+        {
+            breakpoint: 900,
+            settings: {
+                slidesToShow: 2,
+            }
+        },
+        {
+            breakpoint: 550,
+            settings: {
+                slidesToShow: 1,
+            }
+        },
+        ]
+    });
 
 
     $('.testmonial-active').slick({

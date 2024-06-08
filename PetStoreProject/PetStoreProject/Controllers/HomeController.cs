@@ -3,6 +3,7 @@ using PetStoreProject.Models;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Service;
 
 namespace PetStoreProject.Controllers
 {
@@ -11,12 +12,14 @@ namespace PetStoreProject.Controllers
 		private readonly PetStoreDBContext _context;
 		private readonly IProductRepository _product;
 		private readonly ICustomerRepository _customer;
+        private readonly IServiceRepository _service;
 
-		public HomeController(PetStoreDBContext dbContext, IProductRepository product, ICustomerRepository customer)
+        public HomeController(PetStoreDBContext dbContext, IProductRepository product, ICustomerRepository customer, IServiceRepository service)
 		{
 			_context = dbContext;
 			_product = product;
 			_customer = customer;
+            _service = service;
 		}
 
 		public int getCustomerId()
@@ -75,6 +78,7 @@ namespace PetStoreProject.Controllers
                 CatFoodsDisplayed = GetListItemToDisplayed(catFoods),
                 DogAccessoriesDisplayed = GetListItemToDisplayed(dogAccessories),
                 CatAccessoriesDisplayed = GetListItemToDisplayed(catAccessories),
+                ServicesDisplayed = _service.GetListServices()
             };
             return View(homeVM);
         }

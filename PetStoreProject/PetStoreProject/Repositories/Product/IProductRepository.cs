@@ -1,5 +1,4 @@
 ﻿using PetStoreProject.Areas.Admin.ViewModels;
-using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
@@ -10,8 +9,8 @@ namespace PetStoreProject.Repositories.Product
         public List<RelatedProductViewModel> getRelatedProduct(int productId);
         public List<ProductDetailViewModel> GetProductDetailDoGet(List<int> cateId, int productCateId);
         public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId);
-        public List<Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
-        public List<Size> GetSizesByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
+        public List<PetStoreProject.Models.Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
+        public List<PetStoreProject.Models.Size> GetSizesByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
         public List<int> GetProductIDInWishList(int customerID);
         void AddToFavorites(int userId, int productId);
         void RemoveFromFavorites(int userId, int productId);

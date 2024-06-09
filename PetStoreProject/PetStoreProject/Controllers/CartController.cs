@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using PetStoreProject.Filters;
-using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Customers;
-using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.CartController
@@ -76,7 +73,7 @@ namespace PetStoreProject.CartController
             }
             else
             {
-                return Json(new { message = "Tài khoản của bạn không thể sử dụng chức năng này!!!"});
+                return Json(new { message = "Tài khoản của bạn không thể sử dụng chức năng này!!!" });
             }
         }
 
@@ -159,7 +156,11 @@ namespace PetStoreProject.CartController
                     if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
                     {
                         var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
-                        cartItems.Add(item);
+                        var check = _cart.GetCartItemVM(item.ProductOptionId, item.Quantity);
+                        if (check.isDeleted == false)
+                        {
+                            cartItems.Add(item);
+                        }
                     }
                 }
             }

@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
-using Attribute = PetStoreProject.Models.Attribute;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -45,14 +44,14 @@ namespace PetStoreProject.Repositories.Product
                                   select new ProductOptionViewModel
                                   {
                                       Id = po.ProductOptionId,
-                                      size = new Size()
+                                      size = new PetStoreProject.Models.Size()
                                       {
                                           SizeId = s.SizeId,
                                           Name = s.Name
                                       },
                                       price = po.Price,
                                       img_url = i.ImageUrl,
-                                      attribute = new Attribute()
+                                      attribute = new PetStoreProject.Models.Attribute()
                                       {
                                           AttributeId = a.AttributeId,
                                           Name = a.Name
@@ -92,7 +91,7 @@ namespace PetStoreProject.Repositories.Product
                             join p in _context.Products on po.ProductId equals p.ProductId
                             join b in _context.Brands on p.BrandId equals b.BrandId
                             join i in _context.Images on po.ImageId equals i.ImageId
-                            where p.ProductCateId == cateId && po.IsSoldOut == false
+                            where p.ProductCateId == cateId && po.IsSoldOut == false && p.IsDelete == false
                             group new { po, p, b, i } by new { p.ProductId, p.Name, BrandName = b.Name } into g
                             select new RelatedProductViewModel
                             {
@@ -151,13 +150,13 @@ namespace PetStoreProject.Repositories.Product
                                   select new ProductOptionViewModel
                                   {
                                       Id = po.ProductOptionId,
-                                      attribute = new Attribute
+                                      attribute = new PetStoreProject.Models.Attribute
                                       {
                                           AttributeId = a.AttributeId,
                                           Name = a.Name,
                                           Type = a.Type,
                                       },
-                                      size = new Size
+                                      size = new PetStoreProject.Models.Size
                                       {
                                           SizeId = s.SizeId,
                                           Name = s.Name
@@ -179,7 +178,7 @@ namespace PetStoreProject.Repositories.Product
             return images;
         }
 
-        public List<Attribute> GetAttributesByProductId(int productId)
+        public List<PetStoreProject.Models.Attribute> GetAttributesByProductId(int productId)
         {
             var attributes = (from a in _context.Attributes
                               join po in _context.ProductOptions on a.AttributeId equals po.AttributeId
@@ -188,7 +187,7 @@ namespace PetStoreProject.Repositories.Product
             return attributes;
         }
 
-        public List<Size> GetSizesByProductId(int productId)
+        public List<PetStoreProject.Models.Size> GetSizesByProductId(int productId)
         {
             var sizes = (from s in _context.Sizes
                          join po in _context.ProductOptions on s.SizeId equals po.SizeId
@@ -197,7 +196,7 @@ namespace PetStoreProject.Repositories.Product
             return sizes;
         }
 
-        public Brand GetBrandByProductId(int productId)
+        public PetStoreProject.Models.Brand GetBrandByProductId(int productId)
         {
             var brand = (from b in _context.Brands
                          join p in _context.Products on b.BrandId equals p.BrandId
@@ -206,7 +205,7 @@ namespace PetStoreProject.Repositories.Product
             return brand;
         }
 
-        public List<Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
+        public List<PetStoreProject.Models.Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
         {
 
             var brands = (from b in _context.Brands
@@ -225,7 +224,7 @@ namespace PetStoreProject.Repositories.Product
             return brands;
         }
 
-        public List<Size> GetSizesByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
+        public List<PetStoreProject.Models.Size> GetSizesByCategoryIdsAndProductCateId(List<int> categoryIds, int productCateId)
         {
 
             var sizes = (from s in _context.Sizes
@@ -536,19 +535,19 @@ namespace PetStoreProject.Repositories.Product
             // Project to ProductViewForAdmin and fetch related data in memory
             var products = initialResult.Select(p => new ProductViewForAdmin
             {
-                id = p.id,
-                name = p.name,
-                productCateId = p.productCateId,
-                categoryId = p.categoryId,
+                Id = p.id,
+                Name = p.name,
+                ProductCateId = p.productCateId,
+                CategoryId = p.categoryId,
                 // Initialize other fields to default values
-                price = 0,
-                isSoldOut = false,
-                imgUrl = string.Empty,
-                soldQuantity = 0,
-                isDelete = p.isDelete
+                Price = 0,
+                IsSoldOut = false,
+                ImgUrl = string.Empty,
+                SoldQuantity = 0,
+                IsDelete = p.isDelete
             }).ToList();
 
-            var productIds = products.Select(p => p.id).ToList();
+            var productIds = products.Select(p => p.Id).ToList();
 
             var productOptions = await (from po in _context.ProductOptions
                                         join i in _context.Images on po.ImageId equals i.ImageId
@@ -573,32 +572,32 @@ namespace PetStoreProject.Repositories.Product
 
             foreach (var product in products)
             {
-                var options = productOptions.Where(po => po.ProductId == product.id).ToList();
-                product.isSoldOut = !options.Any(po => !po.IsSoldOut);
+                var options = productOptions.Where(po => po.ProductId == product.Id).ToList();
+                product.IsSoldOut = !options.Any(po => !po.IsSoldOut);
                 var firstOption = options.FirstOrDefault();
                 if (firstOption != null)
                 {
-                    product.imgUrl = firstOption.ImageUrl;
-                    product.price = firstOption.Price;
+                    product.ImgUrl = firstOption.ImageUrl;
+                    product.Price = firstOption.Price;
                 }
 
-                var soldQuantity = soldQuantities.FirstOrDefault(sq => sq.ProductId == product.id)?.SoldQuantity ?? 0;
-                product.soldQuantity = soldQuantity;
+                var soldQuantity = soldQuantities.FirstOrDefault(sq => sq.ProductId == product.Id)?.SoldQuantity ?? 0;
+                product.SoldQuantity = soldQuantity;
             }
 
             // Apply filters and sorting in-memory
             if (isInStock.HasValue)
             {
-                products = products.Where(p => p.isSoldOut != isInStock.Value).ToList();
+                products = products.Where(p => p.IsSoldOut != isInStock.Value).ToList();
             }
 
             if (sortPrice.HasValue)
             {
-                products = sortPrice.Value ? products.OrderBy(p => p.price).ToList() : products.OrderByDescending(p => p.price).ToList();
+                products = sortPrice.Value ? products.OrderBy(p => p.Price).ToList() : products.OrderByDescending(p => p.Price).ToList();
             }
             else if (sortSoldQuantity.HasValue)
             {
-                products = sortSoldQuantity.Value ? products.OrderBy(p => p.soldQuantity).ToList() : products.OrderByDescending(p => p.soldQuantity).ToList();
+                products = sortSoldQuantity.Value ? products.OrderBy(p => p.SoldQuantity).ToList() : products.OrderByDescending(p => p.SoldQuantity).ToList();
             }
 
             // Total products count

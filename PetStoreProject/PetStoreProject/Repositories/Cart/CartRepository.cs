@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PetStoreProject.Models;
+﻿using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
-using Attribute = PetStoreProject.Models.Attribute;
 
 namespace PetStoreProject.Repositories.Cart
 {
@@ -26,12 +24,12 @@ namespace PetStoreProject.Repositories.Cart
                             {
                                 ProductOptionId = productOptionId,
                                 Name = p.Name,
-                                Attribute = new Attribute()
+                                Attribute = new PetStoreProject.Models.Attribute()
                                 {
                                     Name = a.Name,
                                     AttributeId = a.AttributeId
                                 },
-                                Size = new Size()
+                                Size = new PetStoreProject.Models.Size()
                                 {
                                     SizeId = s.SizeId,
                                     Name = s.Name
@@ -39,7 +37,8 @@ namespace PetStoreProject.Repositories.Cart
                                 Price = po.Price,
                                 ImgUrl = i.ImageUrl,
                                 Quantity = quantity,
-                                ProductId = p.ProductId
+                                ProductId = p.ProductId,
+                                isDeleted = p.IsDelete
                             }).FirstOrDefault();
             return cartItem;
         }
@@ -58,12 +57,12 @@ namespace PetStoreProject.Repositories.Cart
                                     ProductId = p.ProductId,
                                     ProductOptionId = ca.ProductOptionId,
                                     Name = p.Name,
-                                    Attribute = new Attribute()
+                                    Attribute = new PetStoreProject.Models.Attribute()
                                     {
                                         AttributeId = a.AttributeId,
                                         Name = a.Name
                                     },
-                                    Size = new Size()
+                                    Size = new PetStoreProject.Models.Size()
                                     {
                                         SizeId = s.SizeId,
                                         Name = s.Name
@@ -155,12 +154,12 @@ namespace PetStoreProject.Repositories.Cart
                                ProductId = p.ProductId,
                                ProductOptionId = c.ProductOptionId,
                                Name = p.Name,
-                               Attribute = new Attribute()
+                               Attribute = new PetStoreProject.Models.Attribute()
                                {
                                    AttributeId = a.AttributeId,
                                    Name = a.Name
                                },
-                               Size = new Size()
+                               Size = new PetStoreProject.Models.Size()
                                {
                                    SizeId = s.SizeId,
                                    Name = s.Name

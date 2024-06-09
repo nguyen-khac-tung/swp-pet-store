@@ -20,6 +20,6 @@ namespace PetStoreProject.Areas.Admin.ViewModels
         public int BrandId { get; set; }
 
         [Required]
-        public List<ProductOptionCreateRequestViewModel> Options { get; set; }
+        public List<ProductOptionCreateRequestViewModel> ProductOptions { get; set; }
     }
 }

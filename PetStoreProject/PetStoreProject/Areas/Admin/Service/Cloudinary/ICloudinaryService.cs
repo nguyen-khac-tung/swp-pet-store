@@ -1,7 +1,9 @@
-﻿namespace PetStoreProject.Areas.Admin.Service.Cloudinary
+﻿using CloudinaryDotNet.Actions;
+
+namespace PetStoreProject.Areas.Admin.Service.Cloudinary
 {
     public interface ICloudinaryService
     {
-        void UploadImage(IFormFile file);
+        public Task<ImageUploadResult> UploadImage(string imageData, string imageId);
     }
 }

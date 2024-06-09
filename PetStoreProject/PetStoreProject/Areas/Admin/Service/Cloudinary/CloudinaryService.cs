@@ -12,28 +12,19 @@ namespace PetStoreProject.Areas.Admin.Service.Cloudinary
             _cloudinary = cloudinary;
         }
 
-        public void UploadImage(IFormFile file)
+        public async Task<ImageUploadResult> UploadImage(string imageData, string imageId)
         {
-            using (var stream = file.OpenReadStream())
+            var base64Data = imageData.Split(',')[1];
+            byte[] imageBytes = Convert.FromBase64String(base64Data);
+
+            var uploadParams = new ImageUploadParams()
             {
-
-                var uploadParams = new ImageUploadParams()
-                {
-                    File = new FileDescription(file.FileName, stream),
-                    PublicId = "sample_image",
-                    Overwrite = true
-                };
-
-                var uploadResult = _cloudinary.Upload(uploadParams);
-                if (uploadResult.Error != null)
-                {
-                    Console.WriteLine($"Lỗi khi tải lên ảnh: {uploadResult.Error.Message}");
-                }
-                else
-                {
-                    Console.WriteLine(uploadResult.Url);
-                }
-            }
+                File = new FileDescription("image.jpg", new MemoryStream(imageBytes)),
+                PublicId = imageId,
+                Overwrite = true
+            };
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            return uploadResult;
         }
     }
 }

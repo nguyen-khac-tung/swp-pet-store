@@ -12,6 +12,12 @@
 @section HeadOptional {
     <script src="https://cdn.tiny.cloud/1/vmg6xq9b7kglu6elt6oqb6zuq75zntiodhgmxmgwwirj6x81/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
+        li:nth-child(2n+1){
+            background-color: #f6f8fbcc;
+        }
+        .item.select{
+            border: 1px solid #000;
+        }
         .delete-icon {
             position: absolute;
             top: -10px;
@@ -19,6 +25,15 @@
             color: black;
             border: none;
             padding: 5px;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: -3px;
+            right: 4px;
+            color: black;
+            border: none;
+            padding: 0px;
         }
 
         textarea {
@@ -60,12 +75,12 @@
             </ul>
         </div>
         <!-- form-add-product -->
-        <form class="tf-section-2 form-add-product" enctype="multipart/form-data" asp-action="create">
+        <form class="tf-section-2 form-add-product">
             <div class="wg-box">
                 <fieldset class="name">
                     <label asp-for="Name" class="body-title mb-10">Tên sản phẩm<span class="tf-color-1">*</span></label>
-                    <input class="mb-10" asp-for="Name" placeholder="Nhập tên sản phẩm">
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <input class="mb-10" asp-for="Name" placeholder="Nhập tên sản phẩm" id="name">
+                    <span id="error-name" class="text-danger"></span>
                     @* <div class="text-tiny">Do not exceed 20 characters when entering the product name.</div> *@
                 </fieldset>
                 <div class="gap22 cols">
@@ -85,8 +100,8 @@
                 <div class="cols gap22">
                     <fieldset class="category">
                         <label asp-for="CategoryId" class="body-title mb-10">Danh mục</label>
-                        <div class="select" id="category">
-                            <select asp-for="CategoryId" class="">
+                        <div class="select" >
+                            <select asp-for="CategoryId" class="" id="category">
                                 @foreach (var category in categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -109,14 +124,14 @@
                     </fieldset>
                 </div>
                 <fieldset class="description">
-                    <label asp-for="Description" class="body-title mb-10">Mô tả sản phẩm <span class="tf-color-1">*</span></label>
-                    <textarea asp-for="Description" id="description" class="mb-10" name="Description" placeholder="Nhập mô tả sản phẩm" tabindex="0" aria-required="true" required="" onchange="test()"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <label class="body-title mb-10">Mô tả sản phẩm <span class="tf-color-1">*</span></label>
+                    <textarea id="description" name="descriptio" class="mb-10" placeholder="Nhập mô tả sản phẩm" tabindex="0" aria-required="true" required=""></textarea>
+                    <span id="error-description" class="text-danger"></span>
                 </fieldset>
             </div>
             <div class="wg-box">
                 <fieldset>
-                    <label asp-for="Options[0].Image" class="body-title mb-10">Tải ảnh lên<span class="tf-color-1">*</span></label>
+                    <label class="body-title mb-10">Tải ảnh lên<span class="tf-color-1">*</span></label>
                     <div class="upload-image mb-16">
                         <div class="item up-load">
                             <label class="uploadfile" for="myFile">
@@ -124,9 +139,9 @@
                                     <i class="icon-upload-cloud"></i>
                                 </span>
                                 <span class="text-tiny">Thả hình ảnh của bạn vào đây hoặc <span class="tf-color">chọn đường dẫn</span></span>
-                                <input asp-for="Options[0].Image" type="file" id="myFile" name="filename" accept="image/*" onchange="previewImage(event)">
-                                <span asp-validation-for="Options[0].Image"></span>
+                                <input type="file" id="myFile" name="filename" accept="image/*" onchange="previewImage(event)">
                             </label>
+                            
                         </div>
                     </div>
                 </fieldset>
@@ -134,17 +149,18 @@
                     <div class="upload-image mb-16" id="list-image" style="overflow-x: auto">
                        
                     </div>
+                    <span id="error-image" class="text-danger"></span>
                 </fieldset>
                 <div class="gap22">
                     <fieldset class="name">
-                        <label asp-for="Options[0].SizeId" class="body-title mb-10">Kích thước</label>
+                        <label class="body-title mb-10">Kích thước</label>
                         <div class="select mb-10 flex gap22" id="list-size">
-                            <select asp-for="Options[0].SizeId" class="">
+                            <select class="" id="size">
                                 @foreach (var size in sizes)
                                 {
                                     if (size.Name == null)
                                     {
-                                        <option value="@size.Id">Sản phẩm không có giá trị này</option>
+                                        <option value="@size.Id">Trống</option>
                                     }
                                     else
                                     {
@@ -156,14 +172,14 @@
                         </div>
                     </fieldset>
                     <fieldset class="name">
-                        <label asp-for="Options[0].AttributeId" class="body-title mb-10">Thuộc tính</label>
+                        <label class="body-title mb-10">Thuộc tính</label>
                         <div class="select mb-10 flex gap22" id="list-attribute">
-                            <select asp-for="Options[0].AttributeId">
+                            <select id="attribute">
                                 @foreach (var attr in attributes)
                                 {
                                     if (attr.Name == null)
                                     {
-                                        <option value="@attr.Id">Sản phẩm không có giá trị này</option>
+                                        <option value="@attr.Id">Trống</option>
                                     }
                                     else
                                     {
@@ -175,20 +191,25 @@
                         </div>
                     </fieldset>
                     <fieldset class="name">
-                        <label asp-for="Options[0].Price" class="body-title mb-10">Price</label>
-                        <div class="select mb10 flex gap22" id="price">
-                            <input asp-for="Options[0].Price" type="text" id="price" name="price">
-                            <span asp-for="Options[0].Price" class="text-danger"></span>
+                        <label class="body-title mb-10">Price</label>
+                        <div class="select mb10 flex gap22" style="align-items:center">
+                            <input type="text" id="price" min="1000">
+                            <span>VND</span>
                         </div>
+
+                        <span id="error-price" class="text-danger"></span>
                     </fieldset>
                 </div>
-                <div id="list-product-option" style="max-height: 155px;">
-                    <div id="notice">Lưu ý: Bạn cần thêm các tùy chọn của sản phẩm trước khi bạn có thể lưu sản phẩm<span class="tf-color-1">*</span></div>
+                <div style="max-height: 155px; overflow-x: auto">
+                    <ul class="flex flex-column" id="list-product-option">
+                        
+                    </ul>
+                    
                 </div>
+                <div id="notice">Lưu ý: Bạn cần thêm các tùy chọn của sản phẩm trước khi bạn có thể lưu sản phẩm<span class="tf-color-1">*</span></div>
                 <div class="cols gap10">
-                    <button class="tf-button w-full" onclick="addProductOption()">Thêm tùy chọn sản phẩm</button>
-                    <button class="tf-button style-1 w-full" type="submit">Lưu sản phẩm</button>
-                    <a href="#" class="tf-button style-2 w-full">Schedule</a>
+                    <button class="tf-button w-full" type="button" onclick="addProductOption()">Thêm tùy chọn sản phẩm</button>
+                    <button class="tf-button style-1 w-full" type="button" onclick="saveProduct()">Lưu sản phẩm</button>
                 </div>
             </div>
         </form>
@@ -197,11 +218,11 @@
     <!-- /main-content-wrap -->
 </div>
 @section ScriptOptional {
-    <!-- Place the first <script> tag in your HTML's <head> -->
-    
-
-    <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
     <script>
+        var regex = /^[0-9\W]+$/;
+        var numberRegex = /^-?\d+(\.\d+)?$/;
+        var description = ''
+        var isUploadFile = false
         document.getElementById('sizeFilter').addEventListener('input', function () {
             let filter = this.value.toLowerCase();
             let dropdown = document.getElementById('list-size');
@@ -277,12 +298,13 @@
             menubar: false,
             setup: function (editor) {
                 editor.on('input', function () {
-                    console.log(editor.getContent());
+                    description = editor.getContent();
                 });
             }
         });
 
         function previewImage(event) {
+            isUploadFile = true;
             var files = event.target.files;
             var imagesContainer = $('#list-image');
 
@@ -294,7 +316,10 @@
                     return function (e) {
                         var imageContainer = $('<div>', {
                             class: 'item',
-                            style: 'position: relative; min-width: 48%'
+                            style: 'position: relative; min-width: 48%; border-radius: 2px;',
+                            click: function () {
+                                selectImage(this)
+                            }
                         });
 
                         var img = $('<img>', {
@@ -318,5 +343,229 @@
                 reader.readAsDataURL(file);
             }
         }
+
+        function selectImage(image) {
+            var images = $('#list-image').children();
+            for (var i = 0; i < images.length; i++) {
+                $(images[i]).removeClass('select');
+            }
+            $(image).addClass('select');
+        }
+
+        function isValidProductOption(){
+            var isValid = true;
+
+            var name = $('#name').val().trim()
+            var brandId = $('#brand').val();
+            var categoryId = $('#category').val();
+            var productCategory = $('#product-category').val();
+
+            var image = $('.item.select img').attr('src');
+
+            var sizeId = $('#size').val();
+            var sizeName = $('#size option:selected').text();
+
+            var attributeId = $('#attribute').val();
+            var attributeName = $('#attribute option:selected').text();
+
+            var price = $('#price').val()
+
+            if(name == ''){
+                isValid = false
+                $('#error-name').text('Tên sản phẩm không được để trống');
+            }
+            else if(name.length > 200){
+                isValid = false
+                $('#error-name').text('Tên sản phẩm không được vượt quá 200 ký tự');
+            }
+            else if(regex.test(name)){
+                isValid = false
+                $('#error-name').text('Tên sản phẩm không được bao gồm toàn kí tự số và kí tự đặc biệt');
+            }
+            else{
+                $('#error-name').text('');
+            }
+
+            if (!isUploadFile) {
+                isValid = false
+                $('#error-image').text('Cần tải lên ít nhất 1 ảnh sản phẩm');
+            }
+            else if(image === undefined)
+            {
+                isValid = false
+                $('#error-image').text('Bạn cần chọn một ảnh để hiển thị theo tùy chọn của sản phẩm');
+            }
+            else{
+                $('#error-image').text('')
+            }
+
+            if (price == '') {
+                isValid = false
+                $('#error-price').text('Giá sản phẩm không được để trống');
+            }
+            else {
+                if (numberRegex.test(price)) {
+                    var p = parseFloat(price);
+                    var decimalCount = (price.split('.')[1] || []).length;
+                    if (p < 1000) {
+                        $('#error-price').text('Giá sản phẩm không được nhỏ hơn 1000 đồng');
+                        isValid = false
+                    }
+                    else if (decimalCount > 3) {
+                        $('#error-price').text('Giá sản phẩm không được có quá 3 số sau dấu "," thập phân');
+                        isValid = false
+                    }
+                    else {
+                        $('#error-price').text('')
+                    }
+                }
+                else{
+                    $('#error-price').text("Giá sản phẩm phải là một số");
+                    isValid = false
+                }
+            }
+            return isValid
+        }
+
+        function addProductOption(){
+            let isValid = isValidProductOption();
+            var image = $('.item.select img').attr('src');
+
+            var sizeId = $('#size').val();
+            var sizeName = $('#size option:selected').text();
+
+            var attributeId = $('#attribute').val();
+            var attributeName = $('#attribute option:selected').text();
+
+            var price = $('#price').val().trim()
+            price = parseFloat(price)
+
+            var listProductOptions = $('#list-product-option')
+            var optionExists = false;
+
+            var newOption = `
+                        <li style="padding: 5px; position: relative">
+                            <button type="button" class="delete-button"><i class="icon-delete"></i></button>
+                            <div class="gap15" style="align-items: center; width: 100%; display: flex">
+                                <div class="choose-image" style="width: 7%">
+                                    <img class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
+                                </div>
+                                <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
+                                <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Thuộc tính: <span class="tf-color">${attributeName}</span></div>
+                                <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
+                            </div>
+                        </li>
+                            `
+            if (isValid) {
+                listProductOptions.find('li').each(function (){
+                    var existingOption = $(this);
+                    var existingSizeId = existingOption.find('.sizeData').attr('value');
+                    var existingAttributeId = existingOption.find('.attributeData').attr('value');
+                    var existingPrice = existingOption.find('.priceData').attr('value');
+
+                    if (existingSizeId == 1 && existingAttributeId == 1) {
+                        optionExists = true;
+                        alert('Không thể thêm. Sản phẩm này không thêm được các tùy chọn khác')
+                        return false
+                    }
+
+                    if (existingSizeId == sizeId && existingAttributeId == attributeId) {
+                        optionExists = true;
+                        alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
+                        return false; // Exit the loop if the option already exists
+                    }
+                })
+
+                var numberOptions = listProductOptions.find('li').length;
+
+                if (!optionExists) {
+                    if (sizeId == 1 && attributeId == 1) {
+                        if (numberOptions != 0) {
+                            optionExists = true;
+                            alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
+                        }
+                    }
+                }
+
+                if (!optionExists) {
+                    listProductOptions.append(newOption);
+                }
+            }
+        }
+
+        function saveProduct(){  
+            var isValid = true
+            var name = $('#name').val().trim()
+            var brandId = $('#brand').val();
+            var categoryId = $('#category').val();
+            var productCategory = $('#product-category').val();
+
+            if (name == '') {
+                isValid = false
+                $('#error-name').text('Tên sản phẩm không được để trống');
+            }
+            else if (name.length > 200) {
+                isValid = false
+                $('#error-name').text('Tên sản phẩm không được vượt quá 200 ký tự');
+            }
+            else if (regex.test(name)) {
+                isValid = false
+                $('#error-name').text('Tên sản phẩm không được bao gồm toàn kí tự số và kí tự đặc biệt');
+            }
+            else {
+                $('#error-name').text('');
+            }
+            
+            if (isValid) {
+                var listProductOptions = $('#list-product-option')
+                var numberOptions = listProductOptions.find('li').length
+
+                var options = []
+                if (numberOptions > 0) {
+                    listProductOptions.find('li').each(function () {
+                        var op = $(this);
+                        var Image = op.find('.imageData').attr('src');
+                        var SizeId = op.find('.sizeData').attr('value');
+                        var AttributeId = op.find('.attributeData').attr('value');
+                        var Price = op.find('.priceData').attr('value');
+
+                        var option = {
+                            ImageData: Image,
+                            SizeId: parseInt(SizeId),
+                            AttributeId: parseInt(AttributeId),
+                            Price: parseFloat(Price)
+                        };
+                        options.push(option);
+                    });
+
+                    var product = {
+                        Name: name.trim(),
+                        BrandId: parseInt(brandId),
+                        CategoryId: parseInt(categoryId),
+                        ProductCateId: parseInt(productCategory),
+                        Description: description,
+                        ProductOptions: options
+                    };
+                    var productCreateRequest = JSON.stringify(product);
+                    console.log(productCreateRequest)
+                    $.ajax({
+                        url: '/Admin/Product/CreateRequest',
+                        type: 'POST',
+                        data: { product: productCreateRequest },
+                        success: function (response) {
+                            window.location.href = 'http://localhost:5206/product/detail/'+response.result;
+                        },
+                    })
+                }
+                else {
+                    alert('Bạn cần thêm các tùy chọn cho sản phẩm')
+                }
+            }
+        }
+
+        $('#list-product-option').on('click', '.delete-button', function () {
+            $(this).parent().remove(); // Remove the parent <li> when the delete button is clicked
+        });
+
     </script>
 }

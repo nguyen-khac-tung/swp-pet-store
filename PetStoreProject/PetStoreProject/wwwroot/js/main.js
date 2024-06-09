@@ -389,7 +389,6 @@ NOTE: main.js, All custom script and plugin activation script in this file.
         ]
     });
 
-
     $('.testmonial-active').slick({
         slidesToShow: 2,
         slidesToScroll: 1,

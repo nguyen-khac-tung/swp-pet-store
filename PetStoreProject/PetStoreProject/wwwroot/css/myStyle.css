@@ -1,5 +1,6 @@
-﻿.select{
-    font-weight:bold;
+﻿.select {
+    font-weight: bold;
+    border-color: #00adf6 !important;
 }
 .out-of-stock {
     opacity: 0.3; /* Làm nhạt màu */

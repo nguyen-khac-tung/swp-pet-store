@@ -146,9 +146,9 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.HasKey(e => e.FeedbackId).HasName("PK_Feedback_1");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Feedbacks)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Feedback_Product");
+            entity.HasOne(d => d.Product).WithMany(p => p.Feedbacks).HasConstraintName("FK_Feedback_Product");
+
+            entity.HasOne(d => d.Service).WithMany(p => p.Feedbacks).HasConstraintName("FK_Feedback_Service");
         });
 
         modelBuilder.Entity<Image>(entity =>

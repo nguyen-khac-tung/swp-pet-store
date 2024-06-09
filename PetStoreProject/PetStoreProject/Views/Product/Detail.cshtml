@@ -5,13 +5,7 @@
     var productOptions = Newtonsoft.Json.JsonConvert.SerializeObject(product.productOption);
     var related_products = ViewData["related_products"] as List<RelatedProductViewModel>;
 }
-@section HeadOptional {
-    <style>
-        #dtail li {
-            margin-top: 10px;
-        }
-    </style>
-}
+
 <!-- Product Thumbnail Start -->
 <div class="main-product-thumbnail product_details_wrap_1 adp_top adp_bottom" style="display:flex; justify-content:center; width:100%">
     <div class="container" style="margin:0px; width:100%; display:flex; justify-content: space-around; flex-grow:1">
@@ -75,8 +69,8 @@
                             <i class="icofont-ui-rate-blank"></i>
                             <i class="icofont-ui-rate-blank"></i>
                         </li>
-                        <li class="read-review"><a href="#">Xem đánh gía (2)</a></li>
-                        <li class="write-review"><a href="#">Viết đánh giá</a></li>
+                        <li class="read-review"><a href="#review">Xem đánh giá</a></li>
+                        <li class="write-review"><a href="#writereview">Viết đánh giá</a></li>
                     </ul>
                     <!--
                         <div class="pro-thumb-price mt-20">
@@ -84,22 +78,22 @@
                     </div>
                     -->
                     <!--Brand-->
-                    <div class="rating-summary">
+                    <div class="product-brand">
                         Thương hiệu : @product.Brand
                     </div>
                     <!--Price-->
-                    <div class="pro-thumb-price mt-20">
+                    <div class="pro-thumb-price mt-2 mb-3">
                         <span class="regular-price" id="price">@product.productOption[0].price.ToString("#,###")</span>
                         <span class="regular-price">VND</span>
                     </div>
 
                     <!--Attribute-->
-                    <div class="size_color_wraper" id="attribute">
+                    <div class="size_color_wraper mb-3" id="attribute">
 
                         @if (product.attributes[0].Name != null)
                         {
                             <div class="color clearfix mb-30">
-                                <label style="margin:0px">Loại :</label>
+                                <label class="mb-1">Loại :</label>
                                 <ul class="color-list">
                                     @for (var index = 0; index < product.attributes.Count; index++)
                                     {
@@ -118,7 +112,7 @@
                     <div class="theme_size clearfix" id="size">
                         @if (product.sizes[0].Name != null)
                         {
-                            <label style="margin-top: 5px; margin-bottom:0px">Kích thước :</label>
+                            <label class="mb-1">Kích thước :</label>
                             <div class="color-list size_list">
                                 <ul class="color-list size_list">
                                     @for (var index = 0; index < product.sizes.Count; index++)
@@ -132,14 +126,14 @@
                             </div>
                         }
                     </div>
-                    <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+                    <div class="details_action_wraper" style="font-size: 16px; margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
                         Số lượng:
                         <form action="#" onclick="total_price()" style="border-radius: 10px">
                             <input class="quantity" type="number" min="1" max="10" value="1" id="quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
                         </form>
                     </div>
 
-                    <div>
+                    <div style="font-size: 16px; font-weight:600">
                         Tổng số tiền: <span id="amount">@product.productOption[0].price.ToString("#,###")</span>
                         <span>VND</span>
                     </div>
@@ -178,16 +172,23 @@
             <div class="row">
                 <div class="col-sm-12">
                     <ul class="main-thumb-desc nav tabs-area" role="tablist">
-                        <li><a class="active" data-bs-toggle="tab" href="#dtail">Mô tả</a></li>
-                        <li><a data-bs-toggle="tab" href="#review">Đánh giá</a></li>
-                        <li><a data-bs-toggle="tab" href="#new_tab_1">Lưu ý</a></li>
+                        <li><a class="active" data-bs-toggle="tab" href="#detail">Mô tả</a></li>
+                        <li><a data-bs-toggle="tab" href="#review">Xem Đánh giá</a></li>
+                        <li><a data-bs-toggle="tab" href="#writereview">Viết Đánh Giá</a></li>
                     </ul>
                     <!-- Product Thumbnail Tab Content Start -->
                     <div class="tab-content thumb-content">
-                        <div id="dtail" class="tab-pane fade show active">
+                        <div id="detail" class="tab-pane fade show active">
                             <p>@Html.Raw(product.Description)</p>
                         </div>
                         <div id="review" class="tab-pane fade">
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu Donec ac tempus ante.
+
+                                Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 	Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi.
+                            </p>
+                        </div>
+                        <div id="writereview" class="tab-pane fade">
                             <!-- Reviews Start -->
                             <div class="review">
                                 <div class="group-title">
@@ -206,7 +207,7 @@
                                         </div>
 
                                         <div class="rating_wrap">
-                                            <h5>Đánh gía của bạn</h5>
+                                            <h5>Đánh giá của bạn</h5>
                                             <ul class="review-list">
                                                 <!-- Single Review List Start -->
                                                 <li>
@@ -236,16 +237,7 @@
                             </div>
                             <!-- Reviews End -->
                         </div>
-                        <div id="new_tab_1" class="tab-pane fade">
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu Donec ac tempus ante.
-
-                                Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 	Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi.
-                            </p>
-                        </div>
-
                     </div>
-
                     <!-- Product Thumbnail Tab Content End -->
                 </div>
             </div>

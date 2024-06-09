@@ -16,7 +16,8 @@ public partial class ServiceOption
 
     public int ServiceId { get; set; }
 
-    public bool PetType { get; set; }
+    [StringLength(10)]
+    public string PetType { get; set; } = null!;
 
     [StringLength(30)]
     public string Weight { get; set; } = null!;

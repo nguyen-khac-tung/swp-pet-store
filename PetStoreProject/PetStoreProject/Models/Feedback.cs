@@ -14,13 +14,18 @@ public partial class Feedback
     [Key]
     public int FeedbackId { get; set; }
 
-    public int ProductId { get; set; }
+    public int? ProductId { get; set; }
+
+    public int? ServiceId { get; set; }
 
     [StringLength(100)]
     public string Name { get; set; } = null!;
 
+    [StringLength(50)]
+    public string Phone { get; set; } = null!;
+
     [StringLength(150)]
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
 
     public int Rating { get; set; }
 
@@ -34,8 +39,12 @@ public partial class Feedback
 
     [ForeignKey("ProductId")]
     [InverseProperty("Feedbacks")]
-    public virtual Product Product { get; set; } = null!;
+    public virtual Product? Product { get; set; }
 
     [InverseProperty("Feedback")]
     public virtual ICollection<ResponseFeedback> ResponseFeedbacks { get; set; } = new List<ResponseFeedback>();
+
+    [ForeignKey("ServiceId")]
+    [InverseProperty("Feedbacks")]
+    public virtual Service? Service { get; set; }
 }

@@ -895,7 +895,7 @@ h6 {
     transform: scaleY(0);
     -webkit-transform-origin: 0 0 0;
     transform-origin: 0 0 0;
-    width: 210px;
+    width: 285px;
     visibility: hidden;
     z-index: 9999;
     -webkit-transition: 0.5s;
@@ -4132,6 +4132,13 @@ ul.promotion-list {
     text-transform: capitalize;
 }
 
+.service-header {
+    font-size: 27px !important;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+}
+
 .rating_wrap .review-list i {
     color: #00adf6;
     font-size: 16px;
@@ -4173,6 +4180,25 @@ ul.promotion-list {
     .rating-summary li a:hover {
         color: #00adf6;
     }
+
+.type-service {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.service-desc h3 {
+    font-size: 23px;
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+.product-brand {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
 
 .modal-body .pro-list-features {
     border-bottom: 1px solid #e5e5e5;
@@ -4244,9 +4270,9 @@ ul.promotion-list {
 .thubnail-desc label,
 .social-sharing ul li label {
     display: block;
-    margin-bottom: 5px;
+/*    margin-bottom: 5px;*/
     text-transform: capitalize;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .product-size select,
@@ -4267,6 +4293,23 @@ ul.promotion-list {
 
 .quantity {
     padding: 11px;
+}
+
+.pet_type_wraper label {
+    margin-bottom: 10px;
+}
+
+.pet_type_wraper .color-list li {
+    border: 2px solid #ccc;
+    display: inline-block;
+    margin-right: 7px;
+    padding: 2px;
+    -webkit-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+    padding: 5px 5px;
+    margin-top: 5px;
+    margin-right: 8px;
+    font-size: 15px;
 }
 
 .color-list li {
@@ -4357,19 +4400,18 @@ ul.promotion-list {
 
 .details_action_wraper a {
     background: #fff none repeat scroll 0 0;
-    border: 1px solid #e5e5e5;
+    border: 2px solid #e5e5e5;
     color: #454545;
-    font-family: "Poppins", sans-serif;
-    font-size: 13px;
-    font-weight: 500;
+    font-family: "Arial", sans-serif;
+    font-size: 19px;
+    font-weight: 600;
     line-height: 38px;
-    padding: 0 20px;
-    height: 40px;
+    padding: 5px 20px;
     display: inline-block;
     margin: 0 2px;
     text-align: center;
     width: 70%;
-    border-radius: 15px;
+    border-radius: 20px;
 }
 
     .details_action_wraper a:hover {
@@ -4380,8 +4422,8 @@ ul.promotion-list {
 
 .details_action_wraper .details_compare,
 .details_action_wraper .details_wishlist {
-    width: 40px;
-    padding: 0;
+    width: 51.2px;
+    padding: 4px 0;
     line-height: 40px;
 }
 
@@ -4506,6 +4548,15 @@ ul.promotion-list {
 .tab-content.thumb-content {
     padding: 30px 15px;
 }
+
+    .thumb-content #detail{
+        padding: 0px 35px;
+    }
+
+        .thumb-content #detail li {
+            word-spacing: 1px;
+            margin-bottom: 10px;
+        }
 
 .size_color_wraper {
 }

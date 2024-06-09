@@ -27,6 +27,9 @@ public partial class Service
     public bool IsDelete { get; set; }
 
     [InverseProperty("Service")]
+    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
+    [InverseProperty("Service")]
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
     [InverseProperty("Service")]

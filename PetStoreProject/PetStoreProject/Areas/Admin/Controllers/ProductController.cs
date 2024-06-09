@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Repositories.Attribute;
+using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.Repositories.ProductCategory;
+using PetStoreProject.Repositories.Size;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -12,18 +16,26 @@ namespace PetStoreProject.Areas.Admin.Controllers
         private readonly IProductRepository _product;
         private readonly ICategoryRepository _category;
         private readonly IProductCategoryRepository _productCategory;
+        private readonly ICloudinaryService _cloudinary;
+        private readonly IAttributeRepository _attribute;
+        private readonly ISizeRepository _size;
+        private readonly IBrandRepository _brand;
 
         public ProductController(IProductRepository product, ICategoryRepository category,
-            IProductCategoryRepository productCategory)
+            IProductCategoryRepository productCategory, ICloudinaryService cloudinary,
+            IBrandRepository brand, IAttributeRepository attribute, ISizeRepository size)
         {
-
             _product = product;
             _category = category;
             _productCategory = productCategory;
+            _cloudinary = cloudinary;
+            _brand = brand;
+            _attribute = attribute;
+            _size = size;
         }
 
         [HttpGet]
-        public async Task<IActionResult> List()
+        public IActionResult List()
         {
             return View();
         }
@@ -61,11 +73,20 @@ namespace PetStoreProject.Areas.Admin.Controllers
             });
         }
 
-        [HttpPost]
-        public JsonResult searchProductByName(string key)
+        [HttpGet]
+        public IActionResult Create()
         {
-
-            return Json(new { });
+            var categories = _category.GetCategories();
+            var productCategories = _productCategory.GetProductCategories(null);
+            var attributes = _attribute.GetAttributes();
+            var sizes = _size.GetSizes();
+            var brands = _brand.GetBrands();
+            ViewData["categories"] = categories;
+            ViewData["productCategories"] = productCategories;
+            ViewData["attributes"] = attributes;
+            ViewData["sizes"] = sizes;
+            ViewData["brands"] = brands;
+            return View();
         }
     }
 }

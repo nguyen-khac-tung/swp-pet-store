@@ -21,8 +21,8 @@ namespace PetStoreProject.Repositories.Category
             {
                 categoryViewModels.Add(new CategoryViewModel
                 {
-                    id = category.CategoryId,
-                    name = category.Name
+                    Id = category.CategoryId,
+                    Name = category.Name
                 });
             }
             return categoryViewModels;

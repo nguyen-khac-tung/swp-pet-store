@@ -786,7 +786,7 @@ function generateSortSoldQuantity(pageSize, pageNumber, categoryId, productCateI
     sortSoldQuantityList.forEach(function (soldQuantity) {
         li = $('<li>');
         href = $('<a>', {
-            style: 'width: 230px',
+            style: 'width: 240px',
             href: '#',
             class: (sortSoldQuantity == soldQuantity ? 'choose' : ''),
             onclick: `ChooseSortSoldQuantity(${pageSize}, ${pageNumber}, ${categoryId},

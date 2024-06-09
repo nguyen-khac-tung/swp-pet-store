@@ -1,16 +1,19 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
+using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Helper;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
+using PetStoreProject.Repositories.Attribute;
+using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.Repositories.ProductCategory;
 using PetStoreProject.Repositories.Service;
+using PetStoreProject.Repositories.Size;
 using PetStoreProject.Repositories.WishList;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +67,22 @@ builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
 
+builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+
+builder.Services.AddTransient<IAttributeRepository, AttributeRepository>();
+
+builder.Services.AddTransient<ISizeRepository, SizeRepository>();
+
+builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
+builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
+        builder.Configuration.GetSection("Cloudinary:CloudName").Value,
+        builder.Configuration.GetSection("Cloudinary:ApiKey").Value,
+        builder.Configuration.GetSection("Cloudinary:ApiSecret").Value
+    )));
+
+builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddControllersWithViews();
 

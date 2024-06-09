@@ -16,14 +16,14 @@ namespace PetStoreProject.Repositories.ProductCategory
         {
             var productCategories = _context.ProductCategories.Select(pc => new ProductCategoryViewModel
             {
-                id = pc.ProductCateId,
-                name = pc.Name.Trim(),
-                categoryId = pc.CategoryId
+                Id = pc.ProductCateId,
+                Name = pc.Name.Trim(),
+                CategoryId = pc.CategoryId
             }).ToList();
 
             if (categoryId != null)
             {
-                productCategories = productCategories.Where(pc => pc.categoryId == categoryId).ToList();
+                productCategories = productCategories.Where(pc => pc.CategoryId == categoryId).ToList();
             }
             return productCategories;
 

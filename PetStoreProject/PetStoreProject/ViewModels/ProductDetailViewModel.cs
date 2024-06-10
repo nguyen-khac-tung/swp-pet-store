@@ -14,5 +14,6 @@ namespace PetStoreProject.ViewModels
         public List<Attribute>? attributes { get; set; }
         public List<Size>? sizes { get; set; }
         public bool? IsSoldOut { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

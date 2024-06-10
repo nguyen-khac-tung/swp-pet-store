@@ -44,7 +44,7 @@ namespace PetStoreProject.Repositories.Product
                                   join p in _context.Products on po.ProductId equals p.ProductId
                                   join s in _context.Sizes on po.SizeId equals s.SizeId
                                   join i in _context.Images on po.ImageId equals i.ImageId
-                                  where p.ProductId == productId
+                                  where p.ProductId == productId && po.IsDelete == false
                                   select new ProductOptionViewModel
                                   {
                                       Id = po.ProductOptionId,
@@ -654,6 +654,11 @@ namespace PetStoreProject.Repositories.Product
                 return ex.Message;
             }
 
+        }
+
+        public Task<ProductCreateRequestViewModel> GetDetailForAdmin(int productId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

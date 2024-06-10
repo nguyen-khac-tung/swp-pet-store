@@ -30,5 +30,8 @@ namespace PetStoreProject.Repositories.Product
         public int GetTotalProducts(List<ProductViewForAdmin> products);
 
         public Task<string> CreateProduct(ProductCreateRequestViewModel productCreateRequest);
+
+        public Task<ProductCreateRequestViewModel> GetDetailForAdmin(int productId);
+
     }
 }

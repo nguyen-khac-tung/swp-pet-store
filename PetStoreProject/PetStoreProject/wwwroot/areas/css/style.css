@@ -1768,7 +1768,7 @@ a:hover, a:focus {
   border: 1px solid var(--Input);
 }
 .upload-image .item img {
-  height: 206px;
+  height: 180px;
 }
 .upload-image .item.up-load {
   min-height: 208px;

@@ -12,19 +12,27 @@
 @section HeadOptional {
     <script src="https://cdn.tiny.cloud/1/vmg6xq9b7kglu6elt6oqb6zuq75zntiodhgmxmgwwirj6x81/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
+        .hidden{
+            display: none;
+        }
+
         li:nth-child(2n+1){
             background-color: #f6f8fbcc;
         }
-        .item.select{
-            border: 1px solid #000;
+        .item.select-image{
+            border: 2px solid #000;
         }
         .delete-icon {
+            display: flex;
+            width: 25px;
+            heigth: 25px;
             position: absolute;
-            top: -10px;
-            right: -5px;
+            top: -3px;
+            right: -3px;
             color: black;
             border: none;
             padding: 5px;
+            color: blue;
         }
 
         .delete-button {
@@ -132,7 +140,7 @@
             <div class="wg-box">
                 <fieldset>
                     <label class="body-title mb-10">Tải ảnh lên<span class="tf-color-1">*</span></label>
-                    <div class="upload-image mb-16">
+                    <div class="upload-image mb-16" id="upload-image">
                         <div class="item up-load">
                             <label class="uploadfile" for="myFile">
                                 <span class="icon">
@@ -141,10 +149,14 @@
                                 <span class="text-tiny">Thả hình ảnh của bạn vào đây hoặc <span class="tf-color">chọn đường dẫn</span></span>
                                 <input type="file" id="myFile" name="filename" accept="image/*" onchange="previewImage(event)">
                             </label>
-                            
                         </div>
                     </div>
                 </fieldset>
+                <fielset>
+                    <div class="upload-image" id="preview-image">
+
+                    </div>
+                </fielset>
                 <fieldset>
                     <div class="upload-image mb-16" id="list-image" style="overflow-x: auto">
                        
@@ -306,8 +318,11 @@
         function previewImage(event) {
             isUploadFile = true;
             var files = event.target.files;
-            var imagesContainer = $('#list-image');
-
+            var uploadImage = $('#upload-image');
+            var previewImage = $('#preview-image');
+            previewImage.empty();
+            uploadImage.addClass('hidden');
+            removeImageSelect();
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 var reader = new FileReader();
@@ -315,8 +330,8 @@
                 reader.onload = (function (file) {
                     return function (e) {
                         var imageContainer = $('<div>', {
-                            class: 'item',
-                            style: 'position: relative; min-width: 48%; border-radius: 2px;',
+                            class: 'item select-image',
+                            style: 'position: relative; max-width: 100%; border-radius: 2px;',
                             click: function () {
                                 selectImage(this)
                             }
@@ -330,13 +345,14 @@
                             class: 'delete-icon',
                             html: '<i class="icon-delete"></i>',
                             click: function () {
+                                uploadImage.removeClass('hidden');
                                 imageContainer.remove();
                             }
                         });
 
                         imageContainer.append(img);
                         imageContainer.append(deleteBtn);
-                        imagesContainer.append(imageContainer);
+                        previewImage.append(imageContainer);
                     };
                 })(file);
 
@@ -344,12 +360,49 @@
             }
         }
 
+        function addImageToList(src){
+            var listImage = $('#list-image');
+            var isExists = false;
+            listImage.find('div').each(function () {
+                var image = $(this).find('img').attr('src');
+                if (image == src) {
+                    isExists = true;
+                    return false;
+                }
+            });
+            if (!isExists) {
+                var imageContainer = $('<div>', {
+                    class: 'item',
+                    style: 'position: relative; max-width: 25%; min-width: 25%; border-radius: 2px;',
+                    click: function () {
+                        selectImage(this)
+                    }
+                });
+
+                var img = $('<img>', {
+                    src: src
+                });
+
+                imageContainer.append(img);
+                listImage.append(imageContainer);
+            }
+        }
+
         function selectImage(image) {
+            removeImageSelect()
+            $(image).addClass('select-image');
+        }
+
+        function removeImageSelect(){
             var images = $('#list-image').children();
             for (var i = 0; i < images.length; i++) {
-                $(images[i]).removeClass('select');
+                $(images[i]).removeClass('select-image');
             }
-            $(image).addClass('select');
+
+            images = $('#preview-image').children();
+            if(images.length > 0){
+                $(images[0]).removeClass('select-image');
+            }
         }
 
         function isValidProductOption(){
@@ -360,7 +413,7 @@
             var categoryId = $('#category').val();
             var productCategory = $('#product-category').val();
 
-            var image = $('.item.select img').attr('src');
+            var image = $('.item.select-image img').attr('src');
 
             var sizeId = $('#size').val();
             var sizeName = $('#size option:selected').text();
@@ -393,7 +446,7 @@
             else if(image === undefined)
             {
                 isValid = false
-                $('#error-image').text('Bạn cần chọn một ảnh để hiển thị theo tùy chọn của sản phẩm');
+                $('#error-image').text('Bạn cần tải ảnh lên hoặc chọn một ảnh để hiển thị theo tùy chọn của sản phẩm');
             }
             else{
                 $('#error-image').text('')
@@ -429,7 +482,7 @@
 
         function addProductOption(){
             let isValid = isValidProductOption();
-            var image = $('.item.select img').attr('src');
+            var image = $('.item.select-image img').attr('src');
 
             var sizeId = $('#size').val();
             var sizeName = $('#size option:selected').text();
@@ -445,7 +498,7 @@
 
             var newOption = `
                         <li style="padding: 5px; position: relative">
-                            <button type="button" class="delete-button"><i class="icon-delete"></i></button>
+                            <span class="delete-button"><i class="icon-delete"></i></span>
                             <div class="gap15" style="align-items: center; width: 100%; display: flex">
                                 <div class="choose-image" style="width: 7%">
                                     <img class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
@@ -489,6 +542,7 @@
 
                 if (!optionExists) {
                     listProductOptions.append(newOption);
+                    addImageToList(image);
                 }
             }
         }

@@ -11,5 +11,6 @@ namespace PetStoreProject.ViewModels
         public float price { get; set; }
         public string? img_url { get; set; }
         public bool? IsSoldOut { get; set; }
+        public bool? IsDelete { get; set; }
     }
 }

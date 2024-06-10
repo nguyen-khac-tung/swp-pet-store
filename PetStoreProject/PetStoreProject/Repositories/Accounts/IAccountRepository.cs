@@ -15,7 +15,7 @@ namespace PetStoreProject.Repositories.Accounts
 
         public string? GetOldPassword(string email);
 
-        public List<string> GetUserRoles(string email);
+        public string GetUserRoles(string email);
 
         public string GetUserName(string email, string userRole);
 

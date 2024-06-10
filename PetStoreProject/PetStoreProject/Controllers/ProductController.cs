@@ -66,7 +66,7 @@ namespace PetStoreProject.Controllers
             if (email != null)
             {
                 var roles = _account.GetUserRoles(email);
-                if (roles.Contains("Customer"))
+                if (roles == "Customer")
                 {
                     var customerID = _customer.GetCustomerId(email);
                     return customerID;

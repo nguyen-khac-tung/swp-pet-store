@@ -25,8 +25,8 @@ namespace PetStoreProject.CartController
             var email = HttpContext.Session.GetString("userEmail");
             if (email != null)
             {
-                var roles = _account.GetUserRoles(email);
-                if (roles.Contains("Customer"))
+                var role = _account.GetUserRoles(email);
+                if (role == "Customer")
                 {
                     return "Customer";
                 }

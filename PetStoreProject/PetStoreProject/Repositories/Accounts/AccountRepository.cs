@@ -177,7 +177,8 @@ namespace PetStoreProject.Repositories.Accounts
                                         Address = e.Address.Trim(),
                                         Email = e.Email,
                                         Gender = e.Gender,
-                                        Roles = _context.AccountRoles.Where(ar => ar.AccountId == e.AccountId).Select(ar => ar.Role).ToList()
+                                        Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
+                                        IsDelete = e.IsDelete
                                     }).ToList();
             return accountEmployees;
         }
@@ -196,7 +197,8 @@ namespace PetStoreProject.Repositories.Accounts
                                         Address = c.Address.Trim(),
                                         Email = c.Email,
                                         Gender = c.Gender,
-                                        Roles = _context.AccountRoles.Where(ar => ar.AccountId == c.AccountId).Select(ar => ar.Role).ToList()
+                                        Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
+                                        IsDelete = c.IsDelete
                                     }).ToList();
             return accountCustomers;
         }
@@ -215,111 +217,43 @@ namespace PetStoreProject.Repositories.Accounts
                                      Address = ad.Address.Trim(),
                                      Email = ad.Email,
                                      Gender = ad.Gender,
-                                     Roles = _context.AccountRoles.Where(ar => ar.AccountId == ad.AccountId).Select(ar => ar.Role).ToList()
+                                     Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
+                                     IsDelete = ad.IsDelete
                                  }).ToList();
             return accountAdmins;
         }
 
-        public List<AccountDetailViewModel> GetAccounts(int userType, int selectedRole, string searchName)
+        public List<AccountDetailViewModel> GetAccounts(int userType, string searchName, string selectedStatus)
         {
             List<AccountDetailViewModel> accounts = new List<AccountDetailViewModel>();
-            if (userType == 0)
+            switch (userType)
             {
-                accounts.AddRange(GetAccountEmployees());
-                accounts.AddRange(GetAccountCustomers());
-                accounts.AddRange(GetAccountAdmins());
-            }
-            else
-            {
-                if (userType == 2)
-                {
-                    accounts.AddRange(GetAccountAdmins());
-                }
-                else if (userType == 3)
-                {
-                    accounts.AddRange(GetAccountEmployees());
-                }
-                else
-                {
-                    accounts.AddRange(GetAccountCustomers());
-                }
+                case 1:
+                    accounts = GetAccountAdmins();
+                    break;
+                case 2:
+                    accounts = GetAccountEmployees();
+                    break;
+                case 3:
+                    accounts = GetAccountCustomers();
+                    break;
             }
 
-            if (selectedRole != 0)
-            {
-                accounts = accounts.Where(acc => acc.Roles.Any(role => role.RoleId == selectedRole)).ToList();
-            }
             if (searchName != "")
             {
                 accounts = accounts.Where(acc => acc.FullName.ToLower().Contains(searchName.ToLower())).ToList();
             }
 
+            if (selectedStatus == "0")
+            {
+                accounts = accounts.Where(acc => acc.IsDelete == false).ToList();
+            }
+            else if (selectedStatus == "1")
+            {
+                accounts = accounts.Where(acc => acc.IsDelete == true).ToList();
+            }
+
             return accounts;
         }
-
-        public int UpdateRoleAccount(int accountId, List<int> roleAccounts)
-        {
-            int status = 0;
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    // Retrieve the old roles associated with the account
-                    var roleOlds = _context.AccountRoles
-                        .Where(ar => ar.AccountId == accountId)
-                        .Select(ar => ar.RoleId)
-                        .ToList();
-
-                    // Use HashSet for faster lookup
-                    var roleAccountsSet = new HashSet<int>(roleAccounts);
-                    var roleOldsSet = new HashSet<int>(roleOlds);
-
-                    // Roles to remove: old roles that are not in the new roles
-                    var rolesToRemove = roleOldsSet.Except(roleAccountsSet).ToList();
-                    // Roles to add: new roles that are not in the old roles
-                    var rolesToAdd = roleAccountsSet.Except(roleOldsSet).ToList();
-
-                    // Remove roles
-                    if (rolesToRemove.Any())
-                    {
-                        foreach (var roleId in rolesToRemove)
-                        {
-                            var roleToRemove = _context.AccountRoles
-                                .FirstOrDefault(ar => ar.AccountId == accountId && ar.RoleId == roleId);
-
-                            if (roleToRemove != null)
-                            {
-                                _context.AccountRoles.Remove(roleToRemove);
-                            }
-                        }
-                        _context.SaveChanges();
-                    }
-
-                    // Add roles
-                    if (rolesToAdd.Any())
-                    {
-                        foreach (var roleId in rolesToAdd)
-                        {
-                            _context.AccountRoles.Add(new AccountRole
-                            {
-                                AccountId = accountId,
-                                RoleId = roleId
-                            });
-                        }
-                        _context.SaveChanges();
-                    }
-
-                    transaction.Commit();
-                    status = 1;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                }
-
-                return status;
-            }
-        }
-
     }
 }

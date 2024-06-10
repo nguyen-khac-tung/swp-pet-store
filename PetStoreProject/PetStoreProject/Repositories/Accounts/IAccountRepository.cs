@@ -21,9 +21,7 @@ namespace PetStoreProject.Repositories.Accounts
 
         public void ChangePassword(ChangePasswordViewModel ChangePasswordVM);
 
-        public List<AccountDetailViewModel> GetAccounts(int userType, int selectedRole, string searchName);
-
-        public int UpdateRoleAccount(int accountId, List<int> roleAccounts);
+        public List<AccountDetailViewModel> GetAccounts(int userType, string searchName, string selectedStatus);
 
     }
 }

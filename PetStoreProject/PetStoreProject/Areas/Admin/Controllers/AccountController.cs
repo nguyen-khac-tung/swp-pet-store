@@ -3,6 +3,7 @@ using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.ViewModels;
 using PetStoreProject.Helper;
 using System.Linq;
+using PetStoreProject.Areas.Admin.ViewModels;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -10,26 +11,28 @@ namespace PetStoreProject.Areas.Admin.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountRepository _account;
+        private readonly EmailService _emailService;
 
-        public AccountController(IAccountRepository account)
+        public AccountController(IAccountRepository account, EmailService emailService)
         {
             _account = account;
+            _emailService = emailService;
         }
 
         [HttpGet]
-        public IActionResult ListUsers()
+        public IActionResult List()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult ListUsers(int? pageIndex, int? pageSize, int? selectedRole, string? searchName, string? sortName)
+        public IActionResult List(int? pageIndex, int? pageSize, int? selectRole, string? searchName, string? sortName, string? selectStatus)
         {
             var pageIndexLocal = pageIndex ?? 1;
 
             var pageSizeLocal = pageSize ?? 10;
 
-            var accounts = _account.GetAccounts(0, selectedRole ?? 0, searchName ?? "");
+            var accounts = _account.GetAccounts(2, searchName ?? "", selectStatus ?? "");
 
             var numberPage = (int)Math.Ceiling(accounts.Count / (double)(pageSizeLocal));
 
@@ -55,14 +58,14 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateRoleAccount(int accountId, List<int> roleAccounts)
+        public IActionResult AddAccount(AccountViewModel accountViewModel)
         {
-            int result = _account.UpdateRoleAccount(accountId, roleAccounts);
-
-            return new JsonResult(new
+            if(ModelState.IsValid)
             {
-                result = result
-            });
+
+            }
+
+            return View();
         }
     }
 }

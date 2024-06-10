@@ -11,6 +11,57 @@
         text-decoration: underline;
         cursor: pointer;
     }
+
+    .role-admin {
+        color: #8b1111;
+        background-color: #9e867a5e;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .role-employee {
+        color: blue;
+        background-color: #d1e7ff;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .role-customer {
+        color: #f4fff4;
+        background-color: #5ba35b;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .account-non-active {
+        color: #f4fff4;
+        background-color: #d63737;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .account-active {
+        color: #f4fff4;
+        background-color: #5ba35b;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .name {
+        max-width: 240px;
+    }
+
+    .phone {
+        max-width: 130px;
+    }
+
+    .email, .user {
+        max-width: 285px;
+    }
+
+    .status {
+        max-width: 150px;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
@@ -43,39 +94,53 @@
             <div class="flex items-center justify-between gap10 flex-wrap">
                 <div class="wg-filter flex-grow">
                     <form class="form-search" onsubmit="return false;">
-                        <fieldset class="name">
+                        <fieldset>
                             <input id="search-input" type="text" placeholder="Tìm kiếm theo tên người dùng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
                         </fieldset>
                         <div class="button-submit">
                             <button onclick="searchFunction()"><i class="icon-search"></i></button>
                         </div>
                     </form>
+                    @* <div class="wg-filter">
+                    <label style="font-size: 16px">Vai trò:</label>
+                    <select id="selected_role" onchange="selectedRole()" style="width:auto">
+                    <option selected value="0">-- Tất cả --</option>
+                    <option value="1">Quản trị viên</option>
+                    <option value="2">Nhân viên</option>
+                    <option value="3">Khách hàng</option>
+                    </select>
+                    </div> *@
                     <div class="wg-filter">
-                        <label style="font-size: 16px">Vai trò:</label>
-                        <select id="selected_role" onchange="SelectedRole()" style="width:auto">
-                            <option selected value="0">-- Tất cả --</option>
-                            <option value="1">Quản trị viên</option>
-                            <option value="2">Nhân viên</option>
-                            <option value="3">Khách hàng</option>
+                        <label style="font-size: 16px">Trạng thái:</label>
+                        <select id="selected_status" onchange="selectedStatus()" style="width:auto">
+                            <option selected value="">-- Tất cả --</option>
+                            <option value="0">Kích hoạt</option>
+                            <option value="1">Không kích hoạt</option>
                         </select>
                     </div>
                 </div>
 
-                <a class="tf-button style-1 w208" href="add-new-user.html"><i class="icon-plus"></i>Add new</a>
+                <a class="tf-button style-1 w208" onclick="addAccount()"><i class="icon-plus"></i>Tạo tài khoản</a>
             </div>
             <div class="wg-table table-all-user" id="table-content">
                 <ul class="table-title flex gap20 mb-14">
-                    <li>
-                        <div id="user-hover" onclick="sortByName()" class=" body-title">Người dùng</div>
+                    <li style="width:0px">
+
                     </li>
-                    <li>
+                    <li class="user">
+                        <div id="user-hover" onclick="sortByName()" class=" body-title">Người dùng <i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                    <li class="phone">
                         <div class="body-title">Số điện thoại</div>
+                    </li>
+                    <li class="email">
+                        <div class="body-title">Email</div>
                     </li>
                     <li>
                         <div class="body-title">Vai trò</div>
                     </li>
-                    <li>
-                        <div class="body-title">Email</div>
+                    <li class="status">
+                        <div class="body-title">Trạng thái</div>
                     </li>
                     <li>
                         <div class="body-title">Hành động</div>
@@ -86,7 +151,7 @@
             </div>
             <div class="divider"></div>
             <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
-                <div class="text-tiny"></div>
+                <div class="text-tiny" id="no_data"></div>
                 <div id="pagination"></div>
             </div>
         </div>
@@ -96,31 +161,33 @@
 </div>
 </div>
 @Html.Partial("_QuickViewAccount")
-
+@Html.Partial("_AddViewAccount")
 
 <script src="~/js/list-product.js"></script>
 <script>
     var url = window.location.pathname;
-    var selectedRole = 0;
+    var selectRole = 0;
     var sortName = "";
+    var selectStatus = "";
     window.addEventListener('load', function () {
-        load(1, 10, 0, "", "");
+        load(1, 10, 0, "", "", "");
     });
 
-    function load(pageIndex, pageSize, selectedRole, searchName, sortName) {
+    function load(pageIndex, pageSize, selectRole, searchName, sortName, selectStatus) {
 
         $.ajax({
             url: url,
             type: 'Post',
             data: {
-                pageIndex: pageIndex, pageSize: pageSize, selectedRole: selectedRole, searchName: searchName, sortName: sortName
+                pageIndex: pageIndex, pageSize: pageSize, selectRole: selectRole,
+                searchName: searchName, sortName: sortName, selectStatus: selectStatus
             },
             success: function (response) {
                 var accounts = response.accounts;
 
                 if (accounts.length > 0) {
                     $("#list-users").empty();
-                    $('.text-tiny').empty();
+                    $('#no_data').empty();
                     $('.table-title').css('display', '');
                     $('#list-users').css('display', '');
                     $('#table-content').addClass('wg-table');
@@ -137,46 +204,44 @@
                         // html += '<div class="text-tiny mt-3">Product name</div>';
                         html += '</div>';
                         if (accounts[i].phone != null) {
-                            html += '<div class="body-text" >' + accounts[i].phone + '</div>';
+                            html += '<div class="body-text phone">' + accounts[i].phone + '</div>';
                         }
                         else {
-                            html += '<div class="body-text" style="font-weight:600;  font-style: italic;" > - </div>';
+                            html += '<div class="body-text phone" style="font-weight:600;  font-style: italic;" > - </div>';
                         }
+                        html += '<div class="body-text email" >' + accounts[i].email + '</div>';
                         html += '<div class="body-text" >';
-                        if (accounts[i].roles.length > 0) {
-                            for (var j = 0; j < accounts[i].roles.length; j++) {
-                                if (j > 0) {
-                                    html += "<span>-</span>";
-                                }
-                                switch (accounts[i].roles[j].roleId) {
-                                    case 1:
-                                        html += '<span>Quản trị viên</span>';
-                                        break;
-                                    case 2:
-                                        html += '<span>Nhân viên</span>';
-                                        break;
-                                    case 3:
-                                        html += '<span>Khách hàng</span>';
-                                        break;
-                                    default:
-                                        html += '<span> - </span>';
-                                        break;
-                                }
-
+                        if (accounts[i].role != null) {
+                            switch (accounts[i].role.roleId) {
+                                case 1:
+                                    html += '<span class="role-admin">Quản trị viên</span>';
+                                    break;
+                                case 2:
+                                    html += '<span class="role-employee">Nhân viên</span>';
+                                    break;
+                                case 3:
+                                    html += '<span class="role-customer">Khách hàng</span>';
+                                    break;
+                                default:
+                                    html += '<span> - </span>';
+                                    break;
                             }
                         } else {
-                            console.log("ahihi: " + accounts[i].roles);
                             html += '<span style="font-weight:600;  font-style: italic;">-</span>';
                         }
                         html += '</div>'
-                        html += '<div class="body-text" >' + accounts[i].email + '</div>';
+                        if (accounts[i].isDelete == 1) {
+                            html += '<div class="body-text status" ><span class="account-non-active">Không kích hoạt</span></div>';
+                        } else {
+                            html += '<div class="body-text status" ><span class="account-active">Kích hoạt</span></div>';
+                        }
                         html += '<div class="list-icon-function" >';
                         html += '<div class="item eye">';
                         html += '<i class="icon-eye" onclick="quickViewAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
                         html += '</div>';
-                        html += '<div class="item edit">';
-                        html += '<i class="icon-edit-3" onclick="editRoleAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
-                        html += '</div>';
+                        // html += '<div class="item edit">';
+                        // html += '<i class="icon-edit-3" onclick="editRoleAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
+                        // html += '</div>';
                         html += '<div class="item trash">';
                         html += '<i class="icon-trash-2"></i>';
                         html += '</div>';
@@ -185,15 +250,16 @@
                         html += '</li>';
                     }
                     $("#list-users").html(html);
-                    Pagination(response.currentPage, response.numberPage, response.pageSize);
+                    paging(response.currentPage, response.numberPage, response.pageSize);
                     console.log("data: ", response);
                 } else {
                     $('#pagination').empty();
                     $('.table-title').css("display", "none");
                     $('#list-users').css("display", "none");
                     $('#table-content').removeClass('wg-table');
-                    $('.text-tiny').empty();
-                    $('#table-content').append('<div class="text-tiny" style="text-align: center; margin-top: 20px;"><h3>Không có dữ liệu!</h3></div>');
+                    $('#no_data').empty();
+                    $('#table-content').append("<div id ='no_data'></div>");
+                    $('#no_data').html('<div class="text-tiny" style="text-align: center; margin-top: 20px;"><h3>Không có dữ liệu!</h3></div>');
                     console.error("Unexpected response structure:", response);
                 }
 
@@ -204,20 +270,23 @@
         });
     }
 
-    function NextPage(pageIndex, pageSize) {
+    function nextPage(pageIndex, pageSize) {
         var searchName = document.getElementById("search-input").value;
 
         console.log('PageIndex: ' + pageIndex);
         console.log('PageSize: ' + pageSize);
         console.log('SearchName: ' + searchName);
 
-        load(pageIndex, pageSize, selectedRole, searchName, sortName);
+        load(pageIndex, pageSize, selectRole, searchName, sortName, selectStatus);
     }
 
-    function SelectedRole() {
-        selectedRole = $("#selected_role").val();
+    function selectedRole() {
+
+        selectRole = document.getElementById("selected_role").value;
+
         var searchName = document.getElementById("search-input").value;
-        load(1, 10, selectedRole, searchName, sortName);
+
+        load(1, 10, selectRole, searchName, sortName, selectStatus);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -235,7 +304,7 @@
         var searchName = document.getElementById("search-input").value;
 
         console.log("Search query:", searchName);
-        load(1, 10, selectedRole, searchName, sortName);
+        load(1, 10, selectRole, searchName, sortName, selectStatus);
     }
 
     function quickViewAccount(accountJson) {
@@ -253,25 +322,20 @@
 
         $('#user-name').append(account.fullName);
 
-        if (account.roles.length > 0) {
-            for (var i = 0; i < account.roles.length; i++) {
-                if (i > 0) {
-                    $('#role').append("<span>-</span>");
-                }
-                switch (account.roles[i].roleId) {
-                    case 1:
-                        $('#role').append('<span>Quản trị viên</span>');
-                        break;
-                    case 2:
-                        $('#role').append('<span>Nhân viên</span>');
-                        break;
-                    case 3:
-                        $('#role').append('<span>Khách hàng</span>');
-                        break;
-                    default:
-                        $('#role').append('<span>-</span>');
-                        break;
-                }
+        if (account.role != null) {
+            switch (account.role.roleId) {
+                case 1:
+                    $('#role').append('<span>Quản trị viên</span>');
+                    break;
+                case 2:
+                    $('#role').append('<span>Nhân viên</span>');
+                    break;
+                case 3:
+                    $('#role').append('<span>Khách hàng</span>');
+                    break;
+                default:
+                    $('#role').append('<span>-</span>');
+                    break;
             }
         } else {
             $('#role').append('<span>Chưa cập nhật</span>');
@@ -303,11 +367,13 @@
     }
 
     function closeQuickViewAccount() {
+        $('#alert-role').empty();
         $('#profilePopup').modal('hide');
     }
 
     function sortByName() {
         var searchName = document.getElementById("search-input").value;
+
         switch (sortName) {
             case "":
                 sortName = "abc";
@@ -321,7 +387,15 @@
             default:
                 break;
         }
-        load(1, 10, selectedRole, searchName, sortName);
+        load(1, 10, selectRole, searchName, sortName, selectStatus);
+    }
+
+    function selectedStatus() {
+        var searchName = document.getElementById("search-input").value;
+
+        selectStatus = $("#selected_status").val();
+
+        load(1, 10, selectRole, searchName, sortName, selectStatus);
     }
 
     function editRoleAccount(accountJson) {
@@ -336,14 +410,14 @@
         var checkedEmployee = "";
         var checkedCustomer = "";
 
-        if (account.roles.length > 0) { 
-            for (var i = 0; i < account.roles.length; i++) { 
+        if (account.roles.length > 0) {
+            for (var i = 0; i < account.roles.length; i++) {
                 switch (account.roles[i].roleId) {
                     case 1:
                         checkedAdmin = "checked";
                         break;
                     case 2:
-                        checkedEmployee = "checked"; 
+                        checkedEmployee = "checked";
                         break;
                     case 3:
                         checkedCustomer = "checked";
@@ -355,50 +429,65 @@
         }
 
         var html = `
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" ${checkedAdmin}>
-                <label class="form-check-label" for="inlineCheckbox1">Admin</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" ${checkedEmployee}>
-                <label class="form-check-label" for="inlineCheckbox2">Employee</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" ${checkedCustomer}>
-                <label class="form-check-label" for="inlineCheckbox3">Customer</label>
-            </div>
-                <button type="button" class="btn btn-icon" onclick="updateRoleAccount('${account.accountId}')" style="background:none; border:none; padding:0; cursor:pointer;">
-                <i class="bi bi-save-fill" style="font-size: 25px; color: black;"></i>
-            </button>
-        `;
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" ${checkedAdmin}>
+                        <label class="form-check-label" for="inlineCheckbox1">Admin</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" ${checkedEmployee}>
+                        <label class="form-check-label" for="inlineCheckbox2">Employee</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" ${checkedCustomer}>
+                        <label class="form-check-label" for="inlineCheckbox3">Customer</label>
+                    </div>
+                        <button type="button" class="btn btn-icon" onclick="updateRoleAccount('${account.accountId}', '${account.email}')" style="background:none; border:none; padding:0; cursor:pointer;">
+                        <i class="bi bi-save-fill" style="font-size: 25px; color: black;"></i>
+                    </button>
+                `;
 
         $('#role').html(html);
     }
 
-    function updateRoleAccount(accountId) {
-        var roleAccounts = [];
-        for (var i = 1; i <= 3; i++) {
-            if($('#inlineCheckbox' + i).prop('checked')) {
-                var role = $("#inlineCheckbox" + i).val();
-                roleAccounts.push(role);
-            }
-
-        }
-        console.log("role_account: " + roleAccounts);
-        $.ajax({
-            url: "UpdateRoleAccount",
-            type: 'Post',
-            data: { accountId: accountId, roleAccounts: roleAccounts },
-            success: function (response) {
-                if (response.result == 1) {
-                    alert("Cập nhật vai trò thành công!");
-                    $('#profilePopup').modal('hide');
-                    load(1, 10, selectedRole, "", sortName);
-                } else {
-                    alert("Cập nhật vai trò thất bại!");
+    function updateRoleAccount(accountId, email) {
+        if ($('.form-check-input:checked').length === 0) {
+            var html = `<div class="alert alert-warning" role="alert">
+                                        Bạn phải chọn ít nhất một vai trò!
+                                </div>`;
+            $('#alert-role').html(html);
+        } else {
+            $('#alert-role').empty();
+            var roleAccounts = [];
+            for (var i = 1; i <= 3; i++) {
+                if ($('#inlineCheckbox' + i).prop('checked')) {
+                    var role = $("#inlineCheckbox" + i).val();
+                    roleAccounts.push(role);
                 }
-            },
-        });
+
+            }
+            var searchName = document.getElementById("search-input").value;
+
+            console.log("role_account: " + roleAccounts);
+            $.ajax({
+                url: "UpdateRoleAccount",
+                type: 'Post',
+                data: { accountId: accountId, roleAccounts: roleAccounts, email: email },
+                success: function (response) {
+                    if (response.result == 1) {
+                        alert("Cập nhật vai trò thành công!");
+                        $('#profilePopup').modal('hide');
+                        load(1, 10, selectRole, searchName, sortName, selectStatus);
+                    } else {
+                        alert("Cập nhật vai trò thất bại!");
+                    }
+                },
+            });
+        }
     }
 
+    /* Add account */
+
+    function addAccount() {
+        $('#addAccount').modal('show');
+    }
 </script>

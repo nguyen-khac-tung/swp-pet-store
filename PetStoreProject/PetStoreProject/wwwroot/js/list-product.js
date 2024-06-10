@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("status: " + selectedColors);
 
 
-        LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+        loadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -132,18 +132,18 @@ document.addEventListener('DOMContentLoaded', function () {
         range.style.right = "0%";
 
         console.log("Filters cleared");
-        LoadData(url, pageSize, 1, [], selectedSort, priceMinInit, priceMaxInit, [], [], []);
+        loadData(url, pageSize, 1, [], selectedSort, priceMinInit, priceMaxInit, [], [], []);
     });
 
 });
 
-function SelectedSort() {
+function selectedSort() {
     selectedSort = document.getElementById("selected_sort").value;
     console.log("selected_sort: change" + selectedSort);
-    LoadData(url, pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 
-function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
+function loadData(url, pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
@@ -293,7 +293,7 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
                 $('#data-grid-view').html(html);
                 $('#list-view').html(html1);
                 pageIndex = response.currentPage;
-                Pagination(response.currentPage, response.numberPage, response.pageSize);
+                paging(response.currentPage, response.numberPage, response.pageSize);
             } else {
                 $('#grid-view').empty();
                 var gridView = document.getElementById('grid-view');
@@ -313,16 +313,16 @@ function LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
     window.scrollTo(0, 0);
 }
 
-function Pagination(currentPage, numberPage, pageSize) {
+function paging(currentPage, numberPage, pageSize) {
     if (numberPage > 0) {
         var str = '<nav aria-label="Page navigation example"> <ul class="pagination">';
         if (currentPage > 1) {
-            str += `<li class="page-item"><a class="page-link" onclick="NextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Trang trước</a></li>`;
+            str += `<li class="page-item"><a class="page-link" onclick="nextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Trang trước</a></li>`;
         }
         var startPage = Math.max(1, currentPage - 2);
         var endPage = Math.min(numberPage, currentPage + 2);
         if (startPage > 1) {
-            str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${1},${pageSize})" href="javascript:void(0);">1</a></li>`;
+            str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${1},${pageSize})" href="javascript:void(0);">1</a></li>`;
             if (startPage > 2) {
                 str += ` <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>`;
             }
@@ -332,17 +332,17 @@ function Pagination(currentPage, numberPage, pageSize) {
                 str += ` <li class="page-item active"><a class="page-link" href="javascript:void(0);">${i}</a></li>`;
             }
             else {
-                str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${i},${pageSize})" href="javascript:void(0);">${i}</a></li>`;
+                str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${i},${pageSize})" href="javascript:void(0);">${i}</a></li>`;
             }
         }
         if (numberPage >= endPage + 1) {
             if (numberPage >= endPage + 2) {
                 str += ` <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>`;
             }
-            str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${numberPage},${pageSize})" href="javascript:void(0);">${numberPage}</a></li>`;
+            str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${numberPage},${pageSize})" href="javascript:void(0);">${numberPage}</a></li>`;
         }
         if (currentPage != numberPage)
-            str += ` <li class="page-item"><a class="page-link" onclick="NextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Trang sau</a></li>`;
+            str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Trang sau</a></li>`;
         str += "</ul></nav>";
         $('#pagination').html(str);
     } else {
@@ -351,18 +351,18 @@ function Pagination(currentPage, numberPage, pageSize) {
 }
 
 
-function NextPage(page, pageSize) {
+function nextPage(page, pageSize) {
     console.log("Nextpage:");
 
-    LoadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
-function ChangePageSize() {
+function changePageSize() {
     console.log("changePageSize:");
     console.log("PriceM: " + priceInput[0].value);
     console.log("PriceMax: " + priceInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    LoadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 
 function formatVND(amount) {

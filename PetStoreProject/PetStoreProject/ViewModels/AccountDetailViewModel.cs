@@ -21,7 +21,9 @@ namespace PetStoreProject.ViewModels
 
         public string Email { get; set; } = null!;
 
-        public List<Role> Roles { get; set; } = new List<Role>();
+        public Role Role { get; set; }
+
+        public bool? IsDelete { get; set; }
 
     }
 }

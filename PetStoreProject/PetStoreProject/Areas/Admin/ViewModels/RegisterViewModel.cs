@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace PetStoreProject.ViewModels
+namespace PetStoreProject.Areas.Admin.ViewModels
 {
     public class RegisterViewModel
     {
@@ -23,8 +23,7 @@ namespace PetStoreProject.ViewModels
         [StringLength(20, MinimumLength = 8, ErrorMessage = "Vui lòng nhập mật khẩu có độ dài từ 8 đến 20 ký tự.")]
         [DisplayName("Mật Khẩu")]
         [DataType(DataType.Password)]
-        public string? Password { get; set; } 
+        public string? Password { get; set; }
 
-        public string Address { get; set; }
     }
 }

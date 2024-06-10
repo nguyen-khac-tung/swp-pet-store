@@ -14,7 +14,7 @@ namespace PetStoreProject.Repositories.Accounts
             _context = dbContext;
         }
 
-        public Account getAccount(string email, string password)
+        public Account GetAccount(string email, string password)
         {
             var account = (from acc in _context.Accounts
                            where acc.Email == email
@@ -41,7 +41,7 @@ namespace PetStoreProject.Repositories.Accounts
             }
         }
 
-        public bool checkEmailExist(string email)
+        public bool CheckEmailExist(string email)
         {
             var account = (from acc in _context.Accounts
                            where acc.Email == email
@@ -57,7 +57,7 @@ namespace PetStoreProject.Repositories.Accounts
             }
         }
 
-        public void addNewCustomer(RegisterViewModel registerInfor)
+        public void AddNewCustomer(RegisterViewModel registerInfor)
         {
             Account account = new Account();
             account.Email = registerInfor.Email;
@@ -70,6 +70,10 @@ namespace PetStoreProject.Repositories.Accounts
                 account.Password = null;
             }
 
+            account.RoleId = 3;
+
+            account.IsDelete = false;
+
             _context.Accounts.Add(account);
 
             _context.SaveChanges();
@@ -77,16 +81,6 @@ namespace PetStoreProject.Repositories.Accounts
             var accountId = (from a in _context.Accounts
                              where a.Email == registerInfor.Email
                              select a.AccountId).FirstOrDefault();
-
-            AccountRole accountRole = new AccountRole()
-            {
-                RoleId = 3,
-                AccountId = accountId
-            };
-
-            _context.AccountRoles.Add(accountRole);
-
-            _context.SaveChanges();
 
             var customer = new Customer
             {
@@ -101,19 +95,19 @@ namespace PetStoreProject.Repositories.Accounts
             _context.SaveChanges();
         }
 
-        public void resetPassword(ResetPasswordViewModel resetPasswordVM)
+        public void ResetPassword(ResetPasswordViewModel ResetPasswordVM)
         {
-            var account = _context.Accounts.FirstOrDefault(acc => acc.Email == resetPasswordVM.Email);
+            var account = _context.Accounts.FirstOrDefault(acc => acc.Email == ResetPasswordVM.Email);
 
             if (account != null)
             {
-                account.Password = BCrypt.Net.BCrypt.HashPassword(resetPasswordVM.Password);
+                account.Password = BCrypt.Net.BCrypt.HashPassword(ResetPasswordVM.Password);
 
                 _context.SaveChanges();
             }
         }
 
-        public string? getOldPassword(string email)
+        public string? GetOldPassword(string email)
         {
             var password = (from a in _context.Accounts
                             where a.Email == email
@@ -121,13 +115,13 @@ namespace PetStoreProject.Repositories.Accounts
             return password;
         }
 
-        public void changePassword(ChangePasswordViewModel changePasswordVM)
+        public void ChangePassword(ChangePasswordViewModel ChangePasswordVM)
         {
             var account = (from a in _context.Accounts
-                           where a.Email == changePasswordVM.Email
+                           where a.Email == ChangePasswordVM.Email
                            select a).FirstOrDefault();
 
-            account.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordVM.NewPassword);
+            account.Password = BCrypt.Net.BCrypt.HashPassword(ChangePasswordVM.NewPassword);
 
             _context.SaveChanges();
         }
@@ -135,8 +129,7 @@ namespace PetStoreProject.Repositories.Accounts
         public List<string> GetUserRoles(string email)
         {
             var roles = (from a in _context.Accounts
-                         join ar in _context.AccountRoles on a.AccountId equals ar.AccountId
-                         join r in _context.Roles on ar.RoleId equals r.RoleId
+                         join r in _context.Roles on a.RoleId equals r.RoleId
                          where a.Email == email
                          select r.Name).ToList();
 

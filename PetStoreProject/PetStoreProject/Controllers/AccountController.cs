@@ -36,7 +36,7 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult Login(Account account)
         {
-            Account acc = _account.getAccount(account.Email, account.Password);
+            Account acc = _account.GetAccount(account.Email, account.Password);
             if (acc != null)
             {
                 HttpContext.Session.SetString("userEmail", acc.Email);
@@ -85,7 +85,7 @@ namespace PetStoreProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isEmailExist = _account.checkEmailExist(registerInfor.Email);
+                bool isEmailExist = _account.CheckEmailExist(registerInfor.Email);
                 bool isPhoneValid = PhoneNumber.isValid(registerInfor.Phone);
                 if (isEmailExist)
                 {
@@ -100,7 +100,7 @@ namespace PetStoreProject.Controllers
                 }
                 else
                 {
-                    _account.addNewCustomer(registerInfor);
+                    _account.AddNewCustomer(registerInfor);
                     HttpContext.Session.SetString("userEmail", registerInfor.Email);
                     HttpContext.Session.SetString("userName", registerInfor.FullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
@@ -121,7 +121,7 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
-            bool isExistEmail = _account.checkEmailExist(email);
+            bool isExistEmail = _account.CheckEmailExist(email);
             if (isExistEmail)
             {
                 ViewBag.SuccessMess = "Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn. " +
@@ -149,40 +149,40 @@ namespace PetStoreProject.Controllers
         [HttpGet]
         public IActionResult ResetPassword(string userEmail)
         {
-            var resetPasswordVM = new ResetPasswordViewModel { Email = userEmail };
-            return View(resetPasswordVM);
+            var ResetPasswordVM = new ResetPasswordViewModel { Email = userEmail };
+            return View(ResetPasswordVM);
         }
 
         [HttpPost]
-        public IActionResult ResetPassword(ResetPasswordViewModel resetPasswordVM)
+        public IActionResult ResetPassword(ResetPasswordViewModel ResetPasswordVM)
         {
             if (ModelState.IsValid)
             {
-                _account.resetPassword(resetPasswordVM);
-                HttpContext.Session.SetString("userEmail", resetPasswordVM.Email);
-                var role = _account.GetUserRoles(resetPasswordVM.Email);
+                _account.ResetPassword(ResetPasswordVM);
+                HttpContext.Session.SetString("userEmail", ResetPasswordVM.Email);
+                var role = _account.GetUserRoles(ResetPasswordVM.Email);
                 if (role.Contains("Admin"))
                 {
-                    var userName = _account.GetUserName(resetPasswordVM.Email, "Admin");
+                    var userName = _account.GetUserName(ResetPasswordVM.Email, "Admin");
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
                 else if (role.Contains("Employee"))
                 {
-                    var userName = _account.GetUserName(resetPasswordVM.Email, "Employee");
+                    var userName = _account.GetUserName(ResetPasswordVM.Email, "Employee");
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("Index", "Home", new { area = "Employee" });
                 }
                 else
                 {
-                    var userName = _account.GetUserName(resetPasswordVM.Email, "Customer");
+                    var userName = _account.GetUserName(ResetPasswordVM.Email, "Customer");
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("Index", "Home");
                 }
             }
             else
             {
-                return View(resetPasswordVM);
+                return View(ResetPasswordVM);
             }
         }
 
@@ -214,7 +214,7 @@ namespace PetStoreProject.Controllers
                 var fullName = userInfo[ClaimTypes.Name];
                 var email = userInfo[ClaimTypes.Email];
 
-                bool isEmailExist = _account.checkEmailExist(email);
+                bool isEmailExist = _account.CheckEmailExist(email);
                 if (isEmailExist)
                 {
                     HttpContext.Session.SetString("userEmail", email);
@@ -241,7 +241,7 @@ namespace PetStoreProject.Controllers
                 else
                 {
                     var resgister = new RegisterViewModel { FullName = fullName, Email = email };
-                    _account.addNewCustomer(resgister);
+                    _account.AddNewCustomer(resgister);
                     HttpContext.Session.SetString("userEmail", email);
                     HttpContext.Session.SetString("userName", fullName);
                     return RedirectToAction("Index", "Home", new { success = "True" });
@@ -271,7 +271,7 @@ namespace PetStoreProject.Controllers
         public IActionResult ProfileDetail()
         {
             var email = HttpContext.Session.GetString("userEmail");
-            var customer = _customer.getCustomer(email);
+            var customer = _customer.GetCustomer(email);
             var customerVM = new CustomerViewModel
             {
                 CustomerId = customer.CustomerId,
@@ -296,7 +296,7 @@ namespace PetStoreProject.Controllers
                 var oldEmail = HttpContext.Session.GetString("userEmail");
                 if (oldEmail != customer.Email)
                 {
-                    bool isEmailExist = _account.checkEmailExist(customer.Email);
+                    bool isEmailExist = _account.CheckEmailExist(customer.Email);
                     if (isEmailExist)
                     {
                         ViewBag.EmailMess = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
@@ -327,43 +327,43 @@ namespace PetStoreProject.Controllers
         public ActionResult ChangePassword()
         {
             var email = HttpContext.Session.GetString("userEmail");
-            var changePasswordVM = new ChangePasswordViewModel { Email = email };
-            string? oldPassword = _account.getOldPassword(email);
+            var ChangePasswordVM = new ChangePasswordViewModel { Email = email };
+            string? oldPassword = _account.GetOldPassword(email);
             if (oldPassword != null)
             {
-                changePasswordVM.OldPassword = oldPassword;
+                ChangePasswordVM.OldPassword = oldPassword;
             }
             else
             {
-                changePasswordVM.OldPassword = null;
+                ChangePasswordVM.OldPassword = null;
             }
-            return View(changePasswordVM);
+            return View(ChangePasswordVM);
         }
 
 
         [RoleAuthorize("Customer")]
         [HttpPost]
-        public ActionResult ChangePassword(ChangePasswordViewModel changePasswordVM)
+        public ActionResult ChangePassword(ChangePasswordViewModel ChangePasswordVM)
         {
-            if (changePasswordVM.OldPassword != null)
+            if (ChangePasswordVM.OldPassword != null)
             {
-                var passwordStored = _account.getOldPassword(changePasswordVM.Email);
-                bool isValid = BCrypt.Net.BCrypt.Verify(changePasswordVM.OldPassword, passwordStored);
+                var passwordStored = _account.GetOldPassword(ChangePasswordVM.Email);
+                bool isValid = BCrypt.Net.BCrypt.Verify(ChangePasswordVM.OldPassword, passwordStored);
                 if (isValid == false)
                 {
                     ViewBag.Message = "Mật khẩu cũ không chính xác. Vui lòng thử lại.";
-                    return View(changePasswordVM);
+                    return View(ChangePasswordVM);
                 }
             }
 
             if (ModelState.IsValid)
             {
-                _account.changePassword(changePasswordVM);
-                return View(changePasswordVM);
+                _account.ChangePassword(ChangePasswordVM);
+                return View(ChangePasswordVM);
             }
             else
             {
-                return View(changePasswordVM);
+                return View(ChangePasswordVM);
             }
         }
     }

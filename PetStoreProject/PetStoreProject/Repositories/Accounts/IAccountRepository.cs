@@ -5,21 +5,21 @@ namespace PetStoreProject.Repositories.Accounts
 {
     public interface IAccountRepository
     {
-        public Account getAccount(string email, string password);
+        public Account GetAccount(string email, string password);
 
-        public bool checkEmailExist(string email);
+        public bool CheckEmailExist(string email);
 
-        public void addNewCustomer(RegisterViewModel registerInfor);
+        public void AddNewCustomer(RegisterViewModel registerInfor);
 
-        public void resetPassword(ResetPasswordViewModel resetPasswordVM);
+        public void ResetPassword(ResetPasswordViewModel ResetPasswordVM);
 
-        public string? getOldPassword(string email);
+        public string? GetOldPassword(string email);
 
         public List<string> GetUserRoles(string email);
 
         public string GetUserName(string email, string userRole);
 
-        public void changePassword(ChangePasswordViewModel changePasswordVM);
+        public void ChangePassword(ChangePasswordViewModel ChangePasswordVM);
 
         public List<AccountDetailViewModel> GetAccounts(int userType, int selectedRole, string searchName);
 

@@ -13,7 +13,7 @@ namespace PetStoreProject.Repositories.Customers
             _context = dbContext;
         }
 
-        public int getCustomerId(string email)
+        public int GetCustomerId(string email)
         {
             var customerId = (from c in _context.Customers
                               where c.Email == email
@@ -21,7 +21,7 @@ namespace PetStoreProject.Repositories.Customers
             return customerId;
         }
 
-        public Customer? getCustomer(string email)
+        public Customer? GetCustomer(string email)
         {
             var customer = (from user in _context.Customers
                             where user.Email == email

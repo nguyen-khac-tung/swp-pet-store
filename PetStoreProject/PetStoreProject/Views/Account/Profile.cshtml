@@ -124,7 +124,7 @@
                     <div class="card-footer">
                         <div>
                             <a class="single-account-select profile-option-btn" onclick="profileDetail()">Thông Tin Tài Khoản</a>
-                            <a class="single-account-select profile-option-btn" onclick="changePassword()">Đổi Mật Khẩu</a>
+                            <a class="single-account-select profile-option-btn" onclick="ChangePassword()">Đổi Mật Khẩu</a>
                             <a class="single-account-select profile-option-btn">Lịch Sử Đơn Hàng</a>
                         </div>
                     </div>
@@ -203,7 +203,7 @@
             });
         };
 
-        function changePassword() {
+        function ChangePassword() {
             $.ajax({
                 url: '@Url.Action("ChangePassword", "Account")',
                 type: 'GET',

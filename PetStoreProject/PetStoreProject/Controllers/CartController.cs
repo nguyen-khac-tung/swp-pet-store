@@ -48,7 +48,7 @@ namespace PetStoreProject.CartController
             if (userRole == "Customer")
             {
                 var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.getCustomerId(customerEmail);
+                var customerID = _customer.GetCustomerId(customerEmail);
                 return GetCartBoxItemsOfCustomer(customerID);
             }
             else
@@ -64,7 +64,7 @@ namespace PetStoreProject.CartController
             if (userRole == "Customer")
             {
                 var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.getCustomerId(customerEmail);
+                var customerID = _customer.GetCustomerId(customerEmail);
                 return AddCartItemOfCustomer(productOptionId, quantity, customerID);
             }
             else if (userRole == "Guest")
@@ -84,7 +84,7 @@ namespace PetStoreProject.CartController
             if (userRole == "Customer")
             {
                 var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.getCustomerId(customerEmail);
+                var customerID = _customer.GetCustomerId(customerEmail);
                 return CartDetailOfCustomer(customerID);
             }
             else if (userRole == "Guest")
@@ -104,7 +104,7 @@ namespace PetStoreProject.CartController
             if (userRole == "Customer")
             {
                 var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.getCustomerId(customerEmail);
+                var customerID = _customer.GetCustomerId(customerEmail);
                 return DeleteCartOfCustomer(productOptionId, customerID);
             }
             else if (userRole == "Guest")
@@ -124,7 +124,7 @@ namespace PetStoreProject.CartController
             if (userRole == "Customer")
             {
                 var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.getCustomerId(customerEmail);
+                var customerID = _customer.GetCustomerId(customerEmail);
                 return EditCartOfCustomer(oldProductOptionId, newProductOptionId, quantity, customerID);
             }
             else if (userRole == "Guest")

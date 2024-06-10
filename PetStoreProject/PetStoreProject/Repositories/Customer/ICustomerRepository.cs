@@ -5,9 +5,9 @@ namespace PetStoreProject.Repositories.Customers
 {
     public interface ICustomerRepository
     {
-        public int getCustomerId(string email);
+        public int GetCustomerId(string email);
 
-        public Customer? getCustomer(string email);
+        public Customer? GetCustomer(string email);
 
         public void UpdateProfile(CustomerViewModel customer);
     }

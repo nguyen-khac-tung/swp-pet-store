@@ -22,12 +22,12 @@ namespace PetStoreProject.Controllers
             _service = service;
 		}
 
-		public int getCustomerId()
+		public int GetCustomerId()
 		{
 			var email = HttpContext.Session.GetString("userEmail");
 			if (email != null)
 			{
-				var customerID = _customer.getCustomerId(email);
+				var customerID = _customer.GetCustomerId(email);
 				return customerID;
 			}
 			else
@@ -61,7 +61,7 @@ namespace PetStoreProject.Controllers
                 ViewBag.Success = success;
             }
 
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
             ViewData["listPID"] = listPID;
 
             var dogFoods = _product.GetProductsOfHome(3, 14);

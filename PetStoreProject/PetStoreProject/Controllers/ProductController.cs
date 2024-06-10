@@ -34,10 +34,10 @@ namespace PetStoreProject.Controllers
                 return View(list);
             }
 
-            int cusomerID = getCustomerId();
+            int cusomerID = GetCustomerId();
             if (cusomerID != -1)
             {
-                List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+                List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
                 ViewData["listPID"] = listPID;
             }
             else
@@ -52,7 +52,7 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult LoadMoreSearch(string key, int page)
         {
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
             SearchResultViewModel listSearch = _product.GetListProductsByKeyWords(key, page);
             return new JsonResult(new
             {
@@ -60,7 +60,7 @@ namespace PetStoreProject.Controllers
                 listResult = listSearch.Results
             });
         }
-        public int getCustomerId()
+        public int GetCustomerId()
         {
             var email = HttpContext.Session.GetString("userEmail");
             if (email != null)
@@ -68,7 +68,7 @@ namespace PetStoreProject.Controllers
                 var roles = _account.GetUserRoles(email);
                 if (roles.Contains("Customer"))
                 {
-                    var customerID = _customer.getCustomerId(email);
+                    var customerID = _customer.GetCustomerId(email);
                     return customerID;
                 }
             }
@@ -78,21 +78,21 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public IActionResult ToggleFavorite(int productId)
         {
-            int cusomerID = getCustomerId();
+            int cusomerID = GetCustomerId();
             if (cusomerID == -1)
             {
                 Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return Content("Bạn cần đăng nhập để thực hiện thao tác này.");
             }
-            var favoriteList = _product.GetProductIDInWishList(getCustomerId());
+            var favoriteList = _product.GetProductIDInWishList(GetCustomerId());
 
             if (favoriteList.Contains(productId))
             {
-                _product.RemoveFromFavorites(getCustomerId(), productId);
+                _product.RemoveFromFavorites(GetCustomerId(), productId);
             }
             else
             {
-                _product.AddToFavorites(getCustomerId(), productId);
+                _product.AddToFavorites(GetCustomerId(), productId);
             }
             return Json(new { success = true });
         }
@@ -101,7 +101,7 @@ namespace PetStoreProject.Controllers
         public ActionResult Detail(int productId)
         {
             var product_detail = _product.GetDetail(productId);
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
 
             ViewData["product_detail"] = product_detail;
             ViewData["related_products"] = _product.getRelatedProduct(productId);
@@ -154,7 +154,7 @@ namespace PetStoreProject.Controllers
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 21;
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
 
             ViewData["listPID"] = listPID;
             ViewBag.Brands = _product.GetBrandsByCategoryIdsAndProductCateId(categoryIds, productCateId ?? 0);
@@ -287,7 +287,7 @@ namespace PetStoreProject.Controllers
             var totalItems = productDetails.Count();
             var numberPage = Math.Ceiling((float)totalItems / _pageSize);
             var productDetail = productDetails.Skip((pageIndex - 1) * _pageSize).Take(_pageSize).ToList();
-            List<int> listPID = _product.GetProductIDInWishList(getCustomerId());
+            List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
 
             TempData["listPID"] = listPID;
             TempData["pageSize"] = _pageSize;

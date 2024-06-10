@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("Size")]
-public partial class Size
+[Table("WorkingTime")]
+public partial class WorkingTime
 {
     [Key]
-    public int SizeId { get; set; }
+    public int WorkingTimeId { get; set; }
 
-    [StringLength(50)]
-    public string Name { get; set; }
+    [Precision(0)]
+    public TimeOnly Time { get; set; }
 
-    [InverseProperty("Size")]
-    public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
+    [InverseProperty("WorkingTime")]
+    public virtual ICollection<TimeService> TimeServices { get; set; } = new List<TimeService>();
 }

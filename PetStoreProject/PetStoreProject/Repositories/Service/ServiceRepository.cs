@@ -1,5 +1,6 @@
 ﻿using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
+using System.Globalization;
 
 namespace PetStoreProject.Repositories.Service
 {
@@ -61,7 +62,7 @@ namespace PetStoreProject.Repositories.Service
                             join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
                             where s.ServiceId == serviceId
                             select so.PetType).Distinct().ToList();
-
+                
             service.Images = images;
             service.PetTypes = petTypes;
             return service;
@@ -108,6 +109,66 @@ namespace PetStoreProject.Repositories.Service
                                  }).FirstOrDefault();
 
             return serviceOption;
+        }
+
+        public BookServiceViewModel GetBookingServiceInFo(int serviceOptionId)
+        {
+            var bookService = (from s in _context.Services
+                               join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                               where so.ServiceOptionId == serviceOptionId
+                               select new BookServiceViewModel
+                               {
+                                   ServiceOptionId = so.ServiceOptionId,
+                                   ServiceId = so.ServiceId,
+                                   ServiceName = s.Name,
+                                   ServiceType = s.Type,
+                                   PetType = so.PetType,
+                                   Weight = so.Weight,
+                               }).FirstOrDefault();
+
+            return bookService;
+        }
+
+        public List<TimeOnly> GetWorkingTime(int serviceId)
+        {
+            var workingTime = (from s in _context.Services
+                               join ts in _context.TimeServices on s.ServiceId equals ts.ServiceId
+                               join wt in _context.WorkingTimes on ts.WorkingTimeId equals wt.WorkingTimeId
+                               where s.ServiceId == serviceId
+                               select wt.Time).ToList();
+            return workingTime;
+        }
+
+        public void SaveBookServiceForm(BookServiceViewModel bookServiceInfo)
+        {
+            using(var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    OrderService orderService = new OrderService();
+                    orderService.CustomerId = bookServiceInfo?.CustomerId;
+                    orderService.Name = bookServiceInfo.Name;
+                    orderService.Phone = bookServiceInfo.Phone;
+
+                    DateTime orderDate = DateTime.ParseExact(bookServiceInfo.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    orderService.OrderDate = DateOnly.FromDateTime(orderDate);
+
+                    orderService.OrderTime = bookServiceInfo.OrderTime;
+                    orderService.ServiceOptionId = bookServiceInfo.ServiceOptionId;
+                    orderService.Message = bookServiceInfo?.Message;
+                    orderService.Status = "Chưa xác nhận";
+                    orderService.IsDelete = false;
+
+                    _context.Add(orderService);
+
+                    _context.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch(Exception ex) { 
+                    transaction.Rollback();
+                }
+            }
         }
 
         public List<ServiceViewModel> GetOtherServices(int serviceId)

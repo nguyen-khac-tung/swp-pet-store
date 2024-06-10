@@ -23,7 +23,7 @@ namespace PetStoreProject.Controllers
         public IActionResult Detail()
         {
             var email = HttpContext.Session.GetString("userEmail");
-            var customerId = _customer.getCustomerId(email);
+            var customerId = _customer.GetCustomerId(email);
             var listWishList = _wishList.wishListVMs(customerId);
             return View(listWishList);
         }
@@ -32,7 +32,7 @@ namespace PetStoreProject.Controllers
         public IActionResult Delete(int productID)
         {
             var email = HttpContext.Session.GetString("userEmail");
-            var customerId = _customer.getCustomerId(email);
+            var customerId = _customer.GetCustomerId(email);
             _wishList.DeleteFromWishList(customerId, productID);
             return RedirectToAction("Detail");
         }

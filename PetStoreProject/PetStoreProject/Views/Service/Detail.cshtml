@@ -6,6 +6,11 @@
     var firstServiceOption = ViewData["FirstServiceOption"] as ServiceOptionViewModel;
     var otherServices = ViewData["OtherServices"] as List<ServiceViewModel>;
 }
+@section HeadOptional {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+}
 <!-- Product Thumbnail Start -->
 <div class="main-product-thumbnail product_details_wrap_1 adp_top adp_bottom" style="display:flex; justify-content:center; width:100%">
     <div class="container" style="margin:0px; width:100%; display:flex; justify-content: space-around; flex-grow:1">
@@ -74,12 +79,12 @@
                     </div>
                     <!--Weight-->
                     <div class="pet_type_wraper clearfix" id="weight">
-                        <label >Cân Nặng :</label>
+                        <label>Cân Nặng :</label>
                         <div class="color-list size_list">
                             <ul id="weight_list" class="color-list size_list">
                                 @foreach (var weight in firstServiceOption.Weights)
                                 {
-                                    <li id="@weight" style="cursor: pointer" onclick="weight_selected('@service.ServiceId', '@firstServiceOption.PetType', '@weight')">@weight kg</li>
+                                    <li id="@weight" style="cursor: pointer" onclick="weight_selected('@service.ServiceId', '@firstServiceOption.PetType', '@weight')">@weight</li>
                                 }
                             </ul>
                         </div>
@@ -231,75 +236,161 @@
     <!-- main-service End-->
 </div>
 <!-- Service related table area end -->
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let petType = "@Html.Raw(firstServiceOption.PetType)";
-        let weight = "@Html.Raw(firstServiceOption.Weight)";
-        document.getElementById(petType).classList.add("select");
-        document.getElementById(weight).classList.add("select");
-    });
-
-    function pet_type_selected(serviceId, petType) {
-        let pet_type_list = document.getElementById("pet_type_list").querySelectorAll("li");
-        pet_type_list.forEach(function (item) {
-            item.classList.remove("select");
+<!-- Booking service modal start-->
+<div class="booking-service-area">
+    <div class="container">
+        <!--The Modal-->
+        <div class="modal fade" id="booking-modal">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookingModalLabel">Đặt Lịch Hẹn</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Header -->
+                    <!-- Modal body -->
+                    <div class="modal-body" id="booking-modal-content">
+                    </div>
+                    <!-- Modal body -->
+                </div>
+            </div>
+        </div>
+        <!--The Modal-->
+    </div>
+</div>
+<!-- Booking service modal end-->
+@section ScriptOptional {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let petType = "@Html.Raw(firstServiceOption.PetType)";
+            let weight = "@Html.Raw(firstServiceOption.Weight)";
+            document.getElementById(petType).classList.add("select");
+            document.getElementById(weight).classList.add("select");
         });
-        console.log(petType);
-        let pet_type_selected = document.getElementById(petType);
-        pet_type_selected.classList.add("select");
 
-        $.ajax({
-            type: "POST",
-            url: "/Service/GetOptionViewModel",
-            data: { serviceId: serviceId, petType: petType },
-            success: function (response) {
-                $('#price').text(response.price.toLocaleString('en-US'));
+        function pet_type_selected(serviceId, petType) {
+            let pet_type_list = document.getElementById("pet_type_list").querySelectorAll("li");
+            pet_type_list.forEach(function (item) {
+                item.classList.remove("select");
+            });
+            console.log(petType);
+            let pet_type_selected = document.getElementById(petType);
+            pet_type_selected.classList.add("select");
 
-                let weightList = '';
-                response.weights.forEach(function (weight) {
-                    var isSelected = (response.weight === weight);
+            $.ajax({
+                type: "POST",
+                url: "/Service/GetOptionViewModel",
+                data: { serviceId: serviceId, petType: petType },
+                success: function (response) {
+                    $('#price').text(response.price.toLocaleString('en-US'));
 
-                    weightList += '<li id="' + weight + '"';
-                    weightList += (isSelected ? ' class="select"' : '');
-                    weightList += ' style="cursor: pointer" onclick="weight_selected(\'' + response.serviceId + '\',\''
-                        + response.petType + '\',\'' + weight + '\')">' + weight + 'kg</li>';
+                    let weightList = '';
+                    response.weights.forEach(function (weight) {
+                        var isSelected = (response.weight === weight);
+
+                        weightList += '<li id="' + weight + '"';
+                        weightList += (isSelected ? ' class="select"' : '');
+                        weightList += ' style="cursor: pointer" onclick="weight_selected(\'' + response.serviceId + '\',\''
+                            + response.petType + '\',\'' + weight + '\')">' + weight + '</li>';
+                    });
+
+                    $('#weight_list').html(weightList);
+                    $('#book_service').attr('data-service-option-id', response.serviceOptionId);
+                },
+
+                error: function (xhr, status, error) {
+                    console.error('The request failed!', status, error);
+                }
+            });
+        };
+
+        function weight_selected(serviceId, petType, weight) {
+            let weight_list = document.getElementById("weight_list").querySelectorAll("li");
+            weight_list.forEach(function (item) {
+                item.classList.remove("select");
+            });
+            let weight_selected = document.getElementById(weight);
+            weight_selected.classList.add("select");
+
+            $.ajax({
+                type: "POST",
+                url: "/Service/GetServiceOptionPrice",
+                data: { serviceId: serviceId, petType: petType, weight: weight },
+                success: function (response) {
+                    $('#price').text(response.price.toLocaleString('en-US'));
+                    $('#book_service').attr("data-service-option-id", response.serviceOptionId);
+                },
+
+                error: function (xhr, status, error) {
+                    console.error('The request failed!', status, error);
+                }
+            });
+        };
+
+        function bookService(serviceOptionId) {
+            console.log(serviceOptionId);
+            $.ajax({
+                type: 'GET',
+                url: '/Service/BookService',
+                data: { serviceOptionId: serviceOptionId },
+                success: function (response) {
+                    $("#booking-modal-content").html(response);
+                    $("#booking-modal").modal("show");
+
+                    ConfirmBooking();
+                    initDatepicker();
+                },
+
+                error: function (xhr, status, error) {
+                    console.error('The request failed!', status, error);
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function ConfirmBooking() {
+            $("#booking-form").on("submit", function (event) {
+                event.preventDefault();
+                let bookedForm = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Service/BookService',
+                    data: bookedForm,
+                    success: function (response) {
+                        $("#booking-modal-content").empty();
+                        $("#booking-modal-content").html(response);
+
+                        ConfirmBooking();
+                        initDatepicker();
+                    },
+
+                    error: function (xhr, status, error) {
+                        console.error('The request failed!', status, error);
+                        alert('Error: ' + xhr.responseText);
+                    }
                 });
+            });
+        }
 
-                $('#weight_list').html(weightList);
-                $('#book_service').attr('data-service-option-id', response.serviceOptionId);
-            },
+        function initDatepicker() {
+            let tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
 
-            error: function (xhr, status, error) {
-                console.error('The request failed!', status, error);
-            }
-        });
-    };
-
-    function weight_selected(serviceId, petType, weight) {
-        let weight_list = document.getElementById("weight_list").querySelectorAll("li");
-        weight_list.forEach(function (item) {
-            item.classList.remove("select");
-        });
-        let weight_selected = document.getElementById(weight);
-        weight_selected.classList.add("select");
-
-        $.ajax({
-            type : "POST",
-            url: "/Service/GetServiceOptionPrice",
-            data: { serviceId: serviceId, petType: petType, weight: weight },
-            success: function (response) {
-                $('#price').text(response.price.toLocaleString('en-US'));
-                $('#book_service').attr("data-service-option-id", response.serviceOptionId);
-            },
-
-            error: function (xhr, status, error) {
-                console.error('The request failed!', status, error);
-            }
-        });
-    };
-
-    function bookService(serviceOptionId) {
-        console.log(serviceOptionId);
-    }
-</script>
+            $('#dob-datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                weekStart: 1,
+                startView: 0,
+                startDate: tomorrow,
+                maxViewMode: 1,
+                language: "vi",
+                autoclose: true,
+                orientation: "bottom auto",
+            });
+        };
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
+}

@@ -5,7 +5,7 @@ namespace PetStoreProject.Areas.Admin.ViewModels
     public class ProductOptionCreateRequestViewModel
     {
         [Required(ErrorMessage = "Vui lòng cung cấp ảnh sản phẩm")]
-        public IFormFile Image { get; set; }
+        public string ImageData { get; set; }
 
         public int? SizeId { get; set; }
         public int? AttributeId { get; set; }

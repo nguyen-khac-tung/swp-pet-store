@@ -28,5 +28,7 @@ namespace PetStoreProject.Repositories.Product
             int? productCateId, string? key, bool? sortPrice, bool? sortSoldQuantity, bool? isInStock, bool? isDelete);
 
         public int GetTotalProducts(List<ProductViewForAdmin> products);
+
+        public Task<string> CreateProduct(ProductCreateRequestViewModel productCreateRequest);
     }
 }

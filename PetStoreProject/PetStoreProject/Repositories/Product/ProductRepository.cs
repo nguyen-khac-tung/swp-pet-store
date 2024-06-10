@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
@@ -9,9 +10,12 @@ namespace PetStoreProject.Repositories.Product
     public class ProductRepository : IProductRepository
     {
         private readonly PetStoreDBContext _context;
-        public ProductRepository(PetStoreDBContext context)
+        private readonly IProductOptionRepository _productOption;
+
+        public ProductRepository(PetStoreDBContext context, IProductOptionRepository productOption)
         {
             _context = context;
+            _productOption = productOption;
         }
 
         public ProductDetailViewModel GetDetail(int productId)
@@ -28,7 +32,7 @@ namespace PetStoreProject.Repositories.Product
             var images = (from po in _context.ProductOptions
                           join i in _context.Images on po.ImageId equals i.ImageId
                           where po.ProductId == productId
-                          select new Image()
+                          select new PetStoreProject.Models.Image()
                           {
                               ImageId = i.ImageId,
                               ImageUrl = i.ImageUrl
@@ -105,7 +109,7 @@ namespace PetStoreProject.Repositories.Product
                 var images = (from po in _context.ProductOptions
                               join i in _context.Images on po.ImageId equals i.ImageId
                               where po.ProductId == p.ProductId
-                              select new Image()
+                              select new PetStoreProject.Models.Image()
                               {
                                   ImageId = i.ImageId,
                                   ImageUrl = i.ImageUrl
@@ -169,7 +173,7 @@ namespace PetStoreProject.Repositories.Product
             return productOptions;
         }
 
-        public List<Image> GetImagesByProductId(int productId)
+        public List<PetStoreProject.Models.Image> GetImagesByProductId(int productId)
         {
             var images = (from i in _context.Images
                           join po in _context.ProductOptions on i.ImageId equals po.ImageId
@@ -614,6 +618,42 @@ namespace PetStoreProject.Repositories.Product
         {
             var count = products.Count();
             return count;
+        }
+
+        public async Task<string> CreateProduct(ProductCreateRequestViewModel productCreateRequest)
+        {
+            try
+            {
+                var maxId = await _context.Products.MaxAsync(i => i.ProductId);
+                var productId = maxId + 1;
+
+                var product = new Models.Product
+                {
+                    ProductId = productId,
+                    Name = productCreateRequest.Name,
+                    Description = productCreateRequest.Description,
+                    BrandId = productCreateRequest.BrandId,
+                    ProductCateId = productCreateRequest.ProductCateId,
+                };
+
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
+
+                foreach (var productOptionCreateRequest in productCreateRequest.ProductOptions)
+                {
+                    var productOptionId = await _productOption.CreateProductOption(productOptionCreateRequest, productId);
+                    if (!int.TryParse(productOptionId, out int number))
+                    {
+                        return productOptionId;
+                    }
+                }
+                return productId.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
     }
 }

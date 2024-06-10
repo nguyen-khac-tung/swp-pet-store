@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Repositories.Attribute;
@@ -88,5 +89,29 @@ namespace PetStoreProject.Areas.Admin.Controllers
             ViewData["brands"] = brands;
             return View();
         }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateRequest(string product)
+        {
+            try
+            {
+                var productCreateRequest = JsonConvert.DeserializeObject<ProductCreateRequestViewModel>(product);
+
+                var result = await _product.CreateProduct(productCreateRequest);
+
+                return Json(new
+                {
+                    result = result
+                });
+            }
+            catch (Exception e)
+            {
+                return Json(new
+                {
+                    result = e.Message
+                });
+            }
+        }
+
     }
 }

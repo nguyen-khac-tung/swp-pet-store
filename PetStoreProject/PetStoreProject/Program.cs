@@ -10,8 +10,10 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.Repositories.ProductCategory;
+using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.Repositories.WishList;
@@ -74,6 +76,10 @@ builder.Services.AddTransient<IAttributeRepository, AttributeRepository>();
 builder.Services.AddTransient<ISizeRepository, SizeRepository>();
 
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+
+builder.Services.AddTransient<IProductOptionRepository, ProductOptionRepository>();
+
+builder.Services.AddTransient<IImageRepository, ImageRepository>();
 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(

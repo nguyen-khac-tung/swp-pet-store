@@ -103,5 +103,23 @@ namespace PetStoreProject.Areas.Admin.Controllers
             }
 
         }
+
+        [HttpPost]
+        public IActionResult DeleteAccount(int accountId, string passwordAdmin)
+        {
+            var isExistAccount = _account.IsExistAccount(accountId);
+
+            if (isExistAccount == false)
+            {
+                return Json(new { success = false });
+            }
+            else
+            {
+                var status = _account.UpdateStatusDeleteAccount(accountId);
+
+                return Json(new { success = status });
+            }
+
+        }
     }
 }

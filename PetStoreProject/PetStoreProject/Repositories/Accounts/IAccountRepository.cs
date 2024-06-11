@@ -25,5 +25,9 @@ namespace PetStoreProject.Repositories.Accounts
         public List<AccountDetailViewModel> GetAccounts(int userType, string searchName, string selectedStatus);
 
         public void AddNewEmployment(AdminVM.AccountViewModel accountViewModel);
+
+        public bool IsExistAccount(int accountId); 
+
+        public int UpdateStatusDeleteAccount(int accountId);
     }
 }

@@ -62,9 +62,62 @@
     .status {
         max-width: 150px;
     }
+
+    .modal-header {
+        border-bottom: none;
+    }
+
+    .modal-body {
+        font-size: 1.1em;
+    }
+
+    .modal-footer {
+        border-top: none;
+        justify-content: center;
+    }
+
+    .close {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+    }
+
+    .modal-header .w-100 {
+        position: relative;
+    }
+
+    #passwordToDelete {
+        margin-top: 10px;
+        font-size: 15px;
+        border: none;
+        border-bottom: 1px solid black;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+<div class="modal fade" id="deleteAccount" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="deleteUserModalLabel">Xóa tài khoản nhân viên</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding-left:50px!important">
+                <i class="fas fa-trash-alt"></i>
+                <label>Bạn có chắc muốn xóa tài khoản nhân viên <strong id="nameAccountDelete"></strong>?</label>
+                <br />
+                <input type="hidden" id="accountId" />
+                <input type="password" class="form-control" id="passwordToDelete" placeholder="Vui lòng nhập mật khẩu để xác nhận" required />
+                <div id="error-mess"></div>
+            </div>
+            <div class="modal-footer" style="margin-bottom:10px">
+                <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:18px">Có, xóa tài khoản</button>
+                <button type="button" class="btn btn-secondary" aria-label="Close" data-bs-dismiss="modal">Không, giữ tài khoản</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main-content-inner">
     <!-- main-content-wrap -->
@@ -183,7 +236,7 @@
                 addAccount();
             }
         } else {
-            
+
         }
     });
 
@@ -257,7 +310,7 @@
                         // html += '<i class="icon-edit-3" onclick="editRoleAccount(\'' + encodeURIComponent(JSON.stringify(accounts[i])) + '\')"></i>';
                         // html += '</div>';
                         html += '<div class="item trash">';
-                        html += '<i class="icon-trash-2"></i>';
+                        html += `<i class="icon-trash-2" onclick="deleteAccount(${accounts[i].accountId}, '${accounts[i].fullName}', '${accounts[i].isDelete}')"></i>`;
                         html += '</div>';
                         html += '</div>';
                         html += '</div>';
@@ -412,57 +465,6 @@
         load(1, 10, selectRole, searchName, sortName, selectStatus);
     }
 
-    function editRoleAccount(accountJson) {
-        var account = JSON.parse(decodeURIComponent(accountJson));
-
-        quickViewAccount(accountJson);
-
-        var roleAdmin = "";
-        var roleEmployee = "";
-        var roleCustomer = "";
-        var checkedAdmin = "";
-        var checkedEmployee = "";
-        var checkedCustomer = "";
-
-        if (account.roles.length > 0) {
-            for (var i = 0; i < account.roles.length; i++) {
-                switch (account.roles[i].roleId) {
-                    case 1:
-                        checkedAdmin = "checked";
-                        break;
-                    case 2:
-                        checkedEmployee = "checked";
-                        break;
-                    case 3:
-                        checkedCustomer = "checked";
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        var html = `
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" ${checkedAdmin}>
-                            <label class="form-check-label" for="inlineCheckbox1">Admin</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" ${checkedEmployee}>
-                            <label class="form-check-label" for="inlineCheckbox2">Employee</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" ${checkedCustomer}>
-                            <label class="form-check-label" for="inlineCheckbox3">Customer</label>
-                        </div>
-                            <button type="button" class="btn btn-icon" onclick="updateRoleAccount('${account.accountId}', '${account.email}')" style="background:none; border:none; padding:0; cursor:pointer;">
-                            <i class="bi bi-save-fill" style="font-size: 25px; color: black;"></i>
-                        </button>
-                    `;
-
-        $('#role').html(html);
-    }
-
     /* Add account */
 
     function addAccount() {
@@ -489,7 +491,9 @@
                 success: function (result) {
                     if (result.success) {
                         $('#addAccount').modal('hide');
-                        $('#addAccountSuccess').modal('show');
+                        $('#notification').modal('show');
+                        $('#title-noti').html('Thành Công!');
+                        $('#body-noti').html('Tài khoản nhân viên đã tạo thành công. Tiếp tục các hoạt động!');
                     } else {
                         $('span.text-danger').html('');
 
@@ -499,11 +503,10 @@
                                 $('span[data-valmsg-for="' + key + '"]').html(errorMessage);
                             });
                         } else {
-                            var errorMessage = `
-                                    <div class="alert alert-danger alert-dismissible fade show rounded-0">
-                                        <span>${result.error}</span>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>`;
+                            var errorMessage = `<div class="alert alert-danger alert-dismissible fade show rounded-0">
+                                                            <span>${result.error}</span>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                                        </div>`;
                             $('#error-mess').html(errorMessage);
                         }
                     }
@@ -512,5 +515,61 @@
         });
     });
 
+    function deleteAccount(accountId, accountName, isDelete) {
+        if (isDelete == 'false') {
+            $('#error-mess').html("");
+            $('#deleteAccount').modal('show');
+            $('#nameAccountDelete').html(accountName);
+            $('#accountId').val(accountId);
+        } else {
+            $('#notification').modal('show');
+            $('#title-noti').html('Thất bại!');
+            $('#body-noti').html('Tài khoản nhân viên đang trong trạng thái không kích hoạt. Tiếp tục các hoạt động!');
+        }
+
+    }
+
+    $(document).ready(function () {
+        $('#confirmDelete').click(function () {
+            var accountId = $('#accountId').val();
+            console.log("accountiD: " + accountId);
+            var passwordAdmin = $('#passwordToDelete').val().trim();
+
+            if (passwordAdmin === "") {
+                var html = `<div class="alert alert-danger alert-dismissible fade show rounded-0">
+                                                                        <span>Vui lòng nhập mật khẩu</span>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                                                    </div>`;
+                $('#error-mess').html(html);
+
+                return;
+            } else {
+                $.ajax({
+                    url: "DeleteAccount",
+                    type: "post",
+                    data: { accountId: accountId, passwordAdmin: passwordAdmin },
+                    success: function (response) {
+                        if (response.success == 1) {
+                            $('#deleteAccount').modal('hide');
+                            $('#notification').modal('show');
+                            $('#title-noti').html('Thành Công!');
+                            $('#body-noti').html('Tài khoản nhân viên đã tạo xóa thành công. Tiếp tục các hoạt động!');
+                            load(1, 10, selectRole, "", sortName, selectStatus);
+                        } else {
+                            // var html = `<div class="alert alert-danger alert-dismissible fade show rounded-0">
+                            //                                             <span>Account không tồn tại trong hệ thống!</span>
+                            //                                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            //                                         </div>`;
+                            // $('#error-mess').html(html);
+                            $('#deleteAccount').modal('hide');
+                            $('#notification').modal('show');
+                            $('#title-noti').html('Thất bại!');
+                            $('#body-noti').html('Tài khoản nhân viên đang trong trạng thái không kích hoạt. Tiếp tục các hoạt động!');
+                        }
+                    }
+                });
+            }
+        })
+    });
 
 </script>

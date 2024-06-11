@@ -327,5 +327,41 @@ namespace PetStoreProject.Repositories.Accounts
                 }
             }
         }
+
+        public bool IsExistAccount(int accountId)
+        {
+            bool checkExist = true;
+            var account = _context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
+            if(account == null || account.IsDelete == false)
+            {
+                checkExist = false;
+            }
+            return checkExist;
+        }
+
+        public int UpdateStatusDeleteAccount(int accountId)
+        {
+            int status = 0;
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var account = _context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
+                    var employee  = _context.Employees.FirstOrDefault(e => e.AccountId == accountId);
+                    if (account != null && employee != null) {
+                        account.IsDelete = true;
+                        employee.IsDelete = true;
+                        _context.SaveChanges();
+                    }
+                    transaction.Commit();
+                    status = 1;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
+            return status;
+        }
     }
 }

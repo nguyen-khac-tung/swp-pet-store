@@ -42,6 +42,7 @@ namespace PetStoreProject.Controllers
                 HttpContext.Session.SetString("userEmail", acc.Email);
                 var role = _account.GetUserRoles(acc.Email);
                 if (role == "Admin")
+
                 {
                     var userName = _account.GetUserName(acc.Email, "Admin");
                     HttpContext.Session.SetString("userName", userName);

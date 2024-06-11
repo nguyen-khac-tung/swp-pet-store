@@ -28,13 +28,11 @@ namespace PetStoreProject.Filters
             bool isAuthorized = false;
             if (userRole != null)
             {
-                foreach (var role in userRole)
+                if (_roles.Contains(userRole))
                 {
-                    if (_roles.Contains(role))
-                    {
-                        isAuthorized = true;
-                        break;
-                    }
+
+                    isAuthorized = true;
+
                 }
             }
 

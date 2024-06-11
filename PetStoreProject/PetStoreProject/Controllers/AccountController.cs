@@ -41,13 +41,14 @@ namespace PetStoreProject.Controllers
             {
                 HttpContext.Session.SetString("userEmail", acc.Email);
                 var role = _account.GetUserRoles(acc.Email);
-                if (role.Contains("Admin"))
+                if (role == "Admin")
+
                 {
                     var userName = _account.GetUserName(acc.Email, "Admin");
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
-                else if (role.Contains("Employee"))
+                else if (role == "Employee")
                 {
                     var userName = _account.GetUserName(acc.Email, "Employee");
                     HttpContext.Session.SetString("userName", userName);
@@ -161,13 +162,13 @@ namespace PetStoreProject.Controllers
                 _account.ResetPassword(ResetPasswordVM);
                 HttpContext.Session.SetString("userEmail", ResetPasswordVM.Email);
                 var role = _account.GetUserRoles(ResetPasswordVM.Email);
-                if (role.Contains("Admin"))
+                if (role == "Admin")
                 {
                     var userName = _account.GetUserName(ResetPasswordVM.Email, "Admin");
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
-                else if (role.Contains("Employee"))
+                else if (role == "Employee")
                 {
                     var userName = _account.GetUserName(ResetPasswordVM.Email, "Employee");
                     HttpContext.Session.SetString("userName", userName);
@@ -219,13 +220,13 @@ namespace PetStoreProject.Controllers
                 {
                     HttpContext.Session.SetString("userEmail", email);
                     var role = _account.GetUserRoles(email);
-                    if (role.Contains("Admin"))
+                    if (role == "Admin")
                     {
                         var userName = _account.GetUserName(email, "Admin");
                         HttpContext.Session.SetString("userName", userName);
                         return RedirectToAction("Index", "Home", new { area = "Admin" });
                     }
-                    else if (role.Contains("Employee"))
+                    else if (role == "Employee")
                     {
                         var userName = _account.GetUserName(email, "Employee");
                         HttpContext.Session.SetString("userName", userName);

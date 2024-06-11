@@ -17,8 +17,28 @@ namespace PetStoreProject.Repositories.Product
             _context = context;
             _productOption = productOption;
         }
+		public List<FeedbackViewModels> GetListFeedBack(int productId)
+		{
+			var listFeedback = (from fb in _context.Feedbacks
+								join respfb in _context.ResponseFeedbacks on fb.FeedbackId equals respfb.FeedbackId into feedbackResponses
+								from resp in feedbackResponses.DefaultIfEmpty()
+								join e in _context.Employees on resp.EmployeeId equals e.EmployeeId into employeeResponses
+								from emp in employeeResponses.DefaultIfEmpty()
+								select new FeedbackViewModels
+								{
+									CustomerName = fb.Name,
+									Rating = fb.Rating,
+									Content = fb.Content,
+									EmployeeName = emp != null ? emp.FullName : null,
+									ContentResponse = resp != null ? resp.Content : null,
+									DateCreated = fb.DateCreated,
+									DateResp = (DateTime)(resp != null ? resp.DateCreated : (DateTime?)null)
+								}).ToList();
 
-        public ProductDetailViewModel GetDetail(int productId)
+
+			return listFeedback;
+		}
+		public ProductDetailViewModel GetDetail(int productId)
         {
             var product = (from p in _context.Products
                            join b in _context.Brands on p.BrandId equals b.BrandId

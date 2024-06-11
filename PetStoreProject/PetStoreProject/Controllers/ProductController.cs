@@ -97,20 +97,27 @@ namespace PetStoreProject.Controllers
             return Json(new { success = true });
         }
 
-        [HttpGet("{productId}")]
-        public ActionResult Detail(int productId)
-        {
-            var product_detail = _product.GetDetail(productId);
-            List<int> listPID = _product.GetProductIDInWishList(GetCustomerId());
+		[HttpGet("{productId}")]
+		public ActionResult Detail(int productId)
+		{
+			var email = HttpContext.Session.GetString("userEmail");
+			var customerId = _customer.GetCustomerId(email);
+			var product_detail = _product.GetDetail(productId);
+			List<int> listPID = _product.GetProductIDInWishList(customerId);
 
-            ViewData["product_detail"] = product_detail;
-            ViewData["related_products"] = _product.getRelatedProduct(productId);
-            ViewData["listPID"] = listPID;
+			//feedback
+			List<FeedbackViewModels> listFeedback = _product.GetListFeedBack(productId);
 
-            return View();
-        }
 
-        [HttpPost]
+			ViewData["product_detail"] = product_detail;
+			ViewData["related_products"] = _product.getRelatedProduct(productId);
+			ViewData["listPID"] = listPID;
+			ViewData["listFeedback"] = listFeedback;
+
+			return View();
+		}
+
+		[HttpPost]
         public ActionResult quickPreview(int productId)
         {
             var product_detail = _product.GetDetail(productId);

@@ -114,8 +114,10 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public IActionResult Detail(int productId)
         {
+            var product = _product.GetProductDetailForAdmin(productId);
+            ViewData["product"] = product;
             return View();
         }
 

@@ -32,7 +32,7 @@ namespace PetStoreProject.Repositories.Product
 
         public Task<string> CreateProduct(ProductCreateRequestViewModel productCreateRequest);
 
-        public Task<ProductCreateRequestViewModel> GetDetailForAdmin(int productId);
+        public ProductDetailForAdmin GetProductDetailForAdmin(int productId);
 
     }
 }

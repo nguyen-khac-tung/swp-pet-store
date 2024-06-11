@@ -166,11 +166,25 @@
 <script src="~/js/list-product.js"></script>
 <script>
     var url = window.location.pathname;
+    var queryString = window.location.search;
     var selectRole = 0;
     var sortName = "";
     var selectStatus = "";
     window.addEventListener('load', function () {
         load(1, 10, 0, "", "", "");
+        if (queryString.includes("?success")) {
+            // addAccount();
+            var urlParam = new URLSearchParams(queryString);
+
+            var getValue = urlParam.get("success");
+            if (getValue == "True") {
+                $("#addAccountModel").modal("show");
+            } else {
+                addAccount();
+            }
+        } else {
+            
+        }
     });
 
     function load(pageIndex, pageSize, selectRole, searchName, sortName, selectStatus) {
@@ -429,65 +443,74 @@
         }
 
         var html = `
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" ${checkedAdmin}>
-                        <label class="form-check-label" for="inlineCheckbox1">Admin</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" ${checkedEmployee}>
-                        <label class="form-check-label" for="inlineCheckbox2">Employee</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" ${checkedCustomer}>
-                        <label class="form-check-label" for="inlineCheckbox3">Customer</label>
-                    </div>
-                        <button type="button" class="btn btn-icon" onclick="updateRoleAccount('${account.accountId}', '${account.email}')" style="background:none; border:none; padding:0; cursor:pointer;">
-                        <i class="bi bi-save-fill" style="font-size: 25px; color: black;"></i>
-                    </button>
-                `;
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" ${checkedAdmin}>
+                            <label class="form-check-label" for="inlineCheckbox1">Admin</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2" ${checkedEmployee}>
+                            <label class="form-check-label" for="inlineCheckbox2">Employee</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3" ${checkedCustomer}>
+                            <label class="form-check-label" for="inlineCheckbox3">Customer</label>
+                        </div>
+                            <button type="button" class="btn btn-icon" onclick="updateRoleAccount('${account.accountId}', '${account.email}')" style="background:none; border:none; padding:0; cursor:pointer;">
+                            <i class="bi bi-save-fill" style="font-size: 25px; color: black;"></i>
+                        </button>
+                    `;
 
         $('#role').html(html);
-    }
-
-    function updateRoleAccount(accountId, email) {
-        if ($('.form-check-input:checked').length === 0) {
-            var html = `<div class="alert alert-warning" role="alert">
-                                        Bạn phải chọn ít nhất một vai trò!
-                                </div>`;
-            $('#alert-role').html(html);
-        } else {
-            $('#alert-role').empty();
-            var roleAccounts = [];
-            for (var i = 1; i <= 3; i++) {
-                if ($('#inlineCheckbox' + i).prop('checked')) {
-                    var role = $("#inlineCheckbox" + i).val();
-                    roleAccounts.push(role);
-                }
-
-            }
-            var searchName = document.getElementById("search-input").value;
-
-            console.log("role_account: " + roleAccounts);
-            $.ajax({
-                url: "UpdateRoleAccount",
-                type: 'Post',
-                data: { accountId: accountId, roleAccounts: roleAccounts, email: email },
-                success: function (response) {
-                    if (response.result == 1) {
-                        alert("Cập nhật vai trò thành công!");
-                        $('#profilePopup').modal('hide');
-                        load(1, 10, selectRole, searchName, sortName, selectStatus);
-                    } else {
-                        alert("Cập nhật vai trò thất bại!");
-                    }
-                },
-            });
-        }
     }
 
     /* Add account */
 
     function addAccount() {
         $('#addAccount').modal('show');
+
     }
+
+    $(document).ready(function () {
+        $('#addAccount').on('shown.bs.modal', function () {
+            // Reset the form
+            $('#registrationForm')[0].reset();
+            // Clear any validation messages
+            $('#registrationForm .text-danger').html('');
+        });
+    });
+
+    $(function () {
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        $('#addAccount').modal('hide');
+                        $('#addAccountSuccess').modal('show');
+                    } else {
+                        $('span.text-danger').html('');
+
+                        if (result.errors) {
+                            $.each(result.errors, function (key, errorMessages) {
+                                var errorMessage = errorMessages.join('<br>');
+                                $('span[data-valmsg-for="' + key + '"]').html(errorMessage);
+                            });
+                        } else {
+                            var errorMessage = `
+                                    <div class="alert alert-danger alert-dismissible fade show rounded-0">
+                                        <span>${result.error}</span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>`;
+                            $('#error-mess').html(errorMessage);
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+
 </script>

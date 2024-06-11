@@ -4,6 +4,7 @@ using PetStoreProject.ViewModels;
 using PetStoreProject.Helper;
 using System.Linq;
 using PetStoreProject.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -60,12 +61,47 @@ namespace PetStoreProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AddAccount(AccountViewModel accountViewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
+                bool isExistEmail = _account.CheckEmailExist(accountViewModel.Email);
+                bool isValidPhone = PhoneNumber.isValid(accountViewModel.Phone);
 
+                if (isExistEmail)
+                {
+                    var emailMess = "Email này đã tồn tại trong hệ thống!\n Vui lòng sử dụng email khác để tạo tài khoản.";
+
+                    return Json(new { success = false, error = emailMess });
+                }
+                else if (isValidPhone == false)
+                {
+                    var phoneMess = "Số điện thoại không hợp lệ! Vui lòng nhập lại.";
+
+                    return Json(new { success = false, error = phoneMess });
+                }
+                else
+                {
+                    var password = GeneratePassword.GenerateAutoPassword(10);
+
+                    var emailTitle = "Thông báo! Mật khẩu ứng dụng.";
+
+                    var emailBody = "Mật khẩu: " + password;
+
+                    _emailService.SendEmail(accountViewModel.Email, emailTitle, emailBody);
+
+                    accountViewModel.Password = password;
+
+                    _account.AddNewEmployment(accountViewModel);
+
+                    return Json(new { success = true });
+                }
+            }
+            else
+            {
+                var errors = ModelState.ToDictionary(kvp => kvp.Key,
+                                kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return Json(new { success = false, errors = errors });
             }
 
-            return View();
         }
     }
 }

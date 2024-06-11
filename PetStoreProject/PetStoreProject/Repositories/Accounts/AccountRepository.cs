@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+﻿using BCrypt.Net;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Identity.Client;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
+using System.Globalization;
 
 namespace PetStoreProject.Repositories.Accounts
 {
@@ -254,6 +257,75 @@ namespace PetStoreProject.Repositories.Accounts
             }
 
             return accounts;
+        }
+
+        public void AddNewEmployment(Areas.Admin.ViewModels.AccountViewModel accountViewModel)
+        {
+            using (var transaction = _context.Database.BeginTransaction()) {
+                try
+                {
+                    Account account = new Account();
+
+                    account.Email = accountViewModel.Email;
+
+                    if (accountViewModel.Password != null)
+                    {
+                        account.Password = BCrypt.Net.BCrypt.HashPassword(accountViewModel.Password);
+                    }
+                    else
+                    {
+                        account.Password = null;
+                    }
+                    account.RoleId = 2;
+
+                    account.IsDelete = false;
+
+                    _context.Accounts.Add(account);
+
+                    _context.SaveChanges();
+
+                    var accountId = _context.Accounts.FirstOrDefault(a => a.Email == accountViewModel.Email).AccountId;
+
+
+
+                    if (accountId != null)
+                    {
+
+                        DateOnly dateOfBirth;
+
+                        try
+                        {
+                            dateOfBirth = DateOnly.Parse(accountViewModel.DoB);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("The date string is not in a valid format.");
+                            return;
+                        }
+
+                        var employee = new Employee()
+                        {
+                            FullName = accountViewModel.FullName,
+                            DoB = dateOfBirth,
+                            Phone = accountViewModel.Phone,
+                            Address = accountViewModel.Address,
+                            Gender = accountViewModel.Gender,
+                            IsDelete = false,
+                            AccountId = accountId,
+                            Email = accountViewModel.Email
+
+                        };
+
+                        _context.Employees.Add(employee);
+                        _context.SaveChanges();
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
     }
 }

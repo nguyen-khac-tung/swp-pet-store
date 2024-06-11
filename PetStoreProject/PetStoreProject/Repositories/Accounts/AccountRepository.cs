@@ -129,14 +129,14 @@ namespace PetStoreProject.Repositories.Accounts
             _context.SaveChanges();
         }
 
-        public string GetUserRoles(string email)
+        public List<string> GetUserRoles(string email)
         {
-            var role = (from a in _context.Accounts
+            var roles = (from a in _context.Accounts
                          join r in _context.Roles on a.RoleId equals r.RoleId
                          where a.Email == email
-                         select r.Name).FirstOrDefault();
+                         select r.Name).ToList();
 
-            return role;
+            return roles;
         }
 
         public string GetUserName(string email, string userRole)

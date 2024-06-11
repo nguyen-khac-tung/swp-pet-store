@@ -6,19 +6,19 @@
 }
 
 <form id="booking-form">
-    <input type="hidden" asp-for="CustomerId" />
-    <input type="hidden" asp-for="ServiceOptionId" />
-    <input type="hidden" asp-for="ServiceId"/>
+    <input type="hidden" asp-for="@Model.CustomerId" />
+    <input type="hidden" asp-for="@Model.ServiceOptionId" />
+    <input type="hidden" asp-for="@Model.ServiceId"/>
     <div class="row">
         <div class="col-md-6 form-group">
-            <label asp-for="Name" class="form-label">Họ và Tên<em>*</em></label>
-            <input asp-for="Name" class="form-control">
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <label asp-for="@Model.Name" class="form-label">Họ và Tên<em>*</em></label>
+            <input asp-for="@Model.Name" class="form-control">
+            <span asp-validation-for="@Model.Name" class="text-danger"></span>
         </div>
         <div class="col-md-6 form-group">
-            <label asp-for="Phone" class="form-label">Điện thoại<em>*</em></label>
-            <input asp-for="Phone" class="form-control">
-            <span asp-validation-for="Phone" class="text-danger"></span>
+            <label asp-for="@Model.Phone" class="form-label">Điện thoại<em>*</em></label>
+            <input asp-for="@Model.Phone" class="form-control">
+            <span asp-validation-for="@Model.Phone" class="text-danger"></span>
             @if (ViewBag.PhoneMess != null)
             {
                 <span class="text-danger">@ViewBag.PhoneMess</span>
@@ -27,18 +27,18 @@
     </div>
     <div class="row">
         <div class="col-md-6 form-group">
-            <label asp-for="OrderDate" class="form-label">Ngày hẹn</label>
+            <label asp-for="@Model.OrderDate" class="form-label">Ngày hẹn</label>
             <div class="input-group date" id="dob-datepicker">
-                <input asp-for="OrderDate" type="text" class="form-control" />
+                <input asp-for="@Model.OrderDate" type="text" class="form-control" />
                 <div class="input-group-append">
                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 </div>
             </div>
-            <span asp-validation-for="OrderDate" class="text-danger"></span>
+            <span asp-validation-for="@Model.OrderDate" class="text-danger"></span>
         </div>
         <div class="col-md-6 form-group">
-            <label asp-for="OrderTime" class="form-label">Giờ hẹn</label>
-            <select asp-for="OrderTime" class="form-select">
+            <label asp-for="@Model.OrderTime" class="form-label">Giờ hẹn</label>
+            <select asp-for="@Model.OrderTime" class="form-select">
                 @foreach (var time in workingTime)
                 {
                     <option value="@time">@time.ToString("HH:mm")</option>
@@ -48,31 +48,31 @@
     </div>
     <div class="row">
         <div class="col-md-6 form-group">
-            <label asp-for="ServiceName" class="form-label">Dịch vụ</label>
-            <input asp-for="ServiceName" class="form-control" readonly>
+            <label asp-for="@Model.ServiceName" class="form-label">Dịch vụ</label>
+            <input asp-for="@Model.ServiceName" class="form-control" readonly>
         </div>
         <div class="col-md-6 form-group">
             <div class="col-md-6 form-group">
-                <label asp-for="ServiceType" class="form-label">Loại dịch vụ</label>
-                <input asp-for="ServiceType" class="form-control" readonly>
+                <label asp-for="@Model.ServiceType" class="form-label">Loại dịch vụ</label>
+                <input asp-for="@Model.ServiceType" class="form-control" readonly>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 form-group">
-            <label asp-for="PetType" class="form-label">Loại thú cưng</label>
-            <input asp-for="PetType" class="form-control" readonly>
+            <label asp-for="@Model.PetType" class="form-label">Loại thú cưng</label>
+            <input asp-for="@Model.PetType" class="form-control" readonly>
         </div>
         <div class="col-md-6 form-group">
             <div class="col-md-6 form-group">
-                <label asp-for="Weight" class="form-label">Cân Nặng</label>
-                <input asp-for="Weight" class="form-control" readonly>
+                <label asp-for="@Model.Weight" class="form-label">Cân Nặng</label>
+                <input asp-for="@Model.Weight" class="form-control" readonly>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="Message" class="form-label">Thông tin thêm</label>
-        <textarea asp-for="Message" class="form-control"></textarea>
+        <label asp-for="@Model.Message" class="form-label">Thông tin thêm</label>
+        <textarea asp-for="@Model.Message" class="form-control"></textarea>
     </div>
     <button type="submit" class="submit-btn">Đặt hẹn</button>
 </form>

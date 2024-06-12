@@ -136,7 +136,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult Update(int productId)
+        public async Task<ActionResult> Update(int productId)
         {
             var product = _product.GetProductDetailForAdmin(productId);
             var categories = _category.GetCategories();

@@ -736,6 +736,11 @@ namespace PetStoreProject.Repositories.Product
                                       IsDelete = po.IsDelete
                                   }).ToList();
 
+            foreach (var item in productOptions)
+            {
+                item.SoldQuantity = _context.OrderItems.Where(x => x.ProductOptionId == item.Id).Select(x => x.Quantity).Sum();
+            }
+
             var product = (from p in _context.Products
                            join b in _context.Brands on p.BrandId equals b.BrandId
                            join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId

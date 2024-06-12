@@ -126,7 +126,7 @@
 								var isOutOfStock = "";
 								if (product.IsSoldOut != null && product.IsSoldOut == true)
 								{
-									<div class="overlay">Hết hàng</div>
+										<div class="overlay">Hết hàng</div>
 									isOutOfStock = "out-of-stock";
 								}
 
@@ -327,51 +327,51 @@
 									{
 										foreach (var list in listFeedbacks)
 										{
-											<div class="review-header">
-												<h2>@list.CustomerName</h2>
-												@{
+												<div class="review-header">
+													<h2>@list.CustomerName</h2>
+													@{
 													switch (@list.Rating)
 													{
 														case 1:
-															<span class="rating">★☆☆☆☆</span>
+																	<span class="rating">★☆☆☆☆</span>
 															break;
 														case 2:
-															<span class="rating">★★☆☆☆</span>
+																	<span class="rating">★★☆☆☆</span>
 															break;
 														case 3:
-															<span class="rating">★★★☆☆</span>
+																	<span class="rating">★★★☆☆</span>
 															break;
 														case 4:
-															<span class="rating">★★★★☆</span>
+																	<span class="rating">★★★★☆</span>
 															break;
 														case 5:
-															<span class="rating">★★★★★</span>
+																	<span class="rating">★★★★★</span>
 															break;
 														default:
-															<span class="rating">★★★★★</span>
+																	<span class="rating">★★★★★</span>
 															break;
 
 													}
-												}
-											</div>
+													}
+												</div>
 
-											<p class="review-content">@list.Content</p>
-											<p>@list.DateCreated</p>
+												<p class="review-content">@list.Content</p>
+												<p>@list.DateCreated</p>
 
 											if (@list.EmployeeName != null)
 											{
-												<div class="response">
-													<p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
-													<p class="response-content">@list.ContentResponse </p>
-													<p>@list.DateResp</p>
-												</div>
+													<div class="response">
+														<p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
+														<p class="response-content">@list.ContentResponse </p>
+														<p>@list.DateResp</p>
+													</div>
 											}
 
 										}
 									}
 									else
 									{
-										<h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
+											<h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
 									}
 								}
 							</div>
@@ -480,9 +480,9 @@
 				price = productOptions[index].price;
 				img_url = productOptions[index].img_url;
 				isStill = true
+				console.log(attributeId, sizeId)
 				break;
 			}
-
 		}
 		// updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
 		if (isStill) {
@@ -551,35 +551,39 @@
 
 		function size_selected(index, size_id) {
 			var list_size = document.getElementById('size').querySelectorAll('li');
-			var list_attr = document.getElementById('attribute').querySelectorAll('li');
-			list_size.forEach(function (li) {
-				li.classList.remove('select');
-				li.classList.remove('out-of-stock')
-			});
-			list_attr.forEach(function (li) {
-				li.classList.remove('out-of-stock')
-			});
-			list_size[index].classList.add('select');
-			sizeId = size_id;
-			$('#add_to_cart').removeClass('out-of-stock');
-			updatePriceAndImage();
+			if(list_size.length > 0){
+				var list_attr = document.getElementById('attribute').querySelectorAll('li');
+				list_size.forEach(function (li) {
+					li.classList.remove('select');
+					li.classList.remove('out-of-stock')
+				});
+				list_attr.forEach(function (li) {
+					li.classList.remove('out-of-stock')
+				});
+				list_size[index].classList.add('select');
+				sizeId = size_id;
+				$('#add_to_cart').removeClass('out-of-stock');
+				updatePriceAndImage();
+			}
 		}
 
-		function attribute_selected(index, attribute_id) {
-			var list_size = document.getElementById('size').querySelectorAll('li');
-			var list_attr = document.getElementById('attribute').querySelectorAll('li');
-			list_attr.forEach(function (li) {
-				li.classList.remove('select');
-				li.classList.remove('out-of-stock')
-			});
-			list_size.forEach(function (li) {
-				li.classList.remove('out-of-stock')
-			});
-			list_attr[index].classList.add('select');
-			attributeId = attribute_id;
-			$('#add_to_cart').removeClass('out-of-stock');
-			updatePriceAndImage();
-		}
+        function attribute_selected(index, attribute_id) {
+            var list_attr = document.getElementById('attribute').querySelectorAll('li');
+            if (list_attr.length > 0) {
+                var list_size = document.getElementById('size').querySelectorAll('li');
+                list_attr.forEach(function (li) {
+                    li.classList.remove('select');
+                    li.classList.remove('out-of-stock')
+                });
+                list_size.forEach(function (li) {
+                    li.classList.remove('out-of-stock')
+                });
+                list_attr[index].classList.add('select');
+                attributeId = attribute_id;
+                $('#add_to_cart').removeClass('out-of-stock');
+                updatePriceAndImage();
+            }
+        }
 
 		function updatePriceAndImage() {
 			var productOptions_json = @Html.Raw(productOptions);
@@ -596,7 +600,11 @@
 			}
 			document.getElementById('large_image').setAttribute('src', img_url)
 			document.getElementById('large_image').setAttribute('data-zoom-image', img_url)
-			document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
+			let zoomWindowContainer = document.getElementsByClassName('zoomWindowContainer')[0];
+
+			if (zoomWindowContainer && zoomWindowContainer.children.length > 0) {
+				zoomWindowContainer.children[0].style.backgroundImage = `url(${img_url})`;
+			}
 			document.getElementById('price').innerText = price.toLocaleString('en-US')
 			total_price()
 			checkOutOfStock()

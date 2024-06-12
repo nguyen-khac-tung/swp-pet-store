@@ -117,6 +117,53 @@ namespace PetStoreProject.Areas.Admin.Controllers
         public IActionResult Detail(int productId)
         {
             var product = _product.GetProductDetailForAdmin(productId);
+            if (product != null && product.ProductOptions[0].Attribute.AttributeId != 1)
+            {
+                var uniqueAttributes = new HashSet<int>();
+                var attributes = new List<Models.Attribute>();
+
+                foreach (var option in product.ProductOptions)
+                {
+                    if (option.Attribute != null && uniqueAttributes.Add(option.Attribute.AttributeId))
+                    {
+                        attributes.Add(option.Attribute);
+                    }
+                }
+                ViewData["attributes"] = attributes;
+            }
+            ViewData["product"] = product;
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Update(int productId)
+        {
+            var product = _product.GetProductDetailForAdmin(productId);
+            var categories = _category.GetCategories();
+            var productCategories = _productCategory.GetProductCategories(null);
+            var attributes = _attribute.GetAttributes();
+            var sizes = _size.GetSizes();
+            var brands = _brand.GetBrands();
+            HashSet<int> uniqueImages = new HashSet<int>();
+            List<Models.Image> images = new List<Models.Image>();
+            foreach (var option in product.ProductOptions)
+            {
+                if (option.Image != null && uniqueImages.Add(option.Image.ImageId))
+                {
+                    images.Add(new Models.Image
+                    {
+                        ImageId = option.Image.ImageId,
+                        /*ImageUrl = await _cloudinary.GetBase64Image(option.Image.ImageUrl.Trim())*/
+                        ImageUrl = option.Image.ImageUrl.Trim()
+                    });
+                }
+            }
+            ViewData["images"] = images;
+            ViewData["categories"] = categories;
+            ViewData["productCategories"] = productCategories;
+            ViewData["attributes"] = attributes;
+            ViewData["sizes"] = sizes;
+            ViewData["brands"] = brands;
             ViewData["product"] = product;
             return View();
         }

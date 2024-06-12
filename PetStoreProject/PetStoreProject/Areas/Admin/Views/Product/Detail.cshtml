@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Chi tiết Sản Phẩm";
     var product = ViewData["product"] as ProductDetailForAdmin;
+    var attributes = ViewData["attributes"] as List<PetStoreProject.Models.Attribute>;
     HashSet<string> images = new HashSet<string>();
     string productOptions = null;
     if (product != null)
@@ -19,12 +20,16 @@
         li{
             cursor: pointer;
         }
+
+        .list-box-value .box-value-item{
+            width: auto !important;
+        }
     </style>
 }
 <div class="main-content-inner">
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Product Detail</h3>
+            <h3>Xem chi tiết</h3>
             <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                 <li>
                     <a href="index.html"><div class="text-tiny">Dashboard</div></a>
@@ -46,19 +51,24 @@
     
             <div class="wg-box">
                 <div class="flex items-center flex-wrap justify-between gap20">
-                    <span class="name flex-wrap items-center" style="display:flex;">
-                        <input class="mb-10" placeholder="Nhập tên sản phẩm" id="name">
-                        <span id="error-name" class="text-danger ml-6"></span>
-                    </span>
-                    @if (product.IsDeleted == true)
+                    <form class="form-search">
+                        <fieldset class="name">
+                            <input type="text" placeholder="Nhập id sản phẩm" class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                        </fieldset>
+                        <div class="button-submit">
+                            <button class="" type="submit"><i class="icon-search"></i></button>
+                        </div>
+                        <span class="block-not-available mt-2 hide" id="error-id"></span>
+                    </form>
+                    @if (product != null && product.IsDeleted == true)
                     {
-                        <button type="button" style="height: 100%;" value="Xóa"> Ngừng bán</button>
+                        <div class="block-not-available"> Ngừng bán</div>
                     }
-                    else if (product.IsSoldOut == true)
+                    else if (product != null && product.IsSoldOut == true)
                     {
-                        <button type="button" style="height: 100%;" value="Xóa"> Hết hàng</button>
+                        <div class="block-not-available"> Hết hàng</div>
                     }
-                    <button type="button" style="height: 100%"value="Chỉnh sửa"> Chỉnh sửa</button>
+                    <a href="http://localhost:5206/admin/product/update?productId=@product.ProductId"><button type="button" class="tf-button style-1" value="Chỉnh sửa"> Chỉnh sửa</button></a>
                 </div>
                 
 
@@ -75,12 +85,11 @@
                                         @foreach (var image in images)
                                             {
                                                 <div class="mb-5">
-                                                <a data-image="@image" data-zoom-image="@image">
-                                                    <img src="@image" alt="">
+                                                    <a data-image="@image" data-zoom-image="@image">
+                                                        <img src="@image" alt="">
                                                     </a>
                                                 </div>
                                             }
-
                                         </div>
                                         <!--Large image-->
                                         <div class="zoompro-wrap zoompro-2 thumb_image_large">
@@ -89,20 +98,12 @@
                                                     var isOutOfStock = "";
                                                     if (product.IsSoldOut != null && product.IsSoldOut == true)
                                                     {
-                                                                                        <div class="overlay">Hết hàng</div>
+                                                        <div class="overlay">Hết hàng</div>
                                                         isOutOfStock = "out-of-stock";
                                                     }
-
                                                 }
 
                                                 <img class="zoompro @isOutOfStock" id="large_image" src="@product.ProductOptions[0].Image.ImageUrl" data-zoom-image="@product.ProductOptions[0].Image.ImageUrl" alt="" />
-
-                                                @* <div class="product-video">
-                                            <a class="video-popup" href="https://www.youtube.com/watch?v=pTrC_McU62Q">
-                                            <i class="icofont-video-alt"></i>
-                                            Explore Video
-                                            </a>
-                                            </div> *@
                                             </div>
 
                                             @* <span class="sticker-sale">-25%</span>
@@ -136,7 +137,21 @@
 
                                         <!--Attribute-->
                                         <div class="size_color_wraper mb-3" id="list-attribute">
-
+                                            @if(attributes != null)
+                                            {
+                                                <div class="color clearfix mb-30">
+                                                    <label style="margin:0px">Loại :</label>
+                                                    <ul class="color-list list-box-value mb-10 flex-wrap gap2">
+                                                    @for (var index = 0; index < attributes.Count; index++)
+                                                    {
+                                                        if (attributes[index].Name != null)
+                                                        {
+                                                            <li class="box-value-item" id="attribute_@attributes[index].AttributeId" style="cursor:pointer;" onclick="attribute_selected(@index, @attributes[index].AttributeId)">@attributes[index].Name.Trim()</li>
+                                                        }
+                                                    }
+                                                    </ul>
+                                                </div>
+                                            }
                                         </div>
 
 
@@ -144,7 +159,10 @@
                                         <div class="theme_size clearfix" id="list-size">
                                             
                                         </div>
-                                        <span id="status" class="text-danger"></span>
+                                        <div class="block-warning w-full" id="error-status">
+                                            <i class="icon-alert-octagon"></i>
+                                            <div class="body-title-2" id="status"></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Thumbnail Description End -->
@@ -163,7 +181,7 @@
                                     <div class="col-sm-12">
                                         <ul class="main-thumb-desc nav tabs-area" role="tablist">
                                             <li><a class="active" data-bs-toggle="tab" href="#detail">Mô tả</a></li>
-                                            <li><a data-bs-toggle="tab" href="#review">Xem Đánh giá</a></li>
+                                            <li><a data-bs-toggle="tab" href="#review">Xem Chi Tiết Các Tùy Chọn</a></li>
                                         </ul>
                                         <!-- Product Thumbnail Tab Content Start -->
                                         <div class="tab-content thumb-content">
@@ -171,11 +189,29 @@
                                                 <p>@Html.Raw(product.Description)</p>
                                             </div>
                                             <div id="review" class="tab-pane fade">
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu Donec ac tempus ante.
+                                                <div class="wg-box h-full gap15" style="max-height: 550px; overflow-y: auto">
+                                                @foreach(var po in product.ProductOptions)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-12 mb-20">
+                                                            <div class="shop-item gap20">
+                                                                <div class="image">
+                                                                    <img style="border-radius: 0px" src="@po.Image.ImageUrl" alt="">
+                                                                </div>
+                                                                <div class="flex-grow flex justify-between gap20">
+                                                                    <div class="body-text" style="width: 20%">@((po.Attribute.AttributeId == 1) ? "Trống" : po.Attribute.Name)</div>
+                                                                    <div class="body-text" style="width: 20%">@((po.Size.SizeId == 1) ? "Trống" : po.Size.Name)</div>
+                                                                    <div class="body-text" style="width: 15%">@po.Price.ToString("#,###") VND</div>
+                                                                    <div style="width: 15%" class="body-text">@po.SoldQuantity đã bán</div>
+                                                                    <div style="width: 15%" class="body-text @((po.IsSoldOut == true) ? "block-not-available" : "block-available")">@((po.IsSoldOut == true) ? "Hết hàng" : "Còn hàng")</div>
+                                                                    <div style="width: 15%" class="body-text @((po.IsDelete == true) ? "block-not-available" : "block-available")">@((po.IsDelete == true) ? "Ngừng bán" : "Còn bán")</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
 
-                                                    Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 	Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi.
-                                                </p>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- Product Thumbnail Tab Content End -->
@@ -197,6 +233,8 @@
         
     </div>
 </div>
+
+
 <!-- Product Thumbnail Description End -->
 
 <!-- Main Wrapper End Here -->
@@ -209,14 +247,20 @@
         var attributeId, sizeId, price, img_url;
         var productOptions = @Html.Raw(productOptions);
 
-        console.log(productOptions)
-        console.log(productOptions[0].Size.SizeId, productOptions[0].Attribute.AttributeId)
-
         sizeId = productOptions[0].Size.SizeId
         attributeId = productOptions[0].Attribute.AttributeId
 
-        generateAttributes(productOptions, sizeId)
-        generateSizes(productOptions, attributeId)
+        updatePriceAndImage()
+        if (attributeId != 1) {
+            if(sizeId != 1){
+                generateSizes(productOptions, attributeId)
+            }
+            attribute_selected(0, attributeId)
+        }
+        else if(sizeId != 1){
+            generateSizes(productOptions, attributeId)
+            size_selected(0, sizeId)
+        }
 
         function generateAttributes(productOptions, sizeId) {
             if (attributeId != 1) {
@@ -224,12 +268,12 @@
                 list_attribute.empty();
                 let attributes = productOptions.filter(po => po.Size.SizeId == sizeId).map(po => po.Attribute);
                 let ul = $('<ul>', {
-                    class: 'color-list'
+                    class: 'color-list list-box-value mb-10 flex-wrap gap2'
                 });
                 var index = 0
                 attributes.forEach(attr => {
                     if (attr.Name != null) {
-                        let li = `<li id="attribute_${attr.AttributeId}" onclick="attribute_selected(${index}, ${attr.AttributeId})">${attr.Name}</li>`;
+                        let li = `<li class="box-value-item" id="attribute_${attr.AttributeId}" onclick="attribute_selected(${index}, ${attr.AttributeId})">${attr.Name}</li>`;
                         ul.append(li);
                         index += 1
                     }
@@ -255,12 +299,12 @@
                 list_sizes.empty();
                 let sizes = productOptions.filter(po => po.Attribute.AttributeId == attributeId).map(po => po.Size);
                 let ul = $('<ul>', {
-                    class: 'color-list'
+                    class: 'color-list list-box-value mb-10 flex-wrap gap2'
                 });
                 var index = 0;
                 sizes.forEach(s => {
                     if (s.Name != null) {
-                        let li = `<li id="size_${s.SizeId}" onclick="size_selected(${index}, ${s.SizeId})">${s.Name}</li>`;
+                        let li = `<li class="box-value-item" id="size_${s.SizeId}" onclick="size_selected(${index}, ${s.SizeId})">${s.Name}</li>`;
                         ul.append(li);
                         index += 1;
                     }
@@ -280,37 +324,6 @@
             }
         }
 
-        function checkOutOfStock() {
-            var list_size = document.getElementById('list-size').querySelectorAll('li');
-            var list_attribute = document.getElementById('list-attribute').querySelectorAll('li');
-            if (list_size.length > 0 && list_attribute.length > 0) {
-                for (var index = 0; index < productOptions.length; index++) {
-                    if (productOptions[index].IsSoldOut) {
-                        if (productOptions[index].Attribute.AttributeId == attributeId) {
-                            $('#size_' + productOptions[index].Size.SizeId).addClass('out-of-stock')
-                        }
-                        else if (productOptions[index].Size.SizeId == sizeId) {
-                            $('#attribute_' + productOptions[index].Attribute.AttributeId).addClass('out-of-stock')
-                        }
-                    }
-                }
-            }
-            else if (list_attribute.length > 0) {
-                for (var index = 0; index < productOptions.length; index++) {
-                    if (productOptions[index].IsSoldOut) {
-                        $('#attribute_' + productOptions[index].Attribute.AttributeId).addClass('out-of-stock')
-                    }
-                }
-            }
-            else if (list_size.length > 0) {
-                for (var index = 0; index < productOptions.length; index++) {
-                    if (productOptions[index].IsSoldOut) {
-                        $('#size_' + productOptions[index].Size.SizeId).addClass('out-of-stock')
-                    }
-                }
-            }
-        }
-
         function size_selected(index, size_id) {
             var list_size = document.getElementById('list-size').querySelectorAll('li');
             list_size.forEach(function (li) {
@@ -318,30 +331,40 @@
             });
             list_size[index].classList.add('select');
             sizeId = size_id;
-            generateAttributes(productOptions, sizeId)
-            var list_attr = document.getElementById('list-attribute').querySelectorAll('li');
-            list_attr.forEach(function (li) {
-                if(li.id == 'attribute_' + attributeId){
-                    li.classList.add('select')
-                }
-            });
             updatePriceAndImage();
         }
 
         function attribute_selected(index, attribute_id) {
             var list_attr = document.getElementById('list-attribute').querySelectorAll('li');
             list_attr.forEach(function (li) {
-                li.classList.remove('select')
-            });
-            attributeId = attribute_id;
-            generateSizes(productOptions, attributeId)
-            var list_size = document.getElementById('list-size').querySelectorAll('li');
-            list_size.forEach(function (li) {
-                if(li.id == 'size_' + sizeId){
+                if(li.id.split('_')[1] == attribute_id){
+                    li.classList.remove('select')
                     li.classList.add('select')
                 }
+                else{
+                    li.classList.remove('select')
+                }
             });
-            list_attr[index].classList.add('select');
+            attributeId = attribute_id;
+
+            generateSizes(productOptions, attributeId)
+            
+            var list_size = document.getElementById('list-size').querySelectorAll('li');
+            if(list_size.length > 0){
+                var is_selected_size = false;
+                list_size.forEach(function (li) {
+                    if (li.id == 'size_' + sizeId) {
+                        li.classList.add('select')
+                        is_selected_size = true;
+                    }
+                });
+
+                if (!is_selected_size) {
+                    list_size[0].classList.add('select')
+                    sizeId = list_size[0].id.split('_')[1]
+                }
+            }
+            
             updatePriceAndImage();
         }
 
@@ -353,12 +376,15 @@
                     img_url = productOptions_json[id].Image.ImageUrl
                     if (productOptions_json[id].IsDelete) {
                         $('#status').text('Mặt hàng này đã ngừng bán')
+                        $('#error-status').removeClass('hide')
                     }
                     else if (productOptions_json[id].IsSoldOut) {
-                        $('#status').text('Hết hàng')
+                        $('#status').text('Tùy chọn sản phẩm này đã hết hàng')
+                        $('#error-status').removeClass('hide')
                     }
                     else {
                         $('#status').text('')
+                        $('#error-status').addClass('hide')
                     }
                     break
                 }

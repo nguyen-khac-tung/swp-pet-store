@@ -777,6 +777,13 @@ namespace PetStoreProject.Repositories.Product
             if (product != null)
             {
                 product.IsSoldOut = !productOptions.Any(p => p.IsSoldOut == false);
+                if (product.IsDeleted == true)
+                {
+                    foreach (var item in product.ProductOptions)
+                    {
+                        item.IsDelete = true;
+                    }
+                }
             }
 
             return product;

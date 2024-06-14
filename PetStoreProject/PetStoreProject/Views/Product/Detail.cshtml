@@ -1,5 +1,4 @@
 ﻿@using PetStoreProject.ViewModels
-@model PetStoreProject.ViewModels.FeedbackFormViewModel;
 @{
 	ViewData["Title"] = "Chi tiết Sản Phẩm";
 	var product = ViewData["product_detail"] as ProductDetailViewModel;
@@ -309,7 +308,7 @@
 										<textarea id="Content" name="Content" class="form-control" rows="5"></textarea>
 										<span id="ContentError" class="text-danger"></span>
 									</div>
-									<button type="submit" class="btn btn-primary" onclick="checkFormAndSubmit(event)">Submit</button>
+									<button type="submit" class="btn btn-primary" onclick="checkFormAndSubmit(event, @product.ProductId)">Submit</button>
 								</form>
 
 								<!-- Reviews Field Start -->
@@ -680,7 +679,7 @@
 			});
 		});
 
-		function checkFormAndSubmit(event) {
+		function checkFormAndSubmit(event, pid) {
 			event.preventDefault();
 
 			const fullName = document.getElementById('FullName').value.trim();
@@ -713,18 +712,19 @@
 
 			
 			if (isValid) {
-				checkPhoneNumberAndSubmit();
+				checkPhoneNumberAndSubmit(pid);
 			}
 		}
 
-		function checkPhoneNumberAndSubmit() {
+		function checkPhoneNumberAndSubmit(pid) {
 			var phoneNumber = $('#PhoneNumber').val();
 
 			$.ajax({
-				url: '@Url.Action("CheckPhoneNumber", "Feedback")',
+				url: '@Url.Action("CheckOrderProduct", "Feedback")',
 				type: 'POST',
 				data: {
-					phoneNumber: phoneNumber
+					phoneNumber: phoneNumber,
+					pid: pid
 				},
 				success: function (response) {
 					if (response.status === "error") {

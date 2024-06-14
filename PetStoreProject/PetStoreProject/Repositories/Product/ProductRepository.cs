@@ -24,6 +24,7 @@ namespace PetStoreProject.Repositories.Product
         public List<FeedbackViewModels> GetListFeedBack(int productId)
         {
             var listFeedback = (from fb in _context.Feedbacks
+                                where fb.ProductId == productId
                                 join respfb in _context.ResponseFeedbacks on fb.FeedbackId equals respfb.FeedbackId into feedbackResponses
                                 from resp in feedbackResponses.DefaultIfEmpty()
                                 join e in _context.Employees on resp.EmployeeId equals e.EmployeeId into employeeResponses

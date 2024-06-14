@@ -76,11 +76,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Employee\ViewModels\" />
+    <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
+    <Folder Include="Areas\Employee\ViewModels\" />
   </ItemGroup>
 
 </Project>

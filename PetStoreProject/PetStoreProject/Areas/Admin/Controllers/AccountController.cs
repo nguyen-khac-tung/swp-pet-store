@@ -5,6 +5,8 @@ using PetStoreProject.Helper;
 using System.Linq;
 using PetStoreProject.Areas.Admin.ViewModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PetStoreProject.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -27,30 +29,21 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult List(int? pageIndex, int? pageSize, int? selectRole, string? searchName, string? sortName, string? selectStatus)
+        public IActionResult List(int? pageIndex, int? pageSize, string? searchName, string? sortName, string? selectStatus)
         {
             var pageIndexLocal = pageIndex ?? 1;
 
             var pageSizeLocal = pageSize ?? 10;
 
-            var accounts = _account.GetAccounts(2, searchName ?? "", selectStatus ?? "");
+            var accounts = _account.GetAccounts(pageIndexLocal, pageSizeLocal,2, searchName ?? "", sortName ?? "", selectStatus ?? "");
 
-            var numberPage = (int)Math.Ceiling(accounts.Count / (double)(pageSizeLocal));
+            var totalAccount = _account.GetAccountCount(2);
 
-            if (sortName == "abc")
-            {
-                accounts = accounts.OrderBy(a => a.FullName).ToList();
-            }
-            else if (sortName == "zxy")
-            {
-                accounts = accounts.OrderByDescending(a => a.FullName).ToList();
-            }
-
-            accounts = accounts.Skip((pageIndexLocal - 1) * pageSizeLocal).Take(pageSizeLocal).ToList();
-
+            var numberPage = (int)Math.Ceiling(totalAccount / (double)(pageSizeLocal));
 
             return new JsonResult(new
             {
+                userType = 2,
                 accounts = accounts,
                 currentPage = pageIndexLocal,
                 pageSize = pageSizeLocal,
@@ -111,15 +104,25 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             if (isExistAccount == false)
             {
-                return Json(new { success = false });
+                return Json(new { success = false, isExistAccout = false });
             }
             else
             {
-                var status = _account.UpdateStatusDeleteAccount(accountId);
+                var emailAdmin = HttpContext.Session.GetString("userEmail");
 
-                return Json(new { success = status });
+                Account account = _account.GetAccount(emailAdmin, passwordAdmin);
+
+                if (account == null)
+                {
+                    return Json(new { success = false, passwordAdmin = false });
+                }
+                else
+                {
+                    var status = _account.UpdateStatusDeleteEmployee(accountId);
+
+                    return Json(new { success = status });
+                }
             }
-
         }
     }
 }

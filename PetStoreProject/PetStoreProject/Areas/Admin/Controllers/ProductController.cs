@@ -168,5 +168,27 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult UpdateRequest(string updateProductRequest)
+        {
+
+            try
+            {
+                var productUpdateRequest = JsonConvert.DeserializeObject<ProductDetailForAdmin>(updateProductRequest);
+
+                return Json(new
+                {
+                    result = "OK"
+                });
+            }
+            catch (Exception e)
+            {
+                return Json(new
+                {
+                    result = e.Message
+                });
+            }
+        }
     }
+
 }

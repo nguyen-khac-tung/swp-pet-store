@@ -1,6 +1,6 @@
 ﻿using PhoneNumbers;
 
-namespace PetStoreProject.Helper
+namespace PetStoreProject.Helpers
 {
     public class PhoneNumber
     {

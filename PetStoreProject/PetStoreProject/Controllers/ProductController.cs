@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PetStoreProject.Helper;
+using PetStoreProject.Helpers;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Product;

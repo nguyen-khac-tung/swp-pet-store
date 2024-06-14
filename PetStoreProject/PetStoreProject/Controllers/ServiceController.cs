@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetStoreProject.Helper;
+using PetStoreProject.Filters;
+using PetStoreProject.Helpers;
+using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
@@ -10,11 +12,13 @@ namespace PetStoreProject.Controllers
     {
         private readonly IServiceRepository _service;
         private readonly ICustomerRepository _customer;
+        private readonly IAccountRepository _account;
 
-        public ServiceController(IServiceRepository service, ICustomerRepository customer)
+        public ServiceController(IServiceRepository service, ICustomerRepository customer, IAccountRepository account)
         {
             _service = service;
             _customer = customer;
+            _account = account;
         }
 
         public IActionResult List()
@@ -51,6 +55,15 @@ namespace PetStoreProject.Controllers
             var userEmail = HttpContext.Session.GetString("userEmail");
             if (userEmail != null)
             {
+                var userRole = _account.GetUserRoles(userEmail);
+                if (userRole != "Customer")
+                {
+                    return new ContentResult
+                    {
+                        Content = "Access Denied",
+                        StatusCode = 403,
+                    };
+                }
                 var userInfo = _customer.GetCustomer(userEmail);
                 bookingService.CustomerId = userInfo.CustomerId;
                 bookingService.Name = userInfo.FullName;
@@ -66,15 +79,16 @@ namespace PetStoreProject.Controllers
             if (ModelState.IsValid)
             {
                 bool isPhoneValid = PhoneNumber.isValid(bookServiceInfo.Phone);
-                if(isPhoneValid == false)
+                if (isPhoneValid == false)
                 {
                     ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
                     ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
                     return View(bookServiceInfo);
                 }
 
-                ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
                 _service.SaveBookServiceForm(bookServiceInfo);
+                ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
+                ViewData["BookSuccess"] = "Cửa hàng ANIMART đã nhận được đặt hẹn của bạn và sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
                 return View(bookServiceInfo);
             }
             else

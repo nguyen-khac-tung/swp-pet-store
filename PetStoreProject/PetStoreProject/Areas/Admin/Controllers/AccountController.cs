@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.ViewModels;
-using PetStoreProject.Helper;
+using PetStoreProject.Helpers;
 using System.Linq;
 using PetStoreProject.Areas.Admin.ViewModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

@@ -1,4 +1,4 @@
-﻿namespace PetStoreProject.Helper
+﻿namespace PetStoreProject.Helpers
 {
 	public class PaginatedList<T> : List<T>
 	{

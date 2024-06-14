@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
 using PetStoreProject.Areas.Admin.Service.Cloudinary;
-using PetStoreProject.Helper;
+using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Attribute;

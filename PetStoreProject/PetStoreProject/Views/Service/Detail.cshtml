@@ -90,18 +90,6 @@
                         </div>
                     </div>
 
-                    @* <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
-                    Số lượng:
-                    <form action="#" onclick="total_price()" style="border-radius: 10px">
-                    <input class="quantity" type="number" min="1" max="10" value="1" id="quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
-                    </form>
-                    </div>
-
-                    <div>
-                    Tổng số tiền: <span id="amount">@product.productOption[0].price.ToString("#,###")</span>
-                    <span>VND</span>
-                    </div> *@
-
                     <div class="details_action_wraper">
                         <a class="details_cart link " tabindex="0" id="book_service" data-service-option-id="@firstServiceOption.ServiceOptionId"
                            onclick="bookService(this.getAttribute('data-service-option-id'))" style="cursor: pointer;">
@@ -244,9 +232,9 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <!-- Modal Header -->
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bookingModalLabel">Đặt Lịch Hẹn</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header d-block text-center position-relative pb-3">
+                        <h5 class="modal-title d-inline-block">Đặt Lịch Hẹn</h5>
+                        <button type="button" class="btn-close position-absolute end-0 mt-1 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <!-- Modal Header -->
                     <!-- Modal body -->
@@ -329,7 +317,6 @@
         };
 
         function bookService(serviceOptionId) {
-            console.log(serviceOptionId);
             $.ajax({
                 type: 'GET',
                 url: '/Service/BookService',
@@ -343,8 +330,10 @@
                 },
 
                 error: function (xhr, status, error) {
-                    console.error('The request failed!', status, error);
-                    alert('Error: ' + xhr.responseText);
+                    if (xhr.status === 403) {
+                        console.error('The request failed!', status, error);
+                        window.location.href = "/Account/AccessDenied?allowedRoles=Customer";
+                    }
                 }
             });
         }

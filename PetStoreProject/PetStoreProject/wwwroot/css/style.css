@@ -4403,14 +4403,14 @@ ul.promotion-list {
     border: 2px solid #e5e5e5;
     color: #454545;
     font-family: "Arial", sans-serif;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 600;
     line-height: 38px;
-    padding: 5px 20px;
+    padding: 4px 20px;
     display: inline-block;
     margin: 0 2px;
     text-align: center;
-    width: 70%;
+    width: 60%;
     border-radius: 20px;
 }
 
@@ -4423,7 +4423,7 @@ ul.promotion-list {
 .details_action_wraper .details_compare,
 .details_action_wraper .details_wishlist {
     width: 51.2px;
-    padding: 4px 0;
+    padding: 3px 0;
     line-height: 40px;
 }
 

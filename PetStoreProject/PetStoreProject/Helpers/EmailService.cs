@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 
-namespace PetStoreProject.Helper
+namespace PetStoreProject.Helpers
 {
     public class EmailService
     {

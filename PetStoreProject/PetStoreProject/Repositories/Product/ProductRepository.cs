@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.ViewModels;
 
@@ -11,34 +12,38 @@ namespace PetStoreProject.Repositories.Product
     {
         private readonly PetStoreDBContext _context;
         private readonly IProductOptionRepository _productOption;
+        private readonly IImageRepository _image;
 
-        public ProductRepository(PetStoreDBContext context, IProductOptionRepository productOption)
+        public ProductRepository(PetStoreDBContext context, IProductOptionRepository productOption,
+            IImageRepository image)
         {
             _context = context;
             _productOption = productOption;
+            _image = image;
         }
-		public List<FeedbackViewModels> GetListFeedBack(int productId)
-		{
-			var listFeedback = (from fb in _context.Feedbacks
-								join respfb in _context.ResponseFeedbacks on fb.FeedbackId equals respfb.FeedbackId into feedbackResponses
-								from resp in feedbackResponses.DefaultIfEmpty()
-								join e in _context.Employees on resp.EmployeeId equals e.EmployeeId into employeeResponses
-								from emp in employeeResponses.DefaultIfEmpty()
-								select new FeedbackViewModels
-								{
-									CustomerName = fb.Name,
-									Rating = fb.Rating,
-									Content = fb.Content,
-									EmployeeName = emp != null ? emp.FullName : null,
-									ContentResponse = resp != null ? resp.Content : null,
-									DateCreated = fb.DateCreated,
-									DateResp = (DateTime)(resp != null ? resp.DateCreated : (DateTime?)null)
-								}).ToList();
+        public List<FeedbackViewModels> GetListFeedBack(int productId)
+        {
+            var listFeedback = (from fb in _context.Feedbacks
+                                where fb.ProductId == productId
+                                join respfb in _context.ResponseFeedbacks on fb.FeedbackId equals respfb.FeedbackId into feedbackResponses
+                                from resp in feedbackResponses.DefaultIfEmpty()
+                                join e in _context.Employees on resp.EmployeeId equals e.EmployeeId into employeeResponses
+                                from emp in employeeResponses.DefaultIfEmpty()
+                                select new FeedbackViewModels
+                                {
+                                    CustomerName = fb.Name,
+                                    Rating = fb.Rating,
+                                    Content = fb.Content,
+                                    EmployeeName = emp != null ? emp.FullName : null,
+                                    ContentResponse = resp != null ? resp.Content : null,
+                                    DateCreated = fb.DateCreated,
+                                    DateResp = (DateTime)(resp != null ? resp.DateCreated : (DateTime?)null)
+                                }).ToList();
 
 
-			return listFeedback;
-		}
-		public ProductDetailViewModel GetDetail(int productId)
+            return listFeedback;
+        }
+        public ProductDetailViewModel GetDetail(int productId)
         {
             var product = (from p in _context.Products
                            join b in _context.Brands on p.BrandId equals b.BrandId
@@ -92,6 +97,12 @@ namespace PetStoreProject.Repositories.Product
                                .GroupBy(s => s.SizeId) // GroupBy theo ID hoặc thuộc tính duy nhất
                                .Select(g => g.First()) // Chọn phần tử đầu tiên từ mỗi nhóm
                                .ToList();
+
+            foreach (var po in productOptions)
+            {
+                po.img_url = formatUrl(po.img_url);
+            }
+
             bool isSoldOut = !(productOptions.Any(po => po.IsSoldOut == false));
 
             foreach (var image in images)
@@ -147,7 +158,7 @@ namespace PetStoreProject.Repositories.Product
         public string formatUrl(string url)
         {
             var img_id = url.Split('/')[url.Split('/').Length - 1];
-            return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/v1716019321/" + img_id;
+            return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/" + img_id;
         }
 
         public List<Models.Product> GetProductsByCategoriesAndProductCateId(List<int> categoriesIds, int productCateId)
@@ -268,9 +279,6 @@ namespace PetStoreProject.Repositories.Product
             sizes = sizes.Distinct().ToList();
             return sizes;
         }
-
-
-
 
         public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId)
         {
@@ -659,9 +667,32 @@ namespace PetStoreProject.Repositories.Product
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
 
+                HashSet<string> imageData = new HashSet<string>();
                 foreach (var productOptionCreateRequest in productCreateRequest.ProductOptions)
                 {
-                    var productOptionId = await _productOption.CreateProductOption(productOptionCreateRequest, productId);
+                    imageData.Add(productOptionCreateRequest.ImageData);
+                }
+
+                List<Models.Image> images = new List<Models.Image>();
+
+                foreach (var data in imageData)
+                {
+                    var imageId = await _image.CreateImage(data);
+                    if (!int.TryParse(imageId, out int number))
+                    {
+                        return imageId;
+                    }
+                    images.Add(new Models.Image
+                    {
+                        ImageId = int.Parse(imageId),
+                        ImageUrl = data
+                    });
+                }
+
+                foreach (var productOptionCreateRequest in productCreateRequest.ProductOptions)
+                {
+                    var imgId = images.FirstOrDefault(i => i.ImageUrl == productOptionCreateRequest.ImageData).ImageId;
+                    var productOptionId = await _productOption.CreateProductOption(productOptionCreateRequest, productId, imgId);
                     if (!int.TryParse(productOptionId, out int number))
                     {
                         return productOptionId;
@@ -676,9 +707,87 @@ namespace PetStoreProject.Repositories.Product
 
         }
 
-        public Task<ProductCreateRequestViewModel> GetDetailForAdmin(int productId)
+        public ProductDetailForAdmin GetProductDetailForAdmin(int productId)
         {
-            throw new NotImplementedException();
+            var productOptions = (from po in _context.ProductOptions
+                                  join a in _context.Attributes on po.AttributeId equals a.AttributeId
+                                  join s in _context.Sizes on po.SizeId equals s.SizeId
+                                  join i in _context.Images on po.ImageId equals i.ImageId
+                                  where po.ProductId == productId
+                                  select new ProductOptionDetailForAdmin
+                                  {
+                                      Id = po.ProductOptionId,
+                                      Size = new Models.Size()
+                                      {
+                                          SizeId = s.SizeId,
+                                          Name = s.Name
+                                      },
+                                      Price = po.Price,
+                                      Image = new Models.Image()
+                                      {
+                                          ImageId = i.ImageId,
+                                          ImageUrl = i.ImageUrl
+                                      },
+                                      Attribute = new Models.Attribute()
+                                      {
+                                          AttributeId = a.AttributeId,
+                                          Name = a.Name
+                                      },
+                                      IsSoldOut = po.IsSoldOut,
+                                      IsDelete = po.IsDelete
+                                  }).ToList();
+
+            foreach (var item in productOptions)
+            {
+                item.SoldQuantity = _context.OrderItems.Where(x => x.ProductOptionId == item.Id).Select(x => x.Quantity).Sum();
+            }
+
+            var product = (from p in _context.Products
+                           join b in _context.Brands on p.BrandId equals b.BrandId
+                           join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                           join c in _context.Categories on pc.CategoryId equals c.CategoryId
+                           where p.ProductId == productId
+                           select new ProductDetailForAdmin
+                           {
+                               ProductId = p.ProductId,
+                               Name = p.Name,
+                               Brand = new Models.Brand()
+                               {
+                                   BrandId = b.BrandId,
+                                   Name = b.Name
+                               },
+                               Description = p.Description,
+                               IsDeleted = p.IsDelete,
+                               Category = new Models.Category()
+                               {
+                                   CategoryId = c.CategoryId,
+                                   Name = c.Name
+                               },
+                               ProductCategory = new Models.ProductCategory()
+                               {
+                                   ProductCateId = pc.ProductCateId,
+                                   Name = pc.Name
+                               },
+                               ProductOptions = productOptions
+                           }).FirstOrDefault();
+            foreach (var item in productOptions)
+            {
+                item.Image.ImageUrl = formatUrl(item.Image.ImageUrl);
+            }
+
+            if (product != null)
+            {
+                product.IsSoldOut = !productOptions.Any(p => p.IsSoldOut == false);
+                if (product.IsDeleted == true)
+                {
+                    foreach (var item in product.ProductOptions)
+                    {
+                        item.IsDelete = true;
+                    }
+                }
+            }
+
+            return product;
         }
     }
 }

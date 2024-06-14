@@ -16,23 +16,16 @@ namespace PetStoreProject.Repositories.ProductOption
             _image = image;
         }
 
-        public async Task<string> CreateProductOption(ProductOptionCreateRequestViewModel productOptionCreateRequest, int productId)
+        public async Task<string> CreateProductOption(ProductOptionCreateRequestViewModel productOptionCreateRequest, int productId, int imageId)
         {
             try
             {
                 var productOptionId = await _context.ProductOptions.MaxAsync(p => p.ProductOptionId) + 1;
 
-                var imageId = await _image.CreateImage(productOptionCreateRequest.ImageData);
-
-                if (!int.TryParse(imageId, out int number))
-                {
-                    return imageId;
-                }
-
                 var productOption = new PetStoreProject.Models.ProductOption
                 {
                     ProductId = productId,
-                    ImageId = int.Parse(imageId),
+                    ImageId = imageId,
                     Price = productOptionCreateRequest.Price,
                     SizeId = productOptionCreateRequest.SizeId,
                     AttributeId = productOptionCreateRequest.AttributeId

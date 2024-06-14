@@ -12,6 +12,16 @@ namespace PetStoreProject.Areas.Admin.Service.Cloudinary
             _cloudinary = cloudinary;
         }
 
+        public async Task<string> GetBase64Image(string imageUrl)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                byte[] imageData = await httpClient.GetByteArrayAsync(imageUrl);
+                var base64 = "data:image/jpg;base64," + Convert.ToBase64String(imageData);
+                return base64;
+            }
+        }
+
         public async Task<ImageUploadResult> UploadImage(string imageData, string imageId)
         {
             var base64Data = imageData.Split(',')[1];

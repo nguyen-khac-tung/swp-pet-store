@@ -4,6 +4,6 @@ namespace PetStoreProject.Repositories.ProductOption
 {
     public interface IProductOptionRepository
     {
-        public Task<string> CreateProductOption(ProductOptionCreateRequestViewModel productOptionCreateRequest, int productId);
+        public Task<string> CreateProductOption(ProductOptionCreateRequestViewModel productOptionCreateRequest, int productId, int imageId);
     }
 }

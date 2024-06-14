@@ -19,6 +19,9 @@
         li:nth-child(2n+1){
             background-color: #f6f8fbcc;
         }
+        .item{
+            cursor: pointer;
+        }
         .item.select-image{
             border: 2px solid #000;
         }
@@ -495,7 +498,7 @@
 
             var listProductOptions = $('#list-product-option')
             var optionExists = false;
-
+            var numberOptions = listProductOptions.find('li').length;
             var newOption = `
                         <li style="padding: 5px; position: relative">
                             <span class="delete-button"><i class="icon-delete"></i></span>
@@ -516,29 +519,44 @@
                     var existingAttributeId = existingOption.find('.attributeData').attr('value');
                     var existingPrice = existingOption.find('.priceData').attr('value');
 
-                    if (existingSizeId == 1 && existingAttributeId == 1) {
-                        optionExists = true;
-                        alert('Không thể thêm. Sản phẩm này không thêm được các tùy chọn khác')
-                        return false
-                    }
-
                     if (existingSizeId == sizeId && existingAttributeId == attributeId) {
                         optionExists = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
                         return false; // Exit the loop if the option already exists
                     }
-                })
 
-                var numberOptions = listProductOptions.find('li').length;
-
-                if (!optionExists) {
                     if (sizeId == 1 && attributeId == 1) {
                         if (numberOptions != 0) {
                             optionExists = true;
                             alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
+                            return false;
                         }
                     }
-                }
+
+                    if (existingSizeId == 1 && sizeId != 1) {
+                        optionExists = true;
+                        alert('Không thể thêm. Tùy chọn sản phẩm không thêm được kích thước này')
+                        return false;
+                    }
+
+                    if (existingAttributeId == 1 && attributeId != 1) {
+                        optionExists = true;
+                        alert('Không thể thêm. Tùy chọn sản phẩm không thêm được thuộc tính này')
+                        return false;
+                    }
+
+                    if (existingAttributeId != 1 && attributeId == 1) {
+                        optionExists = true;
+                        alert('Không thể thêm. Tùy chọn sản phẩm đã có thuộc tính khác.')
+                        return false;
+                    }
+
+                    if (existingSizeId != 1 && sizeId == 1) {
+                        optionExists = true;
+                        alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
+                        return false;
+                    }
+                })
 
                 if (!optionExists) {
                     listProductOptions.append(newOption);
@@ -607,7 +625,14 @@
                         type: 'POST',
                         data: { product: productCreateRequest },
                         success: function (response) {
-                            window.location.href = 'http://localhost:5206/product/detail/'+response.result;
+                            try{
+                                var id = parseInte(response.result);
+                                window.location.href = 'http://localhost:5206/add/product/detail?productId=' + response.result
+                            }
+                            catch{
+                                alert(response.result)
+                            }
+                            ;
                         },
                     })
                 }

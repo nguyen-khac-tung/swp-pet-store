@@ -483,7 +483,7 @@ function generateProductList(products) {
                             </div>
                             <div class="list-icon-function">
                                 <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickViewForAdmin(${product.id})">
-                                    <i class="icon-eye"></i>
+                                    <a href="http://localhost:5206/admin/product/detail?productId=${product.id}"><i class="icon-eye"></i></a>
                                 </div>
                                 <div class="item edit">
                                     <i class="icon-edit-3"></i>

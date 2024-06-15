@@ -1,9 +1,8 @@
 ﻿namespace PetStoreProject.Areas.Admin.ViewModels
 {
-    public class CategoryViewModel
+    public class ListCategoryForAdmin
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
+        public List<CategoryViewForAdmin> categories { get; set; }
         public int totalCategories { get; set; }
     }
 }

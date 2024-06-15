@@ -1,22 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PetStoreProject.Areas.Admin.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
-using PetStoreProject.Repositories.Image;
-using PetStoreProject.Repositories.ProductOption;
 
 namespace PetStoreProject.Repositories.Category
 {
     public class CategoryRepository : ICategoryRepository
     {
         private readonly PetStoreDBContext _context;
-        private readonly IImageRepository _image;
 
-        
-
-        public CategoryRepository(PetStoreDBContext context, ICategoryRepository categoryRepository, IImageRepository image)
+        public CategoryRepository(PetStoreDBContext context)
         {
             _context = context;
-            _image = image;
+        }
+
+        public int CreateCategory(string CategoryName)
+        {
+            var cateId = _context.Categories.Max(c => c.CategoryId) + 1;
+            var category = new Models.Category
+            {
+                CategoryId = cateId,
+                Name = CategoryName,
+            };
+
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return cateId;
         }
 
         public List<CategoryViewModel> GetCategories()
@@ -50,6 +57,32 @@ namespace PetStoreProject.Repositories.Category
                                           };
 
             return totalProductsByCategory.ToList(); // Converting the result to List<CategoryViewModel>
+        }
+
+        List<CategoryViewForAdmin> ICategoryRepository.GetListCategory()
+        {
+            var categories = _context.Categories.Select(c => new CategoryViewForAdmin
+            {
+                Id = c.CategoryId,
+                Name = c.Name
+            }).ToList();
+
+            foreach (var category in categories)
+            {
+                category.Quantity = (from c in categories
+                                     join pc in _context.ProductCategories on c.Id equals pc.CategoryId
+                                     join p in _context.Products on pc.ProductCateId equals p.ProductCateId
+                                     where c.Id == category.Id
+                                     select p).Count();
+                category.QuantityOfSold = (from c in categories
+                                           join pc in _context.ProductCategories on c.Id equals pc.CategoryId
+                                           join p in _context.Products on pc.ProductCateId equals p.ProductCateId
+                                           join po in _context.ProductOptions on p.ProductId equals po.ProductId
+                                           join od in _context.OrderItems on po.ProductOptionId equals od.ProductOptionId
+                                           select po).Count();
+            }
+
+            return categories;
         }
     }
 }

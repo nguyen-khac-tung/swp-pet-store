@@ -5,7 +5,8 @@ namespace PetStoreProject.Repositories.Category
     public interface ICategoryRepository
     {
         public List<CategoryViewModel> GetCategories();
-        public List<CategoryViewModel> GetListCategory(int CategoryId);
+        public List<CategoryViewForAdmin> GetListCategory();
+        public int CreateCategory(string CategoryName);
     }
 
 }

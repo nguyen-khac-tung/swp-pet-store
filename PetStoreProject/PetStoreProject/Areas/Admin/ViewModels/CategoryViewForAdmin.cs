@@ -4,7 +4,8 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ImgUrl { get; set; }
-        public bool? IsDelete { get; set; }
+        public int Quantity { get; set; }
+        public int QuantityOfSold { get; set; }
+        public bool isDeleted { get; set; }
     }
 }

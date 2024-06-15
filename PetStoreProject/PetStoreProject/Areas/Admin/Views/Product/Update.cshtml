@@ -535,9 +535,8 @@
 
     function saveChangeProductOption() {
         var productOptionId = $('#change').find('button').eq(0).val()
-        var isValid = isValidProductOption()
-        var cf = confirmRequest('Bạn có muốn lưu thay đổi không?')
-        if (isValid && cf) {
+        var isExists = isExistsProductOption(false)
+            if (!isExists && confirmRequest('Bạn có muốn lưu thay đổi không?')) {
             var imgTag = $('.item.select-image img');
 
             var image = imgTag.attr('src');
@@ -622,8 +621,11 @@
                 var existingOption = $(this);
                 var existingSizeId = existingOption.find('.sizeData').attr('value');
                 var existingAttributeId = existingOption.find('.attributeData').attr('value');
+                var existingSizeName = existingOption.find('.sizeData').text().split(':')[1].trim();
+                var existingAttributeName = existingOption.find('.attributeData').text().split(':')[1].trim();
 
-                if (existingSizeId == sizeId && existingAttributeId == attributeId) {
+                if (existingSizeId == sizeId && existingAttributeId == attributeId
+                    && sizeName == existingSizeName && existingAttributeName == attributeName) {
                     isExistsOption = true;
                     alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
                     return false; // Exit the loop if the option already exists
@@ -665,57 +667,61 @@
             })
 
             var list_old_product_option = $('#list-old-product-option .data')
-            list_old_product_option.each(function () {
-                var existingSizeId = $(this).find('.size').attr('value');
-                var existingAttributeId = $(this).find('.attribute').attr('value');
+            if (list_old_product_option > 1 && !isNewProductOption) {
+                    list_old_product_option.each(function () {
+                        var existingSizeId = $(this).find('.size').attr('value');
+                        var existingAttributeId = $(this).find('.attribute').attr('value');
 
-                if (existingSizeId == sizeId && existingAttributeId == attributeId) {
-                    isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
-                    return false;
-                }
+                        if (existingSizeId == sizeId && existingAttributeId == attributeId) {
+                            isExistsOption = true;
+                            alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
+                            return false;
+                        }
 
-                if (sizeId == 1 && attributeId == 1) {
-                    if (numberOptions != 0) {
-                        isExistsOption = true;
-                        alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
-                        return false;
-                    }
-                }
+                        if (sizeId == 1 && attributeId == 1) {
+                            if (numberOptions != 0) {
+                                isExistsOption = true;
+                                alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
+                                return false;
+                            }
+                        }
 
-                if (existingSizeId == 1 && sizeId != 1) {
-                    isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm không thêm được kích thước này')
-                    return false;
-                }
+                        if (existingSizeId == 1 && sizeId != 1) {
+                            isExistsOption = true;
+                            alert('Không thể thêm. Tùy chọn sản phẩm không thêm được kích thước này')
+                            return false;
+                        }
 
-                if (existingAttributeId == 1 && attributeId != 1) {
-                    isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm không thêm được thuộc tính này')
-                    return false;
-                }
+                        if (existingAttributeId == 1 && attributeId != 1) {
+                            isExistsOption = true;
+                            alert('Không thể thêm. Tùy chọn sản phẩm không thêm được thuộc tính này')
+                            return false;
+                        }
 
-                if (existingAttributeId != 1 && attributeId == 1) {
-                    isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm đã có thuộc tính khác.')
-                    return false;
-                }
+                        if (existingAttributeId != 1 && attributeId == 1) {
+                            isExistsOption = true;
+                            alert('Không thể thêm. Tùy chọn sản phẩm đã có thuộc tính khác.')
+                            return false;
+                        }
 
-                if (existingSizeId != 1 && sizeId == 1) {
-                    isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
-                    return false;
-                }
-            })
+                        if (existingSizeId != 1 && sizeId == 1) {
+                            isExistsOption = true;
+                            alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
+                            return false;
+                        }
+                    })
+            }
+        }
+        else{
+            isExistsOption = true;
         }
         return isExistsOption;
     }
 
     function addProductOption() {
         var isExistsOption = isExistsProductOption(true);
-        let isValid = isValidProductOption();
         var listProductOptions = $('#list-new-product-option')
-        if (!isExistsOption && isValid) {
+        if (!isExistsOption) {
             var imgTag = $('.item.select-image img');
 
             var image = imgTag.attr('src');
@@ -734,7 +740,7 @@
                                     <span class="delete-button"><i class="icon-delete"></i></span>
                                     <div class="gap15" style="align-items: center; width: 100%; display: flex">
                                         <div class="choose-image" style="width: 7%">
-                                            <img value='new' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
+                                            <img value='${imageId}' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
                                         </div>
                                         <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
                                         <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Thuộc tính: <span class="tf-color">${attributeName}</span></div>

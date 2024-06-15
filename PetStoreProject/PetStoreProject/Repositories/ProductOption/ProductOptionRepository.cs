@@ -24,8 +24,8 @@ namespace PetStoreProject.Repositories.ProductOption
                     ProductId = productId,
                     ImageId = imageId,
                     Price = productOptionCreateRequest.Price,
-                    SizeId = productOptionCreateRequest.SizeId,
-                    AttributeId = productOptionCreateRequest.AttributeId
+                    SizeId = productOptionCreateRequest.Size.SizeId,
+                    AttributeId = productOptionCreateRequest.Attribute.AttributeId
                 };
 
                 await _context.ProductOptions.AddAsync(productOption);

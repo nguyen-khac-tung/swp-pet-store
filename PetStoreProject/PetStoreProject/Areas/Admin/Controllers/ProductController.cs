@@ -117,7 +117,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         public IActionResult Detail(int productId)
         {
             var product = _product.GetProductDetailForAdmin(productId);
-            if (product != null && product.ProductOptions[0].Attribute.AttributeId != 1)
+            if (product != null && product.ProductOptions != null && product.ProductOptions[0].Attribute.AttributeId != 1)
             {
                 var uniqueAttributes = new HashSet<int>();
                 var attributes = new List<Models.Attribute>();

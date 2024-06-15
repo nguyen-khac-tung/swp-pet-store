@@ -69,7 +69,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var password = "GeneratePassword.GenerateAutoPassword(10)";
+                    var password = GeneratePassword.GenerateAutoPassword(10);
 
                     var emailTitle = "Thông báo! Mật khẩu ứng dụng.";
 

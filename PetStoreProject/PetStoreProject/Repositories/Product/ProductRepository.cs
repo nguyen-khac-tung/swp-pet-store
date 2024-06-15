@@ -5,7 +5,6 @@ using PetStoreProject.Models;
 using PetStoreProject.Repositories.Attribute;
 using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Image;
-using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.ViewModels;
 
@@ -14,17 +13,15 @@ namespace PetStoreProject.Repositories.Product
     public class ProductRepository : IProductRepository
     {
         private readonly PetStoreDBContext _context;
-        private readonly IProductOptionRepository _productOption;
         private readonly IImageRepository _image;
         private readonly IBrandRepository _brand;
         private readonly ISizeRepository _size;
         private readonly IAttributeRepository _attribute;
 
-        public ProductRepository(PetStoreDBContext context, IProductOptionRepository productOption,
-            IImageRepository image, IBrandRepository brand, ISizeRepository size, IAttributeRepository attribute)
+        public ProductRepository(PetStoreDBContext context, IImageRepository image,
+            IBrandRepository brand, ISizeRepository size, IAttributeRepository attribute)
         {
             _context = context;
-            _productOption = productOption;
             _image = image;
             _brand = brand;
             _size = size;
@@ -664,12 +661,19 @@ namespace PetStoreProject.Repositories.Product
                 var maxId = await _context.Products.MaxAsync(i => i.ProductId);
                 var productId = maxId + 1;
 
+                var brandId = productCreateRequest.Brand.BrandId;
+
+                if (brandId == 0)
+                {
+                    brandId = _brand.CreateBrand(productCreateRequest.Brand.Name);
+                }
+
                 var product = new Models.Product
                 {
                     ProductId = productId,
                     Name = productCreateRequest.Name,
                     Description = productCreateRequest.Description,
-                    BrandId = productCreateRequest.BrandId,
+                    BrandId = brandId,
                     ProductCateId = productCreateRequest.ProductCateId,
                     IsDelete = false
                 };
@@ -677,37 +681,83 @@ namespace PetStoreProject.Repositories.Product
                 await _context.Products.AddAsync(product);
                 await _context.SaveChangesAsync();
 
-                HashSet<string> imageData = new HashSet<string>();
-                foreach (var productOptionCreateRequest in productCreateRequest.ProductOptions)
-                {
-                    imageData.Add(productOptionCreateRequest.ImageData);
-                }
+                HashSet<string> string_size = new HashSet<string>();
+                HashSet<string> string_image = new HashSet<string>();
+                HashSet<string> string_attribute = new HashSet<string>();
 
                 List<Models.Image> images = new List<Models.Image>();
+                List<Models.Size> sizes = new List<Models.Size>();
+                List<Models.Attribute> attributes = new List<Models.Attribute>();
 
-                foreach (var data in imageData)
+                foreach (var option in productCreateRequest.ProductOptions)
                 {
-                    var imageId = await _image.CreateImage(data);
-                    if (!int.TryParse(imageId, out int number))
-                    {
-                        return imageId;
-                    }
-                    images.Add(new Models.Image
-                    {
-                        ImageId = int.Parse(imageId),
-                        ImageUrl = data
-                    });
-                }
+                    var sizeId = option.Size.SizeId;
 
-                foreach (var productOptionCreateRequest in productCreateRequest.ProductOptions)
-                {
-                    var imgId = images.FirstOrDefault(i => i.ImageUrl == productOptionCreateRequest.ImageData).ImageId;
-                    var productOptionId = await _productOption.CreateProductOption(productOptionCreateRequest, productId, imgId);
-                    if (!int.TryParse(productOptionId, out int number))
+                    if (string_size.Add(option.Size.Name))
                     {
-                        return productOptionId;
+                        if (sizeId == 0)
+                        {
+                            sizeId = _size.CreateSize(option.Size.Name);
+                            option.Size.SizeId = sizeId;
+                        }
+                        sizes.Add(option.Size);
                     }
+
+                    else
+                    {
+                        sizeId = sizes.Find(s => s.Name == option.Size.Name).SizeId;
+                    }
+
+                    var attributeId = option.Attribute.AttributeId;
+
+                    if (string_attribute.Add(option.Attribute.Name))
+                    {
+                        if (attributeId == 0)
+                        {
+                            attributeId = _attribute.CreateAttribute(option.Attribute.Name);
+                            option.Attribute.AttributeId = attributeId;
+                        }
+                        attributes.Add(option.Attribute);
+                    }
+                    else
+                    {
+                        attributeId = attributes.Find(a => a.Name == option.Attribute.Name).AttributeId;
+                    }
+
+                    var imageId = option.Image.ImageId;
+                    if (string_image.Add(option.Image.ImageUrl))
+                    {
+                        if (imageId == 0)
+                        {
+                            var result = await _image.CreateImage(option.Image.ImageUrl);
+                            if (!int.TryParse(result, out int number))
+                            {
+                                return result;
+                            }
+                            imageId = int.Parse(result);
+                            option.Image.ImageId = imageId;
+                        }
+                        images.Add(option.Image);
+                    }
+                    else
+                    {
+                        imageId = images.Find(i => i.ImageUrl == option.Image.ImageUrl).ImageId;
+                    }
+
+                    var productOption = new Models.ProductOption
+                    {
+                        ProductId = product.ProductId,
+                        SizeId = sizeId,
+                        AttributeId = attributeId,
+                        Price = option.Price,
+                        ImageId = imageId,
+                        IsSoldOut = false,
+                        IsDelete = false
+                    };
+
+                    await _context.ProductOptions.AddAsync(productOption);
                 }
+                await _context.SaveChangesAsync();
                 return productId.ToString();
             }
             catch (Exception ex)
@@ -820,7 +870,10 @@ namespace PetStoreProject.Repositories.Product
                 _context.Products.Update(product);
             }
 
-            HashSet<string> strings = new HashSet<string>();
+            HashSet<string> string_size = new HashSet<string>();
+            HashSet<string> string_image = new HashSet<string>();
+            HashSet<string> string_attribute = new HashSet<string>();
+
             List<Models.Image> images = new List<Models.Image>();
 
             List<Models.Size> sizes = new List<Models.Size>();
@@ -831,18 +884,15 @@ namespace PetStoreProject.Repositories.Product
             {
                 var sizeId = option.Size.SizeId;
 
-                if (strings.Add(option.Size.Name))
+                if (string_size.Add(option.Size.Name))
                 {
                     if (sizeId == 0)
                     {
                         sizeId = _size.CreateSize(option.Size.Name);
+                        option.Size.SizeId = sizeId;
                     }
-                    else
-                    {
-                        sizes.Add(option.Size);
-                    }
+                    sizes.Add(option.Size);
                 }
-
                 else
                 {
                     sizeId = sizes.Find(s => s.Name == option.Size.Name).SizeId;
@@ -850,16 +900,14 @@ namespace PetStoreProject.Repositories.Product
 
                 var attributeId = option.Attribute.AttributeId;
 
-                if (strings.Add(option.Attribute.Name))
+                if (string_attribute.Add(option.Attribute.Name))
                 {
                     if (attributeId == 0)
                     {
                         attributeId = _attribute.CreateAttribute(option.Attribute.Name);
+                        option.Attribute.AttributeId = attributeId;
                     }
-                    else
-                    {
-                        attributes.Add(option.Attribute);
-                    }
+                    attributes.Add(option.Attribute);
                 }
                 else
                 {
@@ -867,7 +915,7 @@ namespace PetStoreProject.Repositories.Product
                 }
 
                 var imageId = option.Image.ImageId;
-                if (strings.Add(option.Image.ImageUrl))
+                if (string_image.Add(option.Image.ImageUrl))
                 {
                     if (imageId == 0)
                     {
@@ -876,17 +924,9 @@ namespace PetStoreProject.Repositories.Product
                         {
                             return result;
                         }
-                        imageId = int.Parse(result);
-                        images.Add(new Models.Image
-                        {
-                            ImageId = imageId,
-                            ImageUrl = option.Image.ImageUrl
-                        });
+                        option.Image.ImageId = int.Parse(result);
                     }
-                    else
-                    {
-                        images.Add(option.Image);
-                    }
+                    images.Add(option.Image);
                 }
                 else
                 {

@@ -31,6 +31,8 @@ public partial class Feedback
 
     public int Rating { get; set; }
 
+    public bool Status { get; set; }
+
     [Required]
     [StringLength(500)]
     public string Content { get; set; }

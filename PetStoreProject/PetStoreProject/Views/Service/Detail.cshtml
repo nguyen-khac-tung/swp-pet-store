@@ -70,7 +70,7 @@
                         <div class="color clearfix mb-30">
                             <label>Loại Thú Cưng :</label>
                             <ul id="pet_type_list" class="color-list">
-                                @foreach (var petType in service.PetTypes)
+                                @foreach (var petType in firstServiceOption.PetTypes)
                                 {
                                     <li id="@petType" style="cursor: pointer" onclick="pet_type_selected('@service.ServiceId', '@petType')">@petType</li>
                                 }
@@ -326,7 +326,7 @@
                     $("#booking-modal").modal("show");
 
                     ConfirmBooking();
-                    initDatepicker();
+                    orderDatepicker();
                 },
 
                 error: function (xhr, status, error) {
@@ -351,7 +351,7 @@
                         $("#booking-modal-content").html(response);
 
                         ConfirmBooking();
-                        initDatepicker();
+                        orderDatepicker();
                     },
 
                     error: function (xhr, status, error) {
@@ -362,11 +362,11 @@
             });
         }
 
-        function initDatepicker() {
+        function orderDatepicker() {
             let tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
 
-            $('#dob-datepicker').datepicker({
+            $('#order-datepicker').datepicker({
                 format: "dd/mm/yyyy",
                 weekStart: 1,
                 startView: 0,

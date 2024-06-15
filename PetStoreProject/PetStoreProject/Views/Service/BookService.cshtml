@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-6 form-group">
             <label asp-for="OrderDate" class="form-label">Ngày hẹn<em>*</em></label>
-            <div class="input-group date" id="dob-datepicker">
+            <div class="input-group date" id="order-datepicker">
                 <input asp-for="OrderDate" type="text" class="form-control" />
                 <div class="input-group-append">
                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -52,18 +52,18 @@
             <input asp-for="ServiceName" class="form-control" readonly>
         </div>
         <div class="col-md-6 form-group">
-            <label asp-for="ServiceType" class="form-label">Loại dịch vụ</label>
-            <input asp-for="ServiceType" class="form-control" readonly>
+            <label asp-for="PetType" class="form-label">Loại thú cưng</label>
+            <input asp-for="PetType" class="form-control" readonly>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 form-group">
-            <label asp-for="PetType" class="form-label">Loại thú cưng</label>
-            <input asp-for="PetType" class="form-control" readonly>
-        </div>
-        <div class="col-md-6 form-group">
             <label asp-for="Weight" class="form-label">Cân Nặng</label>
             <input asp-for="Weight" class="form-control" readonly>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Price" class="form-label">Giá Dịch Vụ</label>
+            <input asp-for="Price" class="form-control" readonly>
         </div>
     </div>
     <div class="row">

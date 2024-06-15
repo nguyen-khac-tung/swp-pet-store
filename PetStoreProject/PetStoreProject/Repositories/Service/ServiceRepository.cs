@@ -29,12 +29,12 @@ namespace PetStoreProject.Repositories.Service
             {
                 var Image = _context.Images.Where(i => i.ServiceId == service.ServiceId).FirstOrDefault();
                 service.ImageUrl = Image.ImageUrl;
-                //var serviceOption = (from s in _context.Services
-                //                     join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
-                //                     where s.ServiceId == service.ServiceId
-                //                     orderby so.Price ascending
-                //                     select so).FirstOrDefault();
-                //service.Price = serviceOption.Price;
+                var serviceOption = (from s in _context.Services
+                                     join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                                     where s.ServiceId == service.ServiceId
+                                     orderby so.Price ascending
+                                     select so).FirstOrDefault();
+                service.Price = serviceOption.Price;
             }
 
             return services;
@@ -58,24 +58,24 @@ namespace PetStoreProject.Repositories.Service
                           where s.ServiceId == serviceId
                           select i).ToList();
 
-            var petTypes = (from s in _context.Services
-                            join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
-                            where s.ServiceId == serviceId
-                            select so.PetType).Distinct().ToList();
-                
             service.Images = images;
-            service.PetTypes = petTypes;
             return service;
         }
 
         public ServiceOptionViewModel GetFistServiceOption(int serviceId)
         {
-            var petType = (from s in _context.Services
-                           join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
-                           where s.ServiceId == serviceId
-                           select so.PetType).FirstOrDefault();
+            var listPetType = (from s in _context.Services
+                            join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                            where s.ServiceId == serviceId
+                            select so.PetType).Distinct().ToList();
 
-            return GetFirstServiceAndListWeightOfPetType(serviceId, petType);
+            var petType = listPetType.FirstOrDefault();
+
+            var firstServiceOption = GetFirstServiceAndListWeightOfPetType(serviceId, petType);
+
+            firstServiceOption.PetTypes = listPetType;
+            
+            return firstServiceOption;
         }
 
         public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetType(int serviceId, string petType)
@@ -121,9 +121,9 @@ namespace PetStoreProject.Repositories.Service
                                    ServiceOptionId = so.ServiceOptionId,
                                    ServiceId = so.ServiceId,
                                    ServiceName = s.Name,
-                                   ServiceType = s.Type,
                                    PetType = so.PetType,
                                    Weight = so.Weight,
+                                   Price = so.Price.ToString("#,###") + "VND",
                                }).FirstOrDefault();
 
             return bookService;
@@ -139,9 +139,23 @@ namespace PetStoreProject.Repositories.Service
             return workingTime;
         }
 
-        public void SaveBookServiceForm(BookServiceViewModel bookServiceInfo)
+        public void AddOrderService(BookServiceViewModel bookServiceInfo)
         {
-            using(var transaction = _context.Database.BeginTransaction())
+            DateTime ordDate = DateTime.ParseExact(bookServiceInfo.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateOnly orderDate = DateOnly.FromDateTime(ordDate);
+            var orderServiceDuplicate = (from os in _context.OrderServices
+                                         where os.Name == bookServiceInfo.Name
+                                         && os.Phone == bookServiceInfo.Phone
+                                         && os.OrderDate == orderDate
+                                         && os.OrderTime == bookServiceInfo.OrderTime
+                                         && os.ServiceOptionId == bookServiceInfo.ServiceOptionId
+                                         select os).FirstOrDefault();
+            if(orderServiceDuplicate != null)
+            {
+                return;
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
@@ -149,9 +163,10 @@ namespace PetStoreProject.Repositories.Service
                     orderService.CustomerId = bookServiceInfo?.CustomerId;
                     orderService.Name = bookServiceInfo.Name;
                     orderService.Phone = bookServiceInfo.Phone;
+                    orderService.OrderDate = orderDate;
 
-                    DateTime orderDate = DateTime.ParseExact(bookServiceInfo.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    orderService.OrderDate = DateOnly.FromDateTime(orderDate);
+                    DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+                    orderService.DateCreated = today;
 
                     orderService.OrderTime = bookServiceInfo.OrderTime;
                     orderService.ServiceOptionId = bookServiceInfo.ServiceOptionId;
@@ -165,7 +180,8 @@ namespace PetStoreProject.Repositories.Service
 
                     transaction.Commit();
                 }
-                catch(Exception ex) { 
+                catch (Exception ex)
+                {
                     transaction.Rollback();
                 }
             }
@@ -196,6 +212,82 @@ namespace PetStoreProject.Repositories.Service
             }
 
             return services;
+        }
+
+        public List<BookServiceViewModel> GetOrderedServicesOfCustomer(int customerId)
+        {
+            var orderedServices = (from os in _context.OrderServices
+                                   join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
+                                   join s in _context.Services on so.ServiceId equals s.ServiceId
+                                   where os.CustomerId == customerId
+                                   select new BookServiceViewModel
+                                   {
+                                       OrderServiceId = os.OrderServiceId,
+                                       ServiceName = s.Name,
+                                       DateCreated = os.DateCreated.ToString("dd/MM/yyyy"),
+                                       OrderDate = os.OrderDate.ToString("dd/MM/yyyy"),
+                                       Status = os.Status
+                                   }).ToList();
+            return orderedServices;
+        }
+
+        public BookServiceViewModel GetOrderServiceDetail(int orderServiceId)
+        {
+            var orderServiceDetail = (from os in _context.OrderServices
+                                      join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
+                                      join s in _context.Services on so.ServiceId equals s.ServiceId
+                                      where os.OrderServiceId == orderServiceId
+                                      select new BookServiceViewModel
+                                      {
+                                          OrderServiceId = os.OrderServiceId,
+                                          ServiceId = s.ServiceId,
+                                          ServiceOptionId = os.ServiceOptionId,
+                                          Name = os.Name,
+                                          Phone = os.Phone,
+                                          OrderDate = os.OrderDate.ToString("dd/MM/yyyy"),
+                                          DateCreated = os.DateCreated.ToString("dd/MM/yyyy"),
+                                          OrderTime = os.OrderTime,
+                                          ServiceName = s.Name,
+                                          PetType = so.PetType,
+                                          Weight = so.Weight,
+                                          Price = so.Price.ToString("#,###") + " VND",
+                                          Message = os.Message,
+                                          Status = os.Status,
+                                      }).FirstOrDefault();
+            return orderServiceDetail;
+        }
+
+        public void UpdateOrderService(BookServiceViewModel orderService)
+        {
+            var order = (from os in _context.OrderServices
+                         where os.OrderServiceId == orderService.OrderServiceId
+                         select os).FirstOrDefault();
+
+            order.Name = orderService.Name;
+            order.Phone = orderService.Phone;
+
+            DateTime orderDate = DateTime.ParseExact(orderService.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            order.OrderDate = DateOnly.FromDateTime(orderDate);
+
+            order.OrderTime = orderService.OrderTime;
+
+            order.ServiceOptionId = orderService.ServiceOptionId;
+
+            order.Message = orderService.Message;
+
+            _context.SaveChanges();
+        }
+
+        public void DeleteOrderService(int orderServiceId)
+        {
+            var orderService = (from os in _context.OrderServices
+                                where os.OrderServiceId == orderServiceId
+                                select os).FirstOrDefault();
+            orderService.Status = "Đã hủy";
+
+            orderService.IsDelete = true;
+
+            _context.SaveChanges();
         }
     }
 }

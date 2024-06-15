@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace PetStoreProject.Helper
+namespace PetStoreProject.Helpers
 {
     public class GeneratePassword
     {

@@ -12,6 +12,17 @@ namespace PetStoreProject.Repositories.Size
             _context = context;
         }
 
+        public int CreateSize(string sizeName)
+        {
+            var size = new Models.Size
+            {
+                Name = sizeName
+            };
+            _context.Sizes.Add(size);
+            _context.SaveChanges();
+            return size.SizeId;
+        }
+
         public List<SizeViewModel> GetSizes()
         {
             var sizes = _context.Sizes.Select(s => new SizeViewModel

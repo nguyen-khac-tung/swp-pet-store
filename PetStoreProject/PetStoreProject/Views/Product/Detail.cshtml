@@ -1,5 +1,4 @@
 ﻿@using PetStoreProject.ViewModels
-@model PetStoreProject.ViewModels.FeedbackFormViewModel;
 @{
 	ViewData["Title"] = "Chi tiết Sản Phẩm";
 	var product = ViewData["product_detail"] as ProductDetailViewModel;
@@ -99,8 +98,9 @@
 		}
 
 	</style>
-
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- Product Thumbnail Start -->
 <div class="main-product-thumbnail product_details_wrap_1 adp_top adp_bottom" style="display:flex; justify-content:center; width:100%">
 	<div class="container" style="margin:0px; width:100%; display:flex; justify-content: space-around; flex-grow:1">
@@ -126,7 +126,7 @@
 								var isOutOfStock = "";
 								if (product.IsSoldOut != null && product.IsSoldOut == true)
 								{
-										<div class="overlay">Hết hàng</div>
+									<div class="overlay">Hết hàng</div>
 									isOutOfStock = "out-of-stock";
 								}
 
@@ -271,49 +271,46 @@
 								<div class="group-title">
 									<h2>Đánh giá sản phẩm</h2>
 								</div>
+								<form id="feedbackForm" asp-action="submit" asp-controller="feedback" method="post">
+									<input type="hidden" name="pid" value="@product.ProductId"/>
+									<div class="form-group">
+										<label for="FullName">Họ và Tên<em>*</em></label>
+										<input type="text" id="FullName" name="FullName" class="form-control" />
+										<span id="FullNameError" class="text-danger"></span>
+									</div>
+									<div class="form-group">
+										<label for="PhoneNumber">Số điện thoại<em>*</em></label>
+										<input type="text" id="PhoneNumber" name="PhoneNumber" class="form-control" />
+										<span id="PhoneNumberError" class="text-danger"></span>
+									</div>
+									<div class="form-group">
+										<label for="Email">Email</label>
+										<input type="email" id="Email" name="Email" class="form-control" />
+										<span id="EmailError" class="text-danger"></span>
+									</div>
+									<div class="rating_wrap">
+										<h5>Your Rating</h5>
+										<div class="star-rating">
+											<input type="radio" id="5-stars" name="rating" value="5" checked>
+											<label for="5-stars" class="star">&#9733;</label>
+											<input type="radio" id="4-stars" name="rating" value="4">
+											<label for="4-stars" class="star">&#9733;</label>
+											<input type="radio" id="3-stars" name="rating" value="3">
+											<label for="3-stars" class="star">&#9733;</label>
+											<input type="radio" id="2-stars" name="rating" value="2">
+											<label for="2-stars" class="star">&#9733;</label>
+											<input type="radio" id="1-star" name="rating" value="1">
+											<label for="1-star" class="star">&#9733;</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="Content">Content</label>
+										<textarea id="Content" name="Content" class="form-control" rows="5"></textarea>
+										<span id="ContentError" class="text-danger"></span>
+									</div>
+									<button type="submit" class="btn btn-primary" onclick="checkFormAndSubmit(event, @product.ProductId)">Submit</button>
+								</form>
 
-								<div class="riview-field">
-									<form asp-action="submit" asp-controller="feedback" method="post">
-										<div class="form-group">
-											<label asp-for="FullName">Họ và Tên<em>*</em></label>
-											<input asp-for="FullName" class="form-control" />
-											<span asp-validation-for="FullName" class="text-danger"></span>
-										</div>
-										<div class="form-group">
-											<label asp-for="PhoneNumber">Số điện thoại<em>*</em></label>
-											<input asp-for="PhoneNumber" class="form-control" />
-											<span asp-validation-for="PhoneNumber" class="text-danger"></span>
-										</div>
-										<div class="form-group">
-											<label asp-for="Email"></label>
-											<input asp-for="Email" class="form-control" />
-											<span asp-validation-for="Email" class="text-danger"></span>
-										</div>
-
-										<div class="rating_wrap">
-											<h5>Your Rating</h5>
-											<div class="star-rating">
-												<input type="radio" id="5-stars" name="rating" value="5" checked>
-												<label for="5-stars" class="star">&#9733;</label>
-												<input type="radio" id="4-stars" name="rating" value="4">
-												<label for="4-stars" class="star">&#9733;</label>
-												<input type="radio" id="3-stars" name="rating" value="3">
-												<label for="3-stars" class="star">&#9733;</label>
-												<input type="radio" id="2-stars" name="rating" value="2">
-												<label for="2-stars" class="star">&#9733;</label>
-												<input type="radio" id="1-star" name="rating" value="1">
-												<label for="1-star" class="star">&#9733;</label>
-											</div>
-										</div>
-										<div class="form-group">
-											<label asp-for="Content"></label>
-											<input asp-for="Content" class="form-control" />
-											<span asp-validation-for="Content" class="text-danger"></span>
-											<textarea class="form-control" rows="5" id="Content"></textarea>
-										</div>
-										<button type="button" class="btn btn-primary" onclick="checkPhoneNumberAndSubmit()">Submit</button>
-									</form>
-								</div>
 								<!-- Reviews Field Start -->
 							</div>
 							<!-- Reviews End -->
@@ -327,51 +324,51 @@
 									{
 										foreach (var list in listFeedbacks)
 										{
-												<div class="review-header">
-													<h2>@list.CustomerName</h2>
-													@{
+											<div class="review-header">
+												<h2>@list.CustomerName</h2>
+												@{
 													switch (@list.Rating)
 													{
 														case 1:
-																	<span class="rating">★☆☆☆☆</span>
+															<span class="rating">★☆☆☆☆</span>
 															break;
 														case 2:
-																	<span class="rating">★★☆☆☆</span>
+															<span class="rating">★★☆☆☆</span>
 															break;
 														case 3:
-																	<span class="rating">★★★☆☆</span>
+															<span class="rating">★★★☆☆</span>
 															break;
 														case 4:
-																	<span class="rating">★★★★☆</span>
+															<span class="rating">★★★★☆</span>
 															break;
 														case 5:
-																	<span class="rating">★★★★★</span>
+															<span class="rating">★★★★★</span>
 															break;
 														default:
-																	<span class="rating">★★★★★</span>
+															<span class="rating">★★★★★</span>
 															break;
 
 													}
-													}
-												</div>
+												}
+											</div>
 
-												<p class="review-content">@list.Content</p>
-												<p>@list.DateCreated</p>
+											<p class="review-content">@list.Content</p>
+											<p>@list.DateCreated</p>
 
 											if (@list.EmployeeName != null)
 											{
-													<div class="response">
-														<p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
-														<p class="response-content">@list.ContentResponse </p>
-														<p>@list.DateResp</p>
-													</div>
+												<div class="response">
+													<p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
+													<p class="response-content">@list.ContentResponse </p>
+													<p>@list.DateResp</p>
+												</div>
 											}
 
 										}
 									}
 									else
 									{
-											<h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
+										<h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
 									}
 								}
 							</div>
@@ -466,7 +463,7 @@
 @Html.Partial("_QuickView")
 <!-- Main Wrapper End Here -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @section ScriptOptional {
 
 	<script>
@@ -480,9 +477,9 @@
 				price = productOptions[index].price;
 				img_url = productOptions[index].img_url;
 				isStill = true
-				console.log(attributeId, sizeId)
 				break;
 			}
+
 		}
 		// updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
 		if (isStill) {
@@ -551,39 +548,35 @@
 
 		function size_selected(index, size_id) {
 			var list_size = document.getElementById('size').querySelectorAll('li');
-			if(list_size.length > 0){
-				var list_attr = document.getElementById('attribute').querySelectorAll('li');
-				list_size.forEach(function (li) {
-					li.classList.remove('select');
-					li.classList.remove('out-of-stock')
-				});
-				list_attr.forEach(function (li) {
-					li.classList.remove('out-of-stock')
-				});
-				list_size[index].classList.add('select');
-				sizeId = size_id;
-				$('#add_to_cart').removeClass('out-of-stock');
-				updatePriceAndImage();
-			}
+			var list_attr = document.getElementById('attribute').querySelectorAll('li');
+			list_size.forEach(function (li) {
+				li.classList.remove('select');
+				li.classList.remove('out-of-stock')
+			});
+			list_attr.forEach(function (li) {
+				li.classList.remove('out-of-stock')
+			});
+			list_size[index].classList.add('select');
+			sizeId = size_id;
+			$('#add_to_cart').removeClass('out-of-stock');
+			updatePriceAndImage();
 		}
 
-        function attribute_selected(index, attribute_id) {
-            var list_attr = document.getElementById('attribute').querySelectorAll('li');
-            if (list_attr.length > 0) {
-                var list_size = document.getElementById('size').querySelectorAll('li');
-                list_attr.forEach(function (li) {
-                    li.classList.remove('select');
-                    li.classList.remove('out-of-stock')
-                });
-                list_size.forEach(function (li) {
-                    li.classList.remove('out-of-stock')
-                });
-                list_attr[index].classList.add('select');
-                attributeId = attribute_id;
-                $('#add_to_cart').removeClass('out-of-stock');
-                updatePriceAndImage();
-            }
-        }
+		function attribute_selected(index, attribute_id) {
+			var list_size = document.getElementById('size').querySelectorAll('li');
+			var list_attr = document.getElementById('attribute').querySelectorAll('li');
+			list_attr.forEach(function (li) {
+				li.classList.remove('select');
+				li.classList.remove('out-of-stock')
+			});
+			list_size.forEach(function (li) {
+				li.classList.remove('out-of-stock')
+			});
+			list_attr[index].classList.add('select');
+			attributeId = attribute_id;
+			$('#add_to_cart').removeClass('out-of-stock');
+			updatePriceAndImage();
+		}
 
 		function updatePriceAndImage() {
 			var productOptions_json = @Html.Raw(productOptions);
@@ -600,11 +593,7 @@
 			}
 			document.getElementById('large_image').setAttribute('src', img_url)
 			document.getElementById('large_image').setAttribute('data-zoom-image', img_url)
-			let zoomWindowContainer = document.getElementsByClassName('zoomWindowContainer')[0];
-
-			if (zoomWindowContainer && zoomWindowContainer.children.length > 0) {
-				zoomWindowContainer.children[0].style.backgroundImage = `url(${img_url})`;
-			}
+			document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
 			document.getElementById('price').innerText = price.toLocaleString('en-US')
 			total_price()
 			checkOutOfStock()
@@ -675,8 +664,6 @@
 							default:
 								alert('Đã xảy ra lỗi không xác định. Vui lòng thử lại.');
 						}
-
-
 						// Hiển thị thông báo lỗi
 						$('#error-message').text(errorMessage).show();
 
@@ -692,14 +679,52 @@
 			});
 		});
 
-		function checkPhoneNumberAndSubmit() {
+		function checkFormAndSubmit(event, pid) {
+			event.preventDefault();
+
+			const fullName = document.getElementById('FullName').value.trim();
+			const phoneNumber = document.getElementById('PhoneNumber').value.trim();
+			const content = document.getElementById('Content').value;
+			const fullNameError = document.getElementById('FullNameError');
+			const phoneNumberError = document.getElementById('PhoneNumberError');
+			const contentError = document.getElementById('ContentError');
+
+			fullNameError.textContent = '';
+			phoneNumberError.textContent = '';
+
+			let isValid = true;
+
+			if (!fullName) {
+				fullNameError.textContent = 'Họ và tên không được để trống.';
+				isValid = false;
+			}
+
+			const phonePattern = /^[0-9]{10,11}$/;
+			if (!phonePattern.test(phoneNumber)) {
+				phoneNumberError.textContent = 'Số điện thoại không hợp lệ.';
+				isValid = false;
+			}
+
+			if (content.length > 500) {
+				contentError.textContent = 'Nội dung không được vượt quá 500 ký tự.';
+				isValid = false;
+			}
+
+			
+			if (isValid) {
+				checkPhoneNumberAndSubmit(pid);
+			}
+		}
+
+		function checkPhoneNumberAndSubmit(pid) {
 			var phoneNumber = $('#PhoneNumber').val();
 
 			$.ajax({
-				url: '@Url.Action("CheckPhoneNumber", "Feedback")',
+				url: '@Url.Action("CheckOrderProduct", "Feedback")',
 				type: 'POST',
 				data: {
-					phoneNumber: phoneNumber
+					phoneNumber: phoneNumber,
+					pid: pid
 				},
 				success: function (response) {
 					if (response.status === "error") {

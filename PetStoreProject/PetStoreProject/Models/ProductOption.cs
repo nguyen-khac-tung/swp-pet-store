@@ -26,7 +26,7 @@ public partial class ProductOption
 
     public int ImageId { get; set; }
 
-    public bool? IsDelete { get; set; }
+    public bool IsDelete { get; set; }
 
     [ForeignKey("AttributeId")]
     [InverseProperty("ProductOptions")]

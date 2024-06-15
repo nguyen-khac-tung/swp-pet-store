@@ -1,0 +1,209 @@
+﻿/* add view */
+
+.tf-button.style-1:hover {
+    cursor: pointer;
+}
+
+.input-regis {
+    border: none !important;
+    border-bottom: 1px solid black !important;
+}
+
+button.btn.btn-secondary {
+    font-size: 18px;
+}
+
+/* quick view */
+
+.modal-content .modal-header {
+    padding: 0px !important;
+    margin: 20px 10px 0 50px !important;
+}
+
+.container-fluid {
+    padding: 0px !important;
+}
+
+.modal-content {
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+    .modal-content .modal-body {
+        padding-top: 15px;
+    }
+
+.nav-tabs .nav-link {
+    border-radius: 0;
+}
+
+.form-control {
+    margin: 5px 0px;
+}
+
+.avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .avatar-container img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 2px solid black;
+    }
+
+    .avatar-container .btn-change {
+        margin-top: 10px;
+        font-weight: bold;
+        padding: 5px 20px;
+        border-radius: 20px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .avatar-container .btn-change:hover {
+            background-color: black;
+            color: white;
+        }
+
+.modal-header .btn-close {
+    padding: 20px !important;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+
+.user-info-main {
+    border-bottom: 1px solid grey;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.select-role {
+    width: auto;
+    padding: 5px 15px;
+}
+
+.form-control[readonly] {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+    padding-left: 0;
+    cursor: default;
+}
+
+.col-form-label {
+    align-content: center;
+    padding-left: 20px;
+}
+
+.form-check-input {
+    margin-right: 5px;
+    appearance: auto;
+}
+
+/* list */
+
+#user-hover:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.role-admin {
+    color: #8b1111;
+    background-color: #9e867a5e;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.role-employee {
+    color: blue;
+    background-color: #d1e7ff;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.role-customer {
+    color: #f4fff4;
+    background-color: #5ba35b;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.account-non-active {
+    color: #f4fff4;
+    background-color: #d63737;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.account-active {
+    color: #f4fff4;
+    background-color: #5ba35b;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.name {
+    max-width: 220px;
+}
+
+.phone {
+    max-width: 130px;
+}
+
+.email, .user {
+    max-width: 285px;
+}
+
+.status {
+    max-width: 150px;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-body {
+    font-size: 1.1em;
+}
+
+.modal-footer {
+    border-top: none;
+    justify-content: center;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.modal-header .w-100 {
+    position: relative;
+}
+
+#passwordAdmin {
+    margin-top: 10px;
+    font-size: 15px;
+    border: none;
+    border-bottom: 1px solid black;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+}
+
+#eye-icon {
+    font-size: 18px;
+    position: relative;
+    top: 5px;
+    left: 385px;
+    z-index: 1;
+}
+
+#title-table, #list-body {
+    justify-content: flex-start;
+}

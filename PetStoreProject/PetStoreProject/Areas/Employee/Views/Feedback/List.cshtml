@@ -1,0 +1,194 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+    <!-- main-content-wrap -->
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>All Feedback</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Feedback</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">All Feedback</div>
+                    </li>
+                </ul>
+            </div>
+        @if(Model.Count > 0)
+        {
+            <!-- all-attribute -->
+            <div class="wg-box">
+                <div class="flex items-center justify-between gap10 flex-wrap">
+                    <div class="wg-filter flex-grow">
+                        <div class="show">
+                            <div class="text-tiny">Status</div>
+                            <div class="select">
+                                <select class="" style="width:100px">
+                                    <option>All</option>
+                                    <option>Pending</option>
+                                    <option>Replied</option>
+                                </select>
+                            </div>
+                        </div>
+                        <form class="form-search">
+                            <fieldset class="name">
+                                <input type="text" placeholder="Search here..." class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                            </fieldset>
+                            <div class="button-submit">
+                                <button class="" type="submit"><i class="icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <a class="tf-button style-1 w208" href=""><i class="icon-refresh-cw"></i>Refresh</a>
+                </div>
+
+                <div class="wg-table table-all-attribute">
+                    <ul class="table-title flex gap20 mb-14">
+                        <li style="width: 20%;">
+                            <div class="body-title">Product</div>
+                        </li>
+                        <li style="width: 16%;">
+                            <div class="body-title">Reviewer</div>
+                        </li>
+                        <li style="width: 32%;">
+                            <div class="body-title">Review</div>
+                        </li>
+                        <li style="width: 12%;">
+                            <div class="body-title">Date</div>
+                        </li>
+                        <li style="width: 12%;">
+                            <div class="body-title">Status</div>
+                        </li>
+                        <li style="width: 8%;">
+                            <div class="body-title">Action</div>
+                        </li>
+                    </ul>
+
+                    @foreach(var fb in Model)
+                    {
+                        <ul class="flex flex-column">
+                            <li class="attribute-item flex items-center justify-between gap20">
+                                <div class="name" style="width: 20%;">
+									<a href="" class="body-title-2"> <p>@fb.ProductName</p></a>
+                                </div>
+                                <div class="body-text" style="width: 16%;">@fb.CustomerName</div>
+                                <div class="body-text" style="width: 32%; word-wrap: break-word;">
+                                    <p>Rating: @fb.Rating/5</p>
+                                    <p>@fb.Content</p>
+                                </div>
+                                <div class="body-text" style="width: 12%;">@fb.CreatedDate</div>
+                                @if (fb.Status)
+                                {
+                                    <div class="body-text" style="width: 12%; color:green">Replied</div>
+                                } else
+                                {
+                                    <div class="body-text" style="width: 12%; color: orange">Pending</div>
+                                }
+
+
+                                <div class="list-icon-function" style="width:8%;">
+                                    <div class="item edit" id="edit-icon" data-id="@fb.FeedBackId">
+                                        <i class="icon-edit-3"></i>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="form-container hidden" id="edit-form-@fb.FeedBackId" style="margin:20px">
+                            <form asp-area="Employee" asp-action="Submit" asp-controller="Feedback" method="post">
+                                <input type="hidden" name="FeedBackId" value="@fb.FeedBackId"/>
+                                <div>
+                                    <label for="response-@fb.FeedBackId">Your Response:</label>
+                                    <textarea id="response-@fb.FeedBackId" name="response" rows="2" cols="50">@fb.ContentResponse</textarea>
+                                    <span id="ContentError-@fb.FeedBackId" class="text-danger"></span>
+                                </div>
+                                <div>
+                                    <button type="submit" style="color:deepskyblue" onclick="checkFormAndSubmit(event, @fb.FeedBackId)">Submit</button>
+                                    <button type="button" class="cancel-button" data-id="@fb.FeedBackId" style="color:tomato">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        } else
+        {
+            <h3>Chưa có FeedBack nào!!</h3>
+        }
+
+            <!-- /all-attribute -->
+        </div>
+        <!-- /main-content-wrap -->
+    </div>
+<script>
+    function checkFormAndSubmit(event, feedbackId) {
+        event.preventDefault();
+
+        const responseElement = document.getElementById(`response-${feedbackId}`);
+        const responseValue = responseElement.value.trim();
+        const contentErrorElement = document.getElementById(`ContentError-${feedbackId}`);
+
+        let isValid = true;
+
+        if (!responseValue) {
+            contentErrorElement.textContent = 'Nội dung không được để trống.';
+            isValid = false;
+        }
+        else if (responseValue.length > 500) {
+            contentErrorElement.textContent = 'Nội dung không được vượt quá 500 ký tự.';
+            isValid = false;
+        } else {
+            contentErrorElement.textContent = '';
+        }
+
+        // Nếu form hợp lệ, gửi form đi
+        if (isValid) {
+            // Thực hiện hành động gửi form (nếu có) tại đây
+            // Ví dụ: event.target.form.submit();
+            event.target.form.submit();
+        }
+    }
+
+
+    document.querySelectorAll('.item.edit').forEach(editIcon => {
+        editIcon.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            console.log(`Edit icon clicked, ID: ${id}`);
+            const formElement = document.getElementById(`edit-form-${id}`);
+            if (formElement) {
+                formElement.classList.remove('hidden');
+            } else {
+                console.error(`Element with ID edit-form-${id} not found`);
+            }
+        });
+    });
+
+    document.querySelectorAll('.cancel-button').forEach(cancelButton => {
+        cancelButton.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            console.log(`Cancel button clicked, ID: ${id}`);
+            const formElement = document.getElementById(`edit-form-${id}`);
+            if (formElement) {
+                formElement.classList.add('hidden');
+            } else {
+                console.error(`Element with ID edit-form-${id} not found`);
+            }
+        });
+    });
+</script>
+
+

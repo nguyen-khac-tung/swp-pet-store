@@ -5,8 +5,8 @@ namespace PetStoreProject.Repositories.Product
 {
     public interface IProductRepository
     {
-		public List<FeedbackViewModels> GetListFeedBack(int productId);
-		public ProductDetailViewModel GetDetail(int productId);
+        public List<FeedbackViewModels> GetListFeedBack(int productId);
+        public ProductDetailViewModel GetDetail(int productId);
         public List<RelatedProductViewModel> getRelatedProduct(int productId);
         public List<ProductDetailViewModel> GetProductDetailDoGet(List<int> cateId, int productCateId);
         public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId);
@@ -33,6 +33,8 @@ namespace PetStoreProject.Repositories.Product
         public Task<string> CreateProduct(ProductCreateRequestViewModel productCreateRequest);
 
         public ProductDetailForAdmin GetProductDetailForAdmin(int productId);
+
+        public Task<string> UpdateProduct(ProductDetailForAdmin productUpdateRequest);
 
     }
 }

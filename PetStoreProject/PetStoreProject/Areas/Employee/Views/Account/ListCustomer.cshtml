@@ -1,47 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "List employee";
+    ViewData["Title"] = "ListCustomer";
 }
 @using PetStoreProject.ViewModels;
 
 @model List<AccountDetailViewModel>
 
 <link href="~/areas/css/list-user-style.css" rel="stylesheet" />
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 
-<div class="modal fade" id="deleteAccount" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="deleteUserModalLabel">Xóa tài khoản nhân viên</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="padding:20px 50px 40px 50px!important">
-                <i class="fas fa-trash-alt"></i>
-                <label>Bạn có chắc muốn xóa tài khoản nhân viên <strong id="nameAccountDelete"></strong>?</label>
-                <br />
-                <input type="hidden" id="accountId" />
-                <div class="input-group">
-                    <input type="password" class="form-control" id="passwordAdmin" placeholder="Vui lòng nhập mật khẩu để xác nhận" required />
-                    <div class="btn show-btn" onclick="showPassword()">
-                        <i class="bi bi-eye" id="eye-icon"></i>
-                    </div>
-                </div>
-                <div id="error-mess"></div>
-            </div>
-            <div class="modal-footer" style="margin-bottom:10px">
-                <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:18px">Có, xóa tài khoản</button>
-                <button type="button" class="btn btn-secondary" aria-label="Close" data-bs-dismiss="modal">Không, giữ tài khoản</button>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+
+    
+</style>
 
 <div class="main-content-inner">
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Tất cả nhân viên</h3>
+            <h3>Tất cả khách hàng</h3>
             <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                 <li>
                     <a href="index.html"><div class="text-tiny">Bảng điều khiển</div></a>
@@ -50,13 +26,13 @@
                     <i class="icon-chevron-right"></i>
                 </li>
                 <li>
-                    <a href="#"><div class="text-tiny">Người dùng</div></a>
+                    <a href="#"><div class="text-tiny">Khách hàng</div></a>
                 </li>
                 <li>
                     <i class="icon-chevron-right"></i>
                 </li>
                 <li>
-                    <div class="text-tiny">Tất cả người dùng</div>
+                    <div class="text-tiny">Tất cả khách hàng</div>
                 </li>
             </ul>
         </div>
@@ -66,7 +42,7 @@
                 <div class="wg-filter flex-grow">
                     <form class="form-search" onsubmit="return false;">
                         <fieldset>
-                            <input id="search-input" type="text" placeholder="Tìm kiếm theo tên người dùng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                            <input id="search-input" type="text" placeholder="Tìm kiếm theo tên người khách hàng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
                         </fieldset>
                         <div class="button-submit">
                             <button onclick="search()"><i class="icon-search"></i></button>
@@ -82,12 +58,11 @@
                     </div>
                 </div>
 
-                <a class="tf-button style-1 w208" onclick="addAccount()"><i class="icon-plus"></i>Tạo tài khoản</a>
             </div>
             <div class="wg-table table-all-user" id="table-content">
                 <ul class="table-title flex gap20 mb-14" id="title-table">
                     <li class="user">
-                        <div id="user-hover" onclick="sortByName()" class=" body-title">Người dùng <i class="bi bi-chevron-expand"></i></div>
+                        <div id="user-hover" onclick="sortByName()" class=" body-title">Khách hàng <i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li class="phone">
                         <div class="body-title">Số điện thoại</div>
@@ -95,7 +70,7 @@
                     <li class="email">
                         <div class="body-title">Email</div>
                     </li>
-@*                     <li>
+                    @* <li>
                         <div class="body-title">Vai trò</div>
                     </li> *@
                     <li class="status">
@@ -110,7 +85,7 @@
                 </ul>
             </div>
             <div class="divider"></div>
-            <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
+            <div class="flex items-center justify-between flex-wrap gap40"  style="font-size:16px;">
                 <div id="total-user"></div>
                 <div class="text-tiny" id="no_data"></div>
                 <div id="pagination"></div>
@@ -120,9 +95,6 @@
     </div>
     <!-- /main-content-wrap -->
 </div>
-</div>
-@Html.Partial("_QuickViewAccount")
-@Html.Partial("_AddViewAccount")
 
 <script src="~/js/list-product.js"></script>
 <script src="~/areas/js/list-user.js"></script>

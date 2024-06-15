@@ -625,16 +625,21 @@
                         type: 'POST',
                         data: { product: productCreateRequest },
                         success: function (response) {
-                            try{
-                                var id = parseInte(response.result);
-                                window.location.href = 'http://localhost:5206/add/product/detail?productId=' + response.result
+                            if (!isNaN(response.result)) {
+                                window.location.href = 'http://localhost:5206/admin/product/detail?productId=' + response.result;
+                            } else {
+                                // Handle error - display a message or log the error
+                                console.error("Error: " + response.result);
+                                alert("Failed to create product: " + response.result);
                             }
-                            catch{
-                                alert(response.result)
-                            }
-                            ;
                         },
-                    })
+                        error: function (xhr, status, error) {
+                            // Handle AJAX error
+                            console.error("AJAX error: " + error);
+                            alert("An error occurred while creating the product: " + error);
+                        }
+                    });
+
                 }
                 else {
                     alert('Bạn cần thêm các tùy chọn cho sản phẩm')

@@ -356,7 +356,7 @@
             if (isExistsBrand(brand)) {
                     alert('Thương hiệu này đã tồn tại');
             } 
-            if(isValidString(brand)) {
+            else if(isValidString(brand)) {
                     if (confirm(`Bạn có muốn thêm '${brand}' vào danh sách thương hiệu không?`)) {
                         var brands = $('#brand');
                         var option = $('<option>', {
@@ -380,7 +380,7 @@
         if (isExistsSize(size)) {
             alert('Kích thước này đã tồn tại');
         }
-        if (isValidString(size)) {
+        else if (isValidString(size)) {
                 if (confirm(`Bạn có muốn thêm '${size}' vào danh sách kích thước không?`)) {
                     var sizes = $('#size');
                     var option = $('<option>', {
@@ -402,7 +402,7 @@
         if (isExistsAttribute(attribute)) {
             alert('Thuộc tính này đã tồn tại')
         }
-        if(isValidString(attribute)) {
+        else if(isValidString(attribute)) {
             if (confirm(`Bạn có muốn thêm '${attribute}' vào danh sách thuộc tính không?`)) {
                 var attributes = $('#attribute');
                 var option = $('<option>', {
@@ -908,7 +908,7 @@
         var isExists = false;
         listImage.find('div').each(function () {
             var image = $(this).find('img').attr('src');
-            if (image.trim() == src.trim()) {
+            if (image.trim() === src.trim()) {
                 isExists = true;
                 return false;
             }
@@ -1061,16 +1061,14 @@
                 listProductOptions.find('li').each(function () {
                     var op = $(this);
 
-                    var ProductOptionId = op.attr('id').split('_')[1];
-
                     var Attribute = {
                         AttributeId: op.find('.attributeData').attr('value') == 'new' ? 0 : parseInt(op.find('.attributeData').attr('value')),
-                        Name: op.find('.attributeData').text()
+                        Name: op.find('.attributeData').text().split(':')[1].trim()
                     };
 
                     var Size = {
                         SizeId: op.find('.sizeData').attr('value') == 'new' ? 0 : parseInt(op.find('.sizeData').attr('value')),
-                        Name: op.find('.sizeData').text()
+                        Name: op.find('.sizeData').text().split(':')[1].trim()
                     };
 
                     var Image = {
@@ -1081,7 +1079,7 @@
                     var Price = op.find('.priceData').attr('value');
 
                     var option = {
-                        Id: ProductOptionId,
+                        Id: 0,
                         Attribute: Attribute,
                         Size: Size,
                         Image: Image,
@@ -1102,10 +1100,10 @@
                 var ImageUrl = op.find('img').attr('src');
                 var ImageId = op.find('img').attr('value');
 
-                var SizeName = op.find('.size').text();
+                var SizeName = op.find('.size').text()
                 var SizeId = op.find('.size').attr('value');
 
-                var AttributeName = op.find('.attribute').text();
+                var AttributeName = op.find('.attribute').text()
                 var AttributeId = op.find('.attribute').attr('value');
 
                 var Price = op.find('.price').attr('value');
@@ -1128,7 +1126,7 @@
                 var isSoldOut = op.find('.isSoldOut').attr('value');
                 var isDelete = op.find('.isDelete').attr('value');
                 var option = {
-                    Id: ProductOptionId,
+                    Id: parseInt(ProductOptionId),
                     Attribute: Attribute,
                     Size: Size,
                     Image: Image,
@@ -1164,7 +1162,7 @@
                 ProductCategory: ProductCategory,
                 Description: description,
                 ProductOptions: options,
-                IsDelete: isDelete == '1' ? true : false
+                IsDeleted: isDelete == '1' ? true : false
             };
             var updateProductRequest = JSON.stringify(product);
             console.log(updateProductRequest);
@@ -1173,8 +1171,19 @@
                 type: 'POST',
                 data: { updateProductRequest: updateProductRequest },
                 success: function (response) {
-                    alert(response.result)
+                    if (!isNaN(response.result)) {
+                        window.location.href = 'http://localhost:5206/admin/product/detail?productId=' + response.result;
+                    } else {
+                        // Handle error - display a message or log the error
+                        console.error("Error: " + response.result);
+                        alert("Failed to create product: " + response.result);
+                    }
                 },
+                error: function (xhr, status, error) {
+                    // Handle AJAX error
+                    console.error("AJAX error: " + error);
+                    alert("An error occurred while creating the product: " + error);
+                }
             })
         }
     }

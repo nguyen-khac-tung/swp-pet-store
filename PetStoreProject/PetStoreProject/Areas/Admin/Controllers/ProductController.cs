@@ -101,7 +101,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
                 return Json(new
                 {
-                    result = result
+                    result = result.Trim()
                 });
             }
             catch (Exception e)
@@ -136,7 +136,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Update(int productId)
+        public ActionResult Update(int productId)
         {
             var product = _product.GetProductDetailForAdmin(productId);
             var categories = _category.GetCategories();
@@ -169,23 +169,23 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateRequest(string updateProductRequest)
+        public async Task<JsonResult> UpdateRequest(string updateProductRequest)
         {
 
             try
             {
                 var productUpdateRequest = JsonConvert.DeserializeObject<ProductDetailForAdmin>(updateProductRequest);
-
+                var result = await _product.UpdateProduct(productUpdateRequest);
                 return Json(new
                 {
-                    result = "OK"
+                    result = result
                 });
             }
             catch (Exception e)
             {
                 return Json(new
                 {
-                    result = e.Message
+                    result = "CLGT" + e.Message
                 });
             }
         }

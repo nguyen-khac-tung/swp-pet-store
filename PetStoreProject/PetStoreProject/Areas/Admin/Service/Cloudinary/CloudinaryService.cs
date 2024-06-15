@@ -27,12 +27,13 @@ namespace PetStoreProject.Areas.Admin.Service.Cloudinary
             var base64Data = imageData.Split(',')[1];
             byte[] imageBytes = Convert.FromBase64String(base64Data);
 
-            var uploadParams = new ImageUploadParams()
+            var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription("image.jpg", new MemoryStream(imageBytes)),
                 PublicId = imageId,
                 Overwrite = true
             };
+
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
             return uploadResult;
         }

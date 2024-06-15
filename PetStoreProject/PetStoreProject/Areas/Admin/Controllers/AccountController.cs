@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetStoreProject.Repositories.Accounts;
-using PetStoreProject.ViewModels;
-using PetStoreProject.Helpers;
-using System.Linq;
 using PetStoreProject.Areas.Admin.ViewModels;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PetStoreProject.Helpers;
 using PetStoreProject.Models;
-using Microsoft.AspNetCore.Http;
+using PetStoreProject.Repositories.Accounts;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -35,7 +31,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var pageSizeLocal = pageSize ?? 10;
 
-            var accounts = _account.GetAccounts(pageIndexLocal, pageSizeLocal,2, searchName ?? "", sortName ?? "", selectStatus ?? "");
+            var accounts = _account.GetAccounts(pageIndexLocal, pageSizeLocal, 2, searchName ?? "", sortName ?? "", selectStatus ?? "");
 
             var totalAccount = _account.GetAccountCount(2);
 
@@ -73,7 +69,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var password = GeneratePassword.GenerateAutoPassword(10);
+                    var password = "GeneratePassword.GenerateAutoPassword(10)";
 
                     var emailTitle = "Thông báo! Mật khẩu ứng dụng.";
 

@@ -12,6 +12,17 @@ namespace PetStoreProject.Repositories.Brand
             _context = context;
         }
 
+        public int CreateBrand(string brandName)
+        {
+            var brand = new Models.Brand
+            {
+                Name = brandName
+            };
+            _context.Brands.Add(brand);
+            _context.SaveChanges();
+            return brand.BrandId;
+        }
+
         public List<BrandViewModel> GetBrands()
         {
             var brands = _context.Brands.Select(b => new BrandViewModel

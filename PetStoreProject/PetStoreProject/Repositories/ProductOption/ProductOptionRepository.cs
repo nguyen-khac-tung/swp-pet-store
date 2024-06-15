@@ -1,19 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
-using PetStoreProject.Repositories.Image;
 
 namespace PetStoreProject.Repositories.ProductOption
 {
     public class ProductOptionRepository : IProductOptionRepository
     {
         private readonly PetStoreDBContext _context;
-        private readonly IImageRepository _image;
 
-        public ProductOptionRepository(PetStoreDBContext context, IImageRepository image)
+        public ProductOptionRepository(PetStoreDBContext context)
         {
             _context = context;
-            _image = image;
         }
 
         public async Task<string> CreateProductOption(ProductOptionCreateRequestViewModel productOptionCreateRequest, int productId, int imageId)

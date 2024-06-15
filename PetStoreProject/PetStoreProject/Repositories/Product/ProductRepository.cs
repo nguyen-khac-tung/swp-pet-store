@@ -2,8 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.Attribute;
+using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.ProductOption;
+using PetStoreProject.Repositories.Size;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
@@ -13,13 +16,19 @@ namespace PetStoreProject.Repositories.Product
         private readonly PetStoreDBContext _context;
         private readonly IProductOptionRepository _productOption;
         private readonly IImageRepository _image;
+        private readonly IBrandRepository _brand;
+        private readonly ISizeRepository _size;
+        private readonly IAttributeRepository _attribute;
 
         public ProductRepository(PetStoreDBContext context, IProductOptionRepository productOption,
-            IImageRepository image)
+            IImageRepository image, IBrandRepository brand, ISizeRepository size, IAttributeRepository attribute)
         {
             _context = context;
             _productOption = productOption;
             _image = image;
+            _brand = brand;
+            _size = size;
+            _attribute = attribute;
         }
         public List<FeedbackViewModels> GetListFeedBack(int productId)
         {
@@ -644,7 +653,7 @@ namespace PetStoreProject.Repositories.Product
 
         public int GetTotalProducts(List<ProductViewForAdmin> products)
         {
-            var count = products.Count();
+            var count = products.Count;
             return count;
         }
 
@@ -662,6 +671,7 @@ namespace PetStoreProject.Repositories.Product
                     Description = productCreateRequest.Description,
                     BrandId = productCreateRequest.BrandId,
                     ProductCateId = productCreateRequest.ProductCateId,
+                    IsDelete = false
                 };
 
                 await _context.Products.AddAsync(product);
@@ -789,5 +799,139 @@ namespace PetStoreProject.Repositories.Product
 
             return product;
         }
+
+        public async Task<string> UpdateProduct(ProductDetailForAdmin productUpdateRequest)
+        {
+            var brandId = productUpdateRequest.Brand.BrandId;
+            if (brandId == 0)
+            {
+                brandId = _brand.CreateBrand(productUpdateRequest.Brand.Name);
+            }
+
+            var product = await _context.FindAsync<Models.Product>(productUpdateRequest.ProductId);
+
+            if (product != null)
+            {
+                product.Name = productUpdateRequest.Name;
+                product.BrandId = brandId;
+                product.Description = productUpdateRequest.Description;
+                product.ProductCateId = productUpdateRequest.ProductCategory.ProductCateId;
+                product.IsDelete = productUpdateRequest.IsDeleted;
+                _context.Products.Update(product);
+            }
+
+            HashSet<string> strings = new HashSet<string>();
+            List<Models.Image> images = new List<Models.Image>();
+
+            List<Models.Size> sizes = new List<Models.Size>();
+            List<Models.Attribute> attributes = new List<Models.Attribute>();
+
+            var options = productUpdateRequest.ProductOptions;
+            foreach (var option in options)
+            {
+                var sizeId = option.Size.SizeId;
+
+                if (strings.Add(option.Size.Name))
+                {
+                    if (sizeId == 0)
+                    {
+                        sizeId = _size.CreateSize(option.Size.Name);
+                    }
+                    else
+                    {
+                        sizes.Add(option.Size);
+                    }
+                }
+
+                else
+                {
+                    sizeId = sizes.Find(s => s.Name == option.Size.Name).SizeId;
+                }
+
+                var attributeId = option.Attribute.AttributeId;
+
+                if (strings.Add(option.Attribute.Name))
+                {
+                    if (attributeId == 0)
+                    {
+                        attributeId = _attribute.CreateAttribute(option.Attribute.Name);
+                    }
+                    else
+                    {
+                        attributes.Add(option.Attribute);
+                    }
+                }
+                else
+                {
+                    attributeId = attributes.Find(a => a.Name == option.Attribute.Name).AttributeId;
+                }
+
+                var imageId = option.Image.ImageId;
+                if (strings.Add(option.Image.ImageUrl))
+                {
+                    if (imageId == 0)
+                    {
+                        var result = await _image.CreateImage(option.Image.ImageUrl);
+                        if (!int.TryParse(result, out int number))
+                        {
+                            return result;
+                        }
+                        imageId = int.Parse(result);
+                        images.Add(new Models.Image
+                        {
+                            ImageId = imageId,
+                            ImageUrl = option.Image.ImageUrl
+                        });
+                    }
+                    else
+                    {
+                        images.Add(option.Image);
+                    }
+                }
+                else
+                {
+                    imageId = images.Find(i => i.ImageUrl == option.Image.ImageUrl).ImageId;
+                }
+
+
+                var productOptionId = option.Id;
+
+                if (productOptionId == 0)
+                {
+                    var productOption = new Models.ProductOption
+                    {
+                        ProductId = productUpdateRequest.ProductId,
+                        SizeId = sizeId,
+                        AttributeId = attributeId,
+                        Price = option.Price,
+                        ImageId = imageId,
+                        IsSoldOut = option.IsSoldOut,
+                        IsDelete = option.IsDelete
+                    };
+
+                    await _context.ProductOptions.AddAsync(productOption);
+                }
+                else
+                {
+                    var productOption = await _context.FindAsync<Models.ProductOption>(productOptionId);
+                    if (productOption != null)
+                    {
+                        productOption.AttributeId = attributeId;
+                        productOption.SizeId = sizeId;
+                        productOption.ImageId = imageId;
+                        productOption.IsDelete = option.IsDelete;
+                        productOption.IsSoldOut = option.IsSoldOut;
+                        _context.Update(productOption);
+                    }
+
+                }
+
+            }
+            await _context.SaveChangesAsync();
+            return productUpdateRequest.ProductId.ToString();
+
+        }
+
     }
 }
+

@@ -24,7 +24,8 @@ namespace PetStoreProject.Controllers
 			feedback.Email = Request.Form["Email"];
 			feedback.Rating = Int32.Parse(Request.Form["rating"]);
 			feedback.Content = Request.Form["Content"];
-			feedback.DateCreated = DateTime.Now;
+            feedback.Status = false;
+            feedback.DateCreated = DateTime.Now;
 			_context.Feedbacks.Add(feedback);
 			_context.SaveChanges();
 			return RedirectToAction("Detail", "Product", new { productId = Request.Form["pid"] });

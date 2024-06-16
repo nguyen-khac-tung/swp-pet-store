@@ -2,7 +2,7 @@
 
 namespace PetStoreProject.Helpers
 {
-    public class GeneratePassword
+    public static class GeneratePassword
     {
         public static string GenerateAutoPassword(int passwordLength)
         {

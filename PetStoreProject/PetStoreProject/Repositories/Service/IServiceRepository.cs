@@ -1,4 +1,5 @@
-﻿using PetStoreProject.ViewModels;
+﻿using PetStoreProject.Models;
+using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Service
 {
@@ -18,9 +19,17 @@ namespace PetStoreProject.Repositories.Service
 
         public List<TimeOnly> GetWorkingTime(int serviceId);
 
-        public void SaveBookServiceForm(BookServiceViewModel bookServiceInfo);
+        public void AddOrderService(BookServiceViewModel bookServiceInfo);
 
         public List<ServiceViewModel> GetOtherServices(int serviceId);
+
+        public List<BookServiceViewModel> GetOrderedServicesOfCustomer(int customerId);
+
+        public BookServiceViewModel GetOrderServiceDetail(int orderServiceId);
+
+        public void UpdateOrderService(BookServiceViewModel orderService);
+
+        public void DeleteOrderService(int orderServiceId);
 
     }
 }

@@ -20,10 +20,10 @@
             box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
         }
 
-        .card .card-header {
-            font-size: 16px;
-            font-weight: 600;
-        }
+            .card .card-header {
+                font-size: 16px;
+                font-weight: 600;
+            }
 
         .card-header:first-child {
             border-radius: 0.35rem 0.35rem 0 0;
@@ -36,7 +36,7 @@
             border-bottom: 1px solid rgba(33, 40, 50, 0.125);
         }
 
-            .card-body .label-input {
+        .card-body .label-input {
             font-size: 15px;
         }
 
@@ -80,25 +80,25 @@
             font-size: 19px;
         }
 
-        .profile_wrapper .gender-radio{
+        .profile_wrapper .gender-radio {
             display: inline-block;
             width: 20%;
             font-size: 19px;
             color: black;
         }
 
-        .profile_wrapper .gender-radio input{
-            cursor: pointer;
-        }
+            .profile_wrapper .gender-radio input {
+                cursor: pointer;
+            }
 
-        .profile_wrapper .login-btn:hover{
+        .profile_wrapper .login-btn:hover {
             background-color: #00adf6;
             transition: all 0.3s ease-in-out 0s;
         }
 
-        .profile-option-btn{
+        .profile-option-btn {
             padding-left: 30px;
-            padding-right:0px;
+            padding-right: 0px;
             border: none;
             font-size: 16px;
         }
@@ -119,13 +119,12 @@
                         <!-- Profile picture help block-->
                         <div id="profile-full-name" class="profile-name">@name</div>
                         <!-- Profile picture upload button-->
-                        @* <button class="btn btn-primary" type="button">Upload new image</button> *@
                     </div>
                     <div class="card-footer">
                         <div>
                             <a class="single-account-select profile-option-btn" onclick="profileDetail()">Thông Tin Tài Khoản</a>
-                            <a class="single-account-select profile-option-btn" onclick="ChangePassword()">Đổi Mật Khẩu</a>
-                            <a class="single-account-select profile-option-btn">Lịch Sử Đơn Hàng</a>
+                            <a class="single-account-select profile-option-btn" onclick="changePassword()">Đổi Mật Khẩu</a>
+                            <a class="single-account-select profile-option-btn" onclick="getOrdersServices()">Lịch Sử Đơn Hàng</a>
                         </div>
                     </div>
                 </div>
@@ -135,11 +134,36 @@
         </div>
     </div>
 </div>
+
+<!-- Booking service modal start-->
+<div class="booking-service-area">
+    <div class="container">
+        <!--The Modal-->
+        <div class="modal fade" id="booking-modal">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header d-block text-center position-relative pb-3">
+                        <h5 class="modal-title d-inline-block">Đặt Lịch Hẹn</h5>
+                        <button type="button" class="btn-close position-absolute end-0 mt-1 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Header -->
+                    <!-- Modal body -->
+                    <div class="modal-body" id="booking-modal-content">
+                    </div>
+                    <!-- Modal body -->
+                </div>
+            </div>
+        </div>
+        <!--The Modal-->
+    </div>
+</div>
+<!-- Booking service modal end-->
 @section ScriptOptional {
     <script>
         $(document).ready(function () {
             profileDetail();
-            initDatepicker();
+            dobDatepicker();
 
             $("#formProfileDetail").on("submit", function (event) {
                 event.preventDefault();
@@ -166,7 +190,7 @@
                         updateProfileDetail();
                     });
 
-                    initDatepicker();
+                    dobDatepicker();
                 },
 
                 error: function (xhr, status, error) {
@@ -194,7 +218,7 @@
                         updateProfileDetail();
                     });
 
-                    initDatepicker();
+                    dobDatepicker();
                 },
 
                 error: function (xhr, status, error) {
@@ -203,7 +227,7 @@
             });
         };
 
-        function ChangePassword() {
+        function changePassword() {
             $.ajax({
                 url: '@Url.Action("ChangePassword", "Account")',
                 type: 'GET',
@@ -247,7 +271,212 @@
             })
         }
 
-        function initDatepicker() {
+        function getOrdersServices() {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("OrderServiceHistory", "Account")',
+
+                success: function (response) {
+                    $("#main-content").empty;
+                    $("#main-content").html(response);
+
+                    //Gắn lại sự kiện click cho nút xem chi tiết lịch hẹn đã đặt
+                    $("#main-content").on("click", ".order-service-detail-btn", function () {
+                        var orderServiceId = $(this).data("orderserviceid");
+                        orderedServiceDetail(orderServiceId);
+                    });
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function orderedServiceDetail(orderServiceId) {
+            console.log(orderServiceId);
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("OrderServiceDetail", "Account")',
+                data: { orderServiceId: orderServiceId },
+
+                success: function (response) {
+                    $("#booking-modal-content").html(response);
+                    $("#booking-modal").modal("show");
+
+                    //Gắn lại sự kiện submit cho nút submit lịch hẹn đã cập nhật
+                    $("#booking-form").on("submit", function (event) {
+                        event.preventDefault();
+                        updateOrderedService();
+                    });
+
+                    //Gắn lại sự kiện click cho nút hủy lịch hẹn
+                    $("#booking-form").on("click", ".cancel-btn", function () {
+                        var orderServiceId = $(this).data("orderserviceid");
+                        cancelOrderService(orderServiceId);
+                    });
+
+                    //Gắn lại sự kiện chọn ngày tháng cho thẻ input chọn ngày hẹn
+                    orderDatepicker();
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function changeService() {
+            var serviceSelected = $("#ServiceName").find(":selected");
+            var serviceId = serviceSelected.attr("data-serviceid");
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetServiceOptionByChangeService", "Account")',
+                data: { serviceId: serviceId },
+
+                success: function (response) {
+                    let listPetType = '';
+                    response.petTypes.forEach(function (petType) {
+                        let isSelected = (response.petType === petType);
+                        listPetType += '<option value="' + petType + '"';
+                        listPetType += isSelected ? ' selected>' : '>';
+                        listPetType += petType + '</option>';
+                    });
+
+                    let listWeight = '';
+                    response.weights.forEach(function (weight) {
+                        let isSelected = (response.weight === weight);
+                        listWeight += '<option value="' + weight + '"';
+                        listWeight += isSelected ? ' selected>' : '>';
+                        listWeight += weight + '</option>';
+                    });
+
+                    $("#PetType").html(listPetType);
+                    $("#Weight").html(listWeight);
+                    $("#Price").val(response.price.toLocaleString('en-US') + ' VND');
+                    $("#ServiceId").val(response.serviceId);
+                    $("#ServiceOptionId").val(response.serviceOptionId);
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function changePetType() {
+            var serviceSelected = $("#ServiceName").find(":selected");
+            var serviceId = serviceSelected.attr("data-serviceid");
+            var petTypeSelected = $("#PetType").find(":selected");
+            var petType = petTypeSelected.val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetServiceOptionByChangePetType", "Account")',
+                data: { serviceId: serviceId, petType: petType },
+
+                success: function (response) {
+                    let listWeight = '';
+                    response.weights.forEach(function (weight) {
+                        let isSelected = (response.weight === weight);
+                        listWeight += '<option value="' + weight + '"';
+                        listWeight += isSelected ? ' selected>' : '>';
+                        listWeight += weight + '</option>';
+                    });
+
+                    $("#Weight").html(listWeight);
+                    $("#Price").val(response.price.toLocaleString('en-US') + ' VND');
+                    $("#ServiceOptionId").val(response.serviceOptionId);
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function changeWeight() {
+            var serviceSelected = $("#ServiceName").find(":selected");
+            var serviceId = serviceSelected.attr("data-serviceid");
+            var petTypeSelected = $("#PetType").find(":selected");
+            var petType = petTypeSelected.val();
+            var weightSelected = $("#Weight").find(":selected");
+            var weight = weightSelected.val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetServiceOptionByChangeWeight", "Account")',
+                data: { serviceId: serviceId, petType: petType, weight: weight },
+
+                success: function (response) {
+                    $("#Price").val(response.price.toLocaleString('en-US') + ' VND');
+                    $("#ServiceOptionId").val(response.serviceOptionId);
+                }
+            });
+        }
+
+        function updateOrderedService() {
+            let orderSeviceId = $("#booking-form").find("#OrderServiceId").val();
+            let orderForm = $("#booking-form").serialize();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("OrderServiceDetail", "Account")',
+                data: orderForm,
+
+                success: function (response) {
+                    $("#booking-modal-content").empty();
+                    $("#booking-modal-content").html(response);
+
+                    //Thay đổi giá trị ngày hẹn trên bảng order service history nếu update thành công
+                    if ($(response).find(".update-sucsess").length > 0) {
+                        let orderDate = $(response).find("#OrderDate").val();
+                        console.log(orderDate);
+                        let row = $("#main-content").find("#order-item-" + orderSeviceId);
+                        row.find(".orderdate-cell").text(orderDate);
+                    }
+
+                    //Gắn lại sự kiện submit cho nút submit lịch hẹn đã cập nhật
+                    $("#booking-form").on("submit", function (event) {
+                        event.preventDefault();
+                        updateOrderedService();
+                    });
+
+                    //Gắn lại sự kiện click cho nút hủy lịch hẹn
+                    $("#booking-form").on("click", ".cancel-btn", function () {
+                        var orderServiceId = $(this).data("orderserviceid");
+                        cancelOrderService(orderServiceId);
+                    });
+
+                    //Gắn lại sự kiện chọn ngày tháng cho thẻ input chọn ngày hẹn
+                    orderDatepicker();
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function cancelOrderService(orderServiceId) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("CancelOrderService", "Account")',
+                data: { orderServiceId: orderServiceId },
+
+                success: function () {
+                    let row = $("#main-content").find("#order-item-" + orderServiceId);
+                    row.find(".status-cell").text("Đã hủy");
+                    $("#booking-modal").modal("hide");
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function dobDatepicker() {
             $('#dob-datepicker').datepicker({
                 format: "dd/mm/yyyy",
                 weekStart: 1,
@@ -260,6 +489,21 @@
             });
         };
 
+        function orderDatepicker() {
+            let tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            $('#order-datepicker').datepicker({
+                format: "dd/mm/yyyy",
+                weekStart: 1,
+                startView: 0,
+                startDate: tomorrow,
+                maxViewMode: 1,
+                language: "vi",
+                autoclose: true,
+                orientation: "bottom auto",
+            });
+        };
 
         function showOldPassword() {
             var pass = document.getElementById("OldPassword");

@@ -1,13 +1,12 @@
 ﻿@using PetStoreProject.Areas.Admin.ViewModels
 @using PetStoreProject.ViewModels
-@model PetStoreProject.Areas.Admin.ViewModels.ProductCreateRequestViewModel
 @{
     ViewData["title"] = "Thêm sản phẩm";
-    var categories = (List<CategoryViewModel>) ViewData["categories"];
-    var brands = (List<BrandViewModel>) ViewData["brands"];
-    var productCategories = (List<ProductCategoryViewModel>) ViewData["productCategories"];
-    var sizes = (List<SizeViewModel>) ViewData["sizes"];
-    var attributes = (List<AttributeViewModel>) ViewData["attributes"];
+    var brands = ViewData["brands"] as List<BrandViewModel>;
+    var categories = ViewData["categories"] as List<CategoryViewModel>;
+    var productCategories = ViewData["productCategories"] as List<ProductCategoryViewModel>;
+    var sizes = ViewData["sizes"] as List<SizeViewModel>;
+    var attributes = ViewData["attributes"] as List<AttributeViewModel>;
 }
 @section HeadOptional {
     <script src="https://cdn.tiny.cloud/1/vmg6xq9b7kglu6elt6oqb6zuq75zntiodhgmxmgwwirj6x81/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
@@ -89,48 +88,54 @@
         <form class="tf-section-2 form-add-product">
             <div class="wg-box">
                 <fieldset class="name">
-                    <label asp-for="Name" class="body-title mb-10">Tên sản phẩm<span class="tf-color-1">*</span></label>
-                    <input class="mb-10" asp-for="Name" placeholder="Nhập tên sản phẩm" id="name">
+                    <label class="body-title mb-10">Tên sản phẩm<span class="tf-color-1">*</span></label>
+                    <input type="text" class="mb-10" placeholder="Nhập tên sản phẩm" id="name">
                     <span id="error-name" class="text-danger"></span>
                     @* <div class="text-tiny">Do not exceed 20 characters when entering the product name.</div> *@
                 </fieldset>
                 <div class="gap22 cols">
                     <fieldset class="brand">
-                        <label asp-for="BrandId" class="body-title mb-10">Thương hiệu</label>
+                        <label class="body-title mb-10">Thương hiệu</label>
                         <div class="select flex gap22" id="list-brand">
-                            <select asp-for="BrandId" class="" id="brand">
+                            <select class="" id="brand">
                                 @foreach(var brand in brands)
                                 {
                                     <option value="@brand.Id">@brand.Name</option>
                                 }
                             </select>
-                            <input type="text" id="brandFilter" placeholder="Nhập để tìm kiếm thương hiệu ...">
+                        </div>
+                    </fieldset>
+                    <fieldset class="brand">
+                        <label class="body-title mb-10">Thương hiệu</label>
+                        <div class="select flex gap22" id="list-brand">
+                            <input type="text" id="brandFilter" placeholder="Thương hiệu ...">
+                            <button type="button" class="tf-button style-1" onclick="addBrandOption()">Thêm mới</button>
                         </div>
                     </fieldset>
                 </div>
                 <div class="cols gap22">
                     <fieldset class="category">
-                        <label asp-for="CategoryId" class="body-title mb-10">Danh mục</label>
+                        <label class="body-title mb-10">Danh mục</label>
                         <div class="select" >
-                            <select asp-for="CategoryId" class="" id="category">
+                            <select class="" id="category">
                                 @foreach (var category in categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
                                 }
                             </select>
-                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            <span class="text-danger"></span>
                         </div>
                     </fieldset>
                     <fieldset class="product-category">
-                        <label asp-for="ProductCateId" class="body-title mb-10">Danh mục sản phẩm</label>
+                        <label class="body-title mb-10">Danh mục sản phẩm</label>
                         <div class="select">
-                            <select asp-for="ProductCateId" class="" id="product-category">
+                            <select class="" id="product-category">
                                 @foreach (var productCategory in productCategories)
                                 {
                                     <option value="@productCategory.Id">@productCategory.Name</option>
                                 }
                             </select>
-                            <span asp-validation-for="ProductCateId" class="text-danger"></span>
+                            <span class="text-danger"></span>
                         </div>
                     </fieldset>
                 </div>
@@ -184,6 +189,7 @@
                                 }
                             </select>
                             <input type="text" id="sizeFilter" placeholder="Nhập để tìm kiếm kích thước...">
+                            <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
                         </div>
                     </fieldset>
                     <fieldset class="name">
@@ -203,6 +209,7 @@
                                 }
                             </select>
                             <input type="text" id="attributeFilter" placeholder="Nhập để tìm kiếm thuộc tính...">
+                            <button type="button" class="tf-button style-1" onclick="addAttributeOption()">Thêm mới</button>
                         </div>
                     </fieldset>
                     <fieldset class="name">
@@ -484,8 +491,49 @@
         }
 
         function addProductOption(){
+            var isExistsOption = isExistsProductOption();
+            var listProductOptions = $('#list-product-option')
+            if (!isExistsOption) {
+                var imgTag = $('.item.select-image img');
+
+                var image = imgTag.attr('src');
+                var imageId = imgTag.attr('value') == '' ? 'new' : imgTag.attr('value');
+
+                var sizeId = $('#size').val();
+                var sizeName = $('#size option:selected').text();
+
+                var attributeId = $('#attribute').val();
+                var attributeName = $('#attribute option:selected').text();
+
+                var price = $('#price').val().trim()
+
+                var newOption = `
+                                        <li style="padding: 5px; position: relative" id="product-option-id_new">
+                                            <span class="delete-button"><i class="icon-delete"></i></span>
+                                            <div class="gap15" style="align-items: center; width: 100%; display: flex">
+                                                <div class="choose-image" style="width: 7%">
+                                                    <img value='new' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
+                                                </div>
+                                                <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
+                                                <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Thuộc tính: <span class="tf-color">${attributeName}</span></div>
+                                                <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
+                                            </div>
+                                        </li>
+                                        `
+                listProductOptions.append(newOption);
+                addImageToList(image);
+            }
+        }
+
+        function isExistsProductOption() {
             let isValid = isValidProductOption();
-            var image = $('.item.select-image img').attr('src');
+            var isExistsOption = false;
+
+            var imgTag = $('.item.select-image img');
+
+            var image = imgTag.attr('src');
+            var imageId = imgTag.attr('value') == '' ? 'new' : imgTag.attr('value');
+
 
             var sizeId = $('#size').val();
             var sizeName = $('#size option:selected').text();
@@ -494,83 +542,70 @@
             var attributeName = $('#attribute option:selected').text();
 
             var price = $('#price').val().trim()
-            price = parseFloat(price)
 
             var listProductOptions = $('#list-product-option')
-            var optionExists = false;
             var numberOptions = listProductOptions.find('li').length;
-            var newOption = `
-                        <li style="padding: 5px; position: relative">
-                            <span class="delete-button"><i class="icon-delete"></i></span>
-                            <div class="gap15" style="align-items: center; width: 100%; display: flex">
-                                <div class="choose-image" style="width: 7%">
-                                    <img class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
-                                </div>
-                                <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
-                                <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Thuộc tính: <span class="tf-color">${attributeName}</span></div>
-                                <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
-                            </div>
-                        </li>
-                            `
+
             if (isValid) {
-                listProductOptions.find('li').each(function (){
+                listProductOptions.find('li').each(function () {
                     var existingOption = $(this);
                     var existingSizeId = existingOption.find('.sizeData').attr('value');
                     var existingAttributeId = existingOption.find('.attributeData').attr('value');
-                    var existingPrice = existingOption.find('.priceData').attr('value');
+                    var existingSizeName = existingOption.find('.sizeData').text().split(':')[1].trim();
+                    var existingAttributeName = existingOption.find('.attributeData').text().split(':')[1].trim();
 
-                    if (existingSizeId == sizeId && existingAttributeId == attributeId) {
-                        optionExists = true;
+                    if (existingSizeId == sizeId && existingAttributeId == attributeId
+                        && sizeName == existingSizeName && existingAttributeName == attributeName) {
+                        isExistsOption = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
                         return false; // Exit the loop if the option already exists
                     }
 
-                    if (sizeId == 1 && attributeId == 1) {
-                        if (numberOptions != 0) {
-                            optionExists = true;
-                            alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
-                            return false;
-                        }
-                    }
-
                     if (existingSizeId == 1 && sizeId != 1) {
-                        optionExists = true;
+                        isExistsOption = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm không thêm được kích thước này')
                         return false;
                     }
 
                     if (existingAttributeId == 1 && attributeId != 1) {
-                        optionExists = true;
+                        isExistsOption = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm không thêm được thuộc tính này')
                         return false;
                     }
 
                     if (existingAttributeId != 1 && attributeId == 1) {
-                        optionExists = true;
+                        isExistsOption = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm đã có thuộc tính khác.')
                         return false;
                     }
 
                     if (existingSizeId != 1 && sizeId == 1) {
-                        optionExists = true;
+                        isExistsOption = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
                         return false;
                     }
                 })
-
-                if (!optionExists) {
-                    listProductOptions.append(newOption);
-                    addImageToList(image);
-                }
             }
+            else{
+                isExistsOption = true;
+            }
+            return isExistsOption;
         }
 
         function saveProduct(){  
             var isValid = true
             var name = $('#name').val().trim()
+
             var brandId = $('#brand').val();
+            var brandName = $('#brand option:selected').text();
+
+            var Brand = {
+                BrandId: brandId == 'new' ? 0 : parseInt(brandId),
+                Name: brandName
+            }
+
             var categoryId = $('#category').val();
-            var productCategory = $('#product-category').val();
+            var productCateId = $('#product-category').val();
 
             if (name == '') {
                 isValid = false
@@ -596,15 +631,36 @@
                 if (numberOptions > 0) {
                     listProductOptions.find('li').each(function () {
                         var op = $(this);
-                        var Image = op.find('.imageData').attr('src');
-                        var SizeId = op.find('.sizeData').attr('value');
-                        var AttributeId = op.find('.attributeData').attr('value');
+
+                        var imageUrl = op.find('.imageData').attr('src');
+
+                        var Image = {
+                            ImageId: 0,
+                            ImageUrl: imageUrl
+                        }
+
+                        var sizeName = op.find('.sizeData').text().split(':')[1].trim()
+                        var sizeId = op.find('.sizeData').attr('value');
+
+                        var Size = {
+                            SizeId: sizeId == 'new' ? 0 : parseInt(sizeId),
+                            Name : sizeName
+                        }
+
+                        var attributeName = op.find('.attributeData').text().split(':')[1].trim()
+                        var attributeId = op.find('.attributeData').attr('value');
+
+                        var Attribute = {
+                            AttributeId: attributeId == 'new' ? 0 : parseInt(attributeId),
+                            Name: attributeName
+                        }
+
                         var Price = op.find('.priceData').attr('value');
 
                         var option = {
-                            ImageData: Image,
-                            SizeId: parseInt(SizeId),
-                            AttributeId: parseInt(AttributeId),
+                            Image: Image,
+                            Size: Size,
+                            Attribute: Attribute,
                             Price: parseFloat(Price)
                         };
                         options.push(option);
@@ -612,9 +668,9 @@
 
                     var product = {
                         Name: name.trim(),
-                        BrandId: parseInt(brandId),
+                        Brand: Brand,
                         CategoryId: parseInt(categoryId),
-                        ProductCateId: parseInt(productCategory),
+                        ProductCateId: parseInt(productCateId),
                         Description: description,
                         ProductOptions: options
                     };
@@ -625,16 +681,21 @@
                         type: 'POST',
                         data: { product: productCreateRequest },
                         success: function (response) {
-                            try{
-                                var id = parseInte(response.result);
-                                window.location.href = 'http://localhost:5206/add/product/detail?productId=' + response.result
+                            if (!isNaN(response.result)) {
+                                window.location.href = 'http://localhost:5206/admin/product/detail?productId=' + response.result;
+                            } else {
+                                // Handle error - display a message or log the error
+                                console.error("Error: " + response.result);
+                                alert("Failed to create product: " + response.result);
                             }
-                            catch{
-                                alert(response.result)
-                            }
-                            ;
                         },
-                    })
+                        error: function (xhr, status, error) {
+                            // Handle AJAX error
+                            console.error("AJAX error: " + error);
+                            alert("An error occurred while creating the product: " + error);
+                        }
+                    });
+
                 }
                 else {
                     alert('Bạn cần thêm các tùy chọn cho sản phẩm')
@@ -645,6 +706,127 @@
         $('#list-product-option').on('click', '.delete-button', function () {
             $(this).parent().remove(); // Remove the parent <li> when the delete button is clicked
         });
+
+        function addBrandOption() {
+            var brand = $('#brandFilter').val().trim();
+            if (isExistsBrand(brand)) {
+                alert('Thương hiệu này đã tồn tại');
+            }
+            else if (isValidString(brand)) {
+                if (confirm(`Bạn có muốn thêm '${brand}' vào danh sách thương hiệu không?`)) {
+                    var brands = $('#brand');
+                    var option = $('<option>', {
+                        value: 'new',
+                        text: brand
+                    });
+                    option.prop('selected', true);
+                    brands.append(option);
+                    $('#brandFilter').val('');
+                    $('#brand option').each(function () {
+                        $(this).css('display', 'block');
+                    });
+                }
+
+            }
+        }
+
+        function addSizeOption() {
+            var size = $('#sizeFilter').val().trim();
+
+            if (isExistsSize(size)) {
+                alert('Kích thước này đã tồn tại');
+            }
+            else if (isValidString(size)) {
+                if (confirm(`Bạn có muốn thêm '${size}' vào danh sách kích thước không?`)) {
+                    var sizes = $('#size');
+                    var option = $('<option>', {
+                        value: 'new',
+                        text: size
+                    });
+                    option.prop('selected', true);
+                    sizes.append(option);
+                    $('#sizeFilter').val('');
+                    $('#size option').each(function () {
+                        $(this).css('display', 'block');
+                    });
+                }
+            }
+        }
+
+        function addAttributeOption() {
+            var attribute = $('#attributeFilter').val().trim();
+            if (isExistsAttribute(attribute)) {
+                alert('Thuộc tính này đã tồn tại')
+            }
+            else if (isValidString(attribute)) {
+                if (confirm(`Bạn có muốn thêm '${attribute}' vào danh sách thuộc tính không?`)) {
+                    var attributes = $('#attribute');
+                    var option = $('<option>', {
+                        value: 'new',
+                        text: attribute
+                    });
+                    option.prop('selected', true);
+                    attributes.append(option);
+                    $('#attributeFilter').val('');
+                    $('#attribute option').each(function () {
+                        $(this).css('display', 'block');
+                    });
+                }
+            }
+        }
+
+        function isValidString(name) {
+            var isValid = true
+            if (name == '') {
+                isValid = false
+                alert('Không được để trống');
+            }
+            else if (name.length > 200) {
+                isValid = false
+                alert('Không được nhập quá 200 ký tự');
+            }
+            else if (regex.test(name)) {
+                isValid = false
+                alert('Không được nhập toàn kí tự số và kí tự đặc biệt');
+            }
+            return isValid;
+        }
+
+        function isExistsBrand(brand) {
+            var isExists = false;
+            var brands = $('#brand option');
+            brands.each(function () {
+                if ($(this).text().trim().toLowerCase() === brand.toLowerCase()) {
+                    isExists = true;
+                    return false; // Break out of the each loop
+                }
+            });
+            return isExists;
+        }
+
+        function isExistsSize(size) {
+            var isExists = false;
+            var sizes = $('#size option');
+            sizes.each(function () {
+                if ($(this).text().trim().toLowerCase() === size.toLowerCase()) {
+                    isExists = true;
+                    return false;
+                }
+            });
+            return isExists;
+        }
+
+        function isExistsAttribute(attribute) {
+            var isExists = false
+            var attributes = $('#attribute option')
+            attributes.each(function () {
+                if ($(this).text().trim().toLowerCase() === attribute.toLowerCase()) {
+                    isExists = true;
+                    return false;
+                }
+            })
+            return isExists;
+        }
 
     </script>
 }

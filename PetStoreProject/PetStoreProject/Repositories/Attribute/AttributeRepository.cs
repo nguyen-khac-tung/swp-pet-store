@@ -12,6 +12,17 @@ namespace PetStoreProject.Repositories.Attribute
             _context = context;
         }
 
+        public int CreateAttribute(string attributeName)
+        {
+            var attribute = new Models.Attribute
+            {
+                Name = attributeName
+            };
+            _context.Attributes.Add(attribute);
+            _context.SaveChanges();
+            return attribute.AttributeId;
+        }
+
         public List<AttributeViewModel> GetAttributes()
         {
             var attributes = _context.Attributes.Select(a => new AttributeViewModel

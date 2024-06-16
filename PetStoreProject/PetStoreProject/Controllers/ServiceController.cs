@@ -86,7 +86,7 @@ namespace PetStoreProject.Controllers
                     return View(bookServiceInfo);
                 }
 
-                _service.SaveBookServiceForm(bookServiceInfo);
+                _service.AddOrderService(bookServiceInfo);
                 ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
                 ViewData["BookSuccess"] = "Cửa hàng ANIMART đã nhận được đặt hẹn của bạn và sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
                 return View(bookServiceInfo);

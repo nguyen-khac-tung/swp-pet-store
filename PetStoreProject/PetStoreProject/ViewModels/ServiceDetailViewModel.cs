@@ -12,8 +12,6 @@ namespace PetStoreProject.ViewModels
 
         public List<Image> Images {  get; set; } 
 
-        public List<string> PetTypes { get; set; }
-
         public string? Description { get; set; }
 
         public bool IsDelete { get; set; }

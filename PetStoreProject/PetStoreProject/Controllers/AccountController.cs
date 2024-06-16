@@ -8,6 +8,7 @@ using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
 using System.Globalization;
 using System.Security.Claims;
@@ -19,12 +20,15 @@ namespace PetStoreProject.Controllers
         private readonly IAccountRepository _account;
         private readonly EmailService _emailService;
         private readonly ICustomerRepository _customer;
+        private readonly IServiceRepository _service;
 
-        public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer)
+        public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer,
+            IServiceRepository service)
         {
             _account = accountRepo;
             _emailService = emailService;
             _customer = customer;
+            _service = service;
         }
 
         [HttpGet]
@@ -366,6 +370,84 @@ namespace PetStoreProject.Controllers
             {
                 return View(ChangePasswordVM);
             }
+        }
+
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public ActionResult OrderServiceHistory()
+        {
+            var email = HttpContext.Session.GetString("userEmail");
+            var customer = _customer.GetCustomer(email);
+            var orderedServices = _service.GetOrderedServicesOfCustomer(customer.CustomerId);
+            return View(orderedServices);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public ActionResult OrderServiceDetail(int orderServiceId)
+        {
+            var orderService = _service.GetOrderServiceDetail(orderServiceId);
+            ViewData["WorkingTime"] = _service.GetWorkingTime(orderService.ServiceId);
+            ViewData["Services"] = _service.GetListServices();
+            ViewData["PetTypes"] = _service.GetFistServiceOption(orderService.ServiceId).PetTypes;
+            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderService.ServiceId, orderService.PetType).Weights;
+            return View(orderService);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpPost]
+        public ActionResult OrderServiceDetail(BookServiceViewModel orderServiceInfo)
+        {
+            ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+            ViewData["Services"] = _service.GetListServices();
+            ViewData["PetTypes"] = _service.GetFistServiceOption(orderServiceInfo.ServiceId).PetTypes;
+            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderServiceInfo.ServiceId, orderServiceInfo.PetType).Weights;
+            if (ModelState.IsValid)
+            {
+                bool isPhoneValid = PhoneNumber.isValid(orderServiceInfo.Phone);
+                if (isPhoneValid == false)
+                {
+                    ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
+                    return View(orderServiceInfo);
+                }
+
+                _service.UpdateOrderService(orderServiceInfo);
+                ViewData["UpdateSuccess"] = "Cửa hàng ANIMART đã nhận được đặt hẹn của bạn và sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
+                return View(orderServiceInfo);
+            }
+            else
+            {
+                return View(orderServiceInfo);
+            }
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public ServiceOptionViewModel GetServiceOptionByChangeService(int serviceId)
+        {
+            return _service.GetFistServiceOption(serviceId);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public ServiceOptionViewModel GetServiceOptionByChangePetType(int serviceId, string petType)
+        {
+            return _service.GetFirstServiceAndListWeightOfPetType(serviceId, petType);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public ServiceOptionViewModel GetServiceOptionByChangeWeight(int serviceId, string petType, string weight)
+        {
+            return _service.GetNewServiceOptionBySelectWeight(serviceId, petType, weight);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public void CancelOrderService (int orderServiceId)
+        {
+            _service.DeleteOrderService(orderServiceId);
         }
     }
 }

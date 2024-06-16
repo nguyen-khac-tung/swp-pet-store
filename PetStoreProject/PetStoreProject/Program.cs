@@ -10,6 +10,7 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.FeedBack;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderService;
@@ -68,6 +69,8 @@ builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<ICartRepository, CartRepository>();
 
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddTransient<IFeedbackRepository, FeedbackRepository>();
 
 builder.Services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
 

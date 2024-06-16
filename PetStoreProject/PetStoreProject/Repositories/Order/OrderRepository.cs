@@ -31,49 +31,49 @@ namespace PetStoreProject.Repositories.Order
 
             return orders;
         }
-        public int GetOrderDetailCount(int userId)
+
+        public List<OrderDetailViewModel> GetOrderDetailByCondition(OrderModel orderModel)
         {
-            int count = 0;
+            var orders = GetOrderDetailByCustomerId(orderModel.UserId);
 
-            var orders = GetOrderDetailByCustomerId(userId);
-
-            count = orders.Count;
-
-            return count;
-        }
-
-        public List<OrderDetailViewModel> GetOrderDetailByCondition(int userId, string orderId, string name, string date, string totalItems, string price, string search)
-        {
-            var orders = GetOrderDetailByCustomerId(userId);
-
-            if (int.TryParse(search, out int searchOrderId))
+            if (int.TryParse(orderModel.SearchOrderId, out int searchOrderId))
             {
                 orders = orders.Where(o => o.OrderId == searchOrderId).ToList();
             }
 
-            if (orderId == "abc")
+            if(orderModel.SearchName != null)
+            {
+                orders = orders.Where(o => o.FullName.ToLower().Contains(orderModel.SearchName.ToLower())).ToList();
+            }
+
+            if (orderModel.SearchDate != DateOnly.MinValue)
+            {
+                orders = orders.Where(o => DateOnly.FromDateTime(o.OrderDate) == orderModel.SearchDate).ToList();
+            }
+
+            if (orderModel.SortOrderId == "abc")
                 orders = orders.OrderBy(o => o.OrderId).ToList();
-            else if (orderId == "zxy")
+            else if (orderModel.SortOrderId == "zxy")
                 orders = orders.OrderByDescending(o => o.OrderId).ToList();
 
-            if (name == "abc")
+            if (orderModel.SortName == "abc")
                 orders = orders.OrderBy(o => o.FullName).ToList();
-            else if (name == "zxy")
+            else if (orderModel.SortName == "zxy")
                 orders = orders.OrderByDescending(o => o.FullName).ToList();
 
-            if (totalItems == "abc")
+            if (orderModel.SortTotalItems == "abc")
                 orders = orders.OrderBy(o => o.totalOrderItems).ToList();
-            else if (totalItems == "zxy")
+            else if (orderModel.SortTotalItems == "zxy")
                 orders = orders.OrderByDescending(o => o.totalOrderItems).ToList();
 
-            if (date == "abc")
+            if (orderModel.SortDate == "abc")
                 orders = orders.OrderBy(o => o.OrderDate).ToList();
-            else if (date == "zxy")
+            else if (orderModel.SortDate == "zxy")
                 orders = orders.OrderByDescending(o => o.OrderDate).ToList();
 
-            if (price == "abc")
+            if (orderModel.SortPrice == "abc")
                 orders = orders.OrderBy(o => o.TotalAmount).ToList();
-            else if (price == "zxy")
+            else if (orderModel.SortPrice == "zxy")
                 orders = orders.OrderByDescending(o => o.TotalAmount).ToList();
 
             return orders;

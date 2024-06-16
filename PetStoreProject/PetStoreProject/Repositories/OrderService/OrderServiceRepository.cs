@@ -46,9 +46,9 @@ namespace PetStoreProject.Repositories.OrderService
                 orderServices = orderServices.Where(o => o.OrderServiceId == searchOrderServiceId).ToList();
             }
 
-            if(orderServiceModel.SearchName != null)
+            if (orderServiceModel.SearchName != null)
             {
-                orderServices = orderServices.Where(o => o.Name.Contains(orderServiceModel.SearchName)).ToList();
+                orderServices = orderServices.Where(o => o.Name.ToLower().Contains(orderServiceModel.SearchName.ToLower())).ToList();
             }
 
             if (!orderServiceModel.SearchDate.Equals(DateOnly.MinValue))
@@ -66,7 +66,7 @@ namespace PetStoreProject.Repositories.OrderService
                 }
             }
 
-            if(orderServiceModel.Status != null)
+            if (orderServiceModel.Status != null)
             {
                 orderServices = orderServices.Where(o => o.Status.Contains(orderServiceModel.Status)).ToList();
             }

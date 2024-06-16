@@ -161,11 +161,25 @@
         padding: 0px !important;
     }
 
-    .no-select {
-        user-select: none; /* Standard syntax */
-        -webkit-user-select: none; /* Safari */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
+    .card_header_style {
+        display: flex;
+    }
+
+    .title_style_header {
+        width: 50%;
+    }
+
+    .btn_style_export {
+        width: 50%;
+        text-align: right;
+    }
+
+    .export_button {
+        font-size:14px;
+    }
+
+    .card-style-table {
+        border-radius: 20px !important;
     }
 </style>
 <div class="main-content-inner main-content-style">
@@ -261,7 +275,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="~/js/export-excel.js"></script>
 <script>
     var url = new URL(window.location.href);
 
@@ -277,6 +292,9 @@
     var sortDate = localStorage.getItem('sortDate') || "zxy";
     var sortTotalItems = localStorage.getItem('sortTotalItems') || "";
     var sortPrice = localStorage.getItem('sortPrice') || "";
+    var searchName = "";
+    var searchDateOrder = "";
+    var searchOrderId = "";
 
     const sortingOrder = ["", "abc", "zxy"];
 
@@ -294,15 +312,42 @@
         $('#btn_service').removeClass('option-btn-active');
         $('#btn_order').addClass('option-btn-active');
         $('#main-content').empty();
-        orderHistoryLoad(userId, sortOrderId, sortName, sortDate, sortTotalItems, sortPrice, "");
+        resetOptionOrder();
+        orderHistoryLoad(optionOrders);
         domLoaded();
     }
 
-    function orderHistoryLoad(userId, sortOrderId, sortName, sortDate, sortTotalItems, sortPrice, searchName) {
+    var optionOrders = {
+        UserId: userId,
+        SortOrderId: sortOrderId,
+        SortName: sortName,
+        SortTotalItems: sortTotalItems,
+        SortPrice: sortPrice,
+        SortDate: sortDate,
+        SearchName: searchName,
+        SearchDate: searchDateOrder,
+        SearchOrderId: searchOrderId
+    }
+    function resetOptionOrder() {
+        optionOrders.SortOrderId = "";
+        optionOrders.SortName = "";
+        optionOrders.SortDate = "";
+        optionOrders.SortPrice = "";
+        optionOrders.SortTotalItems = "";
+    }
+
+    function resetSearchOrder() {
+        optionOrders.SearchDate = "";
+        optionOrders.SearchName = "";
+        optionOrders.SearchOrderId = "";
+        resetOptionOrder();
+    }
+
+    function orderHistoryLoad(optionOrders) {
         $.ajax({
             url: '/Employee/Account/OrderHistory',
             type: 'post',
-            data: {userId: userId, orderId: sortOrderId, name: sortName, date: sortDate, totalItems: sortTotalItems, price: sortPrice, search: searchName },
+            data: optionOrders,
             success: function (response) {
                 $('#main-content').html(response);
 
@@ -328,78 +373,108 @@
 
     // Sorting functions
     function sortByOrderId() {
-        var searchName = document.getElementById('search-input').val;
         sortOrderId = cycleSortOrder(sortOrderId);
         console.log("OrderId: " + sortOrderId);
+        resetOptionOrder()
+        optionOrders.SortOrderId = sortOrderId;
         saveSortingParams();
-        orderHistoryLoad(userId, sortOrderId, "", "", "", '', searchName);
+        orderHistoryLoad(optionOrders);
     }
 
     function sortByDate() {
-        var searchName = document.getElementById('search-input').val;
         sortDate = cycleSortOrder(sortDate);
+        resetOptionOrder()
+        optionOrders.SortDate = sortDate;
         saveSortingParams();
-        orderHistoryLoad(userId, "", "", sortDate, "", "", searchName);
+        orderHistoryLoad(optionOrders);
     }
 
     function sortByTotalOrderItems() {
-        var searchName = document.getElementById('search-input').val;
         sortTotalItems = cycleSortOrder(sortTotalItems);
+        resetOptionOrder()
+        optionOrders.SortTotalItems = sortTotalItems;
         saveSortingParams();
-        orderHistoryLoad(userId, "", "", "", sortTotalItems, "", searchName);
+        orderHistoryLoad(optionOrders);
     }
 
     function sortByName() {
-        var searchName = document.getElementById('search-input').val;
         sortName = cycleSortOrder(sortName);
+        resetOptionOrder()
+        optionOrders.SortName = sortName;
         saveSortingParams();
-        orderHistoryLoad(userId, "", sortName, "", "", "", searchName);
+        orderHistoryLoad(optionOrders);
     }
 
     function sortByPrice() {
-        var searchName = document.getElementById('search-input').val;
         sortPrice = cycleSortOrder(sortPrice);
+        resetOptionOrder()
+        optionOrders.SortPrice = sortPrice;
         saveSortingParams();
-        orderHistoryLoad(userId, "", "", "", "", sortPrice, searchName);
-    }
-
-    function domLoaded() {
-            var searchInput = document.querySelector('input[name="name"]');
-            var sOrderServiceId = document.querySelector('input[name="sOrderServiceId"]');
-            var sNameOrderService = document.querySelector('input[name="sNameOrderService"]');
-            var sTimeOrderDate = document.querySelector('input[name="sTimeOrderDate"]');
-
-            searchInput.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Ngăn chặn hành động mặc định của form
-                    search();
-                }
-            });
-            sOrderServiceId.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Ngăn chặn hành động mặc định của form
-                    searchOrderServiceId();
-                }
-            });
-            sNameOrderService.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Ngăn chặn hành động mặc định của form
-                    searchNameOrderService();
-                }
-            });
-            sTimeOrderDate.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Ngăn chặn hành động mặc định của form
-                    searchTimeOrderService();
-                }
-            });
+        orderHistoryLoad(optionOrders);
     }
 
     function search() {
-        var searchName = document.getElementById('search-input').value;
-        console.log('search' + searchName);
-        orderHistoryLoad(userId, sortOrderId, sortName, sortDate, sortTotalItems, sortPrice, searchName);
+        searchOrderId = document.getElementById('search-input-orderId').value;
+        console.log('search' + searchOrderId);
+        resetSearchOrder();
+        optionOrders.SearchOrderId = searchOrderId;
+        orderHistoryLoad(optionOrders);
     }
+
+    function searchNameOrder() {
+        searchName = document.getElementById('search-nameOrder-input').value;
+        resetSearchOrder();
+        optionOrders.SearchName = searchName;
+        orderHistoryLoad(optionOrders);
+    }
+
+    function selectDateOrder() {
+        searchDateOrder = document.getElementById('select-dateOrder-input').value;
+        resetSearchOrder();
+        optionOrders.SearchDate = searchDateOrder;
+        orderHistoryLoad(optionOrders);
+    }
+
+    function domLoaded() {
+        var searchOrderIdInput = document.querySelector('input[name="nameOrderId"]');
+        var searchNameOrder = document.querySelector('input[name="sNameOrder"]');
+        var sOrderServiceId = document.querySelector('input[name="sOrderServiceId"]');
+        var sNameOrderService = document.querySelector('input[name="sNameOrderService"]');
+        var sTimeOrderDate = document.querySelector('input[name="sTimeOrderDate"]');
+
+        searchOrderIdInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của form
+                search();
+            }
+        });
+        searchNameOrder.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của form
+                search();
+            }
+        });
+        sOrderServiceId.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của form
+                searchOrderServiceId();
+            }
+        });
+        sNameOrderService.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của form
+                searchNameOrderService();
+            }
+        });
+        sTimeOrderDate.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành động mặc định của form
+                searchTimeOrderService();
+            }
+        });
+    }
+
+
 
     /* Service histtory */
 
@@ -456,6 +531,13 @@
         options.SortServiceId = null;
         options.SortPrice = null;
     }
+    function resetSearchOrderService() {
+        options.SearchOrderServiceId = "";
+        options.SearchTime = "";
+        options.SearchName = "";
+        options.SearchDate = "";
+        resetSortOptions();
+    }
 
     function serviceHistoryLoad(options) {
         $.ajax({
@@ -474,41 +556,36 @@
     function searchOrderServiceId() {
         seOrderServiceId = document.getElementById('search-orderService-input').value;
         console.log("seOrder: " + seOrderServiceId);
+        resetSearchOrderService();
         options.SearchOrderServiceId = seOrderServiceId;
-        options.SortOrderServiceId = "";
-        options.SortName = "";
-        options.SortDate = "";
-        options.SortTime = "";
-        options.SortServiceId = "";
-        options.SortPrice = "";
-        options.SearchTime = "";
-        options.SearchName = "";
-        options.SearchDate = "";
-        options.Status = "";
         saveSortingParamOrderService()
         serviceHistoryLoad(options);
     }
 
     function searchNameOrderService() {
         seName = $('#search-name-input').val();
+        resetSearchOrderService();
         options.SearchName = seName;
         serviceHistoryLoad(options);
     }
 
     function searchTimeOrderService() {
         seTime = $('#search-time-input').val();
+        resetSearchOrderService();
         options.SearchTime = seTime;
         serviceHistoryLoad(options);
     }
 
     function selectDateOrderService() {
         seDate = $('#select-date-input').val();
+        resetSearchOrderService();
         options.SearchDate = seDate;
         serviceHistoryLoad(options);
     }
 
     function selectedStatusOrderSerice() {
         status = $('#selected_status_orderService').val();
+        resetSearchOrderService();
         options.Status = status;
         serviceHistoryLoad(options);
     }
@@ -560,4 +637,8 @@
         options.SortPrice = priceOrderService;
         serviceHistoryLoad(options);
     }
+
+
+
 </script>
+

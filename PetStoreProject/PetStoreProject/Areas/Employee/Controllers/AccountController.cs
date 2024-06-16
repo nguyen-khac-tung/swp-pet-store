@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
+using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Order;
@@ -61,12 +63,22 @@ namespace PetStoreProject.Areas.Employee.Controllers
         }
 
         [HttpPost]
-        public IActionResult OrderHistory(int userId, string orderId, string name, string date, string totalItems, string price, string search)
+        public IActionResult OrderHistory(OrderModel orderModel)
         {
 
-            var orders = _order.GetOrderDetailByCondition(userId, orderId, name, date, totalItems, price, search);
+            var orders = _order.GetOrderDetailByCondition(orderModel);
 
-            var totalOrders = _order.GetOrderDetailCount(userId);
+            var totalOrders = orders.Count;
+
+            ViewBag.searchOrderId = orderModel.SearchOrderId;
+            ViewBag.searchName = orderModel.SearchName;
+            ViewBag.searchDateOrder = orderModel.SearchDate;
+
+            ViewBag.totalOrders = totalOrders;
+
+            string json = JsonConvert.SerializeObject(orders);
+
+            ViewBag.json = json;
 
             return View(orders);
         }
@@ -74,7 +86,21 @@ namespace PetStoreProject.Areas.Employee.Controllers
         [HttpPost]
         public IActionResult OrderServiceHistory(OrderServiceModel orderServiceModel)
         {
-            var orderServices = _orderService.GetOrderServicesByCondition(orderServiceModel);
+            List<OrderServicesDetailViewModel> orderServices = _orderService.GetOrderServicesByCondition(orderServiceModel);
+
+            var totalOrderServices = orderServices.Count;
+
+            ViewBag.searchOrderId = orderServiceModel.SearchOrderServiceId;
+            ViewBag.searchName = orderServiceModel.SearchName;
+            ViewBag.searchDate = orderServiceModel.SearchDate;
+            ViewBag.SearchTime = orderServiceModel.SearchTime;
+            ViewBag.Status = orderServiceModel.Status;
+
+            ViewBag.totalOrderServices = totalOrderServices;
+
+            string json = JsonConvert.SerializeObject(orderServices);
+
+            ViewBag.json = json;
 
             return View(orderServices);
         }

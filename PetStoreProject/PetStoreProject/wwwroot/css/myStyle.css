@@ -44,7 +44,7 @@
 }
 
 #booking-modal .modal-body{
-    padding: 0 50px 40px;
+    padding: 0 50px 30px;
 }
 
 #booking-modal-content label {
@@ -54,6 +54,8 @@
 #booking-modal-content .form-control,
 #booking-modal-content .form-select {
     line-height: 1.7;
+    padding: .375rem .75rem;
+    border-radius: .25rem;
 }
 
 #booking-modal-content .input-group-text {
@@ -61,7 +63,9 @@
     padding: .5rem;
 }
 
-#booking-modal-content .form-control[readonly] {
+#booking-modal-content .form-control[readonly],
+#booking-modal-content .form-control[disabled],
+#booking-modal-content .form-select[disabled] {
     background-color: #e9ecef7a;
 }
 

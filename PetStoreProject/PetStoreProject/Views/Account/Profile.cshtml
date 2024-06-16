@@ -102,6 +102,49 @@
             border: none;
             font-size: 16px;
         }
+
+        #main-content .card-body {
+            height: 512px;
+        }
+
+        #main-content .table-order-history td,
+        #main-content .table-order-history th {
+            line-height: 3;
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #main-content .table-order-history thead {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            border-bottom: 2px solid #000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-order-history .status-cell span{
+            padding: 5px 7px;
+            border-radius: 6px;
+        }
+
+        .order-service-detail-btn {
+            font-size: 14px;
+            background-color: #418af6;
+            border-color: #418af6;
+        }
+
+        .order-empty img {
+            width: 45%;
+            height: auto;
+        }
+
+        .order-empty h3 {
+            font-size: 29px;
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 40px;
+        }
     </style>
 }
 
@@ -124,7 +167,7 @@
                         <div>
                             <a class="single-account-select profile-option-btn" onclick="profileDetail()">Thông Tin Tài Khoản</a>
                             <a class="single-account-select profile-option-btn" onclick="changePassword()">Đổi Mật Khẩu</a>
-                            <a class="single-account-select profile-option-btn" onclick="getOrdersServices()">Lịch Sử Đơn Hàng</a>
+                            <a class="single-account-select profile-option-btn" onclick="getOrdersServices()">Lịch Sử Đặt Dịch Vụ</a>
                         </div>
                     </div>
                 </div>
@@ -144,7 +187,7 @@
                 <div class="modal-content">
                     <!-- Modal Header -->
                     <div class="modal-header d-block text-center position-relative pb-3">
-                        <h5 class="modal-title d-inline-block">Đặt Lịch Hẹn</h5>
+                        <h5 class="modal-title d-inline-block">Chi Tiết Lịch Hẹn</h5>
                         <button type="button" class="btn-close position-absolute end-0 mt-1 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <!-- Modal Header -->
@@ -284,6 +327,29 @@
                     $("#main-content").on("click", ".order-service-detail-btn", function () {
                         var orderServiceId = $(this).data("orderserviceid");
                         orderedServiceDetail(orderServiceId);
+                    });
+
+                    let statusCells = document.querySelectorAll('.status-cell span');
+                    statusCells.forEach(function (cell) {
+                        let content = cell.textContent.trim();
+                        switch (content) {
+                            case 'Đã hủy':
+                                cell.style.backgroundColor = '#FFF2ED';
+                                cell.style.color = '#FF5200';
+                                break;
+                            case 'Chưa xác nhận':
+                                cell.style.backgroundColor = '#ffff81';
+                                cell.style.color = '#7f6816';
+                                break;
+                            case 'Đã xác nhận':
+                                cell.style.backgroundColor = '#ECF3FF';
+                                cell.style.color = '#2275fc';
+                                break;
+                            case 'Đã thanh toán':
+                                cell.style.backgroundColor = '#F0FDF4';
+                                cell.style.color = '#158f42';
+                                break;
+                        };
                     });
                 },
 
@@ -466,7 +532,10 @@
 
                 success: function () {
                     let row = $("#main-content").find("#order-item-" + orderServiceId);
-                    row.find(".status-cell").text("Đã hủy");
+                    let status = row.find(".status-cell span");
+                    status.text("Đã hủy");
+                    status.css("background-color", "#FFF2ED");
+                    status.css("color", "#FF5200");
                     $("#booking-modal").modal("hide");
                 },
 

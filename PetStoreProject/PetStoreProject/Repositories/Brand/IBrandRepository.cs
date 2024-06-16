@@ -1,10 +1,11 @@
-﻿using PetStoreProject.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
 
 namespace PetStoreProject.Repositories.Brand
 {
     public interface IBrandRepository
     {
         public List<BrandViewModel> GetBrands();
-        public int CreateBrand(string brandName);
+        public List<BrandViewForAdmin> GetListBrand();
+        public int CreateBrand(string BrandName);
     }
 }

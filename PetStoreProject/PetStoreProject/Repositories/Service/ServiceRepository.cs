@@ -159,7 +159,7 @@ namespace PetStoreProject.Repositories.Service
             {
                 try
                 {
-                    OrderService orderService = new OrderService();
+                    Models.OrderService orderService = new Models.OrderService();
                     orderService.CustomerId = bookServiceInfo?.CustomerId;
                     orderService.Name = bookServiceInfo.Name;
                     orderService.Phone = bookServiceInfo.Phone;

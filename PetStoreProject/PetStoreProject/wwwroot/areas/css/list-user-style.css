@@ -1,43 +1,43 @@
 ﻿/* add view */
 
-.tf-button.style-1:hover {
+/*.tf-button.style-1:hover {
     cursor: pointer;
-}
+}*/
 
 .input-regis {
     border: none !important;
     border-bottom: 1px solid black !important;
 }
 
-button.btn.btn-secondary {
+.btn_add_account {
     font-size: 18px;
 }
 
 /* quick view */
 
-.modal-content .modal-header {
+.model_header_style {
     padding: 0px !important;
     margin: 20px 10px 0 50px !important;
 }
 
-.container-fluid {
+.modal_body_style {
     padding: 0px !important;
 }
 
-.modal-content {
+.modal_content_style {
     border-radius: 10px;
     font-size: 16px;
 }
 
-    .modal-content .modal-body {
-        padding-top: 15px;
-    }
+.modal_body_style {
+    padding-top: 15px;
+}
 
 .nav-tabs .nav-link {
     border-radius: 0;
 }
 
-.form-control {
+.form_control_style {
     margin: 5px 0px;
 }
 
@@ -67,7 +67,7 @@ button.btn.btn-secondary {
             color: white;
         }
 
-.modal-header .btn-close {
+.btn_close_style {
     padding: 20px !important;
 }
 
@@ -82,10 +82,6 @@ button.btn.btn-secondary {
     padding-bottom: 20px;
 }
 
-.select-role {
-    width: auto;
-    padding: 5px 15px;
-}
 
 .form-control[readonly] {
     border: none;
@@ -95,7 +91,7 @@ button.btn.btn-secondary {
     cursor: default;
 }
 
-.col-form-label {
+.label_style {
     align-content: center;
     padding-left: 20px;
 }
@@ -112,26 +108,6 @@ button.btn.btn-secondary {
     cursor: pointer;
 }
 
-.role-admin {
-    color: #8b1111;
-    background-color: #9e867a5e;
-    padding: 2px 6px;
-    border-radius: 5px;
-}
-
-.role-employee {
-    color: blue;
-    background-color: #d1e7ff;
-    padding: 2px 6px;
-    border-radius: 5px;
-}
-
-.role-customer {
-    color: #f4fff4;
-    background-color: #5ba35b;
-    padding: 2px 6px;
-    border-radius: 5px;
-}
 
 .account-non-active {
     color: #f4fff4;

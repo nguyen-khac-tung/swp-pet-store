@@ -17,6 +17,8 @@ public partial class Brand
     [StringLength(50)]
     public string Name { get; set; } = null!;
 
+    public bool? IsDelete { get; set; }
+
     [InverseProperty("Brand")]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

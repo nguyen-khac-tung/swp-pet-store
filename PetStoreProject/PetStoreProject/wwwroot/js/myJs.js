@@ -460,35 +460,35 @@ function generateProductList(products) {
     productList.empty();
     products.forEach(function (product) {
         let productItem = `
-                    <li class="product-item gap14">
+                    <li class="product-item product-${product.id} gap14">
                         <div class="image no-bg">
                             <img src="${product.imgUrl}" alt="">
                         </div>
                         <div class="flex items-center justify-between gap20 flex-grow">
                             <div class="name">
-                                <a href="product-list.html" class="body-title-2">${product.name}</a>
+                                <a href="/admin/product/detail?productId=${product.id}" class="body-title-2">${product.name}</a>
                             </div>
                             <div class="body-text">#${product.id}</div>
                             <div class="body-text">${product.price.toLocaleString()} VND</div>
                             <div class="body-text">${product.soldQuantity}</div>
                             <div>
-                                <div class="${product.isSoldOut ? 'block-not-available' : 'block-available'}">
+                                <div class=" isSoldOut${product.isSoldOut ? 'block-not-available' : 'block-available'}">
                                     ${product.isSoldOut ? 'Hết hàng' : 'Còn hàng'}
                                 </div>
                             </div>
                             <div>
-                                <div class="${product.isDelete ? 'block-not-available' : 'block-available'}">
+                                <div class="isDelete ${product.isDelete ? 'block-not-available' : 'block-available'}">
                                     ${product.isDelete ? 'Ngừng bán' : 'Còn bán'}
                                 </div>
                             </div>
                             <div class="list-icon-function">
                                 <div class="item eye" data-bs-toggle="modal" data-bs-target="#myModal" title="Xem chi tiết" onclick="quickViewForAdmin(${product.id})">
-                                    <a href="http://localhost:5206/admin/product/detail?productId=${product.id}"><i class="icon-eye"></i></a>
+                                    <a href="/admin/product/detail?productId=${product.id}"><i class="icon-eye"></i></a>
                                 </div>
                                 <div class="item edit">
-                                    <i class="icon-edit-3"></i>
+                                    <a href="/admin/product/update?productId=${product.id}"><i class="icon-edit-3"></i></a>
                                 </div>
-                                <div class="item trash">
+                                <div class="item trash" onclick="deleteProduct(${product.id}, '${product.name}')">
                                     <i class="icon-trash-2"></i>
                                 </div>
                             </div>

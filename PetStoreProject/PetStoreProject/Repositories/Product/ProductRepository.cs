@@ -972,6 +972,13 @@ namespace PetStoreProject.Repositories.Product
 
         }
 
+        public void DeleteProduct(int productId)
+        {
+            var product = _context.Products.Find(productId);
+            product.IsDelete = true;
+            _context.Products.Update(product);
+            _context.SaveChangesAsync();
+        }
     }
 }
 

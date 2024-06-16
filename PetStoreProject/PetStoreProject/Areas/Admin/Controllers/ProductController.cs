@@ -189,6 +189,17 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        public JsonResult Delete(int productId)
+        {
+            _product.DeleteProduct(productId);
+            return Json(new
+            {
+                result = "ok"
+            });
+        }
+
     }
 
 }

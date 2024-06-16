@@ -1,6 +1,6 @@
 ﻿namespace PetStoreProject.Areas.Admin.ViewModels
 {
-    public class CategoryViewForAdmin
+    public class BrandViewForAdmin
     {
         public int Id { get; set; }
         public string? Name { get; set; }

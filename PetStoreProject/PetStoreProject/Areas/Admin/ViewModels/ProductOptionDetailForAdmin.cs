@@ -9,7 +9,7 @@ namespace PetStoreProject.Areas.Admin.ViewModels
         public float Price { get; set; }
         public Image Image { get; set; }
         public bool IsSoldOut { get; set; }
-        public bool IsDelete { get; set; }
+        public bool? IsDelete { get; set; }
         public int SoldQuantity { get; set; }
     }
 }

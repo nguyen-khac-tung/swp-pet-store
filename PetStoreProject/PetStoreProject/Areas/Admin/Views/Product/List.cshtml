@@ -203,5 +203,22 @@
             console.log(123)
         }
 
+        function deleteProduct(productId, productName) {
+            if (confirm(`Bạn có chắc chắn muốn ngừng bán '${productName}' không???`)){
+                $.ajax({
+                    url: `/Admin/Product/Delete`,
+                    data: { productId: productId },
+                    method: 'POST',
+                    success: function (res) {
+                        var product = $('.product-' + productId);
+                        product.find('.isDelete').text('Ngừng bán')
+                        product.find('.isDelete').addClass('block-not-available')
+                        product.find('.isDelete').removeClass('block-available')
+                    }
+                })
+            }
+            
+        }
+
     </script>
 }

@@ -5,7 +5,7 @@
 <head>
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
-    
+
     <title>Remos eCommerce Admin Dashboard HTML Template</title>
 
     <meta name="author" content="themesflat.com">
@@ -30,9 +30,8 @@
     <link rel="stylesheet" href="/areas/icon/style.css">
 
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="/img/favicon.png">
-    <link rel="apple-touch-icon-precomposed" href="/img/favicon.png">
-    <link href="~/css/mystyle.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/areas/images/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="/areas/images/favicon.png">
 
     @RenderSection("HeadOptional", required: false)
 </head>
@@ -117,22 +116,22 @@
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-shopping-cart"></i></div>
-                                        <div class="text">Sản phẩm</div>
+                                        <div class="text">Ecommerce</div>
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="/admin/product/create" class="">
-                                                <div class="text">Thêm mới</div>
+                                            <a href="add-product.html" class="">
+                                                <div class="text">Add Product</div>
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
-                                            <a href="/admin/product/list" class="">
-                                                <div class="text">Danh sách</div>
+                                            <a href="product-list.html" class="">
+                                                <div class="text">Product List</div>
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
                                             <a href="product-detail-1.html" class="">
-                                                <div class="text">Xem chi tiết</div>
+                                                <div class="text">Product Detail 1</div>
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
@@ -213,7 +212,7 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="../account/list" class="">
+                                            <a href="list" class="">
                                                 <div class="text">All user</div>
                                             </a>
                                         </li>
@@ -892,7 +891,7 @@
     <!-- ScrollUp js -->
     <script src="~/js/jquery.scrollUp.js"></script>
     <!-- Jquery nice select js -->
-    @* <script src="~/js/jquery.nice-select.min.js"></script> *@
+    <script src="~/js/jquery.nice-select.min.js"></script>
     <!-- Jquery ui price slider js -->
     <script src="~/js/jquery-ui.min.js"></script>
     <!-- Bootstrap popper js -->

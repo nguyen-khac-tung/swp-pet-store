@@ -344,9 +344,9 @@ function elementHtmlCustomer(account) {
                     <div class="image">
                         <img src="/areas/images/logo_user/user-avatar.svg.png" alt="">
                     </div>
-                    <div class="flex items-center justify-between gap20 flex-grow" id="list-body-customer">
+                    <div class="flex items-center justify-between gap20 flex-grow" id="list-body">
                         <div class="name">
-                            <a href="AccountDetail?userId=${account.userId}" class="body-title-2">${account.fullName}</a>
+                            <a href="CustomerDetail?userId=${account.userId}" class="body-title-2">${account.fullName}</a>
                         </div>
                         <div class="body-text phone">${account.phone != null ? account.phone : "-"}</div>
                         <div class="body-text email">${account.email}</div>
@@ -357,7 +357,7 @@ function elementHtmlCustomer(account) {
                         </div>
                         <div class="list-icon-function">
                             <div class="item eye">
-                                <a href="AccountDetail?userId=${account.userId}"><i class="icon-eye"></i></a>
+                                <a href="CustomerDetail?userId=${account.userId}"><i class="icon-eye"></i></a>
                             </div>
                         </div>
                     </div>

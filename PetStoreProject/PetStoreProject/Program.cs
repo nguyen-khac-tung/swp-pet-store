@@ -11,6 +11,8 @@ using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Image;
+using PetStoreProject.Repositories.Order;
+using PetStoreProject.Repositories.OrderService;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.Repositories.ProductCategory;
 using PetStoreProject.Repositories.ProductOption;
@@ -82,6 +84,11 @@ builder.Services.AddTransient<IProductOptionRepository, ProductOptionRepository>
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
 
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
+
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+
+builder.Services.AddTransient<IOrderServiceRepository, OrderServiceRepository>();
+
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
         builder.Configuration.GetSection("Cloudinary:CloudName").Value,
         builder.Configuration.GetSection("Cloudinary:ApiKey").Value,

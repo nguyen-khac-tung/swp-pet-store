@@ -1,0 +1,205 @@
+﻿@{
+    Layout = null;
+}
+
+@using PetStoreProject.Areas.Employee.ViewModels;
+@model List<OrderDetailViewModel>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+<style>
+    .empty-order-history {
+        text-align: center;
+        margin-top: 50px;
+        color: #555;
+    }
+
+        .empty-order-history i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #aaa;
+        }
+
+    .content_body {
+        margin-bottom: 20px;
+    }
+    #title-table, #list-body{
+        justify-content: flex-start;
+    }
+    #list-body {
+        text-align:left;
+    }
+
+    #title-table li, #list-body div {
+        width:auto;
+    }
+
+    .orderId, .phone{
+        width:110px!important;
+    }
+
+    .name, .totalOrderItems {
+        width: 150px!important;
+    }
+    .orderDate {
+        width:170px!important;
+    }
+    .email {
+        width:200px!important;
+    }
+    .paymentMethod, .status {
+        width:100px!important;
+    }
+
+     
+    .btn_hover:hover {
+        cursor:pointer;
+        text-decoration: underline;
+    }
+
+    .table_width_style {
+        min-width:1390px!important;
+    }
+    .scroll_vertical {
+        height:400px;
+        overflow-y:auto;
+        direction:rtl;
+    }
+    .text_center {
+        text-align:center!important;
+    }
+
+    .scroll_vertical * {
+        direction: ltr; /* Đặt lại hướng văn bản bên trong các phần tử */
+    }
+</style>
+
+<div class="card mb-4 card-style">
+    <div class="card-header">
+        <h3>Lịch sử đơn hàng</h3>
+    </div>
+    <div class="card-body content_body">
+        @if (Model.Count > 0)
+        {
+            <div class="wg-box">
+                <div class="flex items-center justify-between gap10 flex-wrap">
+                    <div class="wg-filter flex-grow">
+                        <form class="form-search" onsubmit="return false;">
+                            <fieldset>
+                                <input id="search-input" type="text" placeholder="Tìm kiếm theo mã đơn hàng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                            </fieldset>
+                            <div class="button-submit">
+                                <button onclick="search()"><i class="icon-search"></i></button>
+                            </div>
+                        </form>
+                        <div class="wg-filter">
+                            <label style="font-size: 16px">Trạng thái:</label>
+                            <select id="selected_status" onchange="selectedStatus()" style="width:auto">
+                                <option selected value="">-- Tất cả --</option>
+                                <option value="0">Kích hoạt</option>
+                                <option value="1">Không kích hoạt</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="wg-table table-all-user" id="table-content">
+
+                    <ul class="table-title flex gap20 mb-14 table_width_style" id="title-table">
+                        <li class="orderId no-select" onclick="sortByOrderId()">
+                            <div  class="btn_hover body-title">Mã đơn hàng<i class="bi bi-chevron-expand"></i></div>
+                        </li>
+                        <li class="name no-select" onclick="sortByName()">
+                            <div class="body-title btn_hover" >Tên người đặt <i class="bi bi-chevron-expand"></i></div>
+                        </li>
+                        <li class="orderDate no-select" onclick="sortByDate()">
+                            <div class="body-title btn_hover" >Ngày đặt<i class="bi bi-chevron-expand"></i></div>
+                        </li>
+                        <li class="phone no-select">
+                            <div class="body-title">Số điện thoại</div>
+                        </li>
+                        <li class="email no-select">
+                            <div class="body-title">Email</div>
+                        </li>
+                        <li class="status no-select">
+                            <div class="body-title text_center">Trạng thái</div>
+                        </li>
+                        <li class="totalOrderItem no-selects" onclick="sortByTotalOrderItems()">
+                            <div class="body-title btn_hover text_center">Tổng sản phẩm<i class="bi bi-chevron-expand"></i></div>
+                        </li>
+                        <li class="paymentMethod no-select">
+                            <div class="body-title">Thanh toán</div>
+                        </li>
+                        <li class="totalAmount no-select" onclick="sortByPrice()">
+                            <div class="body-title btn_hover" >Tổng số tiền<i class="bi bi-chevron-expand"></i></div>
+                        </li>
+                    </ul>
+                    <ul id="list-users" class="flex flex-column table_width_style scroll_vertical">
+                        <!-- data user -->
+                        @foreach (var order in Model)
+                        {
+                            <li class="user-item gap14">
+                                <div class="flex items-center justify-between gap20 flex-grow" id="list-body">
+                                    <div class="body-text orderId text_center"><a href="">#@order.OrderId</a></div>
+                                    <div class="body-text name">@order.FullName</div>
+                                    <div class="body-text orderDate">@order.OrderDate</div>
+                                    <div class="body-text phone">@order.Phone</div>
+                                    <div class="body-text email">@order.Email.Trim()</div>
+                                    <div class="body-text status text_center"></div>
+                                    <div class="body-text totalOrderItems text_center">@order.totalOrderItems</div>
+                                    <div class="body-text paymentMethod text_center">
+                                        @if(order.PaymentMethod == "Thẻ")
+                                        {
+                                            <i class="bi bi-credit-card-2-front-fill" style="font-size:30px"></i>
+                                        }else if (order.PaymentMethod.Contains("Tiền"))
+                                        {
+                                            <i class="bi bi-cash" style="font-size:30px"></i>
+                                        }
+                                    </div>
+                                    <div class="body-text totalAmount">@order.TotalAmount VND</div>
+
+                                    @* <div class="list-icon-function">
+                                        <div class="item eye">
+                                            <a href="CustomerDetail?userId=${account.userId}"><i class="icon-eye"></i></a>
+                                        </div>
+                                    </div> *@
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="divider"></div>
+                <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
+                    <div id="total-user"></div>
+                    <div class="text-tiny" id="no_data"></div>
+                    <div id="pagination">
+                        @if (ViewBag.numberPage > ViewBag.pageIndex)
+                        {
+                            <button id="loadMoreBtn" onclick="addViewOrder(@ViewBag.numberPage)">Xem thêm @ViewBag.pageIndex</button>
+                        }
+                        @if (ViewBag.pageIndex > 1)
+                        {
+                            <button id="loadLessBtn" onclick="removeViewOrder(@ViewBag.numberPage)">Giảm bớt @ViewBag.pageIndex</button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!-- /all-user -->
+        }
+        else
+        {
+            <div class="empty-order-history">
+                <i class="fas fa-box-open"></i>
+                <h6>Lịch sử đơn hàng hiện tại trống.</h6>
+            </div>
+        }
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
+
+

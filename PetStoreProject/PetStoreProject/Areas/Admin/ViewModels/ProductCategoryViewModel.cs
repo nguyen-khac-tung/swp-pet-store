@@ -4,6 +4,9 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int? CategoryId { get; set; }
+        public int ProductCateId { get; set; }
+        public int TotalProduct { get; set; }
+
+        public int QuanitySoldProduct { get; set; }
     }
 }

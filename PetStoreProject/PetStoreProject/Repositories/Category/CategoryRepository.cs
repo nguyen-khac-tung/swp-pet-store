@@ -69,6 +69,7 @@ namespace PetStoreProject.Repositories.Category
 
             foreach (var category in categories)
             {
+                category.
                 category.Quantity = (from c in categories
                                      join pc in _context.ProductCategories on c.Id equals pc.CategoryId
                                      join p in _context.Products on pc.ProductCateId equals p.ProductCateId

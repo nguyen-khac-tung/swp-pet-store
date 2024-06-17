@@ -12,25 +12,46 @@ namespace PetStoreProject.Repositories.ProductCategory
             _context = context;
         }
 
-        public int CreateBrand(string BrandName)
+        public int CreateProductCategory(string ProductCategoryName)
         {
-            throw new NotImplementedException();
+            var productCategory = new Models.ProductCategory
+            {
+                Name = ProductCategoryName,
+            };
+            _context.ProductCategories.Add(productCategory);
+            _context.SaveChanges();
+            return productCategory.ProductCateId;
         }
 
-        public List<ProductCategoryViewModel> GetListProductCategory(int ProductCateId)
+        public List<ProductCategoryViewForAdmin> GetListProductCategory(int ProductCateId)
         {
-            var totalProductsCategories = from pc in _context.ProductCategories
-                                          join c in _context.Categories on pc.CategoryId equals c.CategoryId
-                                          join p in _context.Products on pc.ProductCateId equals p.ProductCateId
-                                          where pc.ProductCateId == ProductCateId
-                                          group pc by new { pc.ProductCateId, pc.Name } into g
-                                          select new ProductCategoryViewModel
-                                          {
-                                              Id = g.Key.ProductCateId,
-                                              Name = g.Key.Name,
-                                              totalProductCategories = g.Count()
-                                          };
-            return totalProductsCategories.ToList();
+            var ProductsCategories = (from pc in _context.ProductCategories
+                                      join c in _context.Categories on pc.CategoryId equals c.CategoryId
+                                      select new ProductCategoryViewForAdmin()
+                                      {
+                                          Id = pc.ProductCateId,
+                                          ProductCateName = pc.Name,
+                                          CategoryName = c.Name,
+                                          IsDelete = pc.IsDelete
+                                      }).ToList();
+
+            foreach (var item in ProductsCategories)
+            {
+                var totalProducts = _context.Products.Where(p => p.ProductCateId == item.Id).Count();
+
+                item.TotalProducts = totalProducts;
+
+                var totalQuantitySold = (from pc in ProductsCategories
+                                         join p in _context.Products on pc.Id equals p.ProductCateId
+                                         join po in _context.ProductOptions on p.ProductId equals po.ProductId
+                                         join od in _context.OrderItems on po.ProductOptionId equals od.ProductOptionId
+                                         where pc.Id == item.Id
+                                         select od.Quantity).Sum();
+
+                item.QuantitySoldProduct = totalQuantitySold;
+            }
+
+            return ProductsCategories;
         }
 
         public List<ProductCategoryViewModel> GetProductCategories(int? categoryId)

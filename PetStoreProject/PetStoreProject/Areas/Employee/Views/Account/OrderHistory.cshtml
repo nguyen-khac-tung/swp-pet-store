@@ -76,7 +76,9 @@
         direction: ltr; /* Đặt lại hướng văn bản bên trong các phần tử */
     }
 
-    
+    .icon_searh_style {
+        right:5px!important;
+    }
 </style>
 
 <div class="card mb-4 card-style-table">
@@ -98,7 +100,7 @@
                         <fieldset>
                             <input id="search-input-orderId" type="text" placeholder="Mã đơn hàng" class="" name="nameOrderId" tabindex="2" value="@ViewBag.searchOrderId" aria-required="true" required="">
                         </fieldset>
-                        <div class="button-submit">
+                        <div class="button-submit icon_searh_style">
                             <button onclick="search()"><i class="icon-search"></i></button>
                         </div>
                     </form>
@@ -106,7 +108,7 @@
                         <fieldset>
                             <input id="search-nameOrder-input" type="text" placeholder="Tên người đặt" class="input_search_style" name="sNameOrder" tabindex="2" value="@ViewBag.searchName" aria-required="true" required="">
                         </fieldset>
-                        <div class="button-submit button_submit_style">
+                        <div class="button-submit button_submit_style icon_searh_style">
                             <button onclick="searchNameOrder()"><i class="icon-search"></i></button>
                         </div>
                     </form>

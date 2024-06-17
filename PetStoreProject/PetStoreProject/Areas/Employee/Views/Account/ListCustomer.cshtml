@@ -8,6 +8,18 @@
 <link href="~/areas/css/list-user-style.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 
+<style>
+    #title-table li {
+        width:auto!important;
+    }
+    .user_style, .email {
+        width:280px!important;
+    }
+    .phone_customer_style {
+        width:270px!important;
+    }
+</style>
+
 <div class="main-content-inner">
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
@@ -55,19 +67,22 @@
 
             </div>
             <div class="wg-table table-all-user" id="table-content">
-                <ul class="table-title flex gap20 mb-14" id="title-table">
+                <ul class="table-title flex gap20 mb-14" style="min-width:1300px!important" id="title-table">
                     <li class="user ">
-                        <div id="user-hover" onclick="sortByName()" class="no-select body-title">Khách hàng <i class="bi bi-chevron-expand"></i></div>
+                        <div id="user-hover" onclick="sortByName()" class="no-select body-title user_style">Khách hàng <i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li class="phone">
-                        <div class="body-title">Số điện thoại</div>
+                        <div class="body-title" style="width:130px">Số điện thoại</div>
                     </li>
-                    <li class="email">
-                        <div class="body-title">Email</div>
+                    <li class="">
+                        <div class="body-title email" style="width: 262px;">Email</div>
                     </li>
-                    @* <li>
-                        <div class="body-title">Vai trò</div>
-                    </li> *@
+                    <li>
+                        <div class="body-title" >Tổng đơn hàng</div>
+                    </li>
+                    <li>
+                        <div class="body-title text-center" style="width:135px">Tổng đơn dịch vụ</div>
+                    </li>
                     <li class="status">
                         <div class="body-title">Trạng thái</div>
                     </li>
@@ -75,7 +90,7 @@
                         <div class="body-title">Hành động</div>
                     </li>
                 </ul>
-                <ul id="list-users" class="flex flex-column">
+                <ul id="list-users" class="flex flex-column" style="min-width:1300px!important">
                     <!-- data user -->
                 </ul>
             </div>

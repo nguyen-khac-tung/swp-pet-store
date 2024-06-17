@@ -20,9 +20,9 @@
     margin: 20px 10px 0 50px !important;
 }
 
-.modal_body_style {
+/*.modal_body_style {
     padding: 0px !important;
-}
+}*/
 
 .modal_content_style {
     border-radius: 10px;
@@ -189,4 +189,12 @@
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.header_delete_style {
+    padding: 13px 20px 0px 51px;
+}
+
+.popup_delete {
+    border-radius: 10px;
 }

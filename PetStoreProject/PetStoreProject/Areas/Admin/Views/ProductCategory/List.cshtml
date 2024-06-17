@@ -3,6 +3,7 @@
     ViewData["title"] = "Danh sách thể loại";
     var prouctCategories = ViewData["ProductCategories"] as List<ProductCategoryViewForAdmin>;
     var brands = ViewData["brands"] as List<BrandViewForAdmin>;
+    var categories = ViewData["categories"] as List<CategoryViewModel>;
 }
 
 @section HeadOptional {
@@ -84,12 +85,12 @@
                         <div class="body-title">Tùy chỉnh</div>
                     </li>
                 </ul>
-                <ul class="flex flex-column" id="list-category">
+                <ul class="flex flex-column scrollable-brand-list" id="list-category">
                     @foreach (var category in prouctCategories)
                     {
                         <li class="product-item gap14">
                             <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name" style="width: 430px">
+                                <div class="name" style="width: 350px">
                                     @category.ProductCateName
                                 </div>
                                 <div class="body-text">@category.CategoryName</div>
@@ -171,12 +172,12 @@
                     {
                         <li class="product-item gap14">
                             <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name" style="width: 430px">
+                                <div class="name" style="width: 350px">
                                     @brand.Name
                                 </div>
                                 <div class="body-text">@brand.Quantity</div>
                                 <div class="body-text">@brand.QuantityOfSold</div>
-                                <div class="body-text block-available isDelete" style="height: 100px; width: 100px;">Còn bán</div>
+                                <div class="body-text isDelete @(brand.isDeleted == true ? "block-not-available" : "block-available")">@(brand.isDeleted == true ? "Ngừng bán" : "Còn bán")</div>
 
                                 <div class="list-icon-function">
                                     <div class="item edit" onclick="updateCategory(this, @brand.Id)">

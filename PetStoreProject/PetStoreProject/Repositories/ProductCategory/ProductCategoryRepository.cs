@@ -23,7 +23,7 @@ namespace PetStoreProject.Repositories.ProductCategory
             return productCategory.ProductCateId;
         }
 
-        public List<ProductCategoryViewForAdmin> GetListProductCategory(int ProductCateId)
+        public List<ProductCategoryViewForAdmin> GetListProductCategory()
         {
             var ProductsCategories = (from pc in _context.ProductCategories
                                       join c in _context.Categories on pc.CategoryId equals c.CategoryId
@@ -69,11 +69,6 @@ namespace PetStoreProject.Repositories.ProductCategory
             }
             return productCategories;
 
-        }
-
-        List<ProductCategoryViewForAdmin> IProductCategoryRepository.GetListProductCategory()
-        {
-            throw new NotImplementedException();
         }
     }
 }

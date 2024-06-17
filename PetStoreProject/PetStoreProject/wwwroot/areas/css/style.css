@@ -4688,7 +4688,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-category ul.table-title li:first-child {
-  width: 430px;
+  width: 350px;
   flex-shrink: 0;
 }
 .wg-table.table-all-category ul.table-title li:last-child {

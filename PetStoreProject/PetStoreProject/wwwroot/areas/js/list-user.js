@@ -66,15 +66,15 @@ function elementHtmlEmployee(account) {
     html += '<a href="#" class="body-title-2" >' + account.fullName + '</a>';
     html += '</div>';
     if (account.phone != null) {
-        html += '<div class="body-text phone">' + account.phone + '</div>';
+        html += '<div class="body-text phone" style="width:206px!important">' + account.phone + '</div>';
     } else {
         html += '<div class="body-text phone" style="font-weight:600;  font-style: italic;" > - </div>';
     }
-    html += '<div class="body-text email" >' + account.email + '</div>';
+    html += '<div class="body-text email" style="width: 288px !important">' + account.email + '</div>';
     if (account.isDelete == 1) {
-        html += '<div class="body-text status" ><span class="account-non-active">Không kích hoạt</span></div>';
+        html += '<div class="body-text status" style="width: 200px !important;"><span class="account-non-active">Không kích hoạt</span></div>';
     } else {
-        html += '<div class="body-text status" ><span class="account-active">Kích hoạt</span></div>';
+        html += '<div class="body-text status" style="width: 200px !important;" ><span class="account-active">Kích hoạt</span></div>';
     }
     html += '<div class="list-icon-function" >';
     html += '<div class="item eye">';
@@ -346,18 +346,20 @@ function elementHtmlCustomer(account) {
                     </div>
                     <div class="flex items-center justify-between gap20 flex-grow" id="list-body">
                         <div class="name">
-                            <a href="CustomerDetail?userId=${account.userId}" class="body-title-2">${account.fullName}</a>
+                            <a href="CustomerDetail?userId=${account.accountDetail.userId}" class="body-title-2">${account.accountDetail.fullName}</a>
                         </div>
-                        <div class="body-text phone">${account.phone != null ? account.phone : "-"}</div>
-                        <div class="body-text email">${account.email}</div>
+                        <div class="body-text phone_customer_style" style="width:125px!important">${account.accountDetail.phone != null ? account.accountDetail.phone : "-"}</div>
+                        <div class="body-text email">${account.accountDetail.email}</div>
+                        <div class="body-text totalOrder text-center">${account.totalOrder}</div>
+                        <div class="body-text totalOrderService text-center">${account.totalOrderService}</div>
                         <div class="body-text status">
-                            ${account.isDelete == 1 ?
+                            ${account.accountDetail.isDelete == 1 ?
             '<span class="account-non-active">Không kích hoạt</span>' :
             '<span class="account-active">Kích hoạt</span>'}
                         </div>
                         <div class="list-icon-function">
                             <div class="item eye">
-                                <a href="CustomerDetail?userId=${account.userId}"><i class="icon-eye"></i></a>
+                                <a href="CustomerDetail?userId=${account.accountDetail.userId}"><i class="icon-eye"></i></a>
                             </div>
                         </div>
                     </div>

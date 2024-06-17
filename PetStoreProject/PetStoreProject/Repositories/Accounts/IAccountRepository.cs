@@ -1,6 +1,7 @@
 ﻿using AdminVM = PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
+using PetStoreProject.Areas.Employee.ViewModels;
 
 namespace PetStoreProject.Repositories.Accounts
 {
@@ -23,10 +24,11 @@ namespace PetStoreProject.Repositories.Accounts
         public void ChangePassword(ChangePasswordViewModel ChangePasswordVM);
 
         public List<AccountDetailViewModel> GetAccounts(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus);
+        public List<CustomerDetailViewModel> GetAccountCustomers(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus);
 
         public void AddNewEmployment(AdminVM.AccountViewModel accountViewModel);
 
-        public bool IsExistAccount(int accountId); 
+        public bool IsExistAccount(int accountId);
 
         public int UpdateStatusDeleteEmployee(int accountId);
 

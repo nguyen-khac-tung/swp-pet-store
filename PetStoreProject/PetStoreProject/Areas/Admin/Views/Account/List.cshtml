@@ -11,8 +11,8 @@
 
 <div class="modal fade" id="deleteAccount" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content popup_delete">
+            <div class="modal-header header_delete_style">
                 <h3 class="modal-title" id="deleteUserModalLabel">Xóa tài khoản nhân viên</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -30,8 +30,8 @@
                 <div id="error-mess"></div>
             </div>
             <div class="modal-footer" style="margin-bottom:10px">
-                <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:18px">Có, xóa tài khoản</button>
-                <button type="button" class="btn btn-secondary" aria-label="Close" data-bs-dismiss="modal">Không, giữ tài khoản</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:15px">Có, xóa tài khoản</button>
+                <button type="button" class="btn btn-secondary" aria-label="Close" style="font-size:15px" data-bs-dismiss="modal">Không, giữ tài khoản</button>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
             <h3>Tất cả nhân viên</h3>
-            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10" style="min-width:1140px!important;">
                 <li>
                     <a href="index.html"><div class="text-tiny">Bảng điều khiển</div></a>
                 </li>
@@ -85,7 +85,7 @@
                 <a class="tf-button style-1 w208" onclick="addAccount()"><i class="icon-plus"></i>Tạo tài khoản</a>
             </div>
             <div class="wg-table table-all-user" id="table-content">
-                <ul class="table-title flex gap20 mb-14" id="title-table">
+                <ul class="table-title flex gap20 mb-14" id="title-table" style="min-width:1140px!important;">
                     <li class="user">
                         <div id="user-hover no-select" onclick="sortByName()" class=" body-title">Người dùng <i class="bi bi-chevron-expand"></i></div>
                     </li>
@@ -105,7 +105,7 @@
                         <div class="body-title">Hành động</div>
                     </li>
                 </ul>
-                <ul id="list-users" class="flex flex-column">
+                <ul id="list-users" class="flex flex-column" style="min-width:1140px!important;">
                     <!-- data user -->
                 </ul>
             </div>

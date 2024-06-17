@@ -37,7 +37,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             var pageSizeLocal = pageSize ?? 10;
 
-            var accounts = _account.GetAccounts(pageIndexLocal, pageSizeLocal, 3, searchName ?? "", sortName ?? "", selectStatus ?? "");
+            var accounts = _account.GetAccountCustomers(pageIndexLocal, pageSizeLocal, 3, searchName ?? "", sortName ?? "", selectStatus ?? "");
 
             var totalAccount = _account.GetAccountCount(3);
 

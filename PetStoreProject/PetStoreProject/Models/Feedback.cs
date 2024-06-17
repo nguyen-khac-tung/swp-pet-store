@@ -27,6 +27,8 @@ public partial class Feedback
     [StringLength(150)]
     public string? Email { get; set; }
 
+    public bool Status { get; set; }   
+
     public int Rating { get; set; }
 
     [StringLength(500)]

@@ -3,6 +3,7 @@ using PetStoreProject.Filters;
 using PetStoreProject.Helpers;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.FeedBack;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
 
@@ -13,12 +14,13 @@ namespace PetStoreProject.Controllers
         private readonly IServiceRepository _service;
         private readonly ICustomerRepository _customer;
         private readonly IAccountRepository _account;
-
-        public ServiceController(IServiceRepository service, ICustomerRepository customer, IAccountRepository account)
+        private readonly IFeedbackRepository _feedback;
+        public ServiceController(IServiceRepository service, ICustomerRepository customer, IAccountRepository account, IFeedbackRepository feedback)
         {
             _service = service;
             _customer = customer;
             _account = account;
+            _feedback = feedback;
         }
 
         public IActionResult List()
@@ -33,6 +35,7 @@ namespace PetStoreProject.Controllers
             ViewData["ServiceDetail"] = _service.GetServiceDetail(serviceId);
             ViewData["FirstServiceOption"] = _service.GetFistServiceOption(serviceId);
             ViewData["OtherServices"] = _service.GetOtherServices(serviceId);
+            ViewData["listFeedback"] = _feedback.GetListFeedBackForService(serviceId);
             return View();
         }
 

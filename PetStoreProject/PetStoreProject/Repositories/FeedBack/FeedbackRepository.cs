@@ -16,20 +16,23 @@ namespace PetStoreProject.Repositories.FeedBack
         public List<FeedBackViewModels> GetListFeedBack()
         {
             var list = (from fb in _dbContext.Feedbacks
-                        join p in _dbContext.Products on fb.ProductId equals p.ProductId
-                        join resp in _dbContext.ResponseFeedbacks on fb.FeedbackId equals resp.FeedbackId into gj
-                        from subResp in gj.DefaultIfEmpty()
+                        join p in _dbContext.Products on fb.ProductId equals p.ProductId into gj1
+                        from fbP in gj1.DefaultIfEmpty()
+                        join s in _dbContext.Services on fb.ServiceId equals s.ServiceId into gj2
+                        from fbS in gj2.DefaultIfEmpty()
+                        join resp in _dbContext.ResponseFeedbacks on fb.FeedbackId equals resp.FeedbackId into gj3
+                        from subResp in gj3.DefaultIfEmpty()
                         select new FeedBackViewModels
                         {
                             FeedBackId = fb.FeedbackId,
-                            ProductName = p.Name,
+                            ProductName = fbP != null ? fbP.Name : fbS.Name,
                             CustomerName = fb.Name,
                             Rating = fb.Rating,
                             Content = fb.Content,
                             CreatedDate = fb.DateCreated,
                             Status = fb.Status,
                             ContentResponse = subResp != null ? subResp.Content : null
-                        }).ToList();
+                        }).OrderByDescending(x => x.CreatedDate).ToList();
             return list;
         }
 

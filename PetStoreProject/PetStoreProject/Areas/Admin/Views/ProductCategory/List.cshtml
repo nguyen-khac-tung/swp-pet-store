@@ -1,7 +1,7 @@
 ﻿@using PetStoreProject.Areas.Admin.ViewModels
 @{
     ViewData["title"] = "Danh sách thể loại";
-    var categories = ViewData["categories"] as List<CategoryViewForAdmin>;
+    var prouctCategories = ViewData["ProductCategories"] as List<ProductCategoryViewForAdmin>;
     var brands = ViewData["brands"] as List<BrandViewForAdmin>;
 }
 
@@ -66,6 +66,9 @@
             <div class="wg-table table-all-category">
                 <ul class="table-title flex gap20 mb-14">
                     <li>
+                        <div class="body-title">Tên danh mục sản phẩm</div>
+                    </li>
+                    <li>
                         <div class="body-title">Tên danh mục</div>
                     </li>
                     <li>
@@ -82,17 +85,17 @@
                     </li>
                 </ul>
                 <ul class="flex flex-column" id="list-category">
-                    @foreach (var category in categories)
+                    @foreach (var category in prouctCategories)
                     {
                         <li class="product-item gap14">
                             <div class="flex items-center justify-between gap20 flex-grow">
                                 <div class="name" style="width: 430px">
-                                    @category.Name
+                                    @category.ProductCateName
                                 </div>
-
-                                <div class="body-text">@category.Quantity</div>
-                                <div class="body-text">@category.QuantityOfSold</div>
-                                <div class="body-text block-available isDelete">Còn bán</div>
+                                <div class="body-text">@category.CategoryName</div>
+                                <div class="body-text">@category.TotalProducts</div>
+                                <div class="body-text">@category.QuantitySoldProduct</div>
+                                <div class="body-text @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div>
                                 <div class="list-icon-function">
                                     <div class="item edit" onclick="updateCategory(this, @category.Id)">
                                         <i class="icon-edit-3"></i>
@@ -256,15 +259,15 @@
 
             // Define the form HTML
             const formHtml = `
-                        <div class="form-add-product">
-                            <div class="wg-box">
-                                <fieldset class="name">
-                                    <label class="body-title mb-10">Tên sản phẩm<span class="tf-color-1">*</span></label>
-                                    <input type="text" class="mb-10" placeholder="Nhập tên danh mục" id="name">
-                                    <span id="error-name" class="text-danger"></span>
-                                </fieldset>
-                            </div>
-                        </div>`;
+                                        <div class="form-add-product">
+                                            <div class="wg-box">
+                                                <fieldset class="name">
+                                                    <label class="body-title mb-10">Tên sản phẩm<span class="tf-color-1">*</span></label>
+                                                    <input type="text" class="mb-10" placeholder="Nhập tên danh mục" id="name">
+                                                    <span id="error-name" class="text-danger"></span>
+                                                </fieldset>
+                                            </div>
+                                        </div>`;
 
             // Append the form HTML to the modal body
             modalBody.append(formHtml);
@@ -285,24 +288,24 @@
                             $('#staticBackdrop').modal('hide')
 
                             var li = `<li class="product-item gap14">
-                                            <div class="flex items-center justify-between gap20 flex-grow">
-                                                <div class="name" style="width: 430px">
-                                                    ${CategoryName}
-                                                </div>
+                                                            <div class="flex items-center justify-between gap20 flex-grow">
+                                                                <div class="name" style="width: 430px">
+                                                                    ${CategoryName}
+                                                                </div>
 
-                                                <div class="body-text">0</div>
-                                                <div class="body-text">0</div>
-                                                <div class="body-text block-available isDelete">Còn bán</div>
-                                                <div class="list-icon-function">
-                                                    <div class="item edit" onclick="updateCategory(this, ${res.cateId})">
-                                                        <i class="icon-edit-3"></i>
-                                                    </div>
-                                                    <div class="item trash" onclick="deleteCategory(this, ${res.cateId})">
-                                                        <i class="icon-trash-2"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>`
+                                                                <div class="body-text">0</div>
+                                                                <div class="body-text">0</div>
+                                                                <div class="body-text block-available isDelete">Còn bán</div>
+                                                                <div class="list-icon-function">
+                                                                    <div class="item edit" onclick="updateCategory(this, ${res.cateId})">
+                                                                        <i class="icon-edit-3"></i>
+                                                                    </div>
+                                                                    <div class="item trash" onclick="deleteCategory(this, ${res.cateId})">
+                                                                        <i class="icon-trash-2"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>`
 
                             $('#list-category').append(li)
                             alert('Thêm danh mục thành công')

@@ -12,11 +12,14 @@ namespace PetStoreProject.Repositories.ProductCategory
             _context = context;
         }
 
-        public int CreateProductCategory(string ProductCategoryName)
+        public int CreateProductCategory(string ProductCategoryName, int CategoryId)
         {
+            var productCateId = _context.ProductCategories.Select(pc => pc.ProductCateId).Max() + 1;
             var productCategory = new Models.ProductCategory
             {
+                ProductCateId = productCateId,
                 Name = ProductCategoryName,
+                CategoryId = CategoryId
             };
             _context.ProductCategories.Add(productCategory);
             _context.SaveChanges();

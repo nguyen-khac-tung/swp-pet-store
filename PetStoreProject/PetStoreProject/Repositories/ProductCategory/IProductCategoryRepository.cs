@@ -6,6 +6,6 @@ namespace PetStoreProject.Repositories.ProductCategory
     {
         public List<ProductCategoryViewModel> GetProductCategories(int? categoryId);
         public List<ProductCategoryViewForAdmin> GetListProductCategory();
-        public int CreateProductCategory(string ProductCategoryName);
+        public int CreateProductCategory(string ProductCategoryName, int CategoryId);
     }
 }

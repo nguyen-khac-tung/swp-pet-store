@@ -25,9 +25,7 @@ public partial class Feedback
     public string Phone { get; set; } = null!;
 
     [StringLength(150)]
-    public string? Email { get; set; }
-
-    public bool Status { get; set; }   
+    public string? Email { get; set; } 
 
     public int Rating { get; set; }
 

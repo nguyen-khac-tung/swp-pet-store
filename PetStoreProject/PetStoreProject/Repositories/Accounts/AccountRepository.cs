@@ -6,6 +6,7 @@ using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using System.Globalization;
+using VMAdmin = PetStoreProject.Areas.Admin.ViewModels;
 
 namespace PetStoreProject.Repositories.Accounts
 {
@@ -256,20 +257,20 @@ namespace PetStoreProject.Repositories.Accounts
         public List<AccountDetailViewModel> GetAccountCustomers()
         {
             var accountCustomers = (from c in _context.Customers
-                                 join a in _context.Accounts on c.AccountId equals a.AccountId
-                                 select new AccountDetailViewModel
-                                 {
-                                     AccountId = c.AccountId,
-                                     UserId = c.CustomerId,
-                                     FullName = c.FullName,
-                                     Phone = c.Phone,
-                                     DoB = c.DoB,
-                                     Address = c.Address.Trim(),
-                                     Email = c.Email,
-                                     Gender = c.Gender,
-                                     Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
-                                     IsDelete = c.IsDelete
-                                 }).ToList();
+                                    join a in _context.Accounts on c.AccountId equals a.AccountId
+                                    select new AccountDetailViewModel
+                                    {
+                                        AccountId = c.AccountId,
+                                        UserId = c.CustomerId,
+                                        FullName = c.FullName,
+                                        Phone = c.Phone,
+                                        DoB = c.DoB,
+                                        Address = c.Address.Trim(),
+                                        Email = c.Email,
+                                        Gender = c.Gender,
+                                        Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
+                                        IsDelete = c.IsDelete
+                                    }).ToList();
             return accountCustomers;
 
         }
@@ -398,7 +399,7 @@ namespace PetStoreProject.Repositories.Accounts
                             return;
                         }
 
-                        var employee = new Employee()
+                        var employee = new Models.Employee()
                         {
                             FullName = accountViewModel.FullName,
                             DoB = dateOfBirth,
@@ -471,5 +472,7 @@ namespace PetStoreProject.Repositories.Accounts
             }
             return null;
         }
+
+
     }
 }

@@ -1,0 +1,197 @@
+﻿@using PetStoreProject.ViewModels;
+@model UserViewModel;
+
+<style>
+    .main_content_style {
+        padding: 20px;
+        background: var(--White);
+        border-radius: 10px;
+        box-shadow: 0px 4px 24px 2px rgba(20, 25, 38, 0.05);
+    }
+
+    .content_form_style {
+        border-start-start-radius: 10px;
+        background: #f0f2f6;
+        padding: 20px;
+        font-size: 16px;
+        position: relative;
+    }
+
+        .content_form_style input {
+            font-size: 16px !important;
+        }
+
+    .input_style_form input[readonly] {
+        background: none;
+        opacity: 1;
+        border: none;
+    }
+
+    .padding_t_b {
+        padding: 10px 0px;
+    }
+
+    .title_name_style {
+        padding-left: 30px;
+    }
+
+    .button_click {
+        position: absolute;
+        top: 236px;
+        z-index: 1;
+        right: 135px;
+    }
+
+        .button_click button {
+            font-size: 16px !important;
+            background: #575e64;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-start-start-radius: 10px;
+            outline: none;
+        }
+
+            .button_click button:active {
+                background: #f0f2f6;
+                color: #000;
+                border: none;
+                outline: none;
+            }
+
+            .button_click button:hover {
+                background: #f0f2f6;
+                color: #000;
+                border: none;
+                outline: none;
+            }
+
+            .button_click button.active {
+                background: #f0f2f6;
+                color: #000;
+                border: none;
+                outline: none;
+            }
+
+            .button_click button:focus {
+                outline: none;
+                border: none;
+            }
+
+    .border_bottom {
+        border-bottom: 1px solid !important;
+    }
+
+    .padding_l30 {
+        padding-left: 30px;
+    }
+
+    .input_radio:checked {
+        background-color: #0054ff !important;
+    }
+
+    .btn_submit {
+        padding: 10px;
+        font-size: 15px;
+        border-radius: 5px;
+    }
+</style>
+
+<div class="main-content-inner main-content-style">
+    <!-- main-content-wrap -->
+    <div class="main-content-wrap main_content_style">
+        <div class="profile_wrapper padding_none">
+            <div class="container-xl px-4">
+                <div class="container-fluid modal_body_style">
+                    <div class="row user-info-main">
+                        <div class="col-md-4 text-center avatar-container">
+                            <img src="/areas/images/logo_user/user-avatar.svg.png" alt="Avatar" class="rounded-circle" width="150" height="150">
+                            @* <button class="btn btn-outline-primary mt-2 btn-change">Change</button> *@
+                        </div>
+                        <div class="col-md-8 title_name_style">
+                            <div class="form-group">
+                                <h3 id="user_name_style">@Model.FullName</h3>
+                            </div>
+                            <div style="display:inline; margin-top:10px;">
+                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" style="border:none" readonly/></label>
+                                @* <select class="select-role">
+                                <option value="1">Quản trị viên</option>/option>
+                                <option value="2">Khách hàng</option>
+                                <option value="3">Nhân viên</option>
+                                </select> *@
+                                <div id="role" style="display:inline;"></div>
+                            </div>
+                            <div id="alert-role" style="width:300px"></div>
+                        </div>
+                    </div>
+                    <div class="row content_form_style" id="content_profile">
+                        <div class="col-md-12">
+                            <form asp-action="ProfileAccount" method="post">
+                                <div class="form-group row padding_t_b">
+                                    <label class="col-sm-4 col-form-label label_style " asp-for="FullName"><strong>Họ và Tên: </strong></label>
+                                    <div class="col-sm-8 input_style_form">
+                                        <input type="text" class="form-control form_control_style border_bottom" asp-for="FullName" id="name" value="@Model.FullName" placeholder="@Model.FullName">
+                                        <span class="text-danger" asp-validation-for="FullName"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row padding_t_b" id="form-dob">
+                                    <label class="col-sm-4 col-form-label label_style" asp-for="Gender"><strong>Giới tính: </strong></label>
+                                    <div class="col-sm-8 input_style_form padding_l30">
+                                        Nam <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" style="border:1px solid black!important; display:inline" name="gender" id="gender" value="true" checked="@(Model.Gender ? "checked" : null)">
+                                        Nữ <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" style="border:1px solid black!important; display:inline " name="gender" id="gender" value="false" checked="@(Model.Gender ? null : "checked")">
+                                        <span class="text-danger" asp-validation-for="Gender"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row padding_t_b">
+                                    <label class="col-sm-4 col-form-label label_style" asp-for="DoB"><strong>Ngày sinh: </strong></label>
+                                    <div class="col-sm-8 input_style_form">
+                                        <input type="date" class="form-control form_control_style border_bottom" asp-for="DoB" id="dob" value='@Model.DoB.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)' placeholder="@Model.DoB.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" />
+                                        <span class="text-danger" asp-validation-for="DoB"></span>
+                                        @if (ViewBag.Dob != null)
+                                        {
+                                            <span class="text-danger">@ViewBag.Dob</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row padding_t_b">
+                                    <label class="col-sm-4 col-form-label label_style " asp-for="Phone"><strong>Số điện thoại: </strong></label>
+                                    <div class="col-sm-8 input_style_form">
+                                        <input type="text" class="form-control form_control_style border_bottom" asp-for="Phone" id="phone" value="@Model.Phone" placeholder="@Model.Phone">
+                                        <span class="text-danger" asp-validation-for="Phone"></span>
+                                        @if (ViewBag.PhoneMess != null)
+                                        {
+                                            <span class="text-danger">@ViewBag.PhoneMess</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row padding_t_b">
+                                    <label class="col-sm-4 col-form-label label_style" asp-for="Address"><strong>Địa chỉ: </strong></label>
+                                    <div class="col-sm-8 input_style_form">
+                                        <input type="text" class="form-control form_control_style border_bottom" asp-for="Address" id="address" value="@Model.Address" placeholder="@Model.Address">
+                                        <span class="text-danger" asp-validation-for="Address"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row padding_t_b">
+                                    <label class="col-sm-4 col-form-label label_style" asp-for="Email"><strong>Email: </strong></label>
+                                    <div class="col-sm-8 input_style_form">
+                                        <input type="email" class="form-control form_control_style border_bottom" asp-for="Email" id="email" value="@Model.Email" placeholder="@Model.Email">
+                                        <span class="text-danger" asp-validation-for="Email"></span>
+                                        @if (ViewBag.EmailMess != null)
+                                        {
+                                            <span class="text-danger">@ViewBag.EmailMess</span>
+                                        }
+                                    </div>
+                                </div>
+                                <input asp-for="UserId" type="hidden" />
+                                <input asp-for="AccountId" type="hidden" />
+                                <div class="form-group row padding_t_b" id="btn_submit_update">
+                                    <button class="btn btn-secondary btn_submit" type="submit">Cập nhật thông tin</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

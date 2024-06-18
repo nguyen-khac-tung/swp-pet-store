@@ -292,6 +292,24 @@
 
             }
         }
+
+        function deleteCategory(cateTag, cateId) {
+            var isDelete = confirm('Bạn có chắc chắn muốn xóa danh mục này không?')
+            if (isDelete) {
+                $.ajax({
+                    url: "/Admin/ProductCategory/Delete",
+                    method: "POST",
+                    data: { id: cateId },
+                    success: function (res) {
+                        $(cateTag).closest('li').remove()
+                        alert('Xóa danh mục thành công')
+                    },
+                    error: function (res) {
+                        alert(res)
+                    }
+                })
+            }
+        }
         function updateCategory(cateTag, cateId) {
 
         }

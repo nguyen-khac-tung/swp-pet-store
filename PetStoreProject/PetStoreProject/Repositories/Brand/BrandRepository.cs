@@ -28,7 +28,7 @@ namespace PetStoreProject.Repositories.Brand
 
         public List<BrandViewModel> GetBrands()
         {
-            var brands = _context.Brands.ToList();
+            var brands = _context.Brands.Where(b => b.IsDelete == false).ToList();
 
             List<BrandViewModel> brandViewModels = new List<BrandViewModel>();
             foreach (var brand in brands)
@@ -37,27 +37,9 @@ namespace PetStoreProject.Repositories.Brand
                 {
                     Id = brand.BrandId,
                     Name = brand.Name,
-                    totalBrands = GetListBrand(brand.BrandId).Count()
                 });
             }
             return brandViewModels;
-        }
-
-
-
-        public List<BrandViewModel> GetListBrand(int BrandId)
-        {
-            var totalProductsByBrand = from b in _context.Brands
-                                       join p in _context.Products on b.BrandId equals p.BrandId
-                                       where b.BrandId == BrandId 
-                                       group b by new { b.BrandId, b.Name } into g
-                                       select new BrandViewModel 
-                                       {
-                                           Id = g.Key.BrandId, 
-                                           Name = g.Key.Name, 
-                                           totalBrands = g.Count() 
-                                       };
-            return totalProductsByBrand.ToList(); 
         }
 
         List<BrandViewForAdmin> IBrandRepository.GetListBrand()

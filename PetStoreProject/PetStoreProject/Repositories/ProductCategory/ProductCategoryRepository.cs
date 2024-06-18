@@ -57,14 +57,20 @@ namespace PetStoreProject.Repositories.ProductCategory
             return ProductsCategories;
         }
 
-        public List<ProductCategoryViewModel> GetProductCategories(int? categoryId)
+        public List<ProductCategoryViewModel> GetProductCategories(int? categoryId, bool getDeleted)
         {
             var productCategories = _context.ProductCategories.Select(pc => new ProductCategoryViewModel
             {
                 Id = pc.ProductCateId,
                 Name = pc.Name.Trim(),
-                CategoryId = pc.CategoryId
+                CategoryId = pc.CategoryId,
+                IsDelete = pc.IsDelete
             }).ToList();
+
+            if (!getDeleted)
+            {
+                productCategories = productCategories.Where(pc => pc.IsDelete == false).ToList();
+            }
 
             if (categoryId != null)
             {

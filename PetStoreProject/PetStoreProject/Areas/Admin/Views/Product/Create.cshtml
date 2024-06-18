@@ -117,7 +117,7 @@
                     <fieldset class="category">
                         <label class="body-title mb-10">Danh mục</label>
                         <div class="select" >
-                            <select class="" id="category">
+                            <select class="" id="category" onchange="categorySelected()">
                                 @foreach (var category in categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -132,7 +132,7 @@
                             <select class="" id="product-category">
                                 @foreach (var productCategory in productCategories)
                                 {
-                                    <option value="@productCategory.Id">@productCategory.Name</option>
+                                    <option value="@productCategory.Id" class="category-@productCategory.CategoryId">@productCategory.Name</option>
                                 }
                             </select>
                             <span class="text-danger"></span>
@@ -173,26 +173,6 @@
                 </fieldset>
                 <div class="gap22">
                     <fieldset class="name">
-                        <label class="body-title mb-10">Kích thước</label>
-                        <div class="select mb-10 flex gap22" id="list-size">
-                            <select class="" id="size">
-                                @foreach (var size in sizes)
-                                {
-                                    if (size.Name == null)
-                                    {
-                                        <option value="@size.Id">Trống</option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@size.Id">@size.Name</option>
-                                    }
-                                }
-                            </select>
-                            <input type="text" id="sizeFilter" placeholder="Nhập để tìm kiếm kích thước...">
-                            <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
-                        </div>
-                    </fieldset>
-                    <fieldset class="name">
                         <label class="body-title mb-10">Thuộc tính</label>
                         <div class="select mb-10 flex gap22" id="list-attribute">
                             <select id="attribute">
@@ -212,6 +192,27 @@
                             <button type="button" class="tf-button style-1" onclick="addAttributeOption()">Thêm mới</button>
                         </div>
                     </fieldset>
+                    <fieldset class="name">
+                        <label class="body-title mb-10">Kích thước</label>
+                        <div class="select mb-10 flex gap22" id="list-size">
+                            <select class="" id="size">
+                                @foreach (var size in sizes)
+                                {
+                                    if (size.Name == null)
+                                    {
+                                        <option value="@size.Id">Trống</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@size.Id">@size.Name</option>
+                                    }
+                                }
+                            </select>
+                            <input type="text" id="sizeFilter" placeholder="Nhập để tìm kiếm kích thước...">
+                            <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
+                        </div>
+                    </fieldset>
+                    
                     <fieldset class="name">
                         <label class="body-title mb-10">Price</label>
                         <div class="select mb10 flex gap22" style="align-items:center">
@@ -514,8 +515,8 @@
                                                 <div class="choose-image" style="width: 7%">
                                                     <img value='new' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
                                                 </div>
+                                                <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Loại: <span class="tf-color">${attributeName}</span></div>
                                                 <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
-                                                <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Thuộc tính: <span class="tf-color">${attributeName}</span></div>
                                                 <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
                                             </div>
                                         </li>
@@ -536,10 +537,10 @@
 
 
             var sizeId = $('#size').val();
-            var sizeName = $('#size option:selected').text();
+            var sizeName = $('#size option:selected').text().trim();
 
             var attributeId = $('#attribute').val();
-            var attributeName = $('#attribute option:selected').text();
+            var attributeName = $('#attribute option:selected').text().trim();
 
             var price = $('#price').val().trim()
 
@@ -559,6 +560,14 @@
                         isExistsOption = true;
                         alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
                         return false; // Exit the loop if the option already exists
+                    }
+
+                    if (sizeId == 1 && attributeId == 1) {
+                        if (numberOptions != 0) {
+                            isExistsOption = true;
+                            alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
+                            return false;
+                        }
                     }
 
                     if (existingSizeId == 1 && sizeId != 1) {
@@ -826,6 +835,20 @@
                 }
             })
             return isExists;
+        }
+        categorySelected()
+        function categorySelected() { 
+            var categoryId = $("#category").val();
+            console.log(categoryId)
+            $('#product-category option').each(function () { 
+                $(this).addClass('hide')
+            })
+
+            $('#product-category .category-' + categoryId).each(function () { 
+                $(this).removeClass('hide')
+            })
+
+            $('#product-category .category-' + categoryId).prop('selected', true)
         }
 
     </script>

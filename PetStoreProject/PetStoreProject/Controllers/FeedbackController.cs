@@ -16,9 +16,19 @@ namespace PetStoreProject.Controllers
 		[HttpPost]
 		public IActionResult Submit()
 		{
-			int pid = Int32.Parse(Request.Form["pid"]);
-			Feedback feedback = new Feedback();
-			feedback.ProductId = pid;
+			int pid = 0;
+			int sid = 0;
+            bool isProductId = Int32.TryParse(Request.Form["pid"], out pid);
+			bool isServiceId = Int32.TryParse(Request.Form["sid"], out sid);
+
+            Feedback feedback = new Feedback();
+			if(isProductId)
+			{
+				feedback.ProductId = pid;
+			} else
+			{
+				feedback.ServiceId = sid;
+			}
 			feedback.Name = Request.Form["FullName"];
 			feedback.Phone = Request.Form["PhoneNumber"];
 			feedback.Email = Request.Form["Email"];
@@ -28,7 +38,17 @@ namespace PetStoreProject.Controllers
             feedback.DateCreated = DateTime.Now;
 			_context.Feedbacks.Add(feedback);
 			_context.SaveChanges();
-			return RedirectToAction("Detail", "Product", new { productId = Request.Form["pid"] });
+
+            if (isProductId)
+            {
+                return RedirectToAction("Detail", "Product", new { productId = pid});
+
+            }
+            else
+            {
+                return RedirectToAction("Detail", "Service", new { serviceId = sid });
+            }
+
 		}
 
 		[HttpPost]
@@ -45,12 +65,35 @@ namespace PetStoreProject.Controllers
 
 			bool haveOrdered = listProductOptionIdOrder.Any(i => listPOId.Contains(i));
 
-			//bool phoneNumberExistsOrder = _context.Orders.Any(o => o.Phone == phoneNumber);
-
 			if (haveOrdered)
 				return Json(new { status = "success" });
 			else
 				return Json(new { status = "error", message = "Bạn không thể comment vì bạn chưa mua hàng." });
 		}
-	}
+
+        [HttpPost]
+        public JsonResult CheckUsedService(string phoneNumber, int pid)
+        {
+            var listServiceOptionIdOrder = (from o in _context.OrderServices
+                                            where o.Phone == phoneNumber
+                                            select o.ServiceOptionId).ToList();
+
+            var listSOId = _context.ServiceOptions
+                                   .Where(po => po.ServiceId == pid)
+                                   .Select(po => po.ServiceOptionId).ToList();
+
+			foreach(int i  in listSOId)
+			{
+				int x = i;
+			}
+
+
+            bool haveOrdered = listServiceOptionIdOrder.Any(i => listSOId.Contains(i));
+
+            if (haveOrdered)
+                return Json(new { status = "success" });
+            else
+                return Json(new { status = "error", message = "Bạn không thể comment vì bạn chưa sử dụng dịch vụ." });
+        }
+    }
 }

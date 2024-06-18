@@ -215,7 +215,7 @@
                                     <h2>Đánh giá sản phẩm</h2>
                                 </div>
                                 <form id="feedbackForm" asp-action="submit" asp-controller="feedback" method="post">
-                                    <input type="hidden" name="pid" value="@service.ServiceId" />
+                                    <input type="hidden" name="sid" value="@service.ServiceId" />
                                     <div class="form-group">
                                         <label for="FullName">Họ và Tên<em>*</em></label>
                                         <input type="text" id="FullName" name="FullName" class="form-control" />
@@ -432,7 +432,7 @@
             var phoneNumber = $('#PhoneNumber').val();
 
             $.ajax({
-                url: '@Url.Action("CheckOrderProduct", "Feedback")',
+                url: '@Url.Action("CheckUsedService", "Feedback")',
                 type: 'POST',
                 data: {
                     phoneNumber: phoneNumber,

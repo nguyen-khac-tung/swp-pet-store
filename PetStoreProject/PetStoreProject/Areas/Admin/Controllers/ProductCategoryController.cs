@@ -31,5 +31,13 @@ namespace PetStoreProject.Areas.Admin.Controllers
             ViewData["categories"] = categories;
             return View();
         }
+
+        [HttpPost]
+        public JsonResult Create(string ProductCategoryName, int CategoryId)
+        {
+            var productCateId = _productCategoryRepository.CreateProductCategory(ProductCategoryName, CategoryId);
+            return Json(new { productCateId = productCateId });
+        }
+
     }
 }

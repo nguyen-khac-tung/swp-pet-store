@@ -15,16 +15,14 @@ namespace PetStoreProject.Repositories.Brand
 
         public int CreateBrand(string BrandName)
         {
-            var brandId = _context.Brands.Max(b => b.BrandId) + 1;
             var brand = new Models.Brand
             {
-                BrandId = brandId,
                 Name = BrandName,
             };
 
             _context.Brands.Add(brand);
             _context.SaveChanges();
-            return brandId;
+            return brand.BrandId;
         }
 
         public List<BrandViewModel> GetBrands()
@@ -72,5 +70,20 @@ namespace PetStoreProject.Repositories.Brand
             return brands;
         }
 
+        public string UpdateBrand(int brandId, string brandName)
+        {
+            var brand = _context.Brands.Find(brandId);
+            if (brand == null)
+            {
+                return "Brand not found!";
+            }
+            else
+            {
+                brand.Name = brandName;
+                _context.Entry(brand).State = EntityState.Modified;
+                _context.SaveChanges();
+                return "Success!";
+            }
+        }
     }
 }

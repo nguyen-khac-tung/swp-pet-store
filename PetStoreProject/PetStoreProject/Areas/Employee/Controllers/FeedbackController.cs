@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.FeedBack;
 
@@ -14,10 +15,37 @@ namespace PetStoreProject.Areas.Employee.Controllers
 			_feedback = feedbackRepository;
 			_dbContext = petStoreDBContext;
 		}
-		public IActionResult List()
+        [HttpPost]
+        public IActionResult List(int status, DateTime from, DateTime to)
+        {
+            var list = _feedback.GetListFeedBack().Where(x => x.CreatedDate > from && x.CreatedDate < to);
+            if (status == 1)
+            {
+                list = list.Where(x => x.Status == false);
+            }
+            else if (status == 2)
+            {
+                list = list.Where(x => x.Status == true);
+            }
+
+            ViewBag.Status = status;
+            ViewBag.FirstDayOfWeek = from.ToString("yyyy-MM-dd");
+            ViewBag.LastDayOfWeek = to.ToString("yyyy-MM-dd");
+            
+            return View(list);
+        }
+
+
+        public IActionResult List()
 		{
-			var list = _feedback.GetListFeedBack();
-			return View(list);
+            DateTime today = DateTime.Today;
+            DateTime firstDayOfWeek = DateTimeHelpers.GetFirstDayOfWeek(today);
+            DateTime lastDayOfWeek = DateTimeHelpers.GetLastDayOfWeek(today);
+            var list = _feedback.GetListFeedBack().Where(x => x.CreatedDate > firstDayOfWeek && x.CreatedDate < lastDayOfWeek);
+            ViewBag.FirstDayOfWeek = firstDayOfWeek.ToString("yyyy-MM-dd");
+            ViewBag.LastDayOfWeek = lastDayOfWeek.ToString("yyyy-MM-dd");
+            ViewBag.Status = 0;
+            return View(list);
 		}
 
         [HttpPost]

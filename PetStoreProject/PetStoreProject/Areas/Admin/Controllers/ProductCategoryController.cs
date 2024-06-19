@@ -32,6 +32,28 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult Create(string ProductCategoryName, int CategoryId)
+        {
+            var productCateId = _productCategoryRepository.CreateProductCategory(ProductCategoryName, CategoryId);
+            return Json(new { productCateId = productCateId });
+
+        }
+
+
+        [HttpDelete]
+        public JsonResult Delete(int ProductCategoryId)
+        {
+            var result = _productCategoryRepository.DeleteProductCategory(ProductCategoryId);
+            return Json(new { result = result });
+        }
+
+        [HttpPut]
+        public JsonResult Update(string ProductCategoryName, int ProductCategoryId, bool IsDelete, int CategoryId)
+        {
+            var result = _productCategoryRepository.UpdateProductCategory(ProductCategoryId, ProductCategoryName, CategoryId, IsDelete);
+            return Json(new { result = result });
+        }
 
     }
 }

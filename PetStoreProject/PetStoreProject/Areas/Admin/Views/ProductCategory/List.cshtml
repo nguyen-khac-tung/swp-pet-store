@@ -71,20 +71,22 @@
                 <ul class="flex flex-column scrollable-brand-list" id="list-category">
                     @foreach (var category in prouctCategories)
                     {
-                        <li class="product-item gap14">
+                        <li class="product-item gap14 product-category-@category.Id">
+                            <input type="hidden" value="@category.Id" class="productCategoryId">
+                            <input type="hidden" value="@category.CategoryId" class="categoryId">
                             <div class="flex items-center justify-between gap20 flex-grow">
                                 <div class="name" style="width: 350px">
                                     @category.ProductCateName
                                 </div>
-                                <div class="body-text">@category.CategoryName</div>
+                                <div class="body-text cateName">@category.CategoryName</div>
                                 <div class="body-text">@category.TotalProducts</div>
                                 <div class="body-text">@category.QuantitySoldProduct</div>
-                                <div class="body-text @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div>
+                                <div class="body-text @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete" value="@(category.IsDelete == true ? 1 : 0)">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div>
                                 <div class="list-icon-function">
-                                    <div class="item edit" onclick="updateCategory(this, @category.Id)">
+                                    <div class="item edit" onclick="updateProductCategory(this, @category.Id)">
                                         <i class="icon-edit-3"></i>
                                     </div>
-                                    <div class="item trash" onclick="deleteCategory(this, @category.Id)">
+                                    <div class="item trash @((category.IsDelete== true) ? "hide" : "")" onclick="deleteProductCategory(this, @category.Id)">
                                         <i class="icon-trash-2"></i>
                                     </div>
                                 </div>
@@ -100,8 +102,6 @@
     <!-- /main-content-wrap -->
 </div>
 
-
-
 <!--List Brand-->
 <div class="main-content-inner">
     <!-- main-content-wrap -->
@@ -112,7 +112,7 @@
         <!-- all-category -->
         <div class="wg-box">
             <div class="flex items-center justify-between gap10 flex-wrap">
-                <a class="btn btn-primary tf-button style-1 w208" href="new-brand.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="create()"><i class=" icon-plus"></i>Thêm mới</a>
+                <a class="btn btn-primary tf-button style-1 w208" onclick="addBrand()"><i class=" icon-plus"></i>Thêm mới</a>
             </div>
             <div class="wg-table table-all-category">
                 <ul class="table-title flex gap20 mb-14">
@@ -126,31 +126,24 @@
                         <div class="body-title">Số lượng đã bán</div>
                     </li>
                     <li>
-                        <div class="body-title">Trạng thái</div>
-                    </li>
-                    <li>
                         <div class="body-title">Tùy chỉnh</div>
                     </li>
                 </ul>
                 <!-- Update the class here -->
-                <ul class="flex flex-column scrollable-brand-list" id="list-category">
+                <ul class="flex flex-column scrollable-brand-list" id="list-brand">
                     @foreach (var brand in brands)
                     {
-                        <li class="product-item gap14">
+                        <li class="product-item gap14 brand-id-@(brand.Id)">
+                            <input type="hidden" value="@brand.Id" class="brandId">
                             <div class="flex items-center justify-between gap20 flex-grow">
                                 <div class="name" style="width: 350px">
                                     @brand.Name
                                 </div>
                                 <div class="body-text">@brand.Quantity</div>
                                 <div class="body-text">@brand.QuantityOfSold</div>
-                                <div class="body-text isDelete @(brand.isDeleted == true ? "block-not-available" : "block-available")">@(brand.isDeleted == true ? "Ngừng bán" : "Còn bán")</div>
-
                                 <div class="list-icon-function">
-                                    <div class="item edit" onclick="updateCategory(this, @brand.Id)">
+                                    <div class="item edit" onclick="updateBrand(@brand.Id)">
                                         <i class="icon-edit-3"></i>
-                                    </div>
-                                    <div class="item trash" onclick="deleteCategory(this, @brand.Id)">
-                                        <i class="icon-trash-2"></i>
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +158,7 @@
     <!-- /main-content-wrap -->
 </div>
 
-<!-- Modal -->
+<!-- Add product category -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -203,6 +196,86 @@
         </div>
     </div>
 </div>
+
+<!-- Update Product Category -->
+<div class="modal fade" id="updateProductCategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-add-product">
+                    <div class="wg-box">
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Tên danh mục sản phẩm mới<span class="tf-color-1">*</span></label>
+                            <input type="text" class="mb-10" placeholder="Nhập tên danh mục sản phẩm" id="productCategoryName">
+                            <input type="hidden" id="productCateId">
+                        </fieldset>
+                        <div class="form-add-product">
+                            <div class="wg-box">
+                                <label class="body-title mb-10">Tên danh mục<span class="tf-color-1">*</span></label>
+                                <select class="categoryId">
+                                    @foreach (var category in categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <input type="hidden" id="cateId">
+                        </div>
+                        <fieldset>
+                            <label class="body-title mb-10">Tình trạng</label>
+                            <div class="select mb-10 flex gap22 radio-buttons justify-content-around" id="list-size">
+                                <div class="item">
+                                    <input class="" type="radio" name="isDelete" id="isDelete_false" value="0">
+                                    <label class="" for="isDelete_false"><span class="body-title-2">Còn bán</span></label>
+                                </div>
+                                <div class="item">
+                                    <input class="" type="radio" name="isDelete" id="isDelete_true" value="1">
+                                    <label class="" for="isDelete_true"><span class="body-title-2">Ngừng bán</span></label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveProductCateGory()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add brand -->
+<div class="modal fade" id="addbrand" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-add-product">
+                    <div class="wg-box">
+                        <fieldset class="name">
+                            <label class="body-title mb-10 title">Tên nhãn hàng mới<span class="tf-color-1">*</span></label>
+                            <input type="text" class="mb-10" placeholder="Nhập tên nhãn hàng" id="brandName">
+                            <span id="error-brand" class="text-danger"></span>
+                            <input type="hidden" id="brandId">
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveBrand()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section ScriptOptional {
     <script>
         var regex = /^[0-9\W]+$/;
@@ -211,7 +284,7 @@
             var isValid = true
             if (name == '') {
                 isValid = false
-                error = 'Tên danh mục không được để trống';
+                error = 'Tên không được để trống';
             }
             else if (name.length > 200) {
                 isValid = false
@@ -224,16 +297,16 @@
             else {
                 error = ""
             }
-            $('#error-name').text(error)
-            return isValid;
+
+            return error;
         }
 
-        function isExistsCategory(name) {
+        function isExistsProductCategory(name, id) {
             var isExists = false;
-            var categories = $('#list-category .name')
+            var categories = $('#list-category li')
             categories.each(function () {
-                console.log($(this).text().toLowerCase().trim())
-                if ($(this).text().toLowerCase().trim() == name.toLowerCase().trim()) {
+                if ($(this).find('.name').text().toLowerCase().trim() == name.toLowerCase().trim()
+                    && id != $(this).find('.productCategoryId').val()) {
                     isExists = true;
                     return false
                 }
@@ -246,8 +319,8 @@
             var ProductCategoryName = $('#name').val().trim()
             var categoryId = $('#categoryId').val()
             var categoryName = $('#categoryId option:selected').text()
-            if (isValidString(ProductCategoryName)) {
-                if (isExistsCategory(ProductCategoryName)) {
+            if (isValidString(ProductCategoryName) == "") {
+                if (isExistsProductCategory(ProductCategoryName, 0)) {
                     alert('Tên danh mục đã tồn tại')
                 }
                 else {
@@ -258,20 +331,20 @@
                         data: { ProductCategoryName: ProductCategoryName, CategoryId: categoryId },
                         success: function (res) {
                             var li = `<li class="product-item gap14">
-                                                                    <div class="flex items-center justify-between gap20 flex-grow">
+                                                                    <div class="flex items-center justify-between gap20 flex-grow product-category-${res.productCateId}">
                                                                         <div class="name" style="width: 350px">
                                                                                     ${ProductCategoryName}
                                                                         </div>
-                                                                        <div class="body-text">${categoryName}</div>
+                                                                        <div class="body-text cateName">${categoryName}</div>
 
                                                                         <div class="body-text">0</div>
                                                                         <div class="body-text">0</div>
                                                                         <div class="body-text block-available isDelete">Còn bán</div>
                                                                         <div class="list-icon-function">
-                                                                            <div class="item edit" onclick="updateCategory(this)">
+                                                                            <div class="item edit" onclick="updateProductCategory(this)">
                                                                                 <i class="icon-edit-3"></i>
                                                                             </div>
-                                                                            <div class="item trash" onclick="deleteCategory(this)">
+                                                                            <div class="item trash" onclick="deleteProductCategory(this)">
                                                                                 <i class="icon-trash-2"></i>
                                                                             </div>
                                                                         </div>
@@ -291,13 +364,111 @@
                 }
 
             }
+            else{
+                $('#error-name').text(error)
+            }
         }
-        function isExistsBrand(name) {
+
+        function deleteProductCategory(ProductCateTag, ProductCateId) {
+            document.getElementsByClassName('.item .trash').removeLis
+            var isDelete = confirm('Bạn có chắc chắn muốn xóa danh mục này không?')
+            if (isDelete) {
+                $.ajax({
+                    url: "/Admin/ProductCategory/Delete",
+                    method: "DELETE",
+                    data: { ProductCategoryId: ProductCateId },
+                    success: function (res) {
+                        $(ProductCateTag).parent().parent().find('.isDelete').text('Ngừng bán')
+                        $(ProductCateTag).parent().parent().find('.isDelete').addClass('block-not-available');
+                        $(ProductCateTag).parent().parent().find('.isDelete').removeClass('block-available');
+                        $(ProductCateTag).remove()
+                        console.log(res.result)
+                    },
+                    error: function (res) {
+                    }
+                })
+                alert('Xóa danh mục thành công')
+
+            }
+        }
+
+        function updateProductCategory(cateTag, productCateId) {
+            $('#updateProductCategory').modal('show')
+            $('#productCategoryName').val($(cateTag).parent().parent().find('.name').text().trim())
+            $('#productCateId').val(productCateId)
+            var cateId = $('.product-category-'+productCateId).find('.categoryId').val()
+            $('#updateProductCategory .categoryId option').each(function () { 
+                if($(this).val() == cateId){
+                    $(this).prop('selected', true);
+                }
+            })
+
+            let isDelete = $(cateTag).parent().parent().find('.isDelete').attr('value')
+            if (isDelete == 1) {
+                $('#isDelete_true').prop('checked', true)
+            }
+            else {
+                $('#isDelete_false').prop('checked', true)
+            }
+        }
+
+        function saveProductCateGory(){
+            let name = $('#productCategoryName').val().trim()
+            let id = $('#productCateId').val()
+            let isDelete = $('input[name="isDelete"]:checked').val() == '1' ? true : false
+            let cateId = $('#updateProductCategory .categoryId').val()
+            let cateName = $('#updateProductCategory .categoryId option:selected').text()
+
+            if (isValidString(name) == "") {
+                if (isExistsProductCategory(name, id)) {
+                    alert('Tên danh mục sản phẩm đã tồn tại')
+                }
+                else{
+                    $.ajax({
+                        url: "/Admin/ProductCategory/Update",
+                        method: "PUT",
+                        data: { ProductCategoryName: name, ProductCategoryId: id, IsDelete: isDelete, CategoryId : cateId },
+                        success: function (res) {
+                            $('#updateProductCategory').modal('hide')
+                            alert('Cập nhật danh mục thành công')
+                            var tag = $(`.product-category-${id}`)
+                            tag.find('.name').text(name)
+                            tag.find('.categoryId').val(cateId)
+                            tag.find('.isDelete').attr('value', isDelete ? 1 : 0)
+                            if (isDelete == 1) {
+                                tag.find('.isDelete').text('Ngừng bán')
+                                tag.find('.isDelete').addClass('block-not-available')
+                                tag.find('.isDelete').removeClass('block-available')
+                                tag.find('.trash').addClass('hide')
+                            }
+                            else {
+                                tag.find('.isDelete').text('Còn bán')
+                                tag.find('.isDelete').addClass('block-available')
+                                tag.find('.isDelete').removeClass('block-not-available')
+                                tag.find('.trash').removeClass('hide')
+                            }
+
+                            tag.find('.cateName').text(cateName)
+
+                        },
+                        error: function (res) {
+                            console.log(res)
+                        }
+                    })
+                }
+            }
+            else{
+                $('#error-name').text(error)
+            }
+        }
+
+        function isExistsBrand(name, id) {
             var isExists = false;
-            var brands = $('#list-brand .name')
+            var brands = $('#list-brand li')
             brands.each(function () {
                 console.log($(this).text().toLowerCase().trim())
-                if ($(this).text().toLowerCase().trim() == name.toLowerCase().trim()) {
+                if ($(this).find('.name').text().toLowerCase().trim() == name.toLowerCase().trim()
+                && id != $(this).find('.brandId')) {
                     isExists = true;
                     return false
                 }
@@ -305,42 +476,60 @@
 
             return isExists;
         }
-        function createBrand() {
-            var BrandName = $('#name').val().trim()
-            var BrandId = $('#brandId').val()
-            if (isValidString(BrandName)) {
+
+        function addBrand() {
+            var modal = $('#addbrand')
+            modal.find('.title').text('Thêm mới nhãn hàng')
+            modal.find('#brandName').val('')
+            modal.find('#brandId').val('')
+            modal.modal('show')
+        }
+
+        function updateBrand(brandId){
+            var modal = $('#addbrand')
+            var brandTag = $(`.brand-id-${brandId}`)
+            modal.find('.title').text('Nhập tên nhãn hàng')
+            modal.find('#brandName').val(brandTag.find('.name').text().trim())
+            modal.find('#brandId').val(brandTag.find('.brandId').val())
+            modal.modal('show')
+        }
+
+        function saveBrand() {
+            var modal = $('#addbrand')
+            var BrandName = $('#brandName').val().trim()
+            var brandId = $('#brandId').val()
+            if (isValidString(BrandName) == "") {
                 if (isExistsBrand(BrandName)) {
                     alert('Tên danh mục đã tồn tại')
                 }
-                else {
+                else if (brandId == '') {
                     $('#staticBackdrop').modal('hide')
                     $.ajax({
                         url: "/Admin/Brand/Create",
                         method: "POST",
-                        data: { BrandName: BrandName, BrandId: brandId },
+                        data: { brandName: BrandName },
                         success: function (res) {
-                            var li = `<li class="product-item gap14">
-                                                                            <div class="flex items-center justify-between gap20 flex-grow">
-                                                                                <div class="name" style="width: 350px">
-                                                                                            ${BrandName}
-                                                                                </div>
-
-                                                                                <div class="body-text">0</div>
-                                                                                <div class="body-text">0</div>
-                                                                                <div class="body-text block-available isDelete">Còn bán</div>
-                                                                                <div class="list-icon-function">
-                                                                                    <div class="item edit" onclick="updateCategory(this)">
-                                                                                        <i class="icon-edit-3"></i>
-                                                                                    </div>
-                                                                                    <div class="item trash" onclick="deleteCategory(this)">
-                                                                                        <i class="icon-trash-2"></i>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>`
+                            var li = `
+                                    <li class="product-item gap14 brand-id-${res.brandId}">
+                                    <input type="hidden" value="${res.brandId}" class="brandId">
+                                    <div class="flex items-center justify-between gap20 flex-grow">
+                                        <div class="name" style="width: 350px">
+                                            ${BrandName}
+                                        </div>
+                                        <div class="body-text">0</div>
+                                        <div class="body-text">0</div>
+                                        <div class="list-icon-function">
+                                            <div class="item edit" onclick="updateBrand(${res.brandId}">
+                                                <i class="icon-edit-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            `
 
                             $('#list-brand').append(li)
                             alert('Thêm danh mục thành công')
+                            modal.modal('hide')
                         },
                         error: function (res) {
                             alert(res)
@@ -350,29 +539,28 @@
                     )
 
                 }
+                else {
+                    $.ajax({
+                        url: "/Admin/Brand/Update",
+                        method: "PUT",
+                        data: { brandName: BrandName, brandId: brandId },
+                        success: function (res) {
+                            modal.modal('hide')
+                            alert('Cập nhật tên thương hiệu thành công thành công')
+                            var tag = $(`.brand-id-${brandId}`)
+                            tag.find('.name').text(BrandName)
+                        },
+                        error: function (res) {
+                            console.log(res)
+                        }
+                    })
+                }
 
+            }
+            else{
+                $('#error-brand').text(error)
             }
         }
 
-        function deleteCategory(cateTag, cateId) {
-            var isDelete = confirm('Bạn có chắc chắn muốn xóa danh mục này không?')
-            if (isDelete) {
-                $.ajax({
-                    url: "/Admin/ProductCategory/Delete",
-                    method: "POST",
-                    data: { id: cateId },
-                    success: function (res) {
-                        $(cateTag).closest('li').remove()
-                        alert('Xóa danh mục thành công')
-                    },
-                    error: function (res) {
-                        alert(res)
-                    }
-                })
-            }
-        }
-        function updateCategory(cateTag, cateId) {
-
-        }
     </script>
 }

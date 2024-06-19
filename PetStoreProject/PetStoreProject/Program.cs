@@ -5,11 +5,13 @@ using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
+using PetStoreProject.Repositories.Admin;
 using PetStoreProject.Repositories.Attribute;
 using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Employee;
 using PetStoreProject.Repositories.FeedBack;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Order;
@@ -91,6 +93,10 @@ builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 
 builder.Services.AddTransient<IOrderServiceRepository, OrderServiceRepository>();
+
+builder.Services.AddTransient<IAdminRepository, AdminRepository>();
+
+builder.Services.AddTransient<IEmployeeRepository, EmployeeReporistory>();
 
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
         builder.Configuration.GetSection("Cloudinary:CloudName").Value,

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Identity.Client;
+using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using System.Globalization;
+using VMAdmin = PetStoreProject.Areas.Admin.ViewModels;
 
 namespace PetStoreProject.Repositories.Accounts
 {
@@ -132,9 +134,9 @@ namespace PetStoreProject.Repositories.Accounts
         public string GetUserRoles(string email)
         {
             var role = (from a in _context.Accounts
-                         join r in _context.Roles on a.RoleId equals r.RoleId
-                         where a.Email == email
-                         select r.Name).FirstOrDefault();
+                        join r in _context.Roles on a.RoleId equals r.RoleId
+                        where a.Email == email
+                        select r.Name).FirstOrDefault();
 
             return role;
         }
@@ -186,22 +188,30 @@ namespace PetStoreProject.Repositories.Accounts
             return accountEmployees;
         }
 
-        public List<AccountDetailViewModel> GetAccountCustomers()
+        public List<CustomerDetailViewModel> GetCustomers()
         {
             var accountCustomers = (from c in _context.Customers
                                     join a in _context.Accounts on c.AccountId equals a.AccountId
-                                    select new AccountDetailViewModel
+                                    select new CustomerDetailViewModel
                                     {
-                                        AccountId = c.AccountId,
-                                        UserId = c.CustomerId,
-                                        FullName = c.FullName,
-                                        Phone = c.Phone,
-                                        DoB = c.DoB,
-                                        Address = c.Address.Trim(),
-                                        Email = c.Email,
-                                        Gender = c.Gender,
-                                        Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
-                                        IsDelete = c.IsDelete
+                                        AccountDetail = new AccountDetailViewModel
+                                        {
+                                            AccountId = c.AccountId,
+                                            UserId = c.CustomerId,
+                                            FullName = c.FullName,
+                                            Phone = c.Phone,
+                                            DoB = c.DoB,
+                                            Address = c.Address.Trim(),
+                                            Email = c.Email,
+                                            Gender = c.Gender,
+                                            Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
+                                            IsDelete = c.IsDelete
+                                        },
+
+                                        TotalOrder = _context.Orders.Count(o => o.CustomerId == c.CustomerId),
+
+                                        TotalOrderService = _context.OrderServices.Count(os => os.CustomerId == c.CustomerId),
+
                                     }).ToList();
             return accountCustomers;
         }
@@ -244,6 +254,26 @@ namespace PetStoreProject.Repositories.Accounts
             return accounts;
         }
 
+        public List<AccountDetailViewModel> GetAccountCustomers()
+        {
+            var accountCustomers = (from c in _context.Customers
+                                    join a in _context.Accounts on c.AccountId equals a.AccountId
+                                    select new AccountDetailViewModel
+                                    {
+                                        AccountId = c.AccountId,
+                                        UserId = c.CustomerId,
+                                        FullName = c.FullName,
+                                        Phone = c.Phone,
+                                        DoB = c.DoB,
+                                        Address = c.Address.Trim(),
+                                        Email = c.Email,
+                                        Gender = c.Gender,
+                                        Role = _context.Roles.FirstOrDefault(r => r.RoleId == a.RoleId),
+                                        IsDelete = c.IsDelete
+                                    }).ToList();
+            return accountCustomers;
+
+        }
         public List<AccountDetailViewModel> GetAccounts(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus)
         {
             List<AccountDetailViewModel> accounts = GetAccountsByUsertype(userType);
@@ -276,6 +306,37 @@ namespace PetStoreProject.Repositories.Accounts
             return accounts;
         }
 
+        public List<CustomerDetailViewModel> GetAccountCustomers(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus)
+        {
+            List<CustomerDetailViewModel> accounts = GetCustomers();
+
+            if (sortName == "abc")
+            {
+                accounts = accounts.OrderBy(a => a.AccountDetail.FullName).ToList();
+            }
+            else if (sortName == "zxy")
+            {
+                accounts = accounts.OrderByDescending(a => a.AccountDetail.FullName).ToList();
+            }
+
+            if (searchName != "")
+            {
+                accounts = accounts.Where(acc => acc.AccountDetail.FullName.ToLower().Contains(searchName.ToLower())).ToList();
+            }
+
+            if (selectedStatus == "0")
+            {
+                accounts = accounts.Where(acc => acc.AccountDetail.IsDelete == false).ToList();
+            }
+            else if (selectedStatus == "1")
+            {
+                accounts = accounts.Where(acc => acc.AccountDetail.IsDelete == true).ToList();
+            }
+
+            accounts = accounts.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+            return accounts;
+        }
         public int GetAccountCount(int userType)
         {
             int countAccounts = 0;
@@ -288,7 +349,7 @@ namespace PetStoreProject.Repositories.Accounts
                     countAccounts = GetAccountEmployees().Count;
                     break;
                 case 3:
-                    countAccounts = GetAccountCustomers().Count;
+                    countAccounts = GetCustomers().Count;
                     break;
             }
             return countAccounts;
@@ -296,7 +357,8 @@ namespace PetStoreProject.Repositories.Accounts
 
         public void AddNewEmployment(Areas.Admin.ViewModels.AccountViewModel accountViewModel)
         {
-            using (var transaction = _context.Database.BeginTransaction()) {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
                 try
                 {
                     Models.Account account = new Models.Account();
@@ -322,7 +384,6 @@ namespace PetStoreProject.Repositories.Accounts
                     var accountId = _context.Accounts.FirstOrDefault(a => a.Email == accountViewModel.Email).AccountId;
 
 
-
                     if (accountId != null)
                     {
 
@@ -338,7 +399,7 @@ namespace PetStoreProject.Repositories.Accounts
                             return;
                         }
 
-                        var employee = new Employee()
+                        var employee = new Models.Employee()
                         {
                             FullName = accountViewModel.FullName,
                             DoB = dateOfBirth,
@@ -367,7 +428,7 @@ namespace PetStoreProject.Repositories.Accounts
         {
             bool checkExist = true;
             var account = _context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
-            if(account == null || account.IsDelete == true)
+            if (account == null || account.IsDelete == true)
             {
                 checkExist = false;
             }
@@ -382,8 +443,9 @@ namespace PetStoreProject.Repositories.Accounts
                 try
                 {
                     var account = _context.Accounts.FirstOrDefault(a => a.AccountId == accountId);
-                    var employee  = _context.Employees.FirstOrDefault(e => e.AccountId == accountId);
-                    if (account != null && employee != null) {
+                    var employee = _context.Employees.FirstOrDefault(e => e.AccountId == accountId);
+                    if (account != null && employee != null)
+                    {
                         account.IsDelete = true;
                         employee.IsDelete = true;
                         _context.SaveChanges();
@@ -410,5 +472,7 @@ namespace PetStoreProject.Repositories.Accounts
             }
             return null;
         }
+
+
     }
 }

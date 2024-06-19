@@ -3,7 +3,40 @@
 *@
 @{
 }
+<style>
+    .wg-filter {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
 
+    .form-search {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Adjust the gap as needed */
+    }
+
+        .form-search .show {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Adjust the gap as needed */
+        }
+
+        .form-search .date-range {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Adjust the gap as needed */
+        }
+
+    .text-tiny {
+        margin-right: 5px; /* Adjust the margin as needed */
+    }
+
+    .select select {
+        width: 100px;
+    }
+
+</style>
     <!-- main-content-wrap -->
     <div class="main-content-inner">
         <!-- main-content-wrap -->
@@ -33,26 +66,32 @@
             <!-- all-attribute -->
             <div class="wg-box">
                 <div class="flex items-center justify-between gap10 flex-wrap">
+
                     <div class="wg-filter flex-grow">
-                        <div class="show">
-                            <div class="text-tiny">Status</div>
-                            <div class="select">
-                                <select class="" style="width:100px">
-                                    <option>All</option>
-                                    <option>Pending</option>
-                                    <option>Replied</option>
-                                </select>
-                            </div>
-                        </div>
                         <form class="form-search">
-                            <fieldset class="name">
-                                <input type="text" placeholder="Search here..." class="" name="name" tabindex="2" value="" aria-required="true" required="">
-                            </fieldset>
-                            <div class="button-submit">
-                                <button class="" type="submit"><i class="icon-search"></i></button>
+                            <div class="show">
+                                <div class="text-tiny">Status</div>
+                                <div class="select">
+                                    <select style="width:100px; text-align: center" name="status">
+                                        <option value="0">All</option>
+                                        <option value="1">Pending</option>
+                                        <option value="2">Replied</option>
+                                    </select>
+                                </div>
                             </div>
+                            <div class="date-range">
+                                <label for="from">From:</label>
+                                <input type="date" name="from" />
+                                <label for="to">To:</label>
+                                <input type="date" name="to" />
+                            </div>
+                            <button type="submit"><i class="icon-search"></i></button>
                         </form>
                     </div>
+
+
+
+
                     <a class="tf-button style-1 w208" href=""><i class="icon-refresh-cw"></i>Refresh</a>
                 </div>
 

@@ -490,6 +490,7 @@ function generateProductList(products) {
                                 </div>
                                 <div class="item trash" onclick="deleteProduct(${product.id}, '${product.name}')">
                                     <i class="icon-trash-2"></i>
+                                    <i class="bi bi-trash2"></i>
                                 </div>
                             </div>
                         </div>

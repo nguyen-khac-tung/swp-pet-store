@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetStoreProject.Models;
 using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Category;
 
@@ -19,19 +18,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult List()
         {
-            var categories = _category.GetListCategory();
-            ViewData["categories"] = categories;
             var brands = _brand.GetListBrand();
             ViewData["brands"] = brands;
             return View();
         }
 
-        [HttpPost]
-        public JsonResult Create(string CategoryName, string BrandName)
-        {
-            var cateId = _category.CreateCategory(CategoryName);
-            return Json(new { cateId = cateId });
-        }
+
 
     }
 }

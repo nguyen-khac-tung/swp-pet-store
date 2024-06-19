@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Areas.Employee.ViewModels;
+using PetStoreProject.Filters;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
+using PetStoreProject.Repositories.Admin;
+using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -11,11 +15,13 @@ namespace PetStoreProject.Areas.Admin.Controllers
     {
         private readonly IAccountRepository _account;
         private readonly EmailService _emailService;
+        private readonly IAdminRepository _admin;
 
-        public AccountController(IAccountRepository account, EmailService emailService)
+        public AccountController(IAccountRepository account, EmailService emailService, IAdminRepository admin)
         {
             _account = account;
             _emailService = emailService;
+            _admin = admin;
         }
 
         [HttpGet]
@@ -118,6 +124,125 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
                     return Json(new { success = status });
                 }
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ProfileAccount()
+        {
+            //var email = HttpContext.Session.GetString("userEmail");
+
+            var email = "admin1@gmail.com";
+            var admin = _admin.GetAdmin(email);
+            if (admin == null)
+            {
+                return NotFound("Admin not found.");
+            }
+            var adminViewModel = new UserViewModel
+            {
+                UserId = admin.AdminId,
+                FullName = admin.FullName,
+                DoB = admin.DoB,
+                Gender = admin.Gender,
+                Phone = admin.Phone,
+                Address = admin.Address,
+                Email = email,
+                AccountId = admin.AccountId,
+                RoleName = "Quản trị viên"
+            };
+            return View("_ProfileUser",adminViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult ProfileAccount(UserViewModel admin)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+                //var oldEmail = HttpContext.Session.GetString("userEmail");
+                var oldEmail = "admin@gmail.com";
+                if (oldEmail != admin.Email)
+                {
+                    bool isEmailExist = _account.CheckEmailExist(admin.Email);
+                    if (isEmailExist)
+                    {
+                        ViewBag.EmailMess = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
+                        return View("_ProfileUser", admin);
+                    }
+                }
+
+                bool isPhoneValid = PhoneNumber.isValid(admin.Phone);
+                if (isPhoneValid == false)
+                {
+                    ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
+                    return View("_ProfileUser", admin);
+                }
+
+                if(admin.Address == null)
+                {
+                    ViewBag.Address = "Địa chỉ không hợp lệ. Vui lòng nhập lại";
+                    return View("_ProfileUser", admin);
+                }
+
+                if(admin.DoB >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+                {
+                    ViewBag.DoB = "Ngày sinh phải trước ngày hiện tại";
+                    return View("_ProfileUser", admin);
+                }
+
+                HttpContext.Session.SetString("userEmail", admin.Email);
+                HttpContext.Session.SetString("userName", admin.FullName);
+                _admin.UpdateProfileAdmin(admin);
+                return View("_ProfileUser", admin);
+            }
+            else
+            {
+                return View("_ProfileUser", admin);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            //var email = HttpContext.Session.GetString("userEmail");
+            var email = "admin1@fpt.edu.vn";
+            var ChangePasswordVM = new ChangePasswordViewModel { Email = email };
+            string? oldPassword = _account.GetOldPassword(email);
+            if (oldPassword != null)
+            {
+                ChangePasswordVM.OldPassword = oldPassword;
+            }
+            else
+            {
+                ChangePasswordVM.OldPassword = null;
+            }
+            return View("_ChangePasswordUser", ChangePasswordVM);
+        }
+
+
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePasswordViewModel ChangePasswordVM)
+        {
+            if (ChangePasswordVM.OldPassword != null)
+            {
+                var passwordStored = _account.GetOldPassword(ChangePasswordVM.Email);
+                bool isValid = BCrypt.Net.BCrypt.Verify(ChangePasswordVM.OldPassword, passwordStored);
+                if (isValid == false)
+                {
+                    ViewBag.Message = "Mật khẩu cũ không chính xác. Vui lòng thử lại.";
+                    return View("_ChangePasswordUser", ChangePasswordVM);
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                _account.ChangePassword(ChangePasswordVM);
+                return View("_ChangePasswordUser", ChangePasswordVM);
+            }
+            else
+            {
+                return View("_ChangePasswordUser", ChangePasswordVM);
             }
         }
     }

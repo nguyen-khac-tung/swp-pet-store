@@ -103,18 +103,13 @@ namespace PetStoreProject.Controllers
 			var email = HttpContext.Session.GetString("userEmail");
 			var customerId = _customer.GetCustomerId(email);
 			var product_detail = _product.GetDetail(productId);
-			List<int> listPID = _product.GetProductIDInWishList(customerId);
-
-			//feedback
-			List<FeedbackViewModels> listFeedback = _product.GetListFeedBack(productId);
-
 
 			ViewData["product_detail"] = product_detail;
 			ViewData["related_products"] = _product.getRelatedProduct(productId);
-			ViewData["listPID"] = listPID;
-			ViewData["listFeedback"] = listFeedback;
+			ViewData["listPID"] = _product.GetProductIDInWishList(customerId);
+            ViewData["listFeedback"] = _product.GetListFeedBack(productId);
 
-			return View();
+            return View();
 		}
 
 		[HttpPost]

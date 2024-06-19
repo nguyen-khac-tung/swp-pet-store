@@ -4688,7 +4688,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-category ul.table-title li:first-child {
-  width: 430px;
+  width: 350px;
   flex-shrink: 0;
 }
 .wg-table.table-all-category ul.table-title li:last-child {
@@ -4876,7 +4876,7 @@ select.h40 {
   color: var(--Heading);
 }
 .wg-table.table-all-user .user-item > .flex > div {
-  width: 100%;
+  width: 125px;
 }
 .wg-table.table-all-user .user-item > .flex > div:first-child {
   width: 277px;

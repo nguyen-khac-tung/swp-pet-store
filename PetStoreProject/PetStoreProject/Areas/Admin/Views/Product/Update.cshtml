@@ -126,7 +126,7 @@
                     <fieldset class="category">
                         <label class="body-title mb-10">Danh mục</label>
                         <div class="select">
-                            <select class="" id="category">
+                            <select class="" id="category" onchange="categorySelected()">
                                 @foreach (var category in categories)
                                 {
                                     <option value="@category.Id" selected="@(product.Category.CategoryId == category.Id)">@category.Name</option>
@@ -141,7 +141,7 @@
                             <select class="" id="product-category">
                                 @foreach (var productCategory in productCategories)
                                 {
-                                    <option value="@productCategory.Id" selected="@(product.ProductCategory.ProductCateId == productCategory.Id)">@productCategory.Name</option>
+                                    <option value="@productCategory.Id" class="category-@productCategory.CategoryId" selected="@(product.ProductCategory.ProductCateId == productCategory.Id)">@productCategory.Name</option>
                                 }
                             </select>
                             <span class="text-danger"></span>
@@ -536,7 +536,7 @@
     function saveChangeProductOption() {
         var productOptionId = $('#change').find('button').eq(0).val()
         var isExists = isExistsProductOption(false)
-            if (!isExists && confirmRequest('Bạn có muốn lưu thay đổi không?')) {
+        if (!isExists && confirmRequest('Bạn có muốn lưu thay đổi không?')) {
             var imgTag = $('.item.select-image img');
 
             var image = imgTag.attr('src');
@@ -549,7 +549,7 @@
             var attributeId = $('#attribute').val();
             var attributeName = $('#attribute option:selected').text();
 
-                var price = parseFloat($('#price').val().trim());
+            var price = parseFloat($('#price').val().trim());
 
             var isSoldOut = $('input[name="isSoldOutProductOption"]:checked').val().trim();
             var isDelete = $('input[name="isDeleteProductOption"]:checked').val();
@@ -566,19 +566,19 @@
             data.find('.size').text(sizeName);
 
             data.find('.price').attr('value', price);
-                data.find('.price').text(price.toLocaleString('en-US') + ' VND');
+            data.find('.price').text(price.toLocaleString('en-US') + ' VND');
 
 
-                data.find('.isSoldOut').attr('value', isSoldOut);
-                data.find('.isSoldOut').text((isSoldOut == 1) ? 'Hết hàng' : 'Còn hàng');
+            data.find('.isSoldOut').attr('value', isSoldOut);
+            data.find('.isSoldOut').text((isSoldOut == 1) ? 'Hết hàng' : 'Còn hàng');
 
-                if (isDelete == '1') {
-                    data.find('.isSoldOut').addClass('block-not-available')
-                    data.find('.isSoldOut').removeClass('block-available')
-                } else {
-                    data.find('.isSoldOut').removeClass('block-not-available')
-                    data.find('.isSoldOut').addClass('block-available')
-                }
+            if(isSoldOut == '1') {
+                data.find('.isSoldOut').addClass('block-not-available')
+                data.find('.isSoldOut').removeClass('block-available')
+            } else {
+                data.find('.isSoldOut').removeClass('block-not-available')
+                data.find('.isSoldOut').addClass('block-available')
+            }
 
             data.find('.isDelete').attr('value', isDelete);
             data.find('.isDelete').text((isDelete == 1) ? 'Ngừng bán' : 'Còn bán');
@@ -606,12 +606,10 @@
 
 
         var sizeId = $('#size').val();
-        var sizeName = $('#size option:selected').text();
+        var sizeName = $('#size option:selected').text().trim();
 
         var attributeId = $('#attribute').val();
-        var attributeName = $('#attribute option:selected').text();
-
-        var price = $('#price').val().trim()
+        var attributeName = $('#attribute option:selected').text().trim();
 
         var listProductOptions = $('#list-new-product-option')
         var numberOptions = listProductOptions.find('li').length;
@@ -624,92 +622,93 @@
                 var existingSizeName = existingOption.find('.sizeData').text().split(':')[1].trim();
                 var existingAttributeName = existingOption.find('.attributeData').text().split(':')[1].trim();
 
+                    console.log(existingSizeName, sizeName)
+                    console.log(existingAttributeName, attributeName)
+
                 if (existingSizeId == sizeId && existingAttributeId == attributeId
                     && sizeName == existingSizeName && existingAttributeName == attributeName) {
                     isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
+                    alert('Không thể thêm. Sản phẩm đã có tùy chọn này.')
                     return false; // Exit the loop if the option already exists
                 }
 
-                if (isNewProductOption) { 
-                    if (sizeId == 1 && attributeId == 1) {
-                        if (numberOptions != 0) {
-                            isExistsOption = true;
-                            alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
-                            return false;
-                        }
+                if (sizeId == 1 && attributeId == 1) {
+                    if (numberOptions != 0) {
+                        isExistsOption = true;
+                        alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
+                        return false;
                     }
-                }
-
-                if (existingSizeId == 1 && sizeId != 1) {
-                    isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm không thêm được kích thước này')
-                    return false;
                 }
 
                 if (existingAttributeId == 1 && attributeId != 1) {
                     isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm không thêm được thuộc tính này')
+                    alert('Không thể thêm. Hãy để trống loại cho tùy chọn sản phẩm.')
                     return false;
                 }
 
                 if (existingAttributeId != 1 && attributeId == 1) {
                     isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm đã có thuộc tính khác.')
+                    alert('Không thể thêm. Hãy chọn loại khác cho sản phẩm.')
+                    return false;
+                }
+
+                if (existingSizeId == 1 && sizeId != 1) {
+                    isExistsOption = true;
+                    alert('Không thể thêm. Hãy để trống kích thước cho tùy chọn sản phẩm.')
                     return false;
                 }
 
                 if (existingSizeId != 1 && sizeId == 1) {
                     isExistsOption = true;
-                    alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
+                    alert('Không thể thêm. Hãy chọn kích thước khác cho sản phẩm.')
                     return false;
                 }
             })
 
             var list_old_product_option = $('#list-old-product-option .data')
-            if (list_old_product_option > 1 && !isNewProductOption) {
-                    list_old_product_option.each(function () {
-                        var existingSizeId = $(this).find('.size').attr('value');
-                        var existingAttributeId = $(this).find('.attribute').attr('value');
+            numberOptions = list_old_product_option.length
 
-                        if (existingSizeId == sizeId && existingAttributeId == attributeId) {
+            if ((numberOptions > 1 && !isNewProductOption) || isNewProductOption) {
+                list_old_product_option.each(function () {
+                    var existingSizeId = $(this).find('.size').attr('value');
+                    var existingAttributeId = $(this).find('.attribute').attr('value');
+                    var isDelete = $(this).find('.isDelete').attr('value');
+                    var existingSizeName = $(this).find('.size').text()
+                    var existingAttributeName = $(this).find('.attribute').text()
+
+                    if (isNewProductOption){
+                        if (existingSizeId == sizeId && existingAttributeId == attributeId
+                            && sizeName == existingSizeName && existingAttributeName == attributeName) {
                             isExistsOption = true;
-                            alert('Không thể thêm. Tùy chọn sản phẩm đã tồn tại')
+                            alert('Không thể thêm. Sản phẩm của bạn đã có tùy chọn này.')
                             return false;
                         }
+                    }
 
-                        if (sizeId == 1 && attributeId == 1) {
-                            if (numberOptions != 0) {
-                                isExistsOption = true;
-                                alert('Không thể thêm. Sản phẩm của bạn đang có các tùy chọn khác nhau')
-                                return false;
-                            }
-                        }
+                    if (existingAttributeId == 1 && attributeId != 1) {
+                        isExistsOption = true;
+                        alert('Không thể thêm. Hãy để trống loại cho tùy chọn sản phẩm.')
+                        return false;
+                    }
 
-                        if (existingSizeId == 1 && sizeId != 1) {
-                            isExistsOption = true;
-                            alert('Không thể thêm. Tùy chọn sản phẩm không thêm được kích thước này')
-                            return false;
-                        }
+                    if (existingAttributeId != 1 && attributeId == 1) {
+                        isExistsOption = true;
+                        alert('Không thể thêm. Hãy chọn loại khác cho sản phẩm.')
+                        return false;
+                    }
 
-                        if (existingAttributeId == 1 && attributeId != 1) {
-                            isExistsOption = true;
-                            alert('Không thể thêm. Tùy chọn sản phẩm không thêm được thuộc tính này')
-                            return false;
-                        }
+                    if (existingSizeId == 1 && sizeId != 1) {
+                        isExistsOption = true;
+                        alert('Không thể thêm. Hãy để trống kích thước cho tùy chọn sản phẩm.')
+                        return false;
+                    }
 
-                        if (existingAttributeId != 1 && attributeId == 1) {
-                            isExistsOption = true;
-                            alert('Không thể thêm. Tùy chọn sản phẩm đã có thuộc tính khác.')
-                            return false;
-                        }
-
-                        if (existingSizeId != 1 && sizeId == 1) {
-                            isExistsOption = true;
-                            alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
-                            return false;
-                        }
-                    })
+                    if (existingSizeId != 1 && sizeId == 1) {
+                        isExistsOption = true;
+                        alert('Không thể thêm. Hãy chọn kích thước khác cho sản phẩm.')
+                        return false;
+                    }
+                })
             }
         }
         else{
@@ -717,13 +716,12 @@
         }
         return isExistsOption;
     }
-
+    
     function addProductOption() {
         var isExistsOption = isExistsProductOption(true);
         var listProductOptions = $('#list-new-product-option')
         if (!isExistsOption) {
             var imgTag = $('.item.select-image img');
-
             var image = imgTag.attr('src');
             var imageId = imgTag.attr('value') == '' ? 'new' : imgTag.attr('value');
 
@@ -742,8 +740,8 @@
                                         <div class="choose-image" style="width: 7%">
                                             <img value='${imageId}' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
                                         </div>
+                                        <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Loại: <span class="tf-color">${attributeName}</span></div>
                                         <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
-                                        <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Thuộc tính: <span class="tf-color">${attributeName}</span></div>
                                         <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
                                     </div>
                                 </li>
@@ -786,7 +784,8 @@
         });
 
         var img = $('<img>', {
-            src: divData.find('img').attr('src')
+            src: divData.find('img').attr('src'),
+            value: divData.find('img').attr('value')
         });
 
         var deleteBtn = $('<button>', {
@@ -888,7 +887,8 @@
                     });
 
                     var img = $('<img>', {
-                        src: e.target.result
+                        src: e.target.result,
+                        value: 'new'
                     });
 
                     var deleteBtn = $('<button>', {
@@ -1213,6 +1213,22 @@
         };
         image.src = src;
     }
+
+        categorySelected()
+        function categorySelected() {
+            var categoryId = $("#category").val();
+            console.log(categoryId)
+            $('#product-category option').each(function () {
+                $(this).addClass('hide')
+            })
+            var cateId = @Html.Raw(product.ProductCategory.ProductCateId)
+            $('#product-category .category-' + categoryId).each(function () {
+                $(this).removeClass('hide')
+                if(parseInt($(this).val()) == cateId){
+                    $(this).attr('selected', true)
+                }
+            })
+        }
         
 </script>
 }

@@ -4,9 +4,12 @@ using Newtonsoft.Json;
 using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
+using PetStoreProject.Repositories.Employee;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderService;
+using PetStoreProject.ViewModels;
 using System.Security.Cryptography.X509Certificates;
+using PetStoreProject.Helpers;
 
 namespace PetStoreProject.Areas.Employee.Controllers
 {
@@ -16,12 +19,14 @@ namespace PetStoreProject.Areas.Employee.Controllers
         private readonly IAccountRepository _account;
         private readonly IOrderRepository _order;
         private readonly IOrderServiceRepository _orderService;
+        private readonly IEmployeeRepository _employee;
 
-        public AccountController(IAccountRepository account, IOrderRepository order, IOrderServiceRepository service)
+        public AccountController(IAccountRepository account, IOrderRepository order, IOrderServiceRepository service, IEmployeeRepository employee)
         {
             _account = account;
             _order = order;
             _orderService = service;
+            _employee = employee;
         }
 
         [HttpGet]
@@ -37,7 +42,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             var pageSizeLocal = pageSize ?? 10;
 
-            var accounts = _account.GetAccounts(pageIndexLocal, pageSizeLocal, 3, searchName ?? "", sortName ?? "", selectStatus ?? "");
+            var accounts = _account.GetAccountCustomers(pageIndexLocal, pageSizeLocal, 3, searchName ?? "", sortName ?? "", selectStatus ?? "");
 
             var totalAccount = _account.GetAccountCount(3);
 
@@ -104,7 +109,80 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             return View(orderServices);
         }
+        [HttpGet]
+        public IActionResult ProfileAccount()
+        {
+            //var email = HttpContext.Session.GetString("userEmail");
 
+            var email = "duongnkhe171810@fpt.edu.vn";
+            var employee = _employee.GetEmployee(email);
+            if (employee == null)
+            {
+                return NotFound("Employee not found.");
+            }
+            var employeeViewModel = new UserViewModel
+            {
+                UserId = employee.EmployeeId,
+                FullName = employee.FullName,
+                DoB = employee.DoB,
+                Gender = employee.Gender,
+                Phone = employee.Phone,
+                Address = employee.Address,
+                Email = email,
+                AccountId = employee.AccountId,
+                RoleName = "Nhân viên"
+            };
+            return View("_ProfileUser", employeeViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult ProfileAccount(UserViewModel employee)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+                //var oldEmail = HttpContext.Session.GetString("userEmail");
+                var oldEmail = "duongnkhe171819@fpt.edu.vn";
+                if (oldEmail != employee.Email)
+                {
+                    bool isEmailExist = _account.CheckEmailExist(employee.Email);
+                    if (isEmailExist)
+                    {
+                        ViewBag.EmailMess = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
+                        return View("_ProfileUser", employee);
+                    }
+                }
+
+                bool isPhoneValid =  PhoneNumber.isValid(employee.Phone);
+                if (isPhoneValid == false)
+                {
+                    ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
+                    return View("_ProfileUser", employee);
+                }
+
+                if (employee.Address == null)
+                {
+                    ViewBag.Address = "Địa chỉ không hợp lệ. Vui lòng nhập lại";
+                    return View("_ProfileUser", employee);
+                }
+
+                if (employee.DoB >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+                {
+                    ViewBag.DoB = "Ngày sinh phải trước ngày hiện tại";
+                    return View("_ProfileUser", employee);
+                }
+
+                HttpContext.Session.SetString("userEmail", employee.Email);
+                HttpContext.Session.SetString("userName", employee.FullName);
+                _employee.UpdateProfileEmployee(employee);
+                return View("_ProfileUser", employee);
+            }
+            else
+            {
+                return View("_ProfileUser", employee);
+            }
+        }
 
     }
 }

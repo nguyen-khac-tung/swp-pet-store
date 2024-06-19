@@ -413,7 +413,7 @@ namespace PetStoreProject.Controllers
                 }
 
                 _service.UpdateOrderService(orderServiceInfo);
-                ViewData["UpdateSuccess"] = "Cửa hàng ANIMART đã nhận được đặt hẹn của bạn và sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
+                ViewData["UpdateSuccess"] = "Thông tin lịch hẹn của bạn đã được cập nhật thành công. Chúng tôi sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
                 return View(orderServiceInfo);
             }
             else

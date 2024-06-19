@@ -80,4 +80,8 @@
     <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
+  </ItemGroup>
+
 </Project>

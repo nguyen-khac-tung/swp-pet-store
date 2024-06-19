@@ -1,4 +1,6 @@
-﻿using PetStoreProject.Models;
+﻿using Microsoft.IdentityModel.Tokens;
+using PetStoreProject.Areas.Employee.ViewModels;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 using System.Globalization;
 
@@ -25,17 +27,17 @@ namespace PetStoreProject.Repositories.Service
                                 SupDescription = s.SupDescription,
                             }).ToList();
 
-            //foreach (var service in services)
-            //{
-            //    var Image = _context.Images.Where(i => i.ServiceId == service.ServiceId).FirstOrDefault();
-            //    service.ImageUrl = Image.ImageUrl;
-            //    var serviceOption = (from s in _context.Services
-            //                         join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
-            //                         where s.ServiceId == service.ServiceId
-            //                         orderby so.Price ascending
-            //                         select so).FirstOrDefault();
-            //    service.Price = serviceOption.Price;
-            //}
+            foreach (var service in services)
+            {
+                var Image = _context.Images.Where(i => i.ServiceId == service.ServiceId).FirstOrDefault();
+                service.ImageUrl = Image.ImageUrl;
+                var serviceOption = (from s in _context.Services
+                                     join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                                     where s.ServiceId == service.ServiceId
+                                     orderby so.Price ascending
+                                     select so).FirstOrDefault();
+                service.Price = serviceOption.Price;
+            }
 
             return services;
         }
@@ -65,16 +67,16 @@ namespace PetStoreProject.Repositories.Service
         public ServiceOptionViewModel GetFistServiceOption(int serviceId)
         {
             var listPetType = (from s in _context.Services
-                            join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
-                            where s.ServiceId == serviceId
-                            select so.PetType).Distinct().ToList();
+                               join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                               where s.ServiceId == serviceId
+                               select so.PetType).Distinct().ToList();
 
             var petType = listPetType.FirstOrDefault();
 
             var firstServiceOption = GetFirstServiceAndListWeightOfPetType(serviceId, petType);
 
             firstServiceOption.PetTypes = listPetType;
-            
+
             return firstServiceOption;
         }
 
@@ -150,7 +152,7 @@ namespace PetStoreProject.Repositories.Service
                                          && os.OrderTime == bookServiceInfo.OrderTime
                                          && os.ServiceOptionId == bookServiceInfo.ServiceOptionId
                                          select os).FirstOrDefault();
-            if(orderServiceDuplicate != null)
+            if (orderServiceDuplicate != null)
             {
                 return;
             }
@@ -288,6 +290,112 @@ namespace PetStoreProject.Repositories.Service
             orderService.IsDelete = true;
 
             _context.SaveChanges();
+        }
+
+        public List<BookServiceViewModel> GetOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM,
+            int pageIndex, int pageSize)
+        {
+            List<BookServiceViewModel> orderedServices = new List<BookServiceViewModel>();
+
+            // Determine the list of order services that satisfy the filter options
+            DateOnly? orderServiceDate = null;
+            if (DateTime.TryParseExact(orderServiceVM.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                orderServiceDate = DateOnly.FromDateTime(parsedDate);
+            }
+
+            string? customerNameOrPhone = orderServiceVM.NameOrPhone.IsNullOrEmpty() ? null : orderServiceVM.NameOrPhone;
+            int? serviceId = orderServiceVM.ServiceId.IsNullOrEmpty() ? null : Int32.Parse(orderServiceVM.ServiceId);
+
+            orderedServices = (from os in _context.OrderServices
+                               join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
+                               join s in _context.Services on so.ServiceId equals s.ServiceId
+                               where os.Status == orderServiceVM.Status
+                               && (customerNameOrPhone == null || os.Name.Contains(customerNameOrPhone) || os.Phone.Contains(customerNameOrPhone))
+                               && (serviceId == null || s.ServiceId == serviceId) //If serviceId is null, then return true and do not evaluate the subsequent condition.
+                               && (orderServiceDate == null || os.OrderDate == orderServiceDate)
+                               select new BookServiceViewModel
+                               {
+                                   OrderServiceId = os.OrderServiceId,
+                                   Name = os.Name,
+                                   Phone = os.Phone,
+                                   OrderDate = os.OrderDate.ToString("dd/MM/yyyy"),
+                                   OrderTime = os.OrderTime,
+                                   ServiceName = s.Name,
+                                   PetType = so.PetType,
+                                   Status = os.Status,
+                               }).ToList();
+            // -----------------------------
+
+            // Sort the list according to different criteria depending on the sorting parameter.
+            if (orderServiceVM.SortServiceId != null)
+            {
+                if (orderServiceVM.SortServiceId == "Ascending")
+                    orderedServices = orderedServices.OrderBy(o => o.OrderServiceId).ToList();
+                else
+                    orderedServices = orderedServices.OrderByDescending(o => o.OrderServiceId).ToList();
+            }
+
+            if (orderServiceVM.SortCustomerName != null)
+            {
+                if (orderServiceVM.SortCustomerName == "Ascending")
+                    orderedServices = orderedServices.OrderBy(o => o.Name).ToList();
+                else
+                    orderedServices = orderedServices.OrderByDescending(o => o.Name).ToList();
+            }
+
+            if (orderServiceVM.SortOrderDate != null)
+            {
+                if (orderServiceVM.SortOrderDate == "Ascending")
+                    orderedServices = orderedServices.OrderBy(o => 
+                    DateTime.ParseExact(o.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)).ToList();
+                else
+                    orderedServices = orderedServices.OrderByDescending(o => 
+                    DateTime.ParseExact(o.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)).ToList();
+            }
+
+            if (orderServiceVM.SortOrderTime != null)
+            {
+                if (orderServiceVM.SortOrderTime == "Ascending")
+                    orderedServices = orderedServices.OrderBy(o => o.OrderTime).ToList();
+                else
+                    orderedServices = orderedServices.OrderByDescending(o => o.OrderTime).ToList();
+            }
+            //-----------------------------
+
+            //Skip the number of elements depending on the index of the current page and the page size.
+            var orderedServicesDisplay = orderedServices.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+            //------------------------------
+
+            return orderedServicesDisplay;
+        }
+
+        public int GetTotalCountOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM)
+        {
+            DateOnly? orderServiceDate = null;
+            if (DateTime.TryParseExact(orderServiceVM.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                orderServiceDate = DateOnly.FromDateTime(parsedDate);
+            }
+
+            string? customerNameOrPhone = orderServiceVM.NameOrPhone.IsNullOrEmpty() ? null : orderServiceVM.NameOrPhone;
+            int? serviceId = orderServiceVM.ServiceId.IsNullOrEmpty() ? null : Int32.Parse(orderServiceVM.ServiceId);
+
+            var orderedServices = (from os in _context.OrderServices
+                                   join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
+                                   join s in _context.Services on so.ServiceId equals s.ServiceId
+                                   where os.Status == orderServiceVM.Status
+                                   && (customerNameOrPhone == null || os.Name.Contains(customerNameOrPhone) || os.Phone.Contains(customerNameOrPhone))
+                                   && (serviceId == null || s.ServiceId == serviceId)  //If serviceId is null, then return true and do not evaluate the subsequent condition.
+                                   && (orderServiceDate == null || os.OrderDate == orderServiceDate)
+                                   select new BookServiceViewModel
+                                   {
+                                       OrderServiceId = os.OrderServiceId,
+                                   }).ToList();
+
+            var totalItem = orderedServices.Count;
+            return totalItem;
         }
     }
 }

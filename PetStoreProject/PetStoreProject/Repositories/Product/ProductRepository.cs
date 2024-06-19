@@ -658,7 +658,7 @@ namespace PetStoreProject.Repositories.Product
         {
             try
             {
-                var productId = 0;
+                var productId = _context.Products.Max(p => p.ProductId) + 1;
 
                 var brandId = productCreateRequest.Brand.BrandId;
 
@@ -666,7 +666,8 @@ namespace PetStoreProject.Repositories.Product
                 {
                     var brand = new Models.Brand
                     {
-                        Name = productCreateRequest.Brand.Name
+                        Name = productCreateRequest.Brand.Name,
+                        IsDelete = false
                     };
 
                     _context.Brands.Add(brand);

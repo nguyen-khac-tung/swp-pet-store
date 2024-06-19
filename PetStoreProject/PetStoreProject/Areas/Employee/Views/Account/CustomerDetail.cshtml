@@ -181,10 +181,49 @@
     .card-style-table {
         border-radius: 20px !important;
     }
+
+    .scroll_vertical::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .scroll_vertical::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Màu nền */
+    }
+
+    /* Thiết lập màu của thanh cuộn */
+    .scroll_vertical::-webkit-scrollbar-thumb {
+        background-color: #888; /* Màu của thanh cuộn */
+        border-radius: 4px; /* Độ cong viền */
+    }
+
+        /* Thiết lập hành vi khi di chuột vào thanh cuộn */
+        .scroll_vertical::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* Màu khi di chuột vào */
+        }
 </style>
 <div class="main-content-inner main-content-style">
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
+        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+            <h3>Thông tin chi tiết khách hàng</h3>
+            <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                <li>
+                    <a href="/employee"><div class="text-tiny">Bảng điều khiển</div></a>
+                </li>
+                <li>
+                    <i class="icon-chevron-right"></i>
+                </li>
+                <li>
+                    <a href="listCustomer"><div class="text-tiny">Danh sách khách hàng</div></a>
+                </li>
+                <li>
+                    <i class="icon-chevron-right"></i>
+                </li>
+                <li>
+                    <div class="text-tiny">Thông tin chi tiết khách hàng</div>
+                </li>
+            </ul>
+        </div>
         <div class="profile_wrapper adp_top adp_bottom padding_none">
             <div class="container-xl px-4">
                 <!-- Account page navigation-->
@@ -536,6 +575,7 @@
         options.SearchTime = "";
         options.SearchName = "";
         options.SearchDate = "";
+        optionsStatus = "";
         resetSortOptions();
     }
 
@@ -637,8 +677,6 @@
         options.SortPrice = priceOrderService;
         serviceHistoryLoad(options);
     }
-
-
 
 </script>
 

@@ -23,9 +23,10 @@ namespace PetStoreProject.Repositories.Accounts
 
         public void ChangePassword(ChangePasswordViewModel ChangePasswordVM);
 
-        public List<AccountDetailViewModel> GetAccounts(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus);
         public List<CustomerDetailViewModel> GetAccountCustomers(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus);
 
+        public List<AdminVM.EmployeeDetailViewModel> GetAccountEmployees(int pageIndex, int pageSize, int userType, string searchName, string sortName, string selectedStatus);
+        
         public void AddNewEmployment(AdminVM.AccountViewModel accountViewModel);
 
         public bool IsExistAccount(int accountId);
@@ -34,6 +35,6 @@ namespace PetStoreProject.Repositories.Accounts
 
         public int GetAccountCount(int userType);
 
-        public AccountDetailViewModel? GetAccountByUserId(int userType, int userId);
+        public AccountDetailViewModel GetAccountCustomers(int customerId);
     }
 }

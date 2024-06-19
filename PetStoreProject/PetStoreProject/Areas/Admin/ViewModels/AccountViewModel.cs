@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using PetStoreProject.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace PetStoreProject.Areas.Admin.ViewModels
@@ -18,7 +19,9 @@ namespace PetStoreProject.Areas.Admin.ViewModels
         [Required(ErrorMessage = "Vui lòng chọn giới tính")]
         public bool Gender { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập ngày sinh")]
+        [DisplayFormat(NullDisplayText = "Vui lòng nhập ngày sinh")]
+        [Required(ErrorMessage = "Vui lòng nhập ngày sinh của bạn")]
+        [DateInPast(ErrorMessage = "Ngày sinh phải là ngày trong quá khứ.")]
         public string DoB { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]

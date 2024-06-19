@@ -37,7 +37,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var pageSizeLocal = pageSize ?? 10;
 
-            var accounts = _account.GetAccounts(pageIndexLocal, pageSizeLocal, 2, searchName ?? "", sortName ?? "", selectStatus ?? "");
+            var accounts = _account.GetAccountEmployees(pageIndexLocal, pageSizeLocal, 2, searchName ?? "", sortName ?? "", selectStatus ?? "");
 
             var totalAccount = _account.GetAccountCount(2);
 
@@ -65,13 +65,13 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 {
                     var emailMess = "Email này đã tồn tại trong hệ thống!\n Vui lòng sử dụng email khác để tạo tài khoản.";
 
-                    return Json(new { success = false, error = emailMess });
+                    return Json(new { success = false, errors = "email", message = emailMess });
                 }
                 else if (isValidPhone == false)
                 {
                     var phoneMess = "Số điện thoại không hợp lệ! Vui lòng nhập lại.";
 
-                    return Json(new { success = false, error = phoneMess });
+                    return Json(new { success = false, errors = "phone", message = phoneMess });
                 }
                 else
                 {

@@ -78,6 +78,7 @@
                             <div class="col-sm-9">
                                 <input asp-for="Email" type="email" class="form-control input-regis" id="email" placeholder="Nhập email" >
                                 <span asp-validation-for="Email" class="text-danger"></span>
+                                <div id="error-email-mess"></div>
                             </div>
                         </div>
                         <div class="form-group row input_add_style">
@@ -85,6 +86,7 @@
                             <div class="col-sm-9">
                                 <input asp-for="Phone" type="text" class="form-control input-regis" id="phone" placeholder="Nhập số điện thoại" >
                                 <span asp-validation-for="Phone" class="text-danger"></span>
+                                <div id="error-phone-mess"></div>
                             </div>
                         </div>
                         <div class="form-group row input_add_style">

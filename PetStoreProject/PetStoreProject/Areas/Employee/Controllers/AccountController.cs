@@ -62,7 +62,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
         [HttpGet]
         public IActionResult CustomerDetail(int userId)
         {
-            var account = _account.GetAccountByUserId(3, userId);
+            var account = _account.GetAccountCustomers(userId);
 
             return View(account);
         }
@@ -95,9 +95,9 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             var totalOrderServices = orderServices.Count;
 
-            ViewBag.searchOrderId = orderServiceModel.SearchOrderServiceId;
-            ViewBag.searchName = orderServiceModel.SearchName;
-            ViewBag.searchDate = orderServiceModel.SearchDate;
+            ViewBag.SearchOrderId = orderServiceModel.SearchOrderServiceId;
+            ViewBag.SearchName = orderServiceModel.SearchName;
+            ViewBag.SearchDate = orderServiceModel.SearchDate;
             ViewBag.SearchTime = orderServiceModel.SearchTime;
             ViewBag.Status = orderServiceModel.Status;
 

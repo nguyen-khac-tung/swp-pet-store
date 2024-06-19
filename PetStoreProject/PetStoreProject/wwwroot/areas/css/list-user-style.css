@@ -17,7 +17,7 @@
 
 .model_header_style {
     padding: 0px !important;
-    margin: 20px 10px 0 50px !important;
+    margin: 0px 10px 0 50px !important;
 }
 
 /*.modal_body_style {
@@ -30,7 +30,7 @@
 }
 
 .modal_body_style {
-    padding-top: 15px;
+    padding: 0px 20px 20px 20px
 }
 
 .nav-tabs .nav-link {
@@ -103,10 +103,7 @@
 
 /* list */
 
-#user-hover:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
+
 
 
 .account-non-active {
@@ -134,6 +131,10 @@
 .email, .user {
     max-width: 285px;
 }
+
+.total_fb .totalOrderService {
+    width: 675px!important;
+} 
 
 .status {
     max-width: 150px;
@@ -197,4 +198,10 @@
 
 .popup_delete {
     border-radius: 10px;
+}
+
+/* Add account employee*/
+
+.cursor_style {
+    cursor: pointer;
 }

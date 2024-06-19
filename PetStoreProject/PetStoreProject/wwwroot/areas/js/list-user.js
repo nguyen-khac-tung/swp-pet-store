@@ -2,58 +2,73 @@
 var queryString = window.location.search;
 var sortName = "";
 var selectStatus = "";
+var objects = [];
+var sortTotalOrder = "abc";
+var sortTotalOrderService = "abc";
+var sortTotalFeedback = "abc";
+var sortTotalOrderServiceEmployee = "abc";
 window.addEventListener('load', function () {
     load(1, 10, "", "", "");
 
 });
 
 function load(pageIndex, pageSize, searchName, sortName, selectStatus) {
-
     $.ajax({
         url: url,
-        type: 'Post',
+        type: 'POST',
         data: {
-            pageIndex: pageIndex, pageSize: pageSize,
-            searchName: searchName, sortName: sortName, selectStatus: selectStatus
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+            searchName: searchName,
+            sortName: sortName,
+            selectStatus: selectStatus
         },
         success: function (response) {
-            var accounts = response.accounts;
-
-            if (accounts.length > 0) {
-                $("#list-users").empty();
-                $('#no_data').empty();
-                $('.table-title').css('display', '');
-                $('#list-users').css('display', '');
-                $('#table-content').addClass('wg-table');
-                var html = "";
-                if (response.userType == 2) {
-                    for (var i = 0; i < accounts.length; i++) {
-                        html += elementHtmlEmployee(accounts[i]);
-                    }
-                } else {
-                    for (var i = 0; i < accounts.length; i++) {
-                        html += elementHtmlCustomer(accounts[i]);
-                    }
-                }
-                $("#list-users").html(html);
-                paging(response.currentPage, response.numberPage, response.pageSize);
-                console.log("data: ", response);
-            } else {
-                $('#pagination').empty();
-                $('.table-title').css("display", "none");
-                $('#list-users').css("display", "none");
-                $('#table-content').removeClass('wg-table');
-                $('#no_data').empty();
-                $('#table-content').append("<div id ='no_data'></div>");
-                $('#no_data').html('<div class="text-tiny" style="text-align: center; margin-top: 20px;"><h3>Không có dữ liệu!</h3></div>');
-                console.error("Unexpected response structure:", response);
-            }
-
+            handleLoadSuccess(response);
         },
         error: function (xhr, status, error) {
             console.error("Error:", xhr.responseText);
+            // Handle error scenario gracefully
         }
     });
+}
+
+function handleLoadSuccess(response) {
+    var accounts = response.accounts;
+    objects = response.accounts;
+
+    if (accounts.length > 0) {
+        displayAccounts(accounts, response.userType);
+        paging(response.currentPage, response.numberPage, response.pageSize);
+    } else {
+        displayNoData();
+        console.error("Unexpected response structure:", response);
+    }
+}
+
+function displayAccounts(accounts, userType) {
+    var html = "";
+    $("#list-users").empty().show();
+    $('.table-title').show();
+    $('#table-content').addClass('wg-table');
+    $('.empty-order-history').empty();
+    for (var i = 0; i < accounts.length; i++) {
+        if (userType == 2) {
+            html += elementHtmlEmployee(accounts[i]);
+        } else {
+            html += elementHtmlCustomer(accounts[i]);
+        }
+    }
+
+    $("#list-users").html(html);
+}
+
+function displayNoData() {
+    $('#pagination').empty();
+    $('.table-title').hide();
+    $('#list-users').hide();
+    $('#table-content').removeClass('wg-table');
+    $('#no_data').html('<div class="empty-order-history"> <i class="fas fa-box-open" style="font-size:100px; " ></i><h5>Không có dữ liệu</h5></div> ').show();
 }
 
 function elementHtmlEmployee(account) {
@@ -63,25 +78,27 @@ function elementHtmlEmployee(account) {
     html += '</div>';
     html += '<div class="flex items-center justify-between gap20 flex-grow" id="list-body">';
     html += '<div class="name" >';
-    html += '<a href="#" class="body-title-2" >' + account.fullName + '</a>';
+    html += '<a href="#" class="body-title-2" onclick="quickViewAccount(\'' + encodeURIComponent(JSON.stringify(account.accountDetail)) + '\')">' + account.accountDetail.fullName + '</a>';
     html += '</div>';
-    if (account.phone != null) {
-        html += '<div class="body-text phone" style="width:206px!important">' + account.phone + '</div>';
+    if (account.accountDetail.phone != null) {
+        html += '<div class="body-text phone" style="width:206px!important">' + account.accountDetail.phone + '</div>';
     } else {
         html += '<div class="body-text phone" style="font-weight:600;  font-style: italic;" > - </div>';
     }
-    html += '<div class="body-text email" style="width: 288px !important">' + account.email + '</div>';
-    if (account.isDelete == 1) {
+    html += '<div class="body-text email" style="width: 288px !important">' + account.accountDetail.email + '</div>';
+    html += '<div class="body-text total_fb text-center" style="width: 288px !important; padding-right: 141px;">' + account.totalResponseFeedback + '</div>';
+    html += '<div class="body-text totalOrderService text-center" style="width: 288px !important; padding-right: 170px;">' + account.totalOrderService + '</div>';
+    if (account.accountDetail.isDelete == 1) {
         html += '<div class="body-text status" style="width: 200px !important;"><span class="account-non-active">Không kích hoạt</span></div>';
     } else {
         html += '<div class="body-text status" style="width: 200px !important;" ><span class="account-active">Kích hoạt</span></div>';
     }
     html += '<div class="list-icon-function" >';
     html += '<div class="item eye">';
-    html += '<i class="icon-eye" onclick="quickViewAccount(\'' + encodeURIComponent(JSON.stringify(account)) + '\')"></i>';
+    html += '<i class="icon-eye" onclick="quickViewAccount(\'' + encodeURIComponent(JSON.stringify(account.accountDetail)) + '\')"></i>';
     html += '</div>';
     html += '<div class="item trash">';
-    html += `<i class="icon-trash-2" onclick="deleteAccount(${account.accountId}, '${account.fullName}', '${account.isDelete}')"></i>`;
+    html += `<i class="icon-trash-2" onclick="deleteAccount(${account.accountDetail.accountId}, '${account.accountDetail.fullName}', '${account.accountDetail.isDelete}')"></i>`;
     html += '</div>';
     html += '</div>';
     html += '</div>';
@@ -199,6 +216,46 @@ function sortByName() {
     }
     load(1, 10, searchName, sortName, selectStatus);
 }
+function sortByField(field, sortOrder, userType) {
+    sortOrder = (sortOrder === "abc") ? "zxy" : "abc";
+    objects.sort(function (a, b) {
+        if (sortOrder === "abc") {
+            return a[field] - b[field];
+        } else {
+            return b[field] - a[field];
+        }
+    });
+
+    var html = "";
+    if (userType == 2) {
+        for (var i = 0; i < objects.length; i++) {
+            html += elementHtmlEmployee(objects[i]);
+        }
+    } else {
+        for (var i = 0; i < objects.length; i++) {
+            html += elementHtmlCustomer(objects[i]);
+        }
+    }
+
+    $("#list-users").empty().html(html);
+
+    return sortOrder;
+}
+function sortByTotalOrder() {
+    sortTotalOrder = sortByField('totalOrder', sortTotalOrder, 3);
+}
+
+function sortByTotalOrderService() {
+    sortTotalOrderService = sortByField('totalOrderService', sortTotalOrderService, 3);
+}
+
+function sortByTotalFeedback() {
+    sortTotalFeedback = sortByField('totalResponseFeedback', sortTotalFeedback, 2);
+}
+
+function sortByTotalOrderServiceEmployee() {
+    sortTotalOrderServiceEmployee = sortByField('totalOrderService', sortTotalOrderServiceEmployee, 2);
+}
 
 function selectedStatus() {
     var searchName = document.getElementById("search-input").value;
@@ -237,20 +294,25 @@ $(function () {
                     $('#notification').modal('show');
                     $('#title-noti').html('Thành Công!');
                     $('#body-noti').html('Tài khoản nhân viên đã tạo thành công. Tiếp tục các hoạt động!');
+                    load(1, 10, "", "", "");
                 } else {
                     $('span.text-danger').html('');
-
-                    if (result.errors) {
-                        $.each(result.errors, function (key, errorMessages) {
-                            var errorMessage = errorMessages.join('<br>');
-                            $('span[data-valmsg-for="' + key + '"]').html(errorMessage);
-                        });
-                    } else {
-                        var errorMessage = `<div class="alert alert-danger alert-dismissible fade show rounded-0">
-                                                                <span>${result.error}</span>
+                    var errorMessage = `<div class="alert alert-danger alert-dismissible fade show rounded-0">
+                                                                <span>${result.message}</span>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                                             </div>`;
-                        $('#error-mess').html(errorMessage);
+                    if (result.errors == "email") {
+
+
+                        $('#error-email-mess').html(errorMessage);
+                    } else if (result.errors == "phone") {
+
+                        $('#error-phone-mess').html(errorMessage);
+                    } else {
+                        $.each(result.errors, function (key, errorMessages) {
+                            var errorMessage = errorMessages.join('<br>');
+                            $('span[data-valmsg-for="'+key+'"]').html(errorMessage);
+                        });
                     }
                 }
             }

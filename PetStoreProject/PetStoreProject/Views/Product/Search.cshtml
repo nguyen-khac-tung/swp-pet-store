@@ -140,7 +140,7 @@ else
     $(document).ready(function () {
         $('#load-more').click(function () {
             page++;
-            loadRecords('thức ăn', page);
+            loadRecords('@ViewData["key"]', page);
         });
     });
 
@@ -160,7 +160,7 @@ else
                 }
 
                 if (!response.listResult.length) {
-                    console.error("Thuộc tính listResult của response bị null hoặc undefined");
+                    alert("Bạn đã xem hết sản phẩm tìm kiếm");
                     return;
                 }
 

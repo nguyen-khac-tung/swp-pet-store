@@ -38,7 +38,7 @@ function handleLoadSuccess(response) {
     objects = response.accounts;
 
     if (accounts.length > 0) {
-        displayAccounts(accounts, response.userType);
+        displayAccounts(accounts, response.userType, response.totalAccount);
         paging(response.currentPage, response.numberPage, response.pageSize);
     } else {
         displayNoData();
@@ -46,7 +46,7 @@ function handleLoadSuccess(response) {
     }
 }
 
-function displayAccounts(accounts, userType) {
+function displayAccounts(accounts, userType, totalAccount) {
     var html = "";
     $("#list-users").empty().show();
     $('.table-title').show();
@@ -59,11 +59,12 @@ function displayAccounts(accounts, userType) {
             html += elementHtmlCustomer(accounts[i]);
         }
     }
-
+    $('#total-user').html('<strong>Tổng: ' + totalAccount + '</strong>' );
     $("#list-users").html(html);
 }
 
 function displayNoData() {
+    $('#total-user').empty();
     $('#pagination').empty();
     $('.table-title').hide();
     $('#list-users').hide();
@@ -86,8 +87,8 @@ function elementHtmlEmployee(account) {
         html += '<div class="body-text phone" style="font-weight:600;  font-style: italic;" > - </div>';
     }
     html += '<div class="body-text email" style="width: 288px !important">' + account.accountDetail.email + '</div>';
-    html += '<div class="body-text total_fb text-center" style="width: 288px !important; padding-right: 141px;">' + account.totalResponseFeedback + '</div>';
-    html += '<div class="body-text totalOrderService text-center" style="width: 288px !important; padding-right: 170px;">' + account.totalOrderService + '</div>';
+    html += '<div class="body-text total_fb text-center" style="width: 155px !important;">' + account.totalResponseFeedback + '</div>';
+    html += '<div class="body-text totalOrderService text-center" style="width: 150px !important; ">' + account.totalOrderService + '</div>';
     if (account.accountDetail.isDelete == 1) {
         html += '<div class="body-text status" style="width: 200px !important;"><span class="account-non-active">Không kích hoạt</span></div>';
     } else {

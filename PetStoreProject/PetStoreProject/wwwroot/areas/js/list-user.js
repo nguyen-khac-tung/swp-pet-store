@@ -351,14 +351,14 @@ function elementHtmlCustomer(account) {
                         <div class="body-text phone_customer_style" style="width:125px!important">${account.accountDetail.phone != null ? account.accountDetail.phone : "-"}</div>
                         <div class="body-text email">${account.accountDetail.email}</div>
                         <div class="body-text totalOrder text-center">${account.totalOrder}</div>
-                        <div class="body-text totalOrderService text-center">${account.totalOrderService}</div>
-                        <div class="body-text status">
+                        <div class="body-text totalOrderService text-center" style="width: 150px;">${account.totalOrderService}</div>
+                        <div class="body-text status text-center">
                             ${account.accountDetail.isDelete == 1 ?
             '<span class="account-non-active">Không kích hoạt</span>' :
             '<span class="account-active">Kích hoạt</span>'}
                         </div>
-                        <div class="list-icon-function">
-                            <div class="item eye">
+                        <div class="list-icon-function ">
+                            <div class="item eye text-center" style="width:90px">
                                 <a href="CustomerDetail?userId=${account.accountDetail.userId}"><i class="icon-eye"></i></a>
                             </div>
                         </div>

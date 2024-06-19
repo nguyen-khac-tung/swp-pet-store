@@ -143,7 +143,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
             {
 
                 //var oldEmail = HttpContext.Session.GetString("userEmail");
-                var oldEmail = "duongnkhe171819@fpt.edu.vn";
+                var oldEmail = "duongnkhe171810@fpt.edu.vn";
                 if (oldEmail != employee.Email)
                 {
                     bool isEmailExist = _account.CheckEmailExist(employee.Email);
@@ -184,5 +184,48 @@ namespace PetStoreProject.Areas.Employee.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            //var email = HttpContext.Session.GetString("userEmail");
+            var email = "duongnkhe171810@fpt.edu.vn";
+            var ChangePasswordVM = new ChangePasswordViewModel { Email = email };
+            string? oldPassword = _account.GetOldPassword(email);
+            if (oldPassword != null)
+            {
+                ChangePasswordVM.OldPassword = oldPassword;
+            }
+            else
+            {
+                ChangePasswordVM.OldPassword = null;
+            }
+            return View("_ChangePasswordUser", ChangePasswordVM);
+        }
+
+
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePasswordViewModel ChangePasswordVM)
+        {
+            if (ChangePasswordVM.OldPassword != null)
+            {
+                var passwordStored = _account.GetOldPassword(ChangePasswordVM.Email);
+                bool isValid = BCrypt.Net.BCrypt.Verify(ChangePasswordVM.OldPassword, passwordStored);
+                if (isValid == false)
+                {
+                    ViewBag.Message = "Mật khẩu cũ không chính xác. Vui lòng thử lại.";
+                    return View("_ChangePasswordUser", ChangePasswordVM);
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                _account.ChangePassword(ChangePasswordVM);
+                return View("_ChangePasswordUser", ChangePasswordVM);
+            }
+            else
+            {
+                return View("_ChangePasswordUser", ChangePasswordVM);
+            }
+        }
     }
 }

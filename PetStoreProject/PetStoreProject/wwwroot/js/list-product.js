@@ -5,7 +5,7 @@ var selectedSizes = [];
 var selectedStatus = [];
 var pageSize = 21;
 var pageIndex = 1;
-var selectedSort = "";
+var selectSort = "";
 var url = window.location.pathname;
 var rangeInput = document.querySelectorAll(".range-input input"),
     priceInput = document.querySelectorAll(".price-input input"),
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("status: " + selectedColors);
 
 
-        loadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -132,18 +132,14 @@ document.addEventListener('DOMContentLoaded', function () {
         range.style.right = "0%";
 
         console.log("Filters cleared");
-        loadData(url, pageSize, 1, [], selectedSort, priceMinInit, priceMaxInit, [], [], []);
+        loadData(url, pageSize, 1, [], selectSort, priceMinInit, priceMaxInit, [], [], []);
     });
 
 });
 
-function selectedSort() {
-    selectedSort = document.getElementById("selected_sort").value;
-    console.log("selected_sort: change" + selectedSort);
-    loadData(url, pageSize, pageIndex, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
-}
 
-function loadData(url, pageSize, page, selectedBrands, selectedSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
+
+function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
@@ -151,7 +147,7 @@ function loadData(url, pageSize, page, selectedBrands, selectedSort, priceInputM
         type: 'post',
         data: {
             url: url,
-            pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectedSort,
+            pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectSort,
             priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes,
             selectedStatus: selectedStatus
         },
@@ -354,7 +350,7 @@ function paging(currentPage, numberPage, pageSize) {
 function nextPage(page, pageSize) {
     console.log("Nextpage:");
 
-    loadData(url, pageSize, page, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, page, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 function changePageSize() {
     console.log("changePageSize:");
@@ -362,7 +358,7 @@ function changePageSize() {
     console.log("PriceMax: " + priceInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    loadData(url, pageSize, 1, selectedBrands, selectedSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
 }
 
 function formatVND(amount) {

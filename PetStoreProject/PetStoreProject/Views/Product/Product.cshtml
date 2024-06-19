@@ -693,6 +693,11 @@
             });
         });
     });
+    function selectedSort() {
+        selectSort = document.getElementById("selected_sort").value;
+        console.log("selected_sort: change" + selectSort);
+        loadData(url, pageSize, pageIndex, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    }
 
 </script>
 

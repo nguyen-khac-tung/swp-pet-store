@@ -49,7 +49,7 @@
                 <div class="wg-filter flex-grow">
                     <form class="form-search" onsubmit="return false;">
                         <fieldset>
-                            <input id="search-input" type="number" placeholder="Tìm kiếm theo tên người khách hàng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                            <input id="search-input" type="text" placeholder="Tìm kiếm theo tên người khách hàng" class="" name="name" tabindex="2" value="" aria-required="true" required="">
                         </fieldset>
                         <div class="button-submit">
                             <button onclick="search()"><i class="icon-search"></i></button>
@@ -67,7 +67,7 @@
 
             </div>
             <div class="wg-table table-all-user" id="table-content">
-                <ul class="table-title flex gap20 mb-14" style="min-width:1300px!important" id="title-table">
+                <ul class="table-title flex gap20 mb-14" style="min-width:1360px!important" id="title-table">
                     <li class="user ">
                         <div id="user-hover" onclick="sortByName()" class="no-select body-title user_style">Khách hàng <i class="bi bi-chevron-expand"></i></div>
                     </li>
@@ -78,19 +78,19 @@
                         <div class="body-title email" style="width: 262px;">Email</div>
                     </li>
                     <li>
-                        <div class="body-title" >Tổng đơn hàng</div>
+                        <div class="body-title">Tổng đơn hàng <i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li>
-                        <div class="body-title text-center" style="width:135px">Tổng đơn dịch vụ</div>
+                        <div class="body-title text-center" style="width:150px">Tổng đơn dịch vụ <i class="bi bi-chevron-expand"></i></div>
                     </li>
-                    <li class="status">
+                    <li class="status text-center" style="width:106px !important;">
                         <div class="body-title">Trạng thái</div>
                     </li>
                     <li>
-                        <div class="body-title">Hành động</div>
+                        <div class="body-title text-center" style="width:115px!important;">Hành động</div>
                     </li>
                 </ul>
-                <ul id="list-users" class="flex flex-column" style="min-width:1300px!important">
+                <ul id="list-users" class="flex flex-column" style="min-width:1363px !important">
                     <!-- data user -->
                 </ul>
             </div>

@@ -113,7 +113,7 @@
                                 <h3 id="user_name_style">@Model.FullName</h3>
                             </div>
                             <div style="display:inline; margin-top:10px;">
-                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" style="border:none" readonly/></label>
+                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" value="@Model.RoleName" style="border:none" readonly/></label>
                                 @* <select class="select-role">
                                 <option value="1">Quản trị viên</option>/option>
                                 <option value="2">Khách hàng</option>
@@ -184,6 +184,7 @@
                                 </div>
                                 <input asp-for="UserId" type="hidden" />
                                 <input asp-for="AccountId" type="hidden" />
+                                <input asp-for="RoleName" type="hidden"/>
                                 <div class="form-group row padding_t_b" id="btn_submit_update">
                                     <button class="btn btn-secondary btn_submit" type="submit">Cập nhật thông tin</button>
                                 </div>

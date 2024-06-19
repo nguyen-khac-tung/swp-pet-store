@@ -7,5 +7,6 @@ namespace PetStoreProject.Repositories.Brand
         public List<BrandViewModel> GetBrands();
         public Task<List<BrandViewForAdmin>> GetListBrand();
         public int CreateBrand(string BrandName);
+        public string UpdateBrand(int brandId, string brandName);
     }
 }

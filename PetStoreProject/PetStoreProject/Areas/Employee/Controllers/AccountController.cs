@@ -53,6 +53,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
             {
                 userType = 3,
                 accounts = accounts,
+                totalAccount = totalAccount,
                 currentPage = pageIndexLocal,
                 pageSize = pageSizeLocal,
                 numberPage = numberPage

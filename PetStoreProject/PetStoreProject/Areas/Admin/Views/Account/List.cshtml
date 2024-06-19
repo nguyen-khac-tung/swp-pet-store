@@ -15,6 +15,9 @@
         text-decoration: underline;
         cursor: pointer;
     }
+    .input_add_style label {
+        font-size:18px;
+    }
 </style>
 
 <div class="modal fade" id="deleteAccount" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -25,14 +28,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="padding:20px 50px 40px 50px!important">
-                <i class="fas fa-trash-alt"></i>
-                <label><h4>Bạn có chắc muốn xóa tài khoản nhân viên <strong id="nameAccountDelete"></strong>?</h4></label>
+                <p style="font-size:17px;">Bạn có chắc muốn xóa tài khoản nhân viên <strong id="nameAccountDelete"></strong>?</p>
                 <br />
                 <input type="hidden" id="accountId" />
                 <div class="input-group">
                     <input type="password" class="form-control" id="passwordAdmin" placeholder="Vui lòng nhập mật khẩu để xác nhận" required />
                     <div class="btn show-btn" onclick="showPassword()">
-                        <i class="bi bi-eye" id="eye-icon"></i>
+                        <i class="bi bi-eye eye_style" id="eye-icon"></i>
                     </div>
                 </div>
                 <div id="error-mess"></div>
@@ -93,7 +95,7 @@
                 <a class="tf-button style-1 w208 cursor_style" onclick="addAccount()"><i class="icon-plus"></i>Tạo tài khoản</a>
             </div>
             <div class="wg-table table-all-user" id="table-content">
-                <ul class="table-title flex gap20 mb-14" id="title-table" style="min-width:1670px!important;">
+                <ul class="table-title flex gap20 mb-14" id="title-table" style="min-width:1410px!important;">
                     <li class="user">
                         <div id="user-hover" onclick="sortByName()" class=" body-title no-select title_hover">Nhân viên <i class="bi bi-chevron-expand"></i></div>
                     </li>
@@ -103,10 +105,10 @@
                     <li class="email">
                         <div class="body-title">Email</div>
                     </li>
-                    <li class="total_fb">
+                    <li class="total_fb" style="width:  175px !important;">
                         <div class="body-title no-select title_hover" onclick="sortByTotalFeedback()">Phản hổi khách hàng <i class="bi bi-chevron-expand"></i></div>
                     </li>
-                    <li class="totalOrderService">
+                    <li class="totalOrderService" style="width: 148px !important;">
                         <div class="body-title no-select title_hover" onclick="sortByTotalOrderServiceEmployee()">Tổng đơn dịch vụ <i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li class="status">
@@ -116,7 +118,7 @@
                         <div class="body-title">Hành động</div>
                     </li>
                 </ul>
-                <ul id="list-users" class="flex flex-column" style="min-width:1680px!important;">
+                <ul id="list-users" class="flex flex-column" style="min-width:1410px!important">
                     <!-- data user -->
                 </ul>
             </div>

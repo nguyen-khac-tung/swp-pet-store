@@ -47,6 +47,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 userType = 2,
                 accounts = accounts,
+                totalAccount = totalAccount,
                 currentPage = pageIndexLocal,
                 pageSize = pageSizeLocal,
                 numberPage = numberPage

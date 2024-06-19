@@ -133,7 +133,7 @@
 }
 
 .total_fb .totalOrderService {
-    width: 675px!important;
+    width: 200px!important;
 } 
 
 .status {
@@ -173,11 +173,11 @@
     z-index: 0;
 }
 
-#eye-icon {
+.eye_style {
     font-size: 18px;
     position: relative;
     top: 5px;
-    left: 385px;
+    left: 365px;
     z-index: 1;
 }
 

@@ -4,14 +4,21 @@
 
 <style>
     .title_add_style {
-        padding: 10px 20px 0px 40px!important;
+        padding: 14px 25px 0px 55px !important;
     }
 
     .popup_add_style {
         border-radius:10px;
     }
     .input_add_style {
-        padding: 10px 0px;
+        padding: 12px 0px;
+    }
+    .body_add_style {
+        padding: 20px 50px 50px 50px;
+    }
+
+    .input_add_style label em {
+        color:red;
     }
 </style>
 
@@ -40,9 +47,8 @@
                 <h3 class="modal-title">Tạo tài khoản nhân viên</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body body_add_style">
                 <div class="container">
-                    <h2 class="mt-5"></h2>
                     <div id="error-mess"></div>
                     <form id="registrationForm" asp-controller="Account" asp-action="AddAccount" method="post">
                         <div class="form-group row input_add_style">

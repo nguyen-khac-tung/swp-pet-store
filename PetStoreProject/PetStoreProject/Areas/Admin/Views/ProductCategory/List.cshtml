@@ -112,7 +112,7 @@
         <!-- all-category -->
         <div class="wg-box">
             <div class="flex items-center justify-between gap10 flex-wrap">
-                <a class="btn btn-primary tf-button style-1 w208" href="new-category.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="create()"><i class=" icon-plus"></i>Thêm mới</a>
+                <a class="btn btn-primary tf-button style-1 w208" href="new-brand.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="create()"><i class=" icon-plus"></i>Thêm mới</a>
             </div>
             <div class="wg-table table-all-category">
                 <ul class="table-title flex gap20 mb-14">
@@ -194,7 +194,7 @@
                         </select>
                     </div>
                 </div>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -258,27 +258,88 @@
                         data: { ProductCategoryName: ProductCategoryName, CategoryId: categoryId },
                         success: function (res) {
                             var li = `<li class="product-item gap14">
-                                                            <div class="flex items-center justify-between gap20 flex-grow">
-                                                                <div class="name" style="width: 350px">
-                                                                            ${ProductCategoryName}
-                                                                </div>
-                                                                <div class="body-text">${categoryName}</div>
+                                                                    <div class="flex items-center justify-between gap20 flex-grow">
+                                                                        <div class="name" style="width: 350px">
+                                                                                    ${ProductCategoryName}
+                                                                        </div>
+                                                                        <div class="body-text">${categoryName}</div>
 
-                                                                <div class="body-text">0</div>
-                                                                <div class="body-text">0</div>
-                                                                <div class="body-text block-available isDelete">Còn bán</div>
-                                                                <div class="list-icon-function">
-                                                                    <div class="item edit" onclick="updateCategory(this)">
-                                                                        <i class="icon-edit-3"></i>
+                                                                        <div class="body-text">0</div>
+                                                                        <div class="body-text">0</div>
+                                                                        <div class="body-text block-available isDelete">Còn bán</div>
+                                                                        <div class="list-icon-function">
+                                                                            <div class="item edit" onclick="updateCategory(this)">
+                                                                                <i class="icon-edit-3"></i>
+                                                                            </div>
+                                                                            <div class="item trash" onclick="deleteCategory(this)">
+                                                                                <i class="icon-trash-2"></i>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="item trash" onclick="deleteCategory(this)">
-                                                                        <i class="icon-trash-2"></i>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>`
+                                                                </li>`
 
                             $('#list-category').append(li)
+                            alert('Thêm danh mục thành công')
+                        },
+                        error: function (res) {
+                            alert(res)
+                        }
+
+                    }
+                    )
+
+                }
+
+            }
+        }
+        function isExistsBrand(name) {
+            var isExists = false;
+            var brands = $('#list-brand .name')
+            brands.each(function () {
+                console.log($(this).text().toLowerCase().trim())
+                if ($(this).text().toLowerCase().trim() == name.toLowerCase().trim()) {
+                    isExists = true;
+                    return false
+                }
+            })
+
+            return isExists;
+        }
+        function createBrand() {
+            var BrandName = $('#name').val().trim()
+            var BrandId = $('#brandId').val()
+            if (isValidString(BrandName)) {
+                if (isExistsBrand(BrandName)) {
+                    alert('Tên danh mục đã tồn tại')
+                }
+                else {
+                    $('#staticBackdrop').modal('hide')
+                    $.ajax({
+                        url: "/Admin/Brand/Create",
+                        method: "POST",
+                        data: { BrandName: BrandName, BrandId: brandId },
+                        success: function (res) {
+                            var li = `<li class="product-item gap14">
+                                                                            <div class="flex items-center justify-between gap20 flex-grow">
+                                                                                <div class="name" style="width: 350px">
+                                                                                            ${BrandName}
+                                                                                </div>
+
+                                                                                <div class="body-text">0</div>
+                                                                                <div class="body-text">0</div>
+                                                                                <div class="body-text block-available isDelete">Còn bán</div>
+                                                                                <div class="list-icon-function">
+                                                                                    <div class="item edit" onclick="updateCategory(this)">
+                                                                                        <i class="icon-edit-3"></i>
+                                                                                    </div>
+                                                                                    <div class="item trash" onclick="deleteCategory(this)">
+                                                                                        <i class="icon-trash-2"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>`
+
+                            $('#list-brand').append(li)
                             alert('Thêm danh mục thành công')
                         },
                         error: function (res) {

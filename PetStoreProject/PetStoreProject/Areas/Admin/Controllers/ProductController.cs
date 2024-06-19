@@ -50,7 +50,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             categoryId = categoryId == 0 ? null : categoryId;
 
-            var productCategories = _productCategory.GetProductCategories(categoryId);
+            var productCategories = _productCategory.GetProductCategories(categoryId, true);
 
             pageSize = Math.Min(pageSize, 30);
 
@@ -78,7 +78,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         public IActionResult Create()
         {
             var categories = _category.GetCategories();
-            var productCategories = _productCategory.GetProductCategories(null);
+            var productCategories = _productCategory.GetProductCategories(null, false);
             var attributes = _attribute.GetAttributes();
             var sizes = _size.GetSizes();
             var brands = _brand.GetBrands();
@@ -140,7 +140,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             var product = _product.GetProductDetailForAdmin(productId);
             var categories = _category.GetCategories();
-            var productCategories = _productCategory.GetProductCategories(null);
+            var productCategories = _productCategory.GetProductCategories(null, false);
             var attributes = _attribute.GetAttributes();
             var sizes = _size.GetSizes();
             var brands = _brand.GetBrands();

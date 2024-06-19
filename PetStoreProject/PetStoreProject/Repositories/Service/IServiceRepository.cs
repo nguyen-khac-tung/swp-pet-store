@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Models;
+﻿using PetStoreProject.Areas.Employee.ViewModels;
+using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Service
@@ -31,5 +32,9 @@ namespace PetStoreProject.Repositories.Service
 
         public void DeleteOrderService(int orderServiceId);
 
+        public List<BookServiceViewModel> GetOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM,
+             int pageIndex, int pageSize);
+
+        public int GetTotalCountOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM);
     }
 }

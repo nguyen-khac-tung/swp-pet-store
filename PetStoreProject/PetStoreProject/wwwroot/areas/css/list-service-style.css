@@ -1,0 +1,19 @@
+﻿.datepicker {
+    max-width: 202px;
+    max-height: 233px;
+    font-size: 1.5rem;
+}
+
+    .datepicker td,
+    .datepicker th{
+        padding: 0px;
+        border: none;
+    }
+
+    .datepicker table {
+        border: none;
+    }
+
+    .datepicker .datepicker-days table {
+        min-height: 224px;
+    }

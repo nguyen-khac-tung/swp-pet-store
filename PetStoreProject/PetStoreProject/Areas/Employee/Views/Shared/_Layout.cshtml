@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="vi" lang="vi">
+<html xml:lang="vi" lang="vi">
 
 <head>
     <!-- Basic Page Needs -->
@@ -34,6 +34,7 @@
     <link rel="shortcut icon" href="/areas/images/favicon.png">
     <link rel="apple-touch-icon-precomposed" href="/areas/images/favicon.png">
 
+    @RenderSection("HeadOptional", required: false)
 </head>
 
 <body class="body">
@@ -880,9 +881,10 @@
     <script src="/areas/js/apexcharts/line-chart-4.js"></script>
     <script src="/areas/js/apexcharts/line-chart-5.js"></script>
     <script src="/areas/js/apexcharts/line-chart-6.js"></script>
-    <script src="/areas/js/switcher.js"></script>
-    <script src="/areas/js/theme-settings.js"></script>
+    @* <script src="/areas/js/switcher.js"></script> *@
+    @* <script src="/areas/js/theme-settings.js"></script> *@
     <script src="/areas/js/main.js"></script>
+    @RenderSection("ScriptOptional", required: false)
 
 </body>
 

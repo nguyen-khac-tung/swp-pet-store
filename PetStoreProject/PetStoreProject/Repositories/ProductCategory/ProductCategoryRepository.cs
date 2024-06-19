@@ -26,6 +26,18 @@ namespace PetStoreProject.Repositories.ProductCategory
             return productCategory.ProductCateId;
         }
 
+        public int DeleteProductCategory(int ProductCategoryId)
+        {
+            var productCategory = _context.ProductCategories.Find(ProductCategoryId);
+            if (productCategory != null)
+            {
+                productCategory.IsDelete = true;
+                _context.SaveChanges();
+                return 1;
+            }
+            return 0;
+        }
+
         public List<ProductCategoryViewForAdmin> GetListProductCategory()
         {
             var ProductsCategories = (from pc in _context.ProductCategories
@@ -35,7 +47,8 @@ namespace PetStoreProject.Repositories.ProductCategory
                                           Id = pc.ProductCateId,
                                           ProductCateName = pc.Name,
                                           CategoryName = c.Name,
-                                          IsDelete = pc.IsDelete
+                                          IsDelete = pc.IsDelete,
+                                          CategoryId = pc.CategoryId
                                       }).ToList();
 
             foreach (var item in ProductsCategories)
@@ -78,6 +91,20 @@ namespace PetStoreProject.Repositories.ProductCategory
             }
             return productCategories;
 
+        }
+
+        public int UpdateProductCategory(int ProductCategoryId, string ProductCategoryName, int CategoryId, bool isDelete)
+        {
+            var productCategory = _context.ProductCategories.Find(ProductCategoryId);
+            if (productCategory != null)
+            {
+                productCategory.Name = ProductCategoryName;
+                productCategory.CategoryId = CategoryId;
+                productCategory.IsDelete = isDelete;
+                _context.SaveChanges();
+                return 1;
+            }
+            return 0;
         }
     }
 }

@@ -489,8 +489,8 @@ function generateProductList(products) {
                                     <a href="/admin/product/update?productId=${product.id}"><i class="icon-edit-3"></i></a>
                                 </div>
                                 <div class="item trash" onclick="deleteProduct(${product.id}, '${product.name}')">
-                                    <i class="icon-trash-2"></i>
-                                    <i class="bi bi-trash2"></i>
+                                    <i class="icon-trash-2 ${!product.isDelete ? '' : 'hide'}"></i>
+                                    
                                 </div>
                             </div>
                         </div>

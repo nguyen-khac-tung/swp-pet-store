@@ -21,11 +21,11 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
             var productCategories = _productCategoryRepository.GetListProductCategory();
             ViewData["ProductCategories"] = productCategories;
-            var brands = _brand.GetListBrand();
+            var brands = await _brand.GetListBrand();
             ViewData["brands"] = brands;
             var categories = _category.GetCategories();
             ViewData["categories"] = categories;

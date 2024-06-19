@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Areas.Admin.ViewModels;
+﻿using Microsoft.EntityFrameworkCore;
+using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 
 namespace PetStoreProject.Repositories.Brand
@@ -42,27 +43,34 @@ namespace PetStoreProject.Repositories.Brand
             return brandViewModels;
         }
 
-        List<BrandViewForAdmin> IBrandRepository.GetListBrand()
+        public async Task<List<BrandViewForAdmin>> GetListBrand()
         {
-            var brands = _context.Brands.Select(c => new BrandViewForAdmin
+            var brandData = await (from b in _context.Brands
+                                   join p in _context.Products on b.BrandId equals p.BrandId into bp
+                                   from subp in bp.DefaultIfEmpty()
+                                   join po in _context.ProductOptions on subp.ProductId equals po.ProductId into pop
+                                   from subpo in pop.DefaultIfEmpty()
+                                   join od in _context.OrderItems on subpo.ProductOptionId equals od.ProductOptionId into odo
+                                   from subod in odo.DefaultIfEmpty()
+                                   group new { b, subp, subod } by new { b.BrandId, b.Name } into g
+                                   select new
+                                   {
+                                       BrandId = g.Key.BrandId,
+                                       Name = g.Key.Name,
+                                       Quantity = g.Count(x => x.subp != null),
+                                       QuantityOfSold = g.Count(x => x.subod != null)
+                                   }).ToListAsync();
+
+            var brands = brandData.Select(x => new BrandViewForAdmin
             {
-                Id = c.BrandId,
-                Name = c.Name
+                Id = x.BrandId,
+                Name = x.Name,
+                Quantity = x.Quantity,
+                QuantityOfSold = x.QuantityOfSold
             }).ToList();
-            foreach (var brand in brands)
-            {
-                brand.Quantity = (from b in brands
-                                  join p in _context.Products on b.Id equals p.BrandId
-                                  where b.Id == brand.Id
-                                  select b).Count();
-                brand.QuantityOfSold = (from b in brands
-                                        join p in _context.Products on b.Id equals p.BrandId
-                                        join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
-                                        join po in _context.ProductOptions on p.ProductId equals po.ProductId
-                                        join od in _context.OrderItems on po.ProductOptionId equals od.ProductOptionId
-                                        select po).Count();
-            }
+
             return brands;
         }
+
     }
 }

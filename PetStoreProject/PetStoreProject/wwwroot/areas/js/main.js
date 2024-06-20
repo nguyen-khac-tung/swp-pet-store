@@ -155,7 +155,7 @@
       $(".list-icon-function .trash").on("click", function (e) {
         $(this).parents(".product-item").remove();
         $(this).parents(".attribute-item").remove();
-        $(this).parents(".countries-item").remove();
+        //$(this).parents(".countries-item").remove();
         $(this).parents(".user-item").remove();
         $(this).parents(".roles-item").remove();
       })

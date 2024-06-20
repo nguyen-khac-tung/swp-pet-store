@@ -151,6 +151,7 @@ namespace PetStoreProject.Repositories.Service
                                          && os.OrderDate == orderDate
                                          && os.OrderTime == bookServiceInfo.OrderTime
                                          && os.ServiceOptionId == bookServiceInfo.ServiceOptionId
+                                         && os.Status == "Chưa xác nhận"
                                          select os).FirstOrDefault();
             if (orderServiceDuplicate != null)
             {
@@ -173,7 +174,16 @@ namespace PetStoreProject.Repositories.Service
                     orderService.OrderTime = bookServiceInfo.OrderTime;
                     orderService.ServiceOptionId = bookServiceInfo.ServiceOptionId;
                     orderService.Message = bookServiceInfo?.Message;
-                    orderService.Status = "Chưa xác nhận";
+
+                    if (bookServiceInfo.Status.IsNullOrEmpty())
+                    {
+                        orderService.Status = "Chưa xác nhận";
+                    }
+                    else
+                    {
+                        orderService.Status = bookServiceInfo.Status;
+                    }
+
                     orderService.IsDelete = false;
 
                     _context.Add(orderService);
@@ -292,6 +302,16 @@ namespace PetStoreProject.Repositories.Service
             _context.SaveChanges();
         }
 
+        public void UpdateStatusOrderService(int orderServiceId, string status)
+        {
+            var orderService = (from os in _context.OrderServices
+                                where os.OrderServiceId == orderServiceId
+                                select os).FirstOrDefault();
+            orderService.Status = status;
+            
+            _context.SaveChanges();
+        }
+
         public List<BookServiceViewModel> GetOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM,
             int pageIndex, int pageSize)
         {
@@ -347,10 +367,10 @@ namespace PetStoreProject.Repositories.Service
             if (orderServiceVM.SortOrderDate != null)
             {
                 if (orderServiceVM.SortOrderDate == "Ascending")
-                    orderedServices = orderedServices.OrderBy(o => 
+                    orderedServices = orderedServices.OrderBy(o =>
                     DateTime.ParseExact(o.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)).ToList();
                 else
-                    orderedServices = orderedServices.OrderByDescending(o => 
+                    orderedServices = orderedServices.OrderByDescending(o =>
                     DateTime.ParseExact(o.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)).ToList();
             }
 

@@ -32,6 +32,8 @@ namespace PetStoreProject.Repositories.Service
 
         public void DeleteOrderService(int orderServiceId);
 
+        public void UpdateStatusOrderService(int orderServiceId, string status);
+
         public List<BookServiceViewModel> GetOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM,
              int pageIndex, int pageSize);
 

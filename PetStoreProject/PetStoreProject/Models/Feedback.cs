@@ -18,8 +18,6 @@ public partial class Feedback
 
     public int? ServiceId { get; set; }
 
-    public bool Status { get; set; }
-
     [StringLength(100)]
     public string Name { get; set; } = null!;
 

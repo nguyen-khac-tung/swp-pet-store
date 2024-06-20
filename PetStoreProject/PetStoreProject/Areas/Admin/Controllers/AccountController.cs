@@ -133,7 +133,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             //var email = HttpContext.Session.GetString("userEmail");
 
-            var email = "admin1@gmail.com";
+            var email = "admin@gmail.com";
             var admin = _admin.GetAdmin(email);
             if (admin == null)
             {
@@ -195,10 +195,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 HttpContext.Session.SetString("userEmail", admin.Email);
                 HttpContext.Session.SetString("userName", admin.FullName);
                 _admin.UpdateProfileAdmin(admin);
+                ViewBag.StatusUpdateProfile = "Thành công";
                 return View("_ProfileUser", admin);
             }
             else
             {
+                ViewBag.StatusUpdateProfile = "Thất bại";
                 return View("_ProfileUser", admin);
             }
         }
@@ -207,7 +209,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         public ActionResult ChangePassword()
         {
             //var email = HttpContext.Session.GetString("userEmail");
-            var email = "admin1@fpt.edu.vn";
+            var email = "admin@gmail.com";
             var ChangePasswordVM = new ChangePasswordViewModel { Email = email };
             string? oldPassword = _account.GetOldPassword(email);
             if (oldPassword != null)
@@ -238,11 +240,13 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                ViewBag.StatusChangePassword = "Thành công";
                 _account.ChangePassword(ChangePasswordVM);
                 return View("_ChangePasswordUser", ChangePasswordVM);
             }
             else
             {
+                ViewBag.StatusChangePassword = "Thất bại";
                 return View("_ChangePasswordUser", ChangePasswordVM);
             }
         }

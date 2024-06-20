@@ -35,6 +35,8 @@ public partial class Feedback
     [Column(TypeName = "datetime")]
     public DateTime DateCreated { get; set; }
 
+    public bool Status { get; set; }
+
     public int? ResponseId { get; set; }
 
     [ForeignKey("ProductId")]

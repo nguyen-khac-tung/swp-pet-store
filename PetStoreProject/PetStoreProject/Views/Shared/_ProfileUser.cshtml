@@ -95,7 +95,59 @@
         font-size: 15px;
         border-radius: 5px;
     }
+    .btn_profile{
+        border-start-start-radius: 15px;
+        font-size: 18px;
+        position: absolute;
+        z-index: 1;
+        top: -47px;
+        right: 179px;
+        padding: 10px;
+    }
+    .btn_changePassword {
+        border-start-end-radius: 15px;
+        font-size: 18px;
+        position: absolute;
+        top: -48px;
+        z-index: 1;
+        right: 0px;
+        padding: 10px
+    }
+    .btn_active_style:active {
+        background: #f0f2f6;
+        border: none;
+        color: black;
+    }
+
+    .btn_click_change .active{
+        background: #f0f2f6;
+        border: none;
+        color: black;
+    }
+
+    .link_style:hover {
+        color: #ffff;
+    }
 </style>
+
+<div id="notification" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header" style="padding:auto!important; margin:auto!important">
+                <div class="icon-box">
+                    <i class="material-icons">&#xE876;</i>
+                </div>
+                <h4 class="modal-title w-100" id="title-noti"></h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center" id="body-noti"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success btn-block" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="main-content-inner main-content-style">
     <!-- main-content-wrap -->
@@ -189,6 +241,11 @@
                                     <button class="btn btn-secondary btn_submit" type="submit">Cập nhật thông tin</button>
                                 </div>
                             </form>
+                            <div class="btn_click_change">
+                                <button class="btn btn-secondary btn_profile active btn_active_style">Thông tin tài khoản</button>
+                                <button class="btn btn-secondary btn_changePassword btn_active_style"><a class="link_style" href="changePassword">Thay đổi mật khẩu</a></button>
+                            </div>
+                            <input type="hidden" id="status_change" value="@ViewBag.StatusUpdateProfile" />
                         </div>
                     </div>
                 </div>
@@ -196,3 +253,16 @@
         </div>
     </div>
 </div>
+<script>
+    window.addEventListener('load', function () {
+        if ($('#status_change').val() == "Thành công") {
+            $('#notification').modal("show");
+            $('#title-noti').html("Thông báo");
+            $('#body-noti').html("Cập nhật thành công!");
+        } else if ($('#status_change').val() == "Thất bại") {
+            $('#notification').modal("show");
+            $('#title-noti').html("Thông báo");
+            $('#body-noti').html("Cập nhật thất bại!");
+        }
+    });
+</script>

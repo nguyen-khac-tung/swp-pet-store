@@ -87,8 +87,8 @@ function elementHtmlEmployee(account) {
         html += '<div class="body-text phone" style="font-weight:600;  font-style: italic;" > - </div>';
     }
     html += '<div class="body-text email" style="width: 288px !important">' + account.accountDetail.email + '</div>';
-    html += '<div class="body-text total_fb text-center" style="width: 155px !important;">' + account.totalResponseFeedback + '</div>';
-    html += '<div class="body-text totalOrderService text-center" style="width: 150px !important; ">' + account.totalOrderService + '</div>';
+    html += '<div class="body-text total_fb text-center" style="width: 180px !important;">' + account.totalResponseFeedback + '</div>';
+    html += '<div class="body-text totalOrderService text-center" style="width: 152px !important; ">' + account.totalOrderService + '</div>';
     if (account.accountDetail.isDelete == 1) {
         html += '<div class="body-text status" style="width: 200px !important;"><span class="account-non-active">Không kích hoạt</span></div>';
     } else {

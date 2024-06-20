@@ -36,9 +36,9 @@
                             <button type="submit"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                    <div class="select" style="width: 230px;">
+                    <div class="select select-orderdate">
                         <div class="input-group date filter-datepicker" >
-                            <input type="text" id="order-date-search-pending" onchange="searchOrderDatePending()">
+                            <input type="text" id="order-date-search-pending" onchange="searchOrderDatePending()" placeholder="Nhập ngày">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             </div>
@@ -139,9 +139,9 @@
                             <button type="submit"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                    <div class="select" style="width: 230px;">
+                    <div class="select select-orderdate">
                         <div class="input-group date filter-datepicker" >
-                            <input type="text" id="order-date-search-confirmed" onchange="searchOrderDateConfirmed()">
+                            <input type="text" id="order-date-search-confirmed" onchange="searchOrderDateConfirmed()" placeholder="Nhập ngày">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             </div>
@@ -242,15 +242,15 @@
                             <button type="submit"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                    <div class="select" style="width: 230px;">
+                    <div class="select select-orderdate">
                         <div class="input-group date filter-datepicker">
-                            <input type="text" id="order-date-search-paid" onchange="searchOrderDatePaid()">
+                            <input type="text" id="order-date-search-paid" onchange="searchOrderDatePaid()" placeholder="Nhập ngày" />
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap10">
+                    <div class="flex gap10 flex-grow-1">
                         <div class="select w200">
                             <select id="service-id-search-paid" onchange="searchServicePaid()">
                                 <option value="">--Tất cả dịch vụ--</option>
@@ -1282,6 +1282,7 @@
             });
         };
     </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
 }

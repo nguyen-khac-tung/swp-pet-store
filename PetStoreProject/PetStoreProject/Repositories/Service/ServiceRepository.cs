@@ -266,6 +266,13 @@ namespace PetStoreProject.Repositories.Service
                                           Message = os.Message,
                                           Status = os.Status,
                                       }).FirstOrDefault();
+
+            var employeeId = _context.OrderServices.Where(os => os.OrderServiceId == orderServiceId).FirstOrDefault()?.EmployeeId;
+            if (employeeId != null)
+            {
+                orderServiceDetail.EmployeeName = _context.Employees.Where(e => e.EmployeeId == employeeId).FirstOrDefault()?.FullName;
+            }
+
             return orderServiceDetail;
         }
 
@@ -302,13 +309,18 @@ namespace PetStoreProject.Repositories.Service
             _context.SaveChanges();
         }
 
-        public void UpdateStatusOrderService(int orderServiceId, string status)
+        public void UpdateStatusOrderService(int orderServiceId, string status, int employeeId)
         {
             var orderService = (from os in _context.OrderServices
                                 where os.OrderServiceId == orderServiceId
                                 select os).FirstOrDefault();
             orderService.Status = status;
-            
+
+            if(employeeId != 0)
+            {
+                orderService.EmployeeId = employeeId;
+            }
+
             _context.SaveChanges();
         }
 

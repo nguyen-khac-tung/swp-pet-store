@@ -4,6 +4,7 @@ using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.Employee;
 
 namespace PetStoreProject.Areas.Employee.Controllers
 {
@@ -11,10 +12,12 @@ namespace PetStoreProject.Areas.Employee.Controllers
     public class ServiceController : Controller
     {
         private readonly IServiceRepository _service;
+        private readonly IEmployeeRepository _employee;
 
-        public ServiceController(IServiceRepository service)
+        public ServiceController(IServiceRepository service, IEmployeeRepository employee)
         {
             _service = service;
+            _employee = employee;
         }
 
         public IActionResult List()
@@ -172,7 +175,13 @@ namespace PetStoreProject.Areas.Employee.Controllers
         [HttpGet]
         public BookServiceViewModel UpdateStatusOrderService(int orderServiceId, string status)
         {
-            _service.UpdateStatusOrderService(orderServiceId, status);
+            int employeeId = 0;
+            if (status == "Đã thanh toán")
+            {
+                var email = HttpContext.Session.GetString("userEmail");
+                employeeId = _employee.GetEmployee(email).EmployeeId;
+            }
+            _service.UpdateStatusOrderService(orderServiceId, status, employeeId);
             return _service.GetOrderServiceDetail(orderServiceId);
         }
 

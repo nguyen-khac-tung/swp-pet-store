@@ -109,19 +109,25 @@
         @if (Model.Status != "Đã thanh toán")
         {
             <div class="px-3 text-center mt-3 ">
-                <button type="submit" class="btn btn-success py-2">Lưu Thay Đổi</button>
+                <button type="submit" class="btn btn-success">Lưu Thay Đổi</button>
             </div>
         }
         @if (Model.Status == "Chưa xác nhận")
         {
             <div class="text-center mt-3 ">
-                <a class="btn btn-primary confirmed-btn py-2" data-orderserviceid="@Model.OrderServiceId">Xác nhận</a>
+                <a class="btn btn-primary confirmed-btn" data-orderserviceid="@Model.OrderServiceId">Xác nhận</a>
             </div>
         }
         @if (Model.Status == "Đã xác nhận")
         {
             <div class="text-center mt-3 ">
-                <a class="btn btn-primary paid-btn py-2" data-orderserviceid="@Model.OrderServiceId">Đã thanh toán</a>
+                <a class="btn btn-primary paid-btn" data-orderserviceid="@Model.OrderServiceId">Đã thanh toán</a>
+            </div>
+        }
+        @if (Model.Status == "Đã thanh toán")
+        {
+            <div class="me-auto text-center fs-4 mt-4">
+                <i>*Nhân viên thanh toán: @Model.EmployeeName</i>
             </div>
         }
     </div>
@@ -129,8 +135,8 @@
 
     @if (ViewData["UpdateSuccess"] != null)
     {
-        <div class="col-md-12 mt-3 update-sucsess">
-            <div class="alert alert-success alert-dismissible fade show rounded-2 mb-0">
+        <div class="col-md-12 update-sucsess">
+            <div class="alert alert-success alert-dismissible fade show rounded-3 mb-0">
                 <span>@Html.Raw(@ViewData["UpdateSuccess"])</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>

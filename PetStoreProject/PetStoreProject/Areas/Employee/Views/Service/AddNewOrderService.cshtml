@@ -108,14 +108,14 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <div class="px-3 text-center mt-3 ">
-            <button type="submit" class="btn btn-primary py-2">Tạo đơn</button>
+        <div class="text-center mt-3 ">
+            <button type="submit" class="btn btn-primary btn-add-new px-4">Tạo đơn</button>
         </div>
     </div>
 
     @if (ViewData["CreateSuccess"] != null)
     {
-        <div class="col-md-12 mt-3">
+        <div class="col-md-12 update-sucsess">
             <div class="alert alert-success alert-dismissible fade show rounded-2 mb-0">
                 <span>@Html.Raw(@ViewData["CreateSuccess"])</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>

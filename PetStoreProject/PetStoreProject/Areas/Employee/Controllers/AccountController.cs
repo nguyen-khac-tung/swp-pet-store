@@ -124,9 +124,8 @@ namespace PetStoreProject.Areas.Employee.Controllers
         [HttpGet]
         public IActionResult ProfileAccount()
         {
-            //var email = HttpContext.Session.GetString("userEmail");
+            var email = HttpContext.Session.GetString("userEmail");
 
-            var email = "duongnkhe171810@fpt.edu.vn";
             var employee = _employee.GetEmployee(email);
             if (employee == null)
             {
@@ -155,8 +154,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
             {
                 var errors = new Dictionary<string, string>();
 
-                //var oldEmail = HttpContext.Session.GetString("userEmail");
-                var oldEmail = "admin@gmail.com";
+                var oldEmail = HttpContext.Session.GetString("userEmail");
                 if (oldEmail != employee.Email)
                 {
                     bool isEmailExist = _account.CheckEmailExist(employee.Email);
@@ -207,8 +205,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
         [HttpGet]
         public ActionResult ChangePassword()
         {
-            //var email = HttpContext.Session.GetString("userEmail");
-            var email = "duongnkhe171810@fpt.edu.vn";
+            var email = HttpContext.Session.GetString("userEmail");
             var ChangePasswordVM = new ChangePasswordViewModel { Email = email };
             string? oldPassword = _account.GetOldPassword(email);
             if (oldPassword != null)
@@ -247,5 +244,6 @@ namespace PetStoreProject.Areas.Employee.Controllers
                 return View("_ChangePasswordUser", ChangePasswordVM);
             }
         }
+
     }
 }

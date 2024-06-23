@@ -102,7 +102,16 @@ namespace PetStoreProject.Repositories.OrderService
             else if (orderServiceModel.SortPrice == "zxy")
                 orderServices = orderServices.OrderByDescending(o => o.Price).ToList();
 
+            orderServices = orderServices.Skip((orderServiceModel.PageIndex - 1) * orderServiceModel.PageSize).Take(orderServiceModel.PageSize).ToList();
+
             return orderServices;
+        }
+
+        public int GetCountOrderService(int customerId)
+        {
+            int count = GetOrderServiceDetailByUserId(customerId).Count;
+
+            return count;
         }
     }
 }

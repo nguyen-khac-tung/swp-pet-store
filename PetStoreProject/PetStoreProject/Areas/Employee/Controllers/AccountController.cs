@@ -74,14 +74,19 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             var orders = _order.GetOrderDetailByCondition(orderModel);
 
-            var totalOrders = orders.Count;
+            var totalOrders = _order.GetCountOrder(orderModel.UserId);
 
             ViewBag.searchOrderId = orderModel.SearchOrderId;
             ViewBag.searchName = orderModel.SearchName;
             ViewBag.searchDateOrder = orderModel.SearchDate;
-
             ViewBag.totalOrders = totalOrders;
 
+            var numberPage = (int)Math.Ceiling((double) totalOrders / orderModel.pageSize);
+            ViewBag.numberPage = numberPage;
+            ViewBag.pageIndex = orderModel.pageIndex;
+            ViewBag.pageSize = orderModel.pageSize;
+
+            // Export Excel
             string json = JsonConvert.SerializeObject(orders);
 
             ViewBag.json = json;
@@ -94,7 +99,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
         {
             List<OrderServicesDetailViewModel> orderServices = _orderService.GetOrderServicesByCondition(orderServiceModel);
 
-            var totalOrderServices = orderServices.Count;
+            var totalOrderServices = _orderService.GetCountOrderService(orderServiceModel.UserId);
 
             ViewBag.SearchOrderId = orderServiceModel.SearchOrderServiceId;
             ViewBag.SearchName = orderServiceModel.SearchName;
@@ -104,6 +109,12 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             ViewBag.totalOrderServices = totalOrderServices;
 
+            var numberPage = (int)Math.Ceiling((Double) totalOrderServices / orderServiceModel.PageSize);
+            ViewBag.numberPage = numberPage;
+            ViewBag.pageIndex = orderServiceModel.PageIndex;
+            ViewBag.pageSize = orderServiceModel.PageSize;
+
+            // Export Excel
             string json = JsonConvert.SerializeObject(orderServices);
 
             ViewBag.json = json;

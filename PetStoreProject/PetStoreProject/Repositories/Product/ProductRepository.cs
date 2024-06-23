@@ -210,33 +210,6 @@ namespace PetStoreProject.Repositories.Product
             return productOptions;
         }
 
-        public List<PetStoreProject.Models.Image> GetImagesByProductId(int productId)
-        {
-            var images = (from i in _context.Images
-                          join po in _context.ProductOptions on i.ImageId equals po.ImageId
-                          where po.ProductId == productId
-                          select i).ToList();
-            return images;
-        }
-
-        public List<PetStoreProject.Models.Attribute> GetAttributesByProductId(int productId)
-        {
-            var attributes = (from a in _context.Attributes
-                              join po in _context.ProductOptions on a.AttributeId equals po.AttributeId
-                              where po.ProductId == productId
-                              select a).ToList();
-            return attributes;
-        }
-
-        public List<PetStoreProject.Models.Size> GetSizesByProductId(int productId)
-        {
-            var sizes = (from s in _context.Sizes
-                         join po in _context.ProductOptions on s.SizeId equals po.SizeId
-                         where po.ProductId == productId
-                         select s).ToList();
-            return sizes;
-        }
-
         public PetStoreProject.Models.Brand GetBrandByProductId(int productId)
         {
             var brand = (from b in _context.Brands

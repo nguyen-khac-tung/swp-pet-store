@@ -3,6 +3,11 @@
     public class OrderModel
     {
         public int UserId { get; set; }
+
+        public int pageIndex { get; set; }
+
+        public int pageSize { get; set; }
+
         public string SortOrderId { get; set; }
 
         public string SortName { get; set; }

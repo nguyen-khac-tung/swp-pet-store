@@ -76,7 +76,16 @@ namespace PetStoreProject.Repositories.Order
             else if (orderModel.SortPrice == "zxy")
                 orders = orders.OrderByDescending(o => o.TotalAmount).ToList();
 
+            orders = orders.Skip((orderModel.pageIndex - 1) * orderModel.pageSize).Take(orderModel.pageSize).ToList();
+
             return orders;
+        }
+
+        public int GetCountOrder(int customerId)
+        {
+            int countOrder = GetOrderDetailByCustomerId(customerId).Count;
+
+            return countOrder;
         }
     }
 }

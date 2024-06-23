@@ -102,7 +102,7 @@
         gap: 10px 20px !important;
     }
     .card-style-table {
-        border-radius: 20px!important;
+        border-radius: 10px!important;
     }
 
     
@@ -203,7 +203,7 @@
                             <div class="body-title btn_hover">Tổng số tiền<i class="bi bi-chevron-expand"></i></div>
                         </li>
                     </ul>
-                    <ul id="list-users" class="flex flex-column table_width_style scroll_vertical scroll-hozirotal">
+                    <ul id="list-users" class="flex flex-column table_width_style scroll-hozirotal">
 
                         <!-- data user -->
                         @foreach (var service in Model)
@@ -245,11 +245,60 @@
                 </div>
             
             <div class="divider"></div>
-            <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
-                <div id="total-user">Tổng @ViewBag.totalOrderServices đơn đặt dịch vụ</div>
-                <div class="text-tiny" id="no_data"></div>
-                <div id="pagination"></div>
-                    <button onclick="button(@ViewBag.json)"></button>
+            <div class="flex items-center justify-between flex-wrap gap40 row" style="font-size:16px;">
+                    <div id="total-user" class="col-lg-3 col-md-3"><strong>Tổng @ViewBag.totalOrderServices đơn đặt dịch vụ</strong></div>
+                @* <div class="text-tiny col-md-3" id="no_data"></div> *@
+                    <div id="pagination" class="col-lg-8 col-md-8 pagi_right" style="text-align:right">
+                        <nav aria-label="Page navigation example">
+                            <ul id="pagination">
+                                @if ((int)@ViewBag.numberPage > 1)
+                                {
+                                    @if ((int)ViewBag.pageIndex > 1)
+                                    {
+                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageService(@(ViewBag.pageIndex - 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang trước</a></li>
+                                    }
+
+                                    var startPage = Math.Max(1, (int)ViewBag.pageIndex - 2);
+                                    var endPage = Math.Min((int)ViewBag.numberPage, (int)ViewBag.pageIndex + 2);
+
+                                    @if (startPage > 1)
+                                    {
+                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageService(1, @(ViewBag.pageSize))" href="javascript:void(0);">1</a></li>
+                                        if (startPage > 2)
+                                        {
+                                            <li class="page-item display_inline"><a class="page-link display_inline" href="javascript:void(0);">...</a></li>
+                                        }
+                                    }
+                                    @for (var i = startPage; i <= endPage; i++)
+                                    {
+                                        @if ((int)ViewBag.pageIndex == i)
+                                        {
+                                            <li class="page-item active display_inline"><a class="page-link display_inline" href="javascript:void(0);">@i</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageService(@i, @(ViewBag.pageSize))" href="javascript:void(0);">@i</a></li>
+                                        }
+                                    }
+                                    @if ((int)ViewBag.numberPage >= endPage + 1)
+                                    {
+                                        @if ((int)ViewBag.numberPage >= endPage + 2)
+                                        {
+
+                                            <li class="page-item display_inline"><a class="page-link display_inline" href="javascript:void(0);">...</a></li>
+                                        }
+
+                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageService(@(ViewBag.numberPage), @(ViewBag.pageSize))" href="javascript:void(0);">@(ViewBag.numberPage)</a></li>
+                                    }
+                                    @if ((int)ViewBag.pageIndex != (int)ViewBag.numberPage)
+                                    {
+
+                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageService(@(ViewBag.pageIndex + 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang sau</a></li>
+                                    }
+                                }
+                            </ul>
+                        </nav>
+                    </div>
             </div>
             }
             else

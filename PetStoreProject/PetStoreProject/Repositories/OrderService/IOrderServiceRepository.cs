@@ -7,5 +7,7 @@ namespace PetStoreProject.Repositories.OrderService
     {
         public List<OrderServicesDetailViewModel> GetOrderServicesByCondition(OrderServiceModel orderServiceModel);
 
+        public int GetCountOrderService(int customerId);
+
     }
 }

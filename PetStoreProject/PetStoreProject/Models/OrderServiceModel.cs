@@ -4,6 +4,10 @@
     {
         public int UserId { get; set; }
 
+        public int PageIndex { get; set; }
+
+        public int PageSize { get; set; }
+
         public string SortOrderServiceId { get; set; }
 
         public string SortName { get; set; }    

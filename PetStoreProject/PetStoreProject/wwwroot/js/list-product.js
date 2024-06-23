@@ -137,8 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-
-
 function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
     $('#data-grid-view').empty();
     $('#list-view').empty();

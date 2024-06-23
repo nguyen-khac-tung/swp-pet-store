@@ -142,46 +142,54 @@ namespace PetStoreProject.Areas.Employee.Controllers
 
             if (ModelState.IsValid)
             {
+                var errors = new Dictionary<string, string>();
 
                 //var oldEmail = HttpContext.Session.GetString("userEmail");
-                var oldEmail = "duongnkhe171810@fpt.edu.vn";
+                var oldEmail = "admin@gmail.com";
                 if (oldEmail != employee.Email)
                 {
                     bool isEmailExist = _account.CheckEmailExist(employee.Email);
                     if (isEmailExist)
                     {
-                        ViewBag.EmailMess = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
-                        return View("_ProfileUser", employee);
+                        errors["Email"] = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
                     }
                 }
 
-                bool isPhoneValid =  PhoneNumber.isValid(employee.Phone);
+                bool isPhoneValid = PhoneNumber.isValid(employee.Phone);
                 if (isPhoneValid == false)
                 {
-                    ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
-                    return View("_ProfileUser", employee);
+                    errors["Phone"] = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
                 }
 
                 if (employee.Address == null)
                 {
-                    ViewBag.Address = "Địa chỉ không hợp lệ. Vui lòng nhập lại";
-                    return View("_ProfileUser", employee);
+                    errors["Address"] = "Địa chỉ không hợp lệ. Vui lòng nhập lại.";
                 }
 
                 if (employee.DoB >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
                 {
-                    ViewBag.DoB = "Ngày sinh phải trước ngày hiện tại";
-                    return View("_ProfileUser", employee);
+                    errors["DoB"] = "Ngày sinh phải trước ngày hiện tại.";
+                }
+
+                if (errors.Any())
+                {
+                    return new JsonResult(new { isSuccess = false, errors });
                 }
 
                 HttpContext.Session.SetString("userEmail", employee.Email);
                 HttpContext.Session.SetString("userName", employee.FullName);
                 _employee.UpdateProfileEmployee(employee);
-                return View("_ProfileUser", employee);
+                return new JsonResult(new { isSuccess = true, message = "Cập nhật thành công", updatedData = employee });
             }
             else
             {
-                return View("_ProfileUser", employee);
+                var modelStateErrors = ModelState
+                                        .Where(ms => ms.Value.Errors.Any())
+                                        .ToDictionary(
+                                            ms => ms.Key,
+                                            ms => ms.Value.Errors.FirstOrDefault()?.ErrorMessage ?? "Lỗi không xác định"
+                                        );
+                return new JsonResult(new { isSuccess = false, errors = modelStateErrors });
             }
         }
 
@@ -221,7 +229,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
             if (ModelState.IsValid)
             {
                 _account.ChangePassword(ChangePasswordVM);
-                return View("_ChangePasswordUser", ChangePasswordVM);
+                return new JsonResult(new { success = true, message = "Thay đổi mật khẩu thành công." });
             }
             else
             {

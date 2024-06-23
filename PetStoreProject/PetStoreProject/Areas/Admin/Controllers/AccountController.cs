@@ -151,15 +151,15 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 AccountId = admin.AccountId,
                 RoleName = "Quản trị viên"
             };
-            return View("_ProfileUser",adminViewModel);
+            return View("_ProfileUser", adminViewModel);
         }
 
         [HttpPost]
         public IActionResult ProfileAccount(UserViewModel admin)
         {
-
             if (ModelState.IsValid)
             {
+                var errors = new Dictionary<string, string>();
 
                 //var oldEmail = HttpContext.Session.GetString("userEmail");
                 var oldEmail = "admin@gmail.com";
@@ -168,40 +168,45 @@ namespace PetStoreProject.Areas.Admin.Controllers
                     bool isEmailExist = _account.CheckEmailExist(admin.Email);
                     if (isEmailExist)
                     {
-                        ViewBag.EmailMess = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
-                        return View("_ProfileUser", admin);
+                        errors["Email"] = "Địa chỉ email này đã được liên kết với một tài khoản khác. Vui lòng nhập một email khác.";
                     }
                 }
 
                 bool isPhoneValid = PhoneNumber.isValid(admin.Phone);
                 if (isPhoneValid == false)
                 {
-                    ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
-                    return View("_ProfileUser", admin);
+                    errors["Phone"] = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
                 }
 
-                if(admin.Address == null)
+                if (admin.Address == null)
                 {
-                    ViewBag.Address = "Địa chỉ không hợp lệ. Vui lòng nhập lại";
-                    return View("_ProfileUser", admin);
+                    errors["Address"] = "Địa chỉ không hợp lệ. Vui lòng nhập lại.";
                 }
 
-                if(admin.DoB >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
+                if (admin.DoB >= DateOnly.FromDateTime(DateTime.UtcNow.Date))
                 {
-                    ViewBag.DoB = "Ngày sinh phải trước ngày hiện tại";
-                    return View("_ProfileUser", admin);
+                    errors["DoB"] = "Ngày sinh phải trước ngày hiện tại.";
+                }
+
+                if (errors.Any())
+                {
+                    return new JsonResult(new { isSuccess = false, errors });
                 }
 
                 HttpContext.Session.SetString("userEmail", admin.Email);
                 HttpContext.Session.SetString("userName", admin.FullName);
                 _admin.UpdateProfileAdmin(admin);
-                ViewBag.StatusUpdateProfile = "Thành công";
-                return View("_ProfileUser", admin);
+                return new JsonResult(new { isSuccess = true, message = "Cập nhật thành công", updatedData = admin });
             }
             else
-            {
-                ViewBag.StatusUpdateProfile = "Thất bại";
-                return View("_ProfileUser", admin);
+            {   
+                var modelStateErrors = ModelState
+                                        .Where(ms => ms.Value.Errors.Any())
+                                        .ToDictionary(
+                                            ms => ms.Key,
+                                            ms => ms.Value.Errors.FirstOrDefault()?.ErrorMessage ?? "Lỗi không xác định"
+                                        );
+                return new JsonResult(new { isSuccess = false, errors = modelStateErrors });
             }
         }
 
@@ -242,7 +247,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 ViewBag.StatusChangePassword = "Thành công";
                 _account.ChangePassword(ChangePasswordVM);
-                return View("_ChangePasswordUser", ChangePasswordVM);
+                return new JsonResult(new {success = true, message = "Thay đổi mật khẩu thành công."});
             }
             else
             {

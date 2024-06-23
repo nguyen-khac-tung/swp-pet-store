@@ -2,7 +2,7 @@
 
 namespace PetStoreProject.Validation
 {
-    public class NotDefaultDateValidation:ValidationAttribute
+    public class NotDefaultDateValidation : ValidationAttribute
     {
         public override bool IsValid(object value)
         {
@@ -10,9 +10,7 @@ namespace PetStoreProject.Validation
             {
                 return date != default(DateOnly);
             }
-
-            // Giá trị không hợp lệ nếu không phải kiểu DateOnly
-            return false;
+            return true;
         }
     }
 }

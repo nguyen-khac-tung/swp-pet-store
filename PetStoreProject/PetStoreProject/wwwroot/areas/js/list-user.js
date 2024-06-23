@@ -270,7 +270,6 @@ function selectedStatus() {
 
 function addAccount() {
     $('#addAccount').modal('show');
-
 }
 
 $(document).ready(function () {
@@ -387,7 +386,6 @@ $(document).ready(function () {
         }
     })
 });
-
 
 function showPassword() {
     var pass = document.getElementById("passwordAdmin");

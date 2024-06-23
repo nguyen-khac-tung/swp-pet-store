@@ -301,7 +301,7 @@
                 success: function (response) {
                     $("#main-content").empty();
                     $("#main-content").html(response);
-
+                    
                     $("#formChangePassword").on("submit", function (event) {
                         event.preventDefault();
                         updateChangePassword();

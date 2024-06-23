@@ -3,6 +3,7 @@
 
 <style>
     .main_content_style {
+        min-height:700px;
         padding: 20px;
         background: var(--White);
         border-radius: 10px;
@@ -10,9 +11,11 @@
     }
 
     .content_form_style {
+        border-bottom-left-radius: 10px;
         border-start-start-radius: 10px;
+        border-bottom-right-radius: 10px;
         background: #f0f2f6;
-        padding: 20px;
+        padding: 20px 50px;
         font-size: 16px;
         position: relative;
     }
@@ -78,8 +81,8 @@
                 border: none;
             }
 
-    .border_bottom {
-        border-bottom: 1px solid !important;
+    .border {
+        border: 1px solid !important;
     }
 
     .padding_l30 {
@@ -108,7 +111,7 @@
         border-start-end-radius: 15px;
         font-size: 18px;
         position: absolute;
-        top: -48px;
+        top: -47px;
         z-index: 1;
         right: 0px;
         padding: 10px
@@ -133,7 +136,7 @@
 <div id="notification" class="modal fade" role="dialog">
     <div class="modal-dialog modal-confirm">
         <div class="modal-content">
-            <div class="modal-header" style="padding:auto!important; margin:auto!important">
+            <div class="modal-header" style="padding:0px!important; margin:auto!important">
                 <div class="icon-box">
                     <i class="material-icons">&#xE876;</i>
                 </div>
@@ -165,7 +168,7 @@
                                 <h3 id="user_name_style">@Model.FullName</h3>
                             </div>
                             <div style="display:inline; margin-top:10px;">
-                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" value="@Model.RoleName" style="border:none" readonly/></label>
+                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" name="RoleName" value="@Model.RoleName" style="border:none" readonly/></label>
                                 @* <select class="select-role">
                                 <option value="1">Quản trị viên</option>/option>
                                 <option value="2">Khách hàng</option>
@@ -177,27 +180,27 @@
                         </div>
                     </div>
                     <div class="row content_form_style" id="content_profile">
-                        <div class="col-md-12">
-                            <form asp-action="ProfileAccount" method="post">
+                        <div class="col-md-12" id="form_content">
+                            <form id="updateProfileAccount">
                                 <div class="form-group row padding_t_b">
                                     <label class="col-sm-4 col-form-label label_style " asp-for="FullName"><strong>Họ và Tên: </strong></label>
                                     <div class="col-sm-8 input_style_form">
-                                        <input type="text" class="form-control form_control_style border_bottom" asp-for="FullName" id="name" value="@Model.FullName" placeholder="@Model.FullName">
+                                        <input type="text" class="form-control form_control_style border" name="FullName" asp-for="FullName" id="name" value="@Model.FullName" placeholder="@Model.FullName">
                                         <span class="text-danger" asp-validation-for="FullName"></span>
                                     </div>
                                 </div>
                                 <div class="form-group row padding_t_b" id="form-dob">
                                     <label class="col-sm-4 col-form-label label_style" asp-for="Gender"><strong>Giới tính: </strong></label>
                                     <div class="col-sm-8 input_style_form padding_l30">
-                                        Nam <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" style="border:1px solid black!important; display:inline" name="gender" id="gender" value="true" checked="@(Model.Gender ? "checked" : null)">
-                                        Nữ <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" style="border:1px solid black!important; display:inline " name="gender" id="gender" value="false" checked="@(Model.Gender ? null : "checked")">
+                                        Nam <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" name="Gender" style="border:1px solid black!important; display:inline" name="gender" id="gender" value="true" checked="@(Model.Gender ? "checked" : null)">
+                                        Nữ <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" name="Gender" style="border:1px solid black!important; display:inline " name="gender" id="gender" value="false" checked="@(Model.Gender ? null : "checked")">
                                         <span class="text-danger" asp-validation-for="Gender"></span>
                                     </div>
                                 </div>
                                 <div class="form-group row padding_t_b">
                                     <label class="col-sm-4 col-form-label label_style" asp-for="DoB"><strong>Ngày sinh: </strong></label>
                                     <div class="col-sm-8 input_style_form">
-                                        <input type="date" class="form-control form_control_style border_bottom" asp-for="DoB" id="dob" value='@Model.DoB.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)' placeholder="@Model.DoB.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" />
+                                        <input type="date" class="form-control form_control_style border" asp-for="DoB" name="Dob" id="dob" value='@Model.DoB.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)' placeholder="@Model.DoB.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)" />
                                         <span class="text-danger" asp-validation-for="DoB"></span>
                                         @if (ViewBag.Dob != null)
                                         {
@@ -208,7 +211,7 @@
                                 <div class="form-group row padding_t_b">
                                     <label class="col-sm-4 col-form-label label_style " asp-for="Phone"><strong>Số điện thoại: </strong></label>
                                     <div class="col-sm-8 input_style_form">
-                                        <input type="text" class="form-control form_control_style border_bottom" asp-for="Phone" id="phone" value="@Model.Phone" placeholder="@Model.Phone">
+                                        <input type="text" class="form-control form_control_style border" name="Phone" asp-for="Phone" id="phone" value="@Model.Phone" placeholder="@Model.Phone">
                                         <span class="text-danger" asp-validation-for="Phone"></span>
                                         @if (ViewBag.PhoneMess != null)
                                         {
@@ -219,14 +222,14 @@
                                 <div class="form-group row padding_t_b">
                                     <label class="col-sm-4 col-form-label label_style" asp-for="Address"><strong>Địa chỉ: </strong></label>
                                     <div class="col-sm-8 input_style_form">
-                                        <input type="text" class="form-control form_control_style border_bottom" asp-for="Address" id="address" value="@Model.Address" placeholder="@Model.Address">
+                                        <input type="text" class="form-control form_control_style border" name="Address" asp-for="Address" id="address" value="@Model.Address" placeholder="@Model.Address">
                                         <span class="text-danger" asp-validation-for="Address"></span>
                                     </div>
                                 </div>
                                 <div class="form-group row padding_t_b">
                                     <label class="col-sm-4 col-form-label label_style" asp-for="Email"><strong>Email: </strong></label>
                                     <div class="col-sm-8 input_style_form">
-                                        <input type="email" class="form-control form_control_style border_bottom" asp-for="Email" id="email" value="@Model.Email" placeholder="@Model.Email">
+                                        <input type="email" class="form-control form_control_style border" name="Email" asp-for="Email" id="email" value="@Model.Email" placeholder="@Model.Email">
                                         <span class="text-danger" asp-validation-for="Email"></span>
                                         @if (ViewBag.EmailMess != null)
                                         {
@@ -234,18 +237,17 @@
                                         }
                                     </div>
                                 </div>
-                                <input asp-for="UserId" type="hidden" />
-                                <input asp-for="AccountId" type="hidden" />
-                                <input asp-for="RoleName" type="hidden"/>
+                                <input asp-for="UserId" name="UserId" type="hidden" />
+                                <input asp-for="AccountId" name="AccountId" type="hidden" />
+                                <input asp-for="RoleName" name="RoleName" type="hidden"/>
                                 <div class="form-group row padding_t_b" id="btn_submit_update">
                                     <button class="btn btn-secondary btn_submit" type="submit">Cập nhật thông tin</button>
                                 </div>
                             </form>
-                            <div class="btn_click_change">
-                                <button class="btn btn-secondary btn_profile active btn_active_style">Thông tin tài khoản</button>
-                                <button class="btn btn-secondary btn_changePassword btn_active_style"><a class="link_style" href="changePassword">Thay đổi mật khẩu</a></button>
-                            </div>
-                            <input type="hidden" id="status_change" value="@ViewBag.StatusUpdateProfile" />
+                        </div>
+                        <div class="btn_click_change">
+                            <button type="button" id="btn_profileInf" class="btn btn-secondary btn_profile active btn_active_style" onclick="profileInfo()">Thông tin tài khoản</button>
+                            <button type="button" id="btn_changePass" class="btn btn-secondary btn_changePassword btn_active_style" onclick="changePassword()">Thay đổi mật khẩu</button>
                         </div>
                     </div>
                 </div>
@@ -253,16 +255,115 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+@* <script src="~/areas/js/profile-user.js"></script> *@
 <script>
-    window.addEventListener('load', function () {
+    var contentForm = $('#form_content').html();
+
+    $(document).ready(function () {
+        console.log('Binding form submit event');
+        $('#updateProfileAccount').on('submit', function (event) {
+            event.preventDefault(); // Ngăn chặn việc submit form
+            var formUpdateProfile = $(this).serialize();
+
+            // Gửi dữ liệu form bằng AJAX
+            $.ajax({
+                type: 'POST',
+                url: 'ProfileAccount',
+                data: formUpdateProfile,
+                success: function (response) {
+                    $('span[data-valmsg-for]').text(''); // Clear existing errors
+                    if (!response.isSuccess) {
+                        $.each(response.errors, function (key, value) {
+                            var errorSpan = $('span[data-valmsg-for="' + key + '"]');
+                            errorSpan.text(value);
+                        });
+                    } else {
+                        alert(response.message);
+                        // Handle success
+                        $('#user_name_style').text(response.updatedData.fullName);
+                        $('input[name="FullName"]').val(response.updatedData.fullName);
+                        $('input[name="Email"]').val(response.updatedData.email);
+                        $('input[name="Phone"]').val(response.updatedData.phone);
+                        $('input[name="Address"]').val(response.updatedData.address);
+                        $('#dob').val(response.updatedData.doB); // Update date input
+                        // Update gender radio buttons
+                        if (response.updatedData.gender) {
+                            $('input[name="Gender"][value="true"]').prop('checked', true);
+                        } else {
+                            $('input[name="Gender"][value="false"]').prop('checked', true);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", xhr.responseText, status, error);
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+
+
+    });
+
+    function profileInfo() {
+        console.log("Click Profile");
+        $('#form_content').empty();
+        var btn_profile = $('#btn_profileInf');
+        var btn_changePass = $('#btn_changePass');
+        btn_changePass.removeClass('active');
+        btn_profile.addClass('active');
+        $('#form_content').html(contentForm); // Nội dung trước đó
+    }
+
+    // Hàm changePassword()
+    function changePassword() {
+        var btn_profile = $('#btn_profileInf');
+        var btn_changePass = $('#btn_changePass');
+        btn_profile.removeClass('active');
+        btn_changePass.addClass('active');
+        $.ajax({
+            url: 'ChangePassword',
+            type: 'get',
+            success: function (response) {
+                $('#form_content').empty();
+                $('#form_content').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", xhr.responseText, status, error);
+                alert('An error occurred: ' + error);
+            }
+        });
+    }
+
+    function changePasswordSuccess() {
         if ($('#status_change').val() == "Thành công") {
             $('#notification').modal("show");
             $('#title-noti').html("Thông báo");
-            $('#body-noti').html("Cập nhật thành công!");
-        } else if ($('#status_change').val() == "Thất bại") {
-            $('#notification').modal("show");
-            $('#title-noti').html("Thông báo");
-            $('#body-noti').html("Cập nhật thất bại!");
+            $('#body-noti').html("Thay đổi mật khẩu thành công!");
         }
-    });
+    };
+    function changePasswordClick() {
+        $('#changePasswordForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting via the browser
+
+            $.ajax({
+                url: 'ChangePassword',
+                type: 'POST',
+                data: $(this).serialize(), // Serialize the form data
+                success: function (response) {
+                    // Handle success (e.g., show a success message)
+                    $('#form_content').html(response);
+                    if (response.success) {
+                        alert(response.message);
+                        changePassword();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error (e.g., show an error message)
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+    }
 </script>

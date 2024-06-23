@@ -30,6 +30,23 @@
             cursor: pointer;
             user-select: none;
         }
+        span input {
+            outline: 0;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            width: 80%;
+            padding: 14px 22px;
+            font-size: 14px;
+            font-family: "Inter", sans-serif;
+            font-weight: 400;
+            line-height: 20px;
+            background-color: transparent;
+            border: 1px solid var(--Input);
+            border-radius: 12px;
+            color: var(--Heading);
+            overflow: hidden;
+        }v
     </style>
 }
 <div class="main-content-inner">
@@ -57,10 +74,6 @@
         </div>
         <!-- product-list -->
         <div class="wg-box">
-            <div class="title-box">
-                <i class="icon-coffee"></i>
-                <div class="body-text">Tip: Mỗi sản phẩm được cung cấp với một ID duy nhất, bạn có thể dựa vào đó để tìm chính xác sản phẩm bạn cần (#ID)</div>
-            </div>
             <div class="col-xl-12 col-lg-12 d-none d-lg-block">
                 <nav>
                     <ul class="header-menu-list text-center" style="display: flex; justify-content: space-between; align-items:center; height: 50px">
@@ -118,6 +131,12 @@
                         <ul class="common_ddown" id="sort-sold-quantity" style="width:250px">
                         </ul>
                     </li>
+                    <li style ="padding: 10px">
+                        <div class="body-title">Danh mục</div>
+                    </li>
+                    <li style="padding: 10px">
+                        <div class="body-title">Danh mục sản phẩm</div>
+                    </li>
                     <li style="padding: 10px">
                         <a class="drop-icon" href="#" style="width:100%">Trong kho</a>
                         <ul class="common_ddown" id="is-in-stock" style="width: 130px">
@@ -142,7 +161,7 @@
             <div class="divider"></div>
             <div class="flex items-center justify-between flex-wrap gap10">
                 <div>
-                    <button onclick="fetchProducts(10,1)" style="padding: 10px; border-radius: 5px">Xóa bộ lọc</button>
+                    <button onclick="clearFilter()" style="padding: 10px; border-radius: 5px">Xóa bộ lọc</button>
                 </div>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination" id="pageNumber">
@@ -158,42 +177,134 @@
 @section ScriptOptional{
     <script>
         ChoosePageSize(10, 1)
-        function ChoosePage(pageNumber, pageSize, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        function ChoosePage(pageNumber, pageSize, categoryId, productCateId, key) {
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key);
         }
 
-        function ChooseCategory(categoryId, pageSize, pageNumber, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        function ChooseCategory(categoryId, pageSize, pageNumber, productCateId, key) {
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key);
         }
 
-        function ChoosePageSize(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+        function ChoosePageSize(pageSize, pageNumber, categoryId, productCateId, key) {
             let x = $('#size').val();
-            fetchProducts(x, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+            fetchProducts(x, pageNumber, categoryId, productCateId, key);
         }
-        function chooseProductCategory(productCateId, pageSize, pageNumber, categoryId, key, sortPrice, sortSoldQuantity, isInStock, isDelete) {
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        function chooseProductCategory(productCateId, pageSize, pageNumber, categoryId, key) {
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key);
         }
-        function chooseKey(pageSize, pageNumber, categoryId, productCateId, sortPrice, sortSoldQuantity, isInStock, isDelete) {
+        function chooseKey(pageSize, pageNumber, categoryId, productCateId) {
             let key = $('#search-input').val();
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key);
         }
-        function ChooseSortPrice(pageSize, pageNumber, categoryId, productCateId, key,
-            sortPrice, sortSoldQuantity, isInStock, isDelete) {
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
-        }
-        function ChooseSortSoldQuantity(pageSize, pageNumber, categoryId, productCateId, key,
-            sortPrice, sortSoldQuantity, isInStock, isDelete){
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        function ChooseSortPrice(sortPrice) {
+            var $productList = $('#product-list');
+            var $products = $productList.find('li');
+
+            if (sortPrice) {
+                $products.sort(function (a, b) {
+                    return parseFloat($(a).find('.price').text()) - parseFloat($(b).find('.price').text());
+                });
+            } else {
+                $products.sort(function (a, b) {
+                    return parseFloat($(b).find('.price').text()) - parseFloat($(a).find('.price').text());
+                });
+            }
+
+            $productList.html('');  // Clear the product list
+            $products.each(function () {
+                $productList.append($(this));  // Append each product back to the list
+            });
         }
 
-        function ChooseIsInStock(pageSize, pageNumber, categoryId, productCateId, key,
-            sortPrice, sortSoldQuantity, isInStock, isDelete){
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        function ChooseSortSoldQuantity(sortSoldQuantity) {
+            var $productList = $('#product-list');
+            var $products = $productList.find('li');
+
+            if (sortSoldQuantity) {
+                $products.sort(function (a, b) {
+                    return parseFloat($(a).find('.soldQuantity').text()) - parseFloat($(b).find('.soldQuantity').text());
+                });
+            } else {
+                $products.sort(function (a, b) {
+                    return parseFloat($(b).find('.prsoldQuantityice').text()) - parseFloat($(a).find('.soldQuantity').text());
+                });
+            }
+
+            $productList.html('');  // Clear the product list
+            $products.each(function () {
+                $productList.append($(this));  // Append each product back to the list
+            });
         }
 
-        function ChooseIsDelete(pageSize, pageNumber, categoryId, productCateId, key,
-            sortPrice, sortSoldQuantity, isInStock, isDelete){
-            fetchProducts(pageSize, pageNumber, categoryId, productCateId, key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+        var isSoldOut = null;
+        var isDelete = null;
+
+        function ChooseIsInStock(tag, is_Sold_Out) {
+            isSoldOut = is_Sold_Out;
+            filter(tag)
+        }
+
+        function ChooseIsDelete(tag, is_Delete){
+            isDelete = is_Delete;
+            filter(tag)
+        }
+
+        function filter(tag) {
+            $(tag).parent().parent().find('a').each(function () {
+                $(this).removeClass('choose');
+            });
+            $(tag).addClass('choose')
+
+            var productList = $('#product-list');
+            var products = productList.find('li');
+
+            products.each(function(){
+                $(this).addClass('hide')
+            })
+
+            var delete_class = isDelete ? 'block-not-available' : 'block-available';
+            var soldOut_class = isSoldOut ? 'block-not-available' : 'block-available';
+
+            console.log(isSoldOut, isDelete)
+
+            if (isDelete != null && isSoldOut != null) {
+                products.each(function () {
+                    if ($(this).find('.isDelete').hasClass(delete_class) && $(this).find('.isSoldOut').hasClass(soldOut_class)) {
+                        $(this).removeClass('hide')
+                    }
+                })
+            }
+            else if (isDelete != null) {
+                products.each(function () {
+                    if ($(this).find('.isDelete').hasClass(delete_class)) {
+                        $(this).removeClass('hide')
+                    }
+                })
+            }
+
+            else if (isSoldOut != null){
+                products.each(function () {
+                    if ($(this).find('.isSoldOut').hasClass(soldOut_class)) {
+                        $(this).removeClass('hide')
+                    }
+                })
+            }
+            else{
+                products.each(function () {
+                    $(this).removeClass('hide')
+                })
+            }
+        }
+
+        function clearFilter(){
+            isDelete = null;
+            isSoldOut = null;
+            var productList = $('#product-list');
+            var products = productList.find('li');
+
+            products.each(function () {
+                $(this).removeClass('hide')
+            })
         }
 
         function quickViewForAdmin(productId) {

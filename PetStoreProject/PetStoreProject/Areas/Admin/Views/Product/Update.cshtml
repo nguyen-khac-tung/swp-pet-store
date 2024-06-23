@@ -67,6 +67,10 @@
             color: red;
             font-size: 11px;
         }
+
+        .tf-button.tf-button {
+            height: 49.6px;
+        }
     </style>
 
 }
@@ -104,7 +108,7 @@
                 </fieldset>
                 <div class="gap22 cols">
                     <fieldset class="brand">
-                        <label class="body-title mb-10">Thương hiệu</label>
+                        <label class="body-title mb-10">Thương hiệu<i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></label>
                         <div class="select flex gap22" id="list-brand">
                             <select class="" id="brand">
                                 @foreach (var brand in brands)
@@ -112,31 +116,19 @@
                                     <option value="@brand.Id" selected="@(product.Brand.BrandId == brand.Id)">@brand.Name</option>
                                 }
                             </select>
+                            <fieldset class="search-brand search-content hide">
+                                <div class="select flex gap22" id="list-brand">
+                                    <input type="text" id="brandFilter" placeholder="Thương hiệu ...">
+                                    <button type="button" class="tf-button style-1" onclick="addBrandOption()">Thêm mới</button>
+                                </div>
+                            </fieldset>
                         </div>
                     </fieldset>
-                    <fieldset class="brand">
-                        <label class="body-title mb-10">Thương hiệu</label>
-                        <div class="select flex gap22" id="list-brand">
-                            <input type="text" id="brandFilter" placeholder="Thương hiệu ...">
-                            <button type="button" class="tf-button style-1" onclick="addBrandOption()">Thêm mới</button>
-                        </div>
-                    </fieldset>
+                    
                 </div>
-                <div class="cols gap22">
-                    <fieldset class="category">
-                        <label class="body-title mb-10">Danh mục</label>
-                        <div class="select">
-                            <select class="" id="category" onchange="categorySelected()">
-                                @foreach (var category in categories)
-                                {
-                                    <option value="@category.Id" selected="@(product.Category.CategoryId == category.Id)">@category.Name</option>
-                                }
-                            </select>
-                            <span class="text-danger"></span>
-                        </div>
-                    </fieldset>
+                <div class="flex flex-column gap22">
                     <fieldset class="product-category">
-                        <label class="body-title mb-10">Danh mục sản phẩm</label>
+                        <label class="body-title mb-10">Danh mục sản phẩm<i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></label>
                         <div class="select">
                             <select class="" id="product-category">
                                 @foreach (var productCategory in productCategories)
@@ -147,6 +139,25 @@
                             <span class="text-danger"></span>
                         </div>
                     </fieldset>
+                    <div class="select flex gap22 search hide">
+                        <fieldset class="search-product-category">
+                            <label class="body-title mb-10">Danh mục</label>
+                            <div class="select flex gap22">
+                                <select class="" id="category" onchange="categorySelected()">
+                                    @foreach (var category in categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </select>
+                                <fieldset class="search-product-category">
+                                    <div class="select flex gap22">
+                                        <input type="text" id="productCategoryFilter" placeholder="...">
+                                        <button type="button" class="tf-button style-1" onclick="addProductCategoryOption()">Thêm mới</button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </fieldset>
+                    </div>
                 </div>
                 <div class="cols gap22">
                     <fieldset>
@@ -201,7 +212,7 @@
                 </fieldset>
                 <div class="gap22">
                     <fieldset class="name">
-                        <label class="body-title mb-10">Loại</label>
+                        <label class="body-title mb-10">Loại<span><i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></span></label>
                         <div class="select mb-10 flex gap22" id="list-attribute">
                             <select id="attribute">
                                 @foreach (var attr in attributes)
@@ -216,12 +227,14 @@
                                     }
                                 }
                             </select>
-                            <input type="text" id="attributeFilter" placeholder="Nhập loại sản phẩm...">
-                            <button type="button" class="tf-button style-1" onclick="addAttributeOption()">Thêm mới</button>
+                            <div class="search select flex gap22 search-attribute hide">
+                                <input type="text" id="attributeFilter" placeholder="...">
+                                <button type="button" class="tf-button style-1" onclick="addAttributeOption()">Thêm mới</button>
+                            </div>
                         </div>
                     </fieldset>
                     <fieldset class="name">
-                        <label class="body-title mb-10">Kích thước</label>
+                        <label class="body-title mb-10">Kích thước<span><i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></span></label>
                         <div class="select mb-10 flex gap22" id="list-size">
                             <select id="size">
                                 @foreach (var size in sizes)
@@ -236,12 +249,14 @@
                                     }
                                 }
                             </select>
-                            <input type="text" id="sizeFilter" placeholder="Nhập kích thước...">
-                            <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
+                            <div class="search select flex gap22 search-size hide">
+                                <input type="text" id="sizeFilter" placeholder="...">
+                                <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
+                            </div>
                         </div>
                     </fieldset>
                     <fieldset class="name">
-                        <label class="body-title mb-10">Price</label>
+                        <label class="body-title mb-10">Giá sản phẩm</label>
                         <div class="select mb10 flex gap22" style="align-items:center">
                             <input type="text" id="price" min="1000" placeholder="Nhập giá sản phẩm">
                             <span>VND</span>
@@ -276,7 +291,7 @@
     <!-- /main-content-wrap -->
 </div>
 <div class="tab-content thumb-content">
-    <div id="detail" class="tab-pane fade show active">
+    <div id="detail" class="tab-pane fade show active" style="padding: 0px 15px">
         <div class="wg-box h-full gap15" style="max-height: 550px; overflow-y: auto" id="list-old-product-option">
             @foreach (var po in product.ProductOptions)
             {
@@ -308,6 +323,23 @@
 </div>
 @section ScriptOptional {
 <script>
+        $('.icon-search').click(function () {
+            var icon = $(this);
+            var parent = icon.parent().parent().parent();
+            var search = parent.find('.search');
+            if (search.hasClass('hide')) {
+                search.removeClass('hide');
+                if (parent.find('option') != null) {
+                    categorySelected()
+                }
+            }
+            else {
+                search.addClass('hide');
+                icon.parent().parent().find('option').each(function () {
+                    $(this).removeClass('hide')
+                });
+            }
+        });
     var regex = /^[0-9\W]+$/;
     var numberRegex = /^-?\d+(\.\d+)?$/;
     var description = `@Html.Raw(product.Description)`
@@ -1040,7 +1072,12 @@
         var categoryName = $('#category option:selected').text();
 
         var productCategoryId = $('#product-category').val();
-        var productCategoryName = $('#product-category option:selected').text();
+        var productCateName = $('#product-category option:selected').text();
+
+        var ProductCategory = {
+            ProductCateId: productCategoryId == 'new' ? 0 : parseInt(productCategoryId),
+            Name: productCateName
+        };
 
         if (name == '') {
             isValid = false;
@@ -1153,11 +1190,6 @@
                 Name: categoryName
             };
 
-            var ProductCategory = {
-                ProductCateId: productCategoryId,
-                Name: productCategoryName
-            };
-
             var isDelete = $('input[name="isDelete"]:checked').val();
 
             var product = {
@@ -1214,7 +1246,6 @@
         image.src = src;
     }
 
-        categorySelected()
         function categorySelected() {
             var categoryId = $("#category").val();
             console.log(categoryId)
@@ -1228,6 +1259,41 @@
                     $(this).attr('selected', true)
                 }
             })
+        }
+        function addProductCategoryOption() {
+            var pc = $('#productCategoryFilter').val().trim();
+            if (isExistsBrand(pc)) {
+                alert('Danh mục sản phẩm đã tồn tại');
+            }
+            else if (isValidString(pc)) {
+                if (confirm(`Bạn có muốn thêm '${pc}' vào danh sách danh mục sản phẩm không?`)) {
+                    var productCategories = $('#product-category');
+                    var option = $('<option>', {
+                        value: 'new',
+                        text: pc,
+                        class: 'category-' + $('#category').val()
+                    });
+                    option.prop('selected', true);
+                    productCategories.append(option);
+                    $('#productCategoryFilter').val('');
+                    $('#product-category option').each(function () {
+                        $(this).css('display', 'block');
+                    });
+                }
+
+            }
+        }
+
+        function isExistsProductCategory(pc) {
+            var isExists = false;
+            var productCategories = $('#product-category option');
+            productCategories.each(function () {
+                if ($(this).text().trim().toLowerCase() === pc.toLowerCase()) {
+                    isExists = true;
+                    return false; // Break out of the each loop
+                }
+            });
+            return isExists;
         }
         
 </script>

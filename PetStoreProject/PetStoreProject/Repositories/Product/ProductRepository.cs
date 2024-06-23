@@ -531,18 +531,18 @@ namespace PetStoreProject.Repositories.Product
         }
 
         public async Task<ListProductForAdmin> productViewForAdmins(int pageNumber, int pageSize, int? categoryId,
-            int? productCateId, string? key, bool? sortPrice, bool? sortSoldQuantity, bool? isInStock,
-            bool? isDelete)
+            int? productCateId, string? key)
         {
             ListProductForAdmin listProductForAdmin = new ListProductForAdmin();
 
             var query = from p in _context.Products
                         join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                        join c in _context.Categories on pc.CategoryId equals c.CategoryId
                         select new
                         {
                             id = p.ProductId,
-                            productCateId = p.ProductCateId,
-                            categoryId = pc.CategoryId,
+                            productCategory = pc,
+                            category = c,
                             isDelete = p.IsDelete,
                             name = p.Name
                         };
@@ -550,16 +550,11 @@ namespace PetStoreProject.Repositories.Product
             // Apply filters
             if (productCateId.HasValue)
             {
-                query = query.Where(p => p.productCateId == productCateId.Value);
+                query = query.Where(p => p.productCategory.ProductCateId == productCateId.Value);
             }
             else if (categoryId.HasValue)
             {
-                query = query.Where(p => p.categoryId == categoryId.Value);
-            }
-
-            if (isDelete.HasValue)
-            {
-                query = query.Where(p => p.isDelete == isDelete.Value);
+                query = query.Where(p => p.category.CategoryId == categoryId.Value);
             }
 
             if (!string.IsNullOrEmpty(key))
@@ -575,8 +570,16 @@ namespace PetStoreProject.Repositories.Product
             {
                 Id = p.id,
                 Name = p.name,
-                ProductCateId = p.productCateId,
-                CategoryId = p.categoryId,
+                ProductCategory = new ProductCategoryViewModel
+                {
+                    Id = p.productCategory.ProductCateId,
+                    Name = p.productCategory.Name
+                },
+                Category = new CategoryViewModel
+                {
+                    Id = p.category.CategoryId,
+                    Name = p.category.Name
+                },
                 // Initialize other fields to default values
                 Price = 0,
                 IsSoldOut = false,
@@ -584,6 +587,11 @@ namespace PetStoreProject.Repositories.Product
                 SoldQuantity = 0,
                 IsDelete = p.isDelete
             }).ToList();
+
+            // Total products count
+            listProductForAdmin.totalProducts = products.Count;
+
+            products = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             var productIds = products.Select(p => p.Id).ToList();
 
@@ -611,7 +619,7 @@ namespace PetStoreProject.Repositories.Product
             foreach (var product in products)
             {
                 var options = productOptions.Where(po => po.ProductId == product.Id).ToList();
-                product.IsSoldOut = !options.Any(po => !po.IsSoldOut);
+                product.IsSoldOut = !options.Exists(po => !po.IsSoldOut);
                 var firstOption = options.FirstOrDefault();
                 if (firstOption != null)
                 {
@@ -619,30 +627,12 @@ namespace PetStoreProject.Repositories.Product
                     product.Price = firstOption.Price;
                 }
 
-                var soldQuantity = soldQuantities.FirstOrDefault(sq => sq.ProductId == product.Id)?.SoldQuantity ?? 0;
+                var soldQuantity = soldQuantities.Find(sq => sq.ProductId == product.Id)?.SoldQuantity ?? 0;
                 product.SoldQuantity = soldQuantity;
             }
 
-            // Apply filters and sorting in-memory
-            if (isInStock.HasValue)
-            {
-                products = products.Where(p => p.IsSoldOut != isInStock.Value).ToList();
-            }
-
-            if (sortPrice.HasValue)
-            {
-                products = sortPrice.Value ? products.OrderBy(p => p.Price).ToList() : products.OrderByDescending(p => p.Price).ToList();
-            }
-            else if (sortSoldQuantity.HasValue)
-            {
-                products = sortSoldQuantity.Value ? products.OrderBy(p => p.SoldQuantity).ToList() : products.OrderByDescending(p => p.SoldQuantity).ToList();
-            }
-
-            // Total products count
-            listProductForAdmin.totalProducts = products.Count;
-
             // Apply pagination
-            listProductForAdmin.products = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            listProductForAdmin.products = products;
 
             return listProductForAdmin;
         }
@@ -676,13 +666,27 @@ namespace PetStoreProject.Repositories.Product
                     brandId = brand.BrandId;
                 }
 
+                var productCateId = productCreateRequest.ProductCategory.ProductCateId;
+                if (productCateId == 0)
+                {
+                    productCateId = _context.ProductCategories.Select(pc => pc.ProductCateId).Max() + 1;
+                    var productCate = new Models.ProductCategory
+                    {
+                        ProductCateId = productCateId,
+                        Name = productCreateRequest.ProductCategory.Name,
+                        CategoryId = productCreateRequest.CategoryId
+                    };
+                    _context.ProductCategories.Add(productCate);
+                    _context.SaveChanges();
+                }
+
                 var product = new Models.Product
                 {
                     ProductId = productId,
                     Name = productCreateRequest.Name,
                     Description = productCreateRequest.Description,
                     BrandId = brandId,
-                    ProductCateId = productCreateRequest.ProductCateId,
+                    ProductCateId = productCateId,
                     IsDelete = false
                 };
 
@@ -875,6 +879,21 @@ namespace PetStoreProject.Repositories.Product
 
                 brandId = brand.BrandId;
             }
+
+            var productCateId = productUpdateRequest.ProductCategory.ProductCateId;
+            if (productCateId == 0)
+            {
+                productCateId = _context.ProductCategories.Select(pc => pc.ProductCateId).Max() + 1;
+                var productCate = new Models.ProductCategory
+                {
+                    ProductCateId = productCateId,
+                    Name = productUpdateRequest.ProductCategory.Name,
+                    CategoryId = productUpdateRequest.Category.CategoryId
+                };
+                _context.ProductCategories.Add(productCate);
+                _context.SaveChanges();
+            }
+
             var product = await _context.FindAsync<Models.Product>(productUpdateRequest.ProductId);
 
             if (product != null)
@@ -882,7 +901,7 @@ namespace PetStoreProject.Repositories.Product
                 product.Name = productUpdateRequest.Name;
                 product.BrandId = brandId;
                 product.Description = productUpdateRequest.Description;
-                product.ProductCateId = productUpdateRequest.ProductCategory.ProductCateId;
+                product.ProductCateId = productCateId;
                 product.IsDelete = productUpdateRequest.IsDeleted;
                 _context.Products.Update(product);
             }

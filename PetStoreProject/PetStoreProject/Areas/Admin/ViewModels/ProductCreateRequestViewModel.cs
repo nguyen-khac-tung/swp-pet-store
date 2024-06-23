@@ -10,7 +10,7 @@ namespace PetStoreProject.Areas.Admin.ViewModels
 
         public int CategoryId { get; set; }
 
-        public int ProductCateId { get; set; }
+        public ProductCategory ProductCategory { get; set; }
 
         public Brand Brand { get; set; }
 

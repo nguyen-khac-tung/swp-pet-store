@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Repositories.Attribute;
 using PetStoreProject.Repositories.Brand;
@@ -17,19 +16,17 @@ namespace PetStoreProject.Areas.Admin.Controllers
         private readonly IProductRepository _product;
         private readonly ICategoryRepository _category;
         private readonly IProductCategoryRepository _productCategory;
-        private readonly ICloudinaryService _cloudinary;
         private readonly IAttributeRepository _attribute;
         private readonly ISizeRepository _size;
         private readonly IBrandRepository _brand;
 
         public ProductController(IProductRepository product, ICategoryRepository category,
-            IProductCategoryRepository productCategory, ICloudinaryService cloudinary,
+            IProductCategoryRepository productCategory,
             IBrandRepository brand, IAttributeRepository attribute, ISizeRepository size)
         {
             _product = product;
             _category = category;
             _productCategory = productCategory;
-            _cloudinary = cloudinary;
             _brand = brand;
             _attribute = attribute;
             _size = size;
@@ -54,8 +51,8 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             pageSize = Math.Min(pageSize, 30);
 
-            ListProductForAdmin listProductForAdmin = await _product.productViewForAdmins(pageNumber, pageSize, categoryId, productCateId,
-                                                                                key, sortPrice, sortSoldQuantity, isInStock, isDelete);
+            ListProductForAdmin listProductForAdmin = await _product.productViewForAdmins(pageNumber, pageSize,
+                                                                                        categoryId, productCateId, key);
 
             var products = listProductForAdmin.products;
             var totalProduct = listProductForAdmin.totalProducts;

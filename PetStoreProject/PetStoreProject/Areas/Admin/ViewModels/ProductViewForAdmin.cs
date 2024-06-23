@@ -9,7 +9,7 @@
         public bool IsSoldOut { get; set; }
         public int SoldQuantity { get; set; }
         public bool? IsDelete { get; set; }
-        public int? CategoryId { get; set; }
-        public int? ProductCateId { get; set; }
+        public ViewModels.CategoryViewModel Category { get; set; }
+        public ViewModels.ProductCategoryViewModel ProductCategory { get; set; }
     }
 }

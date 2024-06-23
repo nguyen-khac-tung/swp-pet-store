@@ -967,7 +967,7 @@ a:hover, a:focus {
 .body-title {
     color: var(--Heading);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 20px;
 }
 
@@ -4621,7 +4621,7 @@ select.h40 {
   width: 72px;
 }
 .wg-table.table-product-list > * {
-  min-width: 1300px;
+  min-width: 1500px;
 }
 .wg-table.table-product-list ul.table-title {
   padding: 12px;

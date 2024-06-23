@@ -58,6 +58,10 @@
             color: red;
             font-size: 11px;
         }
+
+        .tf-button.tf-button{
+            height: 49.6px;
+        }
     </style>
     
 }
@@ -91,11 +95,11 @@
                     <label class="body-title mb-10">Tên sản phẩm<span class="tf-color-1">*</span></label>
                     <input type="text" class="mb-10" placeholder="Nhập tên sản phẩm" id="name">
                     <span id="error-name" class="text-danger"></span>
-                    @* <div class="text-tiny">Do not exceed 20 characters when entering the product name.</div> *@
                 </fieldset>
+
                 <div class="gap22 cols">
                     <fieldset class="brand">
-                        <label class="body-title mb-10">Thương hiệu</label>
+                        <label class="body-title mb-10">Thương hiệu<i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></label>
                         <div class="select flex gap22" id="list-brand">
                             <select class="" id="brand">
                                 @foreach(var brand in brands)
@@ -103,44 +107,51 @@
                                     <option value="@brand.Id">@brand.Name</option>
                                 }
                             </select>
-                        </div>
-                    </fieldset>
-                    <fieldset class="brand">
-                        <label class="body-title mb-10">Thương hiệu</label>
-                        <div class="select flex gap22" id="list-brand">
-                            <input type="text" id="brandFilter" placeholder="Thương hiệu ...">
-                            <button type="button" class="tf-button style-1" onclick="addBrandOption()">Thêm mới</button>
+                            <fieldset class="search search-brand hide">
+                                <div class="select flex gap22">
+                                    <input type="text" id="brandFilter" placeholder="Nhập thương hiệu ...">
+                                    <button type="button" class="tf-button style-1" onclick="addBrandOption()">Thêm mới</button>
+                                </div>
+                            </fieldset>
                         </div>
                     </fieldset>
                 </div>
-                <div class="cols gap22">
-                    <fieldset class="category">
-                        <label class="body-title mb-10">Danh mục</label>
-                        <div class="select" >
-                            <select class="" id="category" onchange="categorySelected()">
-                                @foreach (var category in categories)
-                                {
-                                    <option value="@category.Id">@category.Name</option>
-                                }
-                            </select>
-                            <span class="text-danger"></span>
-                        </div>
-                    </fieldset>
+                <div class="flex flex-column gap22">
                     <fieldset class="product-category">
-                        <label class="body-title mb-10">Danh mục sản phẩm</label>
-                        <div class="select">
+                        <label class="body-title mb-10">Danh mục sản phẩm<i class="icon-search" style="cursor: pointer; margin-left: 5px;"></i></label>
+                        <div class="select flex gap22" id="list-product-category">
                             <select class="" id="product-category">
                                 @foreach (var productCategory in productCategories)
                                 {
                                     <option value="@productCategory.Id" class="category-@productCategory.CategoryId">@productCategory.Name</option>
                                 }
                             </select>
-                            <span class="text-danger"></span>
+                            
                         </div>
                     </fieldset>
+
+                    <div class="select flex gap22 search hide">
+                        <fieldset class="search-product-category">
+                            <label class="body-title mb-10">Danh mục</label>
+                            <div class="select flex gap22">
+                                <select class="" id="category" onchange="categorySelected()">
+                                    @foreach (var category in categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                </select>
+                                <fieldset class="search-product-category">
+                                    <div class="select flex gap22">
+                                        <input type="text" id="productCategoryFilter" placeholder="...">
+                                        <button type="button" class="tf-button style-1" onclick="addProductCategoryOption()">Thêm mới</button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </fieldset>
+                    </div>
                 </div>
                 <fieldset class="description">
-                    <label class="body-title mb-10">Mô tả sản phẩm <span class="tf-color-1">*</span></label>
+                    <label class="body-title mb-10">Mô tả sản phẩm</label>
                     <textarea id="description" name="descriptio" class="mb-10" placeholder="Nhập mô tả sản phẩm" tabindex="0" aria-required="true" required=""></textarea>
                     <span id="error-description" class="text-danger"></span>
                 </fieldset>
@@ -173,7 +184,7 @@
                 </fieldset>
                 <div class="gap22">
                     <fieldset class="name">
-                        <label class="body-title mb-10">Thuộc tính</label>
+                        <label class="body-title mb-10">Loại<span><i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></span></label>
                         <div class="select mb-10 flex gap22" id="list-attribute">
                             <select id="attribute">
                                 @foreach (var attr in attributes)
@@ -188,12 +199,14 @@
                                     }
                                 }
                             </select>
-                            <input type="text" id="attributeFilter" placeholder="Nhập để tìm kiếm thuộc tính...">
-                            <button type="button" class="tf-button style-1" onclick="addAttributeOption()">Thêm mới</button>
+                            <div class="search select flex gap22 search-attribute hide">
+                                <input type="text" id="attributeFilter" placeholder="...">
+                                <button type="button" class="tf-button style-1" onclick="addAttributeOption()">Thêm mới</button>
+                            </div>
                         </div>
                     </fieldset>
                     <fieldset class="name">
-                        <label class="body-title mb-10">Kích thước</label>
+                        <label class="body-title mb-10">Kích thước<span><i class="icon-search" style="cursor: pointer; margin-left: 5px"></i></span></label>
                         <div class="select mb-10 flex gap22" id="list-size">
                             <select class="" id="size">
                                 @foreach (var size in sizes)
@@ -208,16 +221,18 @@
                                     }
                                 }
                             </select>
-                            <input type="text" id="sizeFilter" placeholder="Nhập để tìm kiếm kích thước...">
-                            <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
+                            <div class="search select flex gap22 search-size hide">
+                                <input type="text" id="sizeFilter" placeholder="...">
+                                <button type="button" class="tf-button style-1" onclick="addSizeOption()">Thêm mới</button>
+                            </div>
                         </div>
                     </fieldset>
                     
                     <fieldset class="name">
-                        <label class="body-title mb-10">Price</label>
+                        <label class="body-title mb-10">Giá sản phẩm<span class="tf-color-1">*</span></label>
                         <div class="select mb10 flex gap22" style="align-items:center">
-                            <input type="text" id="price" min="1000">
-                            <span>VND</span>
+                            <input type="text" id="price" min="1000" style="max-width: 82%" placeholder="Nhập giá sản phẩm">
+                            <div style="flex: 1;text-align: center">VND</div>
                         </div>
 
                         <span id="error-price" class="text-danger"></span>
@@ -242,6 +257,24 @@
 </div>
 @section ScriptOptional {
     <script>
+        $('.icon-search').click(function () {
+            var icon = $(this);
+            var parent = icon.parent().parent().parent();
+            var search = parent.find('.search');
+            if (search.hasClass('hide')) {
+                search.removeClass('hide');
+                if (parent.find('option') != null) {
+                    categorySelected()
+                }
+            }
+            else {
+                search.addClass('hide');
+                icon.parent().parent().find('option').each(function () {
+                    $(this).removeClass('hide')
+                });
+            }
+        });
+
         var regex = /^[0-9\W]+$/;
         var numberRegex = /^-?\d+(\.\d+)?$/;
         var description = ''
@@ -272,6 +305,29 @@
         document.getElementById('brandFilter').addEventListener('input', function () {
             let filter = this.value.toLowerCase();
             let dropdown = document.getElementById('list-brand');
+            let options = dropdown.getElementsByTagName('option');
+            let isSelect = false;
+            for (let i = 0; i < options.length; i++) {
+                let option = options[i];
+                let txtValue = option.textContent || option.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    option.style.display = "";
+                    if (!isSelect) {
+                        option.selected = true;
+                        isSelect = true;
+                    }
+                    else {
+                        option.selected = false;
+                    }
+                } else {
+                    option.style.display = "none";
+                }
+            }
+        });
+
+        document.getElementById('productCategoryFilter').addEventListener('input', function () {
+            let filter = this.value.toLowerCase();
+            let dropdown = document.getElementById('list-product-category');
             let options = dropdown.getElementsByTagName('option');
             let isSelect = false;
             for (let i = 0; i < options.length; i++) {
@@ -614,7 +670,14 @@
             }
 
             var categoryId = $('#category').val();
+
             var productCateId = $('#product-category').val();
+            var productCateName = $('#product-category option:selected').text();
+
+            var ProductCategory = {
+                ProductCateId: productCateId == 'new' ? 0 : parseInt(productCateId),
+                Name: productCateName
+            }
 
             if (name == '') {
                 isValid = false
@@ -679,7 +742,7 @@
                         Name: name.trim(),
                         Brand: Brand,
                         CategoryId: parseInt(categoryId),
-                        ProductCateId: parseInt(productCateId),
+                        ProductCategory: ProductCategory,
                         Description: description,
                         ProductOptions: options
                     };
@@ -732,6 +795,30 @@
                     brands.append(option);
                     $('#brandFilter').val('');
                     $('#brand option').each(function () {
+                        $(this).css('display', 'block');
+                    });
+                }
+
+            }
+        }
+
+        function addProductCategoryOption() {
+            var pc = $('#productCategoryFilter').val().trim();
+            if (isExistsBrand(pc)) {
+                alert('Danh mục sản phẩm đã tồn tại');
+            }
+            else if (isValidString(pc)) {
+                if (confirm(`Bạn có muốn thêm '${pc}' vào danh sách danh mục sản phẩm không?`)) {
+                    var productCategories = $('#product-category');
+                    var option = $('<option>', {
+                        value: 'new',
+                        text: pc,
+                        class: 'category-' + $('#category').val()
+                    });
+                    option.prop('selected', true);
+                    productCategories.append(option);
+                    $('#productCategoryFilter').val('');
+                    $('#product-category option').each(function () {
                         $(this).css('display', 'block');
                     });
                 }
@@ -813,6 +900,18 @@
             return isExists;
         }
 
+        function isExistsProductCategory(pc) {
+            var isExists = false;
+            var productCategories = $('#product-category option');
+            productCategories.each(function () {
+                if ($(this).text().trim().toLowerCase() === pc.toLowerCase()) {
+                    isExists = true;
+                    return false; // Break out of the each loop
+                }
+            });
+            return isExists;
+        }
+
         function isExistsSize(size) {
             var isExists = false;
             var sizes = $('#size option');
@@ -836,7 +935,7 @@
             })
             return isExists;
         }
-        categorySelected()
+
         function categorySelected() { 
             var categoryId = $("#category").val();
             console.log(categoryId)

@@ -50,5 +50,4 @@ public partial class Feedback
     [InverseProperty("Feedbacks")]
     public virtual Service? Service { get; set; }
 
-
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Filters;
@@ -6,6 +8,8 @@ using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Admin;
+using PetStoreProject.Repositories.Order;
+using PetStoreProject.Repositories.OrderService;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Areas.Admin.Controllers
@@ -16,12 +20,16 @@ namespace PetStoreProject.Areas.Admin.Controllers
         private readonly IAccountRepository _account;
         private readonly EmailService _emailService;
         private readonly IAdminRepository _admin;
+        private readonly IOrderRepository _order;
+        private readonly IOrderServiceRepository _orderService;
 
-        public AccountController(IAccountRepository account, EmailService emailService, IAdminRepository admin)
+        public AccountController(IAccountRepository account, EmailService emailService, IAdminRepository admin, IOrderRepository order, IOrderServiceRepository orderService)
         {
             _account = account;
             _emailService = emailService;
             _admin = admin;
+            _order = order;
+            _orderService = orderService;
         }
 
         [HttpGet]
@@ -41,16 +49,16 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var totalAccount = _account.GetAccountCount(2);
 
-            var numberPage = (int)Math.Ceiling(totalAccount / (double)(pageSizeLocal));
+            var numberPage = (int)Math.Ceiling(totalAccount / (double)pageSizeLocal);
 
             return new JsonResult(new
             {
                 userType = 2,
-                accounts = accounts,
-                totalAccount = totalAccount,
+                accounts,
+                totalAccount,
                 currentPage = pageIndexLocal,
                 pageSize = pageSizeLocal,
-                numberPage = numberPage
+                numberPage
             });
         }
 
@@ -95,7 +103,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 var errors = ModelState.ToDictionary(kvp => kvp.Key,
                                 kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                return Json(new { success = false, errors = errors });
+                return Json(new { success = false, errors });
             }
 
         }
@@ -126,6 +134,99 @@ namespace PetStoreProject.Areas.Admin.Controllers
                     return Json(new { success = status });
                 }
             }
+        }
+
+        [HttpGet]
+        public IActionResult ListCustomer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ListCustomer(int? pageIndex, int? pageSize, string? searchName, string? sortName, string? selectStatus)
+        {
+            var pageIndexLocal = pageIndex ?? 1;
+
+            var pageSizeLocal = pageSize ?? 10;
+
+            var accounts = _account.GetAccountCustomers(pageIndexLocal, pageSizeLocal, 3, searchName ?? "", sortName ?? "", selectStatus ?? "");
+
+            var totalAccount = _account.GetAccountCount(3);
+
+            var numberPage = (int)Math.Ceiling((double)totalAccount / pageSizeLocal);
+
+
+            return new JsonResult(new
+            {
+                userType = 3,
+                accounts,
+                totalAccount,
+                currentPage = pageIndexLocal,
+                pageSize = pageSizeLocal,
+                numberPage
+            });
+        }
+
+        [HttpGet]
+        public IActionResult CustomerDetail(int userId)
+        {
+            var account = _account.GetAccountCustomers(userId);
+
+            return View(account);
+        }
+
+        [HttpPost]
+        public IActionResult OrderHistory(OrderModel orderModel)
+        {
+
+            var orders = _order.GetOrderDetailByCondition(orderModel);
+
+            var totalOrders = _order.GetCountOrder(orderModel.UserId);
+
+            ViewBag.searchOrderId = orderModel.SearchOrderId;
+            ViewBag.searchName = orderModel.SearchName;
+            ViewBag.searchDateOrder = orderModel.SearchDate;
+            ViewBag.totalOrders = totalOrders;
+
+            var numberPage = (int)Math.Ceiling((double)totalOrders / orderModel.pageSize);
+            ViewBag.numberPage = numberPage;
+            ViewBag.pageIndex = orderModel.pageIndex;
+            ViewBag.pageSize = orderModel.pageSize;
+
+            // Export Excel
+            string json = JsonConvert.SerializeObject(orders);
+
+            ViewBag.json = json;
+
+            return View(orders);
+        }
+
+        [HttpPost]
+        public IActionResult OrderServiceHistory(OrderServiceModel orderServiceModel)
+        {
+            List<OrderServicesDetailViewModel> orderServices = _orderService.GetOrderServicesByCondition(orderServiceModel);
+
+            var totalOrderServices = _orderService.GetCountOrderService(orderServiceModel.UserId);
+
+            ViewBag.SearchOrderId = orderServiceModel.SearchOrderServiceId;
+            ViewBag.SearchName = orderServiceModel.SearchName;
+            ViewBag.SearchDate = orderServiceModel.SearchDate;
+            ViewBag.SearchTime = orderServiceModel.SearchTime;
+            ViewBag.Status = orderServiceModel.Status;
+
+            ViewBag.totalOrderServices = totalOrderServices;
+
+            var numberPage = (int)Math.Ceiling((double)totalOrderServices / orderServiceModel.PageSize);
+            ViewBag.numberPage = numberPage;
+            ViewBag.pageIndex = orderServiceModel.PageIndex;
+            ViewBag.pageSize = orderServiceModel.PageSize;
+
+            // Export Excel
+            string json = JsonConvert.SerializeObject(orderServices);
+
+            ViewBag.json = json;
+
+            return View(orderServices);
         }
 
         [HttpGet]
@@ -228,7 +329,6 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return View("_ChangePasswordUser", ChangePasswordVM);
         }
 
-
         [HttpPost]
         public ActionResult ChangePassword(ChangePasswordViewModel ChangePasswordVM)
         {
@@ -247,7 +347,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 ViewBag.StatusChangePassword = "Thành công";
                 _account.ChangePassword(ChangePasswordVM);
-                return new JsonResult(new {success = true, message = "Thay đổi mật khẩu thành công."});
+                return new JsonResult(new { success = true, message = "Thay đổi mật khẩu thành công." });
             }
             else
             {

@@ -388,7 +388,7 @@ namespace PetStoreProject.Controllers
         public ActionResult OrderServiceDetail(int orderServiceId)
         {
             var orderService = _service.GetOrderServiceDetail(orderServiceId);
-            ViewData["WorkingTime"] = _service.GetWorkingTime(orderService.ServiceId);
+            ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderService.OrderDate, orderService.OrderTime);
             ViewData["Services"] = _service.GetListServices();
             ViewData["PetTypes"] = _service.GetFistServiceOption(orderService.ServiceId).PetTypes;
             ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderService.ServiceId, orderService.PetType).Weights;
@@ -399,7 +399,21 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public ActionResult OrderServiceDetail(BookServiceViewModel orderServiceInfo)
         {
-            ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+            var orderServiceInDB = _service.GetOrderServiceDetail((int)orderServiceInfo.OrderServiceId);
+            if (orderServiceInfo.OrderDate == null)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+            }
+            else if (orderServiceInfo.OrderDate == orderServiceInDB.OrderDate)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderServiceInDB.OrderDate, orderServiceInDB.OrderTime);
+            }
+            else if (orderServiceInfo.OrderDate != orderServiceInDB.OrderDate)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(orderServiceInfo.OrderDate);
+            }
+
+
             ViewData["Services"] = _service.GetListServices();
             ViewData["PetTypes"] = _service.GetFistServiceOption(orderServiceInfo.ServiceId).PetTypes;
             ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderServiceInfo.ServiceId, orderServiceInfo.PetType).Weights;
@@ -413,12 +427,28 @@ namespace PetStoreProject.Controllers
                 }
 
                 _service.UpdateOrderService(orderServiceInfo);
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderServiceInfo.OrderDate, orderServiceInfo.OrderTime);
                 ViewData["UpdateSuccess"] = "Thông tin lịch hẹn của bạn đã được cập nhật thành công. Chúng tôi sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
                 return View(orderServiceInfo);
             }
             else
             {
                 return View(orderServiceInfo);
+            }
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpGet]
+        public List<TimeOnly> GetWorkingTimeByDate(string date, int orderServiceId)
+        {
+            var orderService = _service.GetOrderServiceDetail(orderServiceId);
+            if (orderService.OrderDate == date)
+            {
+                return _service.GetWorkingTimeByDateForUpdate(date, orderService.OrderTime);
+            }
+            else
+            {
+                return _service.GetWorkingTimeByDate(date);
             }
         }
 
@@ -445,7 +475,7 @@ namespace PetStoreProject.Controllers
 
         [RoleAuthorize("Customer")]
         [HttpGet]
-        public void CancelOrderService (int orderServiceId)
+        public void CancelOrderService(int orderServiceId)
         {
             _service.DeleteOrderService(orderServiceId);
         }

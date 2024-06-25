@@ -60,7 +60,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
         public IActionResult OrderServiceDetail(int orderServiceId)
         {
             var orderService = _service.GetOrderServiceDetail(orderServiceId);
-            ViewData["WorkingTime"] = _service.GetWorkingTime(orderService.ServiceId);
+            ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderService.OrderDate, orderService.OrderTime);
             ViewData["Services"] = _service.GetListServices();
             ViewData["PetTypes"] = _service.GetFistServiceOption(orderService.ServiceId).PetTypes;
             ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderService.ServiceId, orderService.PetType).Weights;
@@ -70,7 +70,20 @@ namespace PetStoreProject.Areas.Employee.Controllers
         [HttpPost]
         public ActionResult OrderServiceDetail(BookServiceViewModel orderServiceInfo)
         {
-            ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+            var orderServiceInDB = _service.GetOrderServiceDetail((int)orderServiceInfo.OrderServiceId);
+            if (orderServiceInfo.OrderDate == null)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+            }
+            else if (orderServiceInfo.OrderDate == orderServiceInDB.OrderDate)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderServiceInDB.OrderDate, orderServiceInDB.OrderTime);
+            }
+            else if (orderServiceInfo.OrderDate != orderServiceInDB.OrderDate)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(orderServiceInfo.OrderDate);
+            }
+
             ViewData["Services"] = _service.GetListServices();
             ViewData["PetTypes"] = _service.GetFistServiceOption(orderServiceInfo.ServiceId).PetTypes;
             ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderServiceInfo.ServiceId, orderServiceInfo.PetType).Weights;
@@ -84,6 +97,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
                 }
 
                 _service.UpdateOrderService(orderServiceInfo);
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderServiceInfo.OrderDate, orderServiceInfo.OrderTime);
                 ViewData["UpdateSuccess"] = $"Thông tin lịch hẹn của " +
                     $"<strong style='font-size: 16px;'>{orderServiceInfo.Name}</strong> " +
                     $"đã được cập nhật thành công.";
@@ -129,7 +143,16 @@ namespace PetStoreProject.Areas.Employee.Controllers
             {
                 ViewBag.Status = "ConfirmedOrder";
             }
-            ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+
+            if (orderServiceInfo.OrderDate != null)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(orderServiceInfo.OrderDate);
+            }
+            else
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTime(orderServiceInfo.ServiceId);
+            }
+
             ViewData["Services"] = _service.GetListServices();
             ViewData["PetTypes"] = _service.GetFistServiceOption(orderServiceInfo.ServiceId).PetTypes;
             ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderServiceInfo.ServiceId, orderServiceInfo.PetType).Weights;
@@ -143,6 +166,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
                 }
 
                 _service.AddOrderService(orderServiceInfo);
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(orderServiceInfo.OrderDate);
                 ViewData["CreateSuccess"] = $"Thông tin lịch hẹn của " +
                     $"<strong style='font-size: 16px;'>{orderServiceInfo.Name}</strong> " +
                     $"đã được tạo mới thành công.";
@@ -151,6 +175,24 @@ namespace PetStoreProject.Areas.Employee.Controllers
             else
             {
                 return View(orderServiceInfo);
+            }
+        }
+
+        [HttpGet]
+        public List<TimeOnly> GetWorkingTimeByDate(string date, int orderServiceId)
+        {
+            if(orderServiceId == 0)
+            {
+                return _service.GetWorkingTimeByDate(date);
+            }
+            var orderService = _service.GetOrderServiceDetail(orderServiceId);
+            if (orderService.OrderDate == date)
+            {
+                return _service.GetWorkingTimeByDateForUpdate(date, orderService.OrderTime);
+            }
+            else
+            {
+                return _service.GetWorkingTimeByDate(date);
             }
         }
 

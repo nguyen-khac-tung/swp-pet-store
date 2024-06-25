@@ -29,7 +29,7 @@
         <div class="col-md-6 form-group">
             <label asp-for="OrderDate" class="form-label">Ngày hẹn<em>*</em></label>
             <div class="input-group date" id="order-datepicker">
-                <input asp-for="OrderDate" type="text" class="form-control" />
+                <input asp-for="OrderDate" type="text" onchange="changeOrderDate()" class="form-control" />
                 <div class="input-group-append">
                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 </div>
@@ -41,7 +41,7 @@
             <select asp-for="OrderTime" class="form-select">
                 @foreach (var time in workingTime)
                 {
-                    <option value="@time">@time.ToString("HH:mm")</option>
+                    <option value="@time" selected="@(Model.OrderTime == time)">@time.ToString("HH:mm")</option>
                 }
             </select>
         </div>

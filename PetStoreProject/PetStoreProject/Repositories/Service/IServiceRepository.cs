@@ -20,6 +20,10 @@ namespace PetStoreProject.Repositories.Service
 
         public List<TimeOnly> GetWorkingTime(int serviceId);
 
+        public List<TimeOnly> GetWorkingTimeByDate(string date);
+
+        public List<TimeOnly> GetWorkingTimeByDateForUpdate(string date, TimeOnly orderTime);
+
         public void AddOrderService(BookServiceViewModel bookServiceInfo);
 
         public List<ServiceViewModel> GetOtherServices(int serviceId);

@@ -267,51 +267,51 @@
                                     {
                                         foreach (var list in listFeedbacks)
                                         {
-                                            <div class="review-header">
-                                                <h2>@list.CustomerName</h2>
-                                                @{
+                                                <div class="review-header">
+                                                    <h2>@list.CustomerName</h2>
+                                                    @{
                                                     switch (@list.Rating)
                                                     {
                                                         case 1:
-                                                            <span class="rating">★☆☆☆☆</span>
+                                                                    <span class="rating">★☆☆☆☆</span>
                                                             break;
                                                         case 2:
-                                                            <span class="rating">★★☆☆☆</span>
+                                                                    <span class="rating">★★☆☆☆</span>
                                                             break;
                                                         case 3:
-                                                            <span class="rating">★★★☆☆</span>
+                                                                    <span class="rating">★★★☆☆</span>
                                                             break;
                                                         case 4:
-                                                            <span class="rating">★★★★☆</span>
+                                                                    <span class="rating">★★★★☆</span>
                                                             break;
                                                         case 5:
-                                                            <span class="rating">★★★★★</span>
+                                                                    <span class="rating">★★★★★</span>
                                                             break;
                                                         default:
-                                                            <span class="rating">★★★★★</span>
+                                                                    <span class="rating">★★★★★</span>
                                                             break;
 
                                                     }
-                                                }
-                                            </div>
+                                                    }
+                                                </div>
 
-                                            <p class="review-content">@list.Content</p>
-                                            <p>@list.DateCreated</p>
+                                                <p class="review-content">@list.Content</p>
+                                                <p>@list.DateCreated</p>
 
                                             if (@list.EmployeeName != null)
                                             {
-                                                <div class="response">
-                                                    <p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
-                                                    <p class="response-content">@list.ContentResponse </p>
-                                                    <p>@list.DateResp</p>
-                                                </div>
+                                                    <div class="response">
+                                                        <p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
+                                                        <p class="response-content">@list.ContentResponse </p>
+                                                        <p>@list.DateResp</p>
+                                                    </div>
                                             }
 
                                         }
                                     }
                                     else
                                     {
-                                        <h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
+                                            <h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
                                     }
                                 }
                             </div>
@@ -391,67 +391,6 @@
 <!-- Booking service modal end-->
 @section ScriptOptional {
     <script>
-        function checkFormAndSubmit(event, pid) {
-            event.preventDefault();
-
-            const fullName = document.getElementById('FullName').value.trim();
-            const phoneNumber = document.getElementById('PhoneNumber').value.trim();
-            const content = document.getElementById('Content').value;
-            const fullNameError = document.getElementById('FullNameError');
-            const phoneNumberError = document.getElementById('PhoneNumberError');
-            const contentError = document.getElementById('ContentError');
-
-            fullNameError.textContent = '';
-            phoneNumberError.textContent = '';
-
-            let isValid = true;
-
-            if (!fullName) {
-                fullNameError.textContent = 'Họ và tên không được để trống.';
-                isValid = false;
-            }
-
-            const phonePattern = /^[0-9]{10,11}$/;
-            if (!phonePattern.test(phoneNumber)) {
-                phoneNumberError.textContent = 'Số điện thoại không hợp lệ.';
-                isValid = false;
-            }
-
-            if (content.length > 500) {
-                contentError.textContent = 'Nội dung không được vượt quá 500 ký tự.';
-                isValid = false;
-            }
-
-
-            if (isValid) {
-                checkPhoneNumberAndSubmit(pid);
-            }
-        }
-
-        function checkPhoneNumberAndSubmit(pid) {
-            var phoneNumber = $('#PhoneNumber').val();
-
-            $.ajax({
-                url: '@Url.Action("CheckUsedService", "Feedback")',
-                type: 'POST',
-                data: {
-                    phoneNumber: phoneNumber,
-                    pid: pid
-                },
-                success: function (response) {
-                    if (response.status === "error") {
-                        alert(response.message);
-                    } else {
-                        $('#feedbackForm').submit();
-                    }
-                },
-                error: function () {
-                    alert('Đã xảy ra lỗi trong quá trình kiểm tra số điện thoại.');
-                }
-            });
-        }
-
-
         document.addEventListener("DOMContentLoaded", function () {
             let petType = "@Html.Raw(firstServiceOption.PetType)";
             let weight = "@Html.Raw(firstServiceOption.Weight)";
@@ -540,6 +479,28 @@
             });
         }
 
+        function changeOrderDate() {
+            let date = $("#OrderDate").val();
+            $.ajax({
+                type: 'GET',
+                url: '/Service/GetWorkingTimeByDate',
+                data: { date: date },
+                success: function (response) {
+                    let content = '';
+                    response.forEach(function (orderTime) {
+                        let time = orderTime.substring(0, 5);
+                        content += `<option value="${orderTime}">${time}</option>`;
+                    });
+                    $("#OrderTime").html(content);
+                },
+
+                error: function (xhr, status, error) {
+                    console.error('The request failed!', status, error);
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+
         function ConfirmBooking() {
             $("#booking-form").on("submit", function (event) {
                 event.preventDefault();
@@ -579,6 +540,67 @@
                 orientation: "bottom auto",
             });
         };
+
+        function checkFormAndSubmit(event, pid) {
+            event.preventDefault();
+
+            const fullName = document.getElementById('FullName').value.trim();
+            const phoneNumber = document.getElementById('PhoneNumber').value.trim();
+            const content = document.getElementById('Content').value;
+            const fullNameError = document.getElementById('FullNameError');
+            const phoneNumberError = document.getElementById('PhoneNumberError');
+            const contentError = document.getElementById('ContentError');
+
+            fullNameError.textContent = '';
+            phoneNumberError.textContent = '';
+
+            let isValid = true;
+
+            if (!fullName) {
+                fullNameError.textContent = 'Họ và tên không được để trống.';
+                isValid = false;
+            }
+
+            const phonePattern = /^[0-9]{10,11}$/;
+            if (!phonePattern.test(phoneNumber)) {
+                phoneNumberError.textContent = 'Số điện thoại không hợp lệ.';
+                isValid = false;
+            }
+
+            if (content.length > 500) {
+                contentError.textContent = 'Nội dung không được vượt quá 500 ký tự.';
+                isValid = false;
+            }
+
+
+            if (isValid) {
+                checkPhoneNumberAndSubmit(pid);
+            }
+        }
+
+        function checkPhoneNumberAndSubmit(pid) {
+            var phoneNumber = $('#PhoneNumber').val();
+
+            $.ajax({
+                url: '@Url.Action("CheckUsedService", "Feedback")',
+                type: 'POST',
+                data: {
+                    phoneNumber: phoneNumber,
+                    pid: pid
+                },
+                success: function (response) {
+                    if (response.status === "error") {
+                        alert(response.message);
+                    } else {
+                        $('#feedbackForm').submit();
+                    }
+                },
+                error: function () {
+                    alert('Đã xảy ra lỗi trong quá trình kiểm tra số điện thoại.');
+                }
+            });
+        }
+
     </script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

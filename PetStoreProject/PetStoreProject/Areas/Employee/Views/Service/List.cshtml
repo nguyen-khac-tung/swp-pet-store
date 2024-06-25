@@ -465,6 +465,29 @@
             });
         }
 
+        function changeOrderDate() {
+            let date = $("#OrderDate").val();
+            let orderServiceId = $("#OrderServiceId").val();
+            $.ajax({
+                type: 'GET',
+                url: '/Employee/Service/GetWorkingTimeByDate',
+                data: { date: date, orderServiceId: orderServiceId },
+                success: function (response) {
+                    let content = '';
+                    response.forEach(function (orderTime) {
+                        let time = orderTime.substring(0, 5);
+                        content += `<option value="${orderTime}">${time}</option>`;
+                    });
+                    $("#OrderTime").html(content);
+                },
+
+                error: function (xhr, status, error) {
+                    console.error('The request failed!', status, error);
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+
         function changeService() {
             var serviceSelected = $("#ServiceName").find(":selected");
             var serviceId = serviceSelected.attr("data-serviceid");

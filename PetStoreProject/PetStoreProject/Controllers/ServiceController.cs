@@ -79,26 +79,38 @@ namespace PetStoreProject.Controllers
         [HttpPost]
         public ActionResult BookService(BookServiceViewModel bookServiceInfo)
         {
+            if (bookServiceInfo.OrderDate != null)
+            {
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(bookServiceInfo.OrderDate);
+            }
+            else {
+                ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
+            }
+
             if (ModelState.IsValid)
             {
                 bool isPhoneValid = PhoneNumber.isValid(bookServiceInfo.Phone);
                 if (isPhoneValid == false)
                 {
-                    ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
                     ViewBag.PhoneMess = "Số điện thoại không hợp lệ. Vui lòng nhập lại.";
                     return View(bookServiceInfo);
                 }
 
                 _service.AddOrderService(bookServiceInfo);
-                ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
+                ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(bookServiceInfo.OrderDate);
                 ViewData["BookSuccess"] = "Cửa hàng ANIMART đã nhận được đặt hẹn của bạn và sẽ sớm liên hệ với bạn để xác nhận. Cảm ơn bạn đã tin tưởng và đặt lịch dịch vụ của chúng tôi!";
                 return View(bookServiceInfo);
             }
             else
             {
-                ViewData["WorkingTime"] = _service.GetWorkingTime(bookServiceInfo.ServiceId);
                 return View(bookServiceInfo);
             }
+        }
+
+        [HttpGet]
+        public List<TimeOnly> GetWorkingTimeByDate(string date)
+        {
+            return _service.GetWorkingTimeByDate(date);
         }
     }
 }

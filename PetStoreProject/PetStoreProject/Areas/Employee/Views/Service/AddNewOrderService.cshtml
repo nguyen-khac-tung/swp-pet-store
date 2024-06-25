@@ -35,7 +35,7 @@
             {
                 <label asp-for="OrderDate" class="form-label">Ngày hẹn<em>*</em></label>
                 <div class="input-group date" id="order-datepicker">
-                    <input asp-for="OrderDate" type="text" class="form-control" />
+                    <input asp-for="OrderDate" type="text" onchange="changeOrderDate()" class="form-control" />
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                     </div>

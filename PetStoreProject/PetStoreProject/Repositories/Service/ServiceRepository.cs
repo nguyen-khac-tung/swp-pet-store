@@ -141,6 +141,66 @@ namespace PetStoreProject.Repositories.Service
             return workingTime;
         }
 
+        public List<TimeOnly> GetWorkingTimeByDate(string date)
+        {
+            List<TimeOnly> listTime = new List<TimeOnly>();
+            var workingTimes = _context.WorkingTimes.Select(wt => wt.Time).ToList();
+            var numberOfEmployee = _context.Employees.Where(e => e.IsDelete == false).ToList().Count;
+            DateOnly? orderDate = null;
+            if(DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateParsed))
+            {
+                orderDate = DateOnly.FromDateTime(dateParsed);
+            }
+            else
+            {
+                return workingTimes;
+            }
+            var orderTimeInDate = (from os in _context.OrderServices
+                                     where os.OrderDate == orderDate
+                                     && (os.Status == "Chưa xác nhận" || os.Status == "Đã xác nhận")
+                                     select os.OrderTime).ToList();
+            foreach (var workingTime in workingTimes)
+            {
+                var count = orderTimeInDate.Count(ot => ot == workingTime);
+                if(count < numberOfEmployee)
+                {
+                    listTime.Add(workingTime);
+                }
+            }
+
+            return listTime;
+        }
+
+        public List<TimeOnly> GetWorkingTimeByDateForUpdate(string date, TimeOnly orderTime)
+        {
+            List<TimeOnly> listTime = new List<TimeOnly>();
+            var workingTimes = _context.WorkingTimes.Select(wt => wt.Time).ToList();
+            var numberOfEmployee = _context.Employees.Where(e => e.IsDelete == false).ToList().Count;
+            DateOnly? orderDate = null;
+            if (DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateParsed))
+            {
+                orderDate = DateOnly.FromDateTime(dateParsed);
+            }
+            else
+            {
+                return workingTimes;
+            }
+            var orderTimeInDate = (from os in _context.OrderServices
+                                   where os.OrderDate == orderDate
+                                   && (os.Status == "Chưa xác nhận" || os.Status == "Đã xác nhận")
+                                   select os.OrderTime).ToList();
+            foreach (var workingTime in workingTimes)
+            {
+                var count = orderTimeInDate.Count(ot => ot == workingTime);
+                if (workingTime == orderTime || count < numberOfEmployee)
+                {
+                    listTime.Add(workingTime);
+                }
+            }
+
+            return listTime;
+        }
+
         public void AddOrderService(BookServiceViewModel bookServiceInfo)
         {
             DateTime ordDate = DateTime.ParseExact(bookServiceInfo.OrderDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -316,7 +376,7 @@ namespace PetStoreProject.Repositories.Service
                                 select os).FirstOrDefault();
             orderService.Status = status;
 
-            if(employeeId != 0)
+            if (employeeId != 0)
             {
                 orderService.EmployeeId = employeeId;
             }

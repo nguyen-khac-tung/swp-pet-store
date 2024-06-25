@@ -404,7 +404,6 @@ namespace PetStoreProject.Repositories.Accounts
             }
         }
 
-
         public bool IsExistAccount(int accountId)
         {
             bool checkExist = true;

@@ -212,7 +212,7 @@
             <h3></h3>
             <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                 <li>
-                    <a href="/employee"><div class="text-tiny">Bảng điều khiển</div></a>
+                    <a href="/admin/Home/Index"><div class="text-tiny">Bảng điều khiển</div></a>
                 </li>
                 <li>
                     <i class="icon-chevron-right"></i>
@@ -391,7 +391,7 @@
 
     function orderHistoryLoad(optionOrders) {
         $.ajax({
-            url: '/Employee/Account/OrderHistory',
+            url: '/Admin/Account/OrderHistory',
             type: 'post',
             data: optionOrders,
             success: function (response) {
@@ -606,7 +606,7 @@
 
     function serviceHistoryLoad(options) {
         $.ajax({
-            url: '/Employee/Account/OrderServiceHistory',
+            url: '/Admin/Account/OrderServiceHistory',
             type: 'post',
             data: options,
             success: function (response) {

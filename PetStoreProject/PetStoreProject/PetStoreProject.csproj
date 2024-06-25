@@ -85,4 +85,8 @@
     <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Employee\Views\Account\" />
+  </ItemGroup>
+
 </Project>

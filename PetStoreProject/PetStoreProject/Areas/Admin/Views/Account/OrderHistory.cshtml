@@ -114,9 +114,9 @@
                         </div>
                     </form>
                     <form class="form-search form_search_style" onsubmit="return false;">
-                        <fieldset>
-                            <input id="select-dateOrder-input" onchange="selectDateOrder()" type="date" placeholder="Ngày đặt" class="input_select_style" tabindex="2" value="@ViewBag.searchDateOrder" aria-required="true" required="">
-                        </fieldset>
+                        <div class="select">
+                            <input id="select-dateOrder-input" onchange="selectDateOrder()" type="date" name="date" placeholder="Ngày đặt" class="input_select_style" tabindex="2" value="@ViewBag.searchDateOrder" aria-required="true" required="">
+                        </div>
                     </form>
                     @* <div class="wg-filter">
                     <select id="selected_status" onchange="selectedStatus()" style="width:auto">
@@ -198,7 +198,7 @@
                 </div>
                 <div class="divider"></div>
                 <div class="flex items-center justify-between flex-wrap gap40 row" style="font-size:16px;">
-                    <div id="total-user" class="col-lg-3 col-md-3"><strong>Tổng @ViewBag.totalOrders đơn hàng</strong></div>
+                    <div id="total-user" class="col-lg-3 col-md-3"><strong>Tổng @ViewBag.totalOrders đơn</strong></div>
                     @* <div class="text-tiny col=md-3" id="no_data"></div> *@
                     <div id="pagination" class="col-lg-8 col-md-8 pagi_right" style="text-align:right">
                         <nav aria-label="Page navigation example">

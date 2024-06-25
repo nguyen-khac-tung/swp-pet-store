@@ -46,9 +46,12 @@ namespace PetStoreProject.Repositories.Order
                 orders = orders.Where(o => o.FullName.ToLower().Contains(orderModel.SearchName.ToLower())).ToList();
             }
 
-            if (orderModel.SearchDate != DateOnly.MinValue)
+            if (!string.IsNullOrEmpty(orderModel.SearchDate))
             {
-                orders = orders.Where(o => DateOnly.FromDateTime(o.OrderDate) == orderModel.SearchDate).ToList();
+                if (DateOnly.TryParse(orderModel.SearchDate, out DateOnly searchDate))
+                {
+                    orders = orders.Where(o => DateOnly.FromDateTime(o.OrderDate) == searchDate).ToList();
+                }
             }
 
             if (orderModel.SortOrderId == "abc")

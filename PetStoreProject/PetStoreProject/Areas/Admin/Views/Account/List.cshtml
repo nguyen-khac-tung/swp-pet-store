@@ -32,7 +32,7 @@
                 <br />
                 <input type="hidden" id="accountId" />
                 <div class="input-group">
-                    <input type="password" class="form-control" id="passwordAdmin" placeholder="Vui lòng nhập mật khẩu để xác nhận" required />
+                    <input type="password" class="flex-grow" id="passwordAdmin" placeholder="Vui lòng nhập mật khẩu để xác nhận" required />
                     <div class="btn show-btn" onclick="showPassword()">
                         <i class="bi bi-eye eye_style" id="eye-icon"></i>
                     </div>
@@ -40,8 +40,8 @@
                 <div id="error-mess"></div>
             </div>
             <div class="modal-footer" style="margin-bottom:10px">
-                <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:15px">Có, xóa tài khoản</button>
-                <button type="button" class="btn btn-secondary" aria-label="Close" style="font-size:15px" data-bs-dismiss="modal">Không, giữ tài khoản</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:15px; border-radius:5px;">Có, xóa tài khoản</button>
+                <button type="button" class="btn btn-secondary" aria-label="Close" style="font-size:15px;border-radius:5px;" data-bs-dismiss="modal">Không, giữ tài khoản</button>
             </div>
         </div>
     </div>
@@ -65,20 +65,12 @@
                             <button onclick="search()"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                    <div class="wg-filter">
-                        <label style="font-size: 16px">Trạng thái:</label>
-                        <select id="selected_status" onchange="selectedStatus()" style="width:auto">
-                            <option selected value="">-- Tất cả --</option>
-                            <option value="0">Kích hoạt</option>
-                            <option value="1">Không kích hoạt</option>
-                        </select>
-                    </div>
                 </div>
 
                 <a class="tf-button style-1 w208 cursor_style" onclick="addAccount()"><i class="icon-plus"></i>Tạo tài khoản</a>
             </div>
             <div class="wg-table table-all-user" id="table-content">
-                <ul class="table-title flex gap20 mb-14" id="title-table" style="min-width:1410px!important;">
+                <ul class="header-menu-list table-title flex gap20 mb-14 header_menu_style" id="title-table" style="min-width:1420px!important;">
                     <li class="user">
                         <div id="user-hover" onclick="sortByName()" class=" body-title no-select title_hover">Nhân viên <i class="bi bi-chevron-expand"></i></div>
                     </li>
@@ -94,14 +86,21 @@
                     <li class="totalOrderService" style="width: 148px !important;">
                         <div class="body-title no-select title_hover" onclick="sortByTotalOrderServiceEmployee()">Tổng đơn dịch vụ <i class="bi bi-chevron-expand"></i></div>
                     </li>
-                    <li class="status">
-                        <div class="body-title">Trạng thái</div>
+                    <li class="status" >
+                        <div class="body-title">
+                            <a class="drop-icon " href="#">Trạng thái</a>
+                            <ul class="common_ddown dropdown_style" id="status_list_customer" style="width: 190px!important">
+                                <li><a href="#" onclick="changeStatus(-1)">- Tất cả</a></li>
+                                <li><a href="#" onclick="changeStatus(0)">- Kích hoạt</a></li>
+                                <li><a href="#" onclick="changeStatus(1)">- Không Kích hoạt</a></li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <div class="body-title">Hành động</div>
                     </li>
                 </ul>
-                <ul id="list-users" class="flex flex-column" style="min-width:1410px!important">
+                <ul id="list-users" class="flex flex-column" style="min-width:1420px!important">
                     <!-- data user -->
                 </ul>
             </div>

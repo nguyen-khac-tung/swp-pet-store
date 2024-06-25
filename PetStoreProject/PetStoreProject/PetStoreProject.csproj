@@ -40,7 +40,6 @@
     <None Include="wwwroot\areas\js\bootstrap-select.min.js" />
     <None Include="wwwroot\areas\js\bootstrap.min.js" />
     <None Include="wwwroot\areas\js\carousel.js" />
-    <None Include="wwwroot\areas\js\profile-user.js" />
     <None Include="wwwroot\areas\js\jquery.min.js" />
     <None Include="wwwroot\areas\js\jvectormap-1.2.2.min.js" />
     <None Include="wwwroot\areas\js\jvectormap-us-lcc.js" />

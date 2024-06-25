@@ -26,7 +26,7 @@
 
         public string SearchName { get; set; }
 
-        public DateOnly SearchDate { get; set; }
+        public string SearchDate { get; set; }
 
         public string Status { get; set; }
     }

@@ -66,14 +66,13 @@ function displayAccounts(accounts, userType, totalAccount) {
 function displayNoData() {
     $('#total-user').empty();
     $('#pagination').empty();
-    $('.table-title').hide();
     $('#list-users').hide();
-    $('#table-content').removeClass('wg-table');
-    $('#no_data').html('<div class="empty-order-history"> <i class="fas fa-box-open" style="font-size:100px; " ></i><h5>Không có dữ liệu</h5></div> ').show();
+    $('#list-users').html('<div class="empty-order-history text-center"> <i class="fas fa-box-open" style="font-size:100px; " ></i><h5>Không có dữ liệu</h5></div> ').show();
+    //$('#no_data').html('<div class="empty-order-history"> <i class="fas fa-box-open" style="font-size:100px; " ></i><h5>Không có dữ liệu</h5></div> ').show();
 }
 
 function elementHtmlEmployee(account) {
-    var html = '<li class="user-item gap20" >';
+    var html = '<li class="user-item gap20 pa1215" >';
     html += '<div class="image" >';
     html += '<img src="/areas/images/logo_user/user-avatar.svg.png" />';
     html += '</div>';
@@ -90,9 +89,9 @@ function elementHtmlEmployee(account) {
     html += '<div class="body-text total_fb text-center" style="width: 180px !important;">' + account.totalResponseFeedback + '</div>';
     html += '<div class="body-text totalOrderService text-center" style="width: 152px !important; ">' + account.totalOrderService + '</div>';
     if (account.accountDetail.isDelete == 1) {
-        html += '<div class="body-text status" style="width: 200px !important;"><span class="account-non-active">Không kích hoạt</span></div>';
+        html += '<div class="body-text status block-not-available" style="width: 200px !important;"><span class="">Không kích hoạt</span></div>';
     } else {
-        html += '<div class="body-text status" style="width: 200px !important;" ><span class="account-active">Kích hoạt</span></div>';
+        html += '<div class="body-text status block-available" style="width: 200px !important;" ><span class="">Kích hoạt</span></div>';
     }
     html += '<div class="list-icon-function" >';
     html += '<div class="item eye">';
@@ -258,14 +257,6 @@ function sortByTotalOrderServiceEmployee() {
     sortTotalOrderServiceEmployee = sortByField('totalOrderService', sortTotalOrderServiceEmployee, 2);
 }
 
-function selectedStatus() {
-    var searchName = document.getElementById("search-input").value;
-
-    selectStatus = $("#selected_status").val();
-
-    load(1, 10, searchName, sortName, selectStatus);
-}
-
 /* Add account */
 
 function addAccount() {
@@ -413,11 +404,11 @@ function elementHtmlCustomer(account) {
                         <div class="body-text email">${account.accountDetail.email}</div>
                         <div class="body-text totalOrder text-center">${account.totalOrder}</div>
                         <div class="body-text totalOrderService text-center" style="width: 150px;">${account.totalOrderService}</div>
-                        <div class="body-text status text-center">
+                        
                             ${account.accountDetail.isDelete == 1 ?
-            '<span class="account-non-active">Không kích hoạt</span>' :
-            '<span class="account-active">Kích hoạt</span>'}
-                        </div>
+            '<div class="body-text status text-center block-not-available"><span class="">Không kích hoạt</span></div>' :
+            '<div class="body-text status text-center block-available"><span class="">Kích hoạt</span></div>'}
+
                         <div class="list-icon-function ">
                             <div class="item eye text-center" style="width:90px">
                                 <a href="CustomerDetail?userId=${account.accountDetail.userId}"><i class="icon-eye"></i></a>
@@ -426,4 +417,21 @@ function elementHtmlCustomer(account) {
                     </div>
                 </li>`;
     return html;
+}
+
+function changeStatus(status) {
+    var searchName = document.getElementById("search-input").value;
+
+    switch (status) {
+        case 0:
+            selectStatus = "0";
+            break;
+        case 1:
+            selectStatus = "1";
+            break;
+        case -1:
+            selectStatus = "";
+            break;
+    }
+    load(1, 10, searchName, sortName, selectStatus);
 }

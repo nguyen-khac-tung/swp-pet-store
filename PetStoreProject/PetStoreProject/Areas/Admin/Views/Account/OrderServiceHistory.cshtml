@@ -101,12 +101,20 @@
         justify-content: space-between !important;
         gap: 10px 20px !important;
     }
+
     .card-style-table {
-        border-radius: 10px!important;
+        border-radius: 10px !important;
     }
 
-    
+    .header_menu_style li {
+        padding: 0px !important;
+    }
 
+    .dropdown_style li {
+        width: 250px !important;
+        font-weight: normal;
+        line-height: 2;
+    }
 </style>
 
 <div class="card mb-4 card-style-table">
@@ -142,7 +150,7 @@
                     </form>
                     <form class="form-search form_search_style" onsubmit="return false;">
                         <fieldset>
-                            <input id="select-date-input" onchange="selectDateOrderService()" type="date" placeholder="Ngày đặt" class="input_select_style" tabindex="2" value="@ViewBag.SearchDate.ToString()" aria-required="true" required="">
+                            <input id="select-date-input" onchange="selectDateOrderService()" type="date" placeholder="Ngày đặt" class="input_select_style" tabindex="2" value="@ViewBag.SearchDate" aria-required="true" required="">
                         </fieldset>
                     </form>
                     <form class="form-search form_search_style" onsubmit="return false;">
@@ -153,58 +161,58 @@
                             <button onclick="searchTimeOrderService()"><i class="icon-search"></i></button>
                         </div>
                     </form>
-
-                    <div class="wg-filter">
-                        @* <label style="font-size: 16px">Trạng thái:</label> *@
-                        <select id="selected_status_orderService" onchange="selectedStatusOrderSerice()" style="width:auto" value="@ViewBag.Status">
-                            <option selected value="">-- Trạng thái --</option>
-                            <option value="">Tất cả</option>
-                            <option value="Chưa xác nhận">Chưa xác nhận</option>
-                            <option value="Đã hủy">Đã Hủy</option>
-                        </select>
-                    </div>
                 </div>
 
             </div>
-            @if (Model.Count > 0)
-            {
-                <div class="wg-table table-all-user" id="table-content">
 
-                    <ul class="table-title flex gap20 mb-14 table_width_style" id="title-table">
-                        <li class="orderId no-select" onclick="sortByOrderServiceId()">
-                            <div class="btn_hover body-title">Mã đặt dịch vụ<i class="bi bi-chevron-expand"></i></div>
-                        </li>
-                        <li class="name no-select" onclick="sortByNameService()">
-                            <div class="body-title btn_hover">Tên người đặt <i class="bi bi-chevron-expand"></i></div>
-                        </li>
-                        <li class="orderDate no-select" onclick="sortByDateService()">
-                            <div class="body-title btn_hover">Ngày đặt<i class="bi bi-chevron-expand"></i></div>
-                        </li>
-                        <li class="orderTime no-select" onclick="sortByTimeService()">
-                            <div class="body-title btn_hover text_center">Thời gian đặt<i class="bi bi-chevron-expand"></i></div>
-                        </li>
-                        <li class="optionServiceId no-select" onclick="sortByServiceId()">
-                            <div class="body-title btn_hover text-center">Mã dịch vụ<i class="bi bi-chevron-expand"></i></div>
-                        </li>
-                        <li class="phone no-select">
-                            <div class="body-title">Số điện thoại</div>
-                        </li>
-                        @*                         <li class="email">
+            <div class="wg-table table-all-user" id="table-content">
+
+                <ul class="header-menu-list table-title flex gap20 mb-14 header_menu_style table_width_style" id="title-table">
+                    <li class="orderId no-select" onclick="sortByOrderServiceId()">
+                        <div class="btn_hover body-title">Mã đặt dịch vụ<i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                    <li class="name no-select" onclick="sortByNameService()">
+                        <div class="body-title btn_hover">Tên người đặt <i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                    <li class="orderDate no-select" onclick="sortByDateService()">
+                        <div class="body-title btn_hover">Ngày đặt<i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                    <li class="orderTime no-select" onclick="sortByTimeService()">
+                        <div class="body-title btn_hover text_center">Thời gian đặt<i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                    <li class="optionServiceId no-select" onclick="sortByServiceId()">
+                        <div class="body-title btn_hover text-center">Mã dịch vụ<i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                    <li class="phone no-select">
+                        <div class="body-title">Số điện thoại</div>
+                    </li>
+                    @*                         <li class="email">
                     <div class="body-title">Email</div>
                     </li> *@
-                        <li class="status no-select">
-                            <div class="body-title text_center">Trạng thái</div>
-                        </li>
-                        <li class="paymentMethod no-select">
-                            <div class="body-title text-center">Nhân viên</div>
-                        </li>
+                    <li class="status no-select">
+                        <div class="body-title">
+                            <a class="drop-icon " href="#">Trạng thái</a>
+                            <ul class="common_ddown dropdown_style" id="status_service_history" style="width: 190px">
+                                <li><a href="#" onclick="changeStatusServiceHistory('')">- Tất cả</a></li>
+                                <li><a href="#" onclick="changeStatusServiceHistory('Đã thanh toán')">- Đã thanh toán</a></li>
+                                <li><a href="#" onclick="changeStatusServiceHistory('Đã xác nhận')">- Đã xác nhận</a></li>
+                                <li><a href="#" onclick="changeStatusServiceHistory('Đã hủy')">- Đã hủy</a></li>
+                                <li><a href="#" onclick="changeStatusServiceHistory('Chưa xác nhận')">- Chưa xác nhận</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="paymentMethod no-select">
+                        <div class="body-title text-center">Nhân viên</div>
+                    </li>
 
-                        <li class="totalAmount no-select" onclick="sortByPriceService()">
-                            <div class="body-title btn_hover">Tổng số tiền<i class="bi bi-chevron-expand"></i></div>
-                        </li>
-                    </ul>
+                    <li class="totalAmount no-select" onclick="sortByPriceService()">
+                        <div class="body-title btn_hover">Tổng số tiền<i class="bi bi-chevron-expand"></i></div>
+                    </li>
+                </ul>
+
                     <ul id="list-users" class="flex flex-column table_width_style scroll-hozirotal">
-
+                    @if (Model.Count > 0)
+                    {
                         <!-- data user -->
                         @foreach (var service in Model)
                         {
@@ -217,7 +225,7 @@
                                     <div class="body-text optionServiceId text_center">#@service.ServiceId</div>
                                     <div class="body-text phone">@service.Phone</div>
                                     @* <div class="body-text email">@service.Email.Trim()</div> *@
-                                    <div class="body-text status text_center">@service.Status</div>
+                                    <div class="body-text status ">@service.Status</div>
                                     <div class="body-text paymentMethod text_center">
                                         @if (service.employee != null)
                                         {
@@ -227,7 +235,7 @@
                                         }
                                         else
                                         {
-                                            <text><span class="account-non-active">Trống</span></text>
+                                            <text><span class="block-not-available">Trống</span></text>
                                         }
                                     </div>
                                     <div class="body-text totalAmount">@string.Format("{0:N0} VND", @service.Price)</div>
@@ -240,14 +248,26 @@
                                 </div>
                             </li>
                         }
+                    }
+                    else
+                    {
+                        <div class="empty-order-history text-center">
+                            <i class="fas fa-box-open"></i>
+                            <h6>Lịch sử đặt dịch vụ hiện tại trống.</h6>
+                        </div>
+                    }
                     </ul>
 
-                </div>
-            
+            </div>
+
             <div class="divider"></div>
-            <div class="flex items-center justify-between flex-wrap gap40 row" style="font-size:16px;">
-                    <div id="total-user" class="col-lg-3 col-md-3"><strong>Tổng @ViewBag.totalOrderServices đơn đặt dịch vụ</strong></div>
-                @* <div class="text-tiny col-md-3" id="no_data"></div> *@
+            @if (Model.Count > 0)
+            {
+                <div class="flex items-center justify-between flex-wrap gap40 row" style="font-size:16px;">
+
+                    <div id="total-user" class="col-lg-3 col-md-3"><strong>Tổng @ViewBag.totalOrderServices đơn</strong></div>
+                    @* <div class="text-tiny col-md-3" id="no_data"></div> *@
+
                     <div id="pagination" class="col-lg-8 col-md-8 pagi_right" style="text-align:right">
                         <nav aria-label="Page navigation example">
                             <ul id="pagination">
@@ -299,14 +319,11 @@
                             </ul>
                         </nav>
                     </div>
-            </div>
+                </div>
             }
             else
             {
-                <div class="empty-order-history">
-                    <i class="fas fa-box-open"></i>
-                    <h6>Lịch sử đặt dịch vụ hiện tại trống.</h6>
-                </div>
+                
             }
         </div>
         <!-- /all-user -->

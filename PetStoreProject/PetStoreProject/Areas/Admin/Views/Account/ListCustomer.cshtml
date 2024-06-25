@@ -9,22 +9,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-
 <style>
     #title-table li {
-        width:auto!important;
+        width: auto !important;
     }
+
     .user_style, .email {
-        width:280px!important;
+        width: 280px !important;
     }
+
     .phone_customer_style {
-        width:270px!important;
+        width: 270px !important;
     }
 
     .title_hover:hover {
         text-decoration: underline;
         cursor: pointer;
     }
+
+
 
 </style>
 
@@ -63,19 +66,11 @@
                             <button onclick="search()"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                    <div class="wg-filter">
-                        <label style="font-size: 16px">Trạng thái:</label>
-                        <select id="selected_status" onchange="selectedStatus()" style="width:auto">
-                            <option selected value="">-- Tất cả --</option>
-                            <option value="0">Kích hoạt</option>
-                            <option value="1">Không kích hoạt</option>
-                        </select>
-                    </div>
                 </div>
 
             </div>
             <div class="wg-table table-all-user" id="table-content">
-                <ul class="table-title flex gap20 mb-14" style="min-width:1360px!important" id="title-table">
+                <ul class="header-menu-list table-title flex gap20 mb-14 header_menu_style" style="min-width:1360px!important;" id="title-table">
                     <li class="user ">
                         <div id="" onclick="sortByName()" class="no-select body-title user_style title_hover">Khách hàng <i class="bi bi-chevron-expand"></i></div>
                     </li>
@@ -91,8 +86,15 @@
                     <li>
                         <div class="body-title text-center title_hover no-select" style="width:150px" onclick="sortByTotalOrderService()">Tổng đơn dịch vụ <i class="bi bi-chevron-expand"></i></div>
                     </li>
-                    <li class="status text-center" style="width:106px !important;">
-                        <div class="body-title">Trạng thái</div>
+                    <li class="status" style="width:106px !important;">
+                        <div class="body-title">
+                            <a class="drop-icon " href="#">Trạng thái</a>
+                            <ul class="common_ddown dropdown_style" id="status_list_customer" style="width: 190px">
+                                <li><a href="#" onclick="changeStatus(-1)">- Tất cả</a></li>
+                                <li><a href="#" onclick="changeStatus(0)">- Kích hoạt</a></li>
+                                <li><a href="#" onclick="changeStatus(1)">- Không Kích hoạt</a></li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <div class="body-title text-center" style="width:115px!important;">Hành động</div>
@@ -103,7 +105,7 @@
                 </ul>
             </div>
             <div class="divider"></div>
-            <div class="flex items-center justify-between flex-wrap gap40"  style="font-size:16px;">
+            <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
                 <div id="total-user"></div>
                 <div class="text-tiny" id="no_data"></div>
                 <div id="pagination"></div>

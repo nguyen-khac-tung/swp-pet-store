@@ -52,11 +52,14 @@ namespace PetStoreProject.Repositories.OrderService
                 orderServices = orderServices.Where(o => o.Name.ToLower().Contains(orderServiceModel.SearchName.ToLower())).ToList();
             }
 
-            if (!orderServiceModel.SearchDate.Equals(DateOnly.MinValue))
+            if(!string.IsNullOrEmpty(orderServiceModel.SearchDate))
             {
-                orderServices = orderServices.Where(o => o.OrderDate == orderServiceModel.SearchDate).ToList();
+                if (DateOnly.TryParse(orderServiceModel.SearchDate, out DateOnly dateService)) 
+                {
+                    orderServices = orderServices.Where(o => o.OrderDate == dateService).ToList();
+                }
             }
-
+            
             var seTime = orderServiceModel.SearchTime;
             if (seTime != null)
             {

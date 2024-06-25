@@ -103,7 +103,9 @@
 /* list */
 
 
-
+.pa1215 {
+    padding: 12px 15px 12px 15px !important;
+}
 
 .account-non-active {
     color: #f4fff4;
@@ -136,7 +138,7 @@
 }
 
 .status {
-    max-width: 147px;
+    max-width: 150px;
 }
 
 .modal-header {
@@ -166,17 +168,30 @@
     margin-top: 10px;
     font-size: 15px;
     border: none;
-    border-bottom: 1px solid black;
     width: 100%;
     position: absolute;
     z-index: 0;
+    outline: 0;
+    box-shadow: none;
+    width: 100%;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    font-weight: 400;
+    line-height: 20px;
+    background-color: transparent;
+    border: 1px solid var(--Input);
+    border-radius: 12px;
+    color: var(--Heading);
+    overflow: hidden;
+    margin-bottom: 0
 }
 
 .eye_style {
     font-size: 18px;
     position: relative;
-    top: 5px;
-    left: 365px;
+    top: 16px;
+    left: 377px;
     z-index: 1;
 }
 
@@ -199,8 +214,19 @@
     border-radius: 10px;
 }
 
+.header_menu_style li {
+    padding: 0px !important;
+}
+
+.dropdown_style li {
+    width: 250px!important;
+    font-weight: normal;
+    line-height: 2;
+}
+
 /* Add account employee*/
 
 .cursor_style {
     cursor: pointer;
 }
+

@@ -372,6 +372,7 @@
         SearchDate: searchDateOrder,
         SearchOrderId: searchOrderId
     }
+
     function resetOptionOrder() {
         optionOrders.SortOrderId = "";
         optionOrders.SortName = "";
@@ -648,8 +649,7 @@
         serviceHistoryLoad(options);
     }
 
-    function selectedStatusOrderSerice() {
-        status = $('#selected_status_orderService').val();
+    function changeStatusServiceHistory(status) {
         resetSearchOrderService();
         options.Status = status;
         serviceHistoryLoad(options);

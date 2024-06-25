@@ -1425,7 +1425,7 @@ a:hover, a:focus {
   gap: 10px;
   border-radius: 4px;
   background: #FFF2ED;
-  color: #FF5200;
+  color: #FF5200 !important;
   font-size: 12px;
   font-weight: 500;
 }
@@ -1444,7 +1444,7 @@ a:hover, a:focus {
   gap: 10px;
   border-radius: 4px;
   background: #F0FDF4;
-  color: var(--22-c-55-e);
+  color: var(--22-c-55-e)!important;
   font-size: 12px;
   font-weight: 500;
 }

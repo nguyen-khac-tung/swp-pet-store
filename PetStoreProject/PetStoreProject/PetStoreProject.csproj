@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Employee\Views\Account\**" />
+    <Content Remove="Areas\Employee\Views\Account\**" />
+    <EmbeddedResource Remove="Areas\Employee\Views\Account\**" />
+    <None Remove="Areas\Employee\Views\Account\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\areas\js\profile-user.js" />
     <Content Remove="wwwroot\js\myjs.js" />
   </ItemGroup>
@@ -78,10 +85,6 @@
 
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Employee\Views\Account\" />
   </ItemGroup>
 
 </Project>

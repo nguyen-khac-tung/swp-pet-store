@@ -1,4 +1,4 @@
-﻿namespace PetStoreProject.Areas.Admin.ViewModels
+﻿namespace PetStoreProject.ViewModels
 {
     public class ServiceFilterViewModel
     {
@@ -7,7 +7,7 @@
         public string? ServiceType { get; set; }
 
         public string? Status { get; set; }
-        
+
         public string? SortServiceName { get; set; }
 
         public string? SortServiceId { get; set; }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.ViewModels;
 using PetStoreProject.Repositories.Service;
 
 namespace PetStoreProject.Areas.Admin.Controllers

@@ -1,11 +1,11 @@
-﻿namespace PetStoreProject.Areas.Admin.ViewModels
+﻿namespace PetStoreProject.ViewModels
 {
     public class ServiceTableViewModel
     {
         public string ImageUrl { get; set; } = null!;
 
         public string Name { get; set; } = null!;
-        
+
         public int ServiceId { get; set; }
 
         public float Price { get; set; }

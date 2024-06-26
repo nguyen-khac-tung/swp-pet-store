@@ -97,64 +97,128 @@
             align-items: center;
         }
 
-    .wg-table.table-countries ul.table-title li:nth-child(1) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(1) {
         cursor: pointer;
         width: 310px;
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(1) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(1) {
         width: 310px;
         font-weight: 600;
     }
 
-    .wg-table.table-countries ul.table-title li:nth-child(2) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(2) {
         cursor: pointer;
         width: 40px;
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(2) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(2) {
         width: 40px;
     }
 
-    .wg-table.table-countries ul.table-title li:nth-child(3) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(3) {
         cursor: pointer;
         width: 100px
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(3) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(3) {
         width: 100px;
     }
 
-    .wg-table.table-countries ul.table-title li:nth-child(4) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(4) {
         cursor: pointer;
         width: 110px;
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(4) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(4) {
         width: 110px;
     }
 
-    .wg-table.table-countries ul.table-title li:nth-child(5) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(5) {
         cursor: pointer;
         width: 110px;
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(5) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(5) {
         width: 110px;
     }
 
-    .wg-table.table-countries ul.table-title li:nth-child(6) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(6) {
         width: 130px;
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(6) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(6) {
         width: 130px;
     }
 
-    .wg-table.table-countries ul.table-title li:nth-child(7) {
+    .wg-table.table-countries.admin ul.table-title li:nth-child(7) {
         width: 110px;
     }
 
-    .wg-table.table-countries .countries-item > div:nth-child(7) {
+    .wg-table.table-countries.admin .countries-item > div:nth-child(7) {
         width: 110px;
+    }
+
+
+    /* Employee */
+    .wg-table.table-countries.employee ul.table-title li:nth-child(1) {
+        cursor: pointer;
+        width: 330px;
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(1) {
+        width: 330px;
+        font-weight: 600;
+    }
+
+    .wg-table.table-countries.employee ul.table-title li:nth-child(2) {
+        cursor: pointer;
+        width: 60px;
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(2) {
+        width: 60px;
+    }
+
+    .wg-table.table-countries.employee ul.table-title li:nth-child(3) {
+        cursor: pointer;
+        width: 110px
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(3) {
+        width: 110px;
+    }
+
+    .wg-table.table-countries.employee ul.table-title li:nth-child(4) {
+        cursor: pointer;
+        width: 110px;
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(4) {
+        width: 110px;
+    }
+
+    .wg-table.table-countries.employee ul.table-title li:nth-child(5) {
+        cursor: pointer;
+        width: 130px;
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(5) {
+        width: 130px;
+    }
+
+    .wg-table.table-countries.employee ul.table-title li:nth-child(6) {
+        width: 140px;
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(6) {
+        width: 140px;
+    }
+
+    .wg-table.table-countries.employee ul.table-title li:nth-child(7) {
+        width: 75px;
+    }
+
+    .wg-table.table-countries.employee .countries-item > div:nth-child(7) {
+        width: 75px;
     }

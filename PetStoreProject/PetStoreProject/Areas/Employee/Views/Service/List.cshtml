@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="~/areas/css/list-service-style.css" />
+    <link rel="stylesheet" href="~/areas/css/list-order-service-style.css" />
 }
 
 <!-- main-content-wrap -->
@@ -25,7 +25,7 @@
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Danh Sách Đơn Chờ Xác Nhận</h3>
+            <h3>Danh sách đơn chờ xác nhận</h3>
         </div>
         <!-- Pending -->
         <div class="wg-box">
@@ -43,17 +43,6 @@
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="flex gap10">
-                        <div class="select w200">
-                            <select id="service-id-search-pending" onchange="searchServicePending()">
-                                <option value="">--Tất cả dịch vụ--</option>
-                                @foreach (var service in listServices)
-                                {
-                                    <option value="@service.ServiceId">@service.Name</option>
-                                }
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -76,8 +65,15 @@
                     <li>
                         <a class="body-title" onclick="selectOrderTimePending()">Giờ hẹn<i class="bi bi-chevron-expand"></i></a>
                     </li>
-                    <li>
-                        <div class="body-title">Dịch vụ</div>
+                    <li style="position: relative">
+                        <a class="body-title">Dịch vụ <i class="bi bi-funnel"></i></a>
+                        <ul class="common_ddown" id="service-id-search-pending">
+                            <li><a data-serviceId="" onclick="searchServicePending(this)">- Tất cả dịch vụ</a></li>
+                            @foreach (var service in listServices)
+                            {
+                                <li><a data-serviceId="@service.ServiceId" onclick="searchServicePending(this)">- @service.Name</a></li>
+                            }
+                        </ul>
                     </li>
                     <li>
                         <div class="body-title">Trạng thái</div>
@@ -138,7 +134,7 @@
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Danh Sách Đơn Đã Xác Nhận</h3>
+            <h3>Danh sách đơn đã xác nhận</h3>
         </div>
         <!-- Confirmed -->
         <div class="wg-box">
@@ -156,17 +152,6 @@
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="flex gap10">
-                        <div class="select w200">
-                            <select id="service-id-search-confirmed" onchange="searchServiceConfirmed()">
-                                <option value="">--Tất cả dịch vụ--</option>
-                                @foreach (var service in listServices)
-                                {
-                                    <option value="@service.ServiceId">@service.Name</option>
-                                }
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -189,8 +174,15 @@
                     <li>
                         <a class="body-title" onclick="selectOrderTimeConfirmed()">Giờ hẹn<i class="bi bi-chevron-expand"></i></i></a>
                     </li>
-                    <li>
-                        <div class="body-title">Dịch vụ</div>
+                    <li style="position: relative">
+                        <a class="body-title">Dịch vụ <i class="bi bi-funnel"></i></a>
+                        <ul class="common_ddown" id="service-id-search-confirmed">
+                            <li><a data-serviceId="" onclick="searchServiceConfirmed(this)">- Tất cả dịch vụ</a></li>
+                            @foreach (var service in listServices)
+                            {
+                                <li><a data-serviceId="@service.ServiceId" onclick="searchServiceConfirmed(this)">- @service.Name</a></li>
+                            }
+                        </ul>
                     </li>
                     <li>
                         <div class="body-title">Trạng thái</div>
@@ -251,7 +243,7 @@
     <!-- main-content-wrap -->
     <div class="main-content-wrap">
         <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-            <h3>Danh Sách Đơn Đã Thanh Toán</h3>
+            <h3>Danh sách đơn đã thanh toán</h3>
         </div>
         <!-- Paid -->
         <div class="wg-box">
@@ -269,17 +261,6 @@
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="flex gap10 flex-grow-1">
-                        <div class="select w200">
-                            <select id="service-id-search-paid" onchange="searchServicePaid()">
-                                <option value="">--Tất cả dịch vụ--</option>
-                                @foreach (var service in listServices)
-                                {
-                                    <option value="@service.ServiceId">@service.Name</option>
-                                }
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -302,8 +283,15 @@
                     <li>
                         <a class="body-title" onclick="selectOrderTimePaid()">Giờ hẹn<i class="bi bi-chevron-expand"></i></i></a>
                     </li>
-                    <li>
-                        <div class="body-title">Dịch vụ</div>
+                    <li style="position: relative">
+                        <a class="body-title">Dịch vụ <i class="bi bi-funnel"></i></a>
+                        <ul class="common_ddown" id="service-id-search-paid">
+                            <li><a data-serviceId="" onclick="searchServicePaid(this)">- Tất cả dịch vụ</a></li>
+                            @foreach (var service in listServices)
+                            {
+                                <li><a data-serviceId="@service.ServiceId" onclick="searchServicePaid(this)">- @service.Name</a></li>
+                            }
+                        </ul>
                     </li>
                     <li>
                         <div class="body-title">Trạng thái</div>
@@ -406,6 +394,10 @@
     <script>
         /*Generate Paging Nagivation of  Different Order Sevice Areas for First Time*/
         $(document).ready(function () {
+            $("#service-id-search-pending li:first-child a").addClass("choose");
+            $("#service-id-search-confirmed li:first-child a").addClass("choose");
+            $("#service-id-search-paid li:first-child a").addClass("choose");
+
             $(".order-service-detail-btn").click(function () {
                 let orderServiceId = $(this).data("orderserviceid");
                 orderedServiceDetail(orderServiceId);
@@ -801,8 +793,7 @@
             orderServicePending.status = 'Chưa xác nhận';
             orderServicePending.nameOrPhone = $("#customer-info-search-pending").val();
             orderServicePending.orderDate = $("#order-date-search-pending").val();
-            orderServicePending.serviceId = $("#service-id-search-pending").find(":selected").val();
-
+            orderServicePending.serviceId = $("#service-id-search-pending").find(".choose").attr("data-serviceId");
             resetOptionSortPending();
             orderServicePending.sortServiceId = 'Ascending';
 
@@ -820,7 +811,9 @@
             fetchNewOrderServicesPending();
         }
 
-        function searchServicePending() {
+        function searchServicePending(element) {
+            $("#service-id-search-pending").find("li a").removeClass("choose");
+            $(element).addClass("choose");
             refreshOrderServicePending();
             fetchNewOrderServicesPending();
         }
@@ -901,22 +894,22 @@
                         let content = '';
                         response.orderedServices.forEach(function (order) {
                             content += `<li id="order-item-${order.orderServiceId}" class="countries-item">
-                                                                                <div class="body-text">#${order.orderServiceId}</div>
-                                                                                <div class="body-text name-cell">${order.name}</div>
-                                                                                <div class="body-text phone-cell">${order.phone}</div>
-                                                                                <div class="body-text orderdate-cell">${order.orderDate}</div>
-                                                                                <div class="body-text ordertime-cell">${order.orderTime.toString().substring(0, 5)}</div>
-                                                                                <div class="body-text servicename-cell">${order.serviceName}</div>
-                                                                                <div>
-                                                                                 <div class="block-pending">${order.status}</div>
+                                                                            <div class="body-text">#${order.orderServiceId}</div>
+                                                                            <div class="body-text name-cell">${order.name}</div>
+                                                                            <div class="body-text phone-cell">${order.phone}</div>
+                                                                            <div class="body-text orderdate-cell">${order.orderDate}</div>
+                                                                            <div class="body-text ordertime-cell">${order.orderTime.toString().substring(0, 5)}</div>
+                                                                            <div class="body-text servicename-cell">${order.serviceName}</div>
+                                                                            <div>
+                                                                                <div class="block-pending">${order.status}</div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <div class="list-icon-function">
+                                                                                    <a class="item edit order-service-detail-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-edit-3"></i></a>
+                                                                                    <a class="item trash order-service-cancel-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-trash-2"></i></a>
                                                                                 </div>
-                                                                                <div>
-                                                                                    <div class="list-icon-function">
-                                                                                        <a class="item edit order-service-detail-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-edit-3"></i></a>
-                                                                                        <a class="item trash order-service-cancel-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-trash-2"></i></a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </li>`;
+                                                                            </div>
+                                                                        </li>`;
                         });
 
                         $('#table-order-services-pending').empty();
@@ -935,9 +928,9 @@
                     else {
                         $('#table-order-services-pending').empty();
                         let content = `<div class="empty-order-history">
-                                                <i class="fas fa-box-open"></i>
-                                                <h6>Đơn chờ xác nhận trống.</h6>
-                                            </div>`;
+                                                                                <i class="fas fa-box-open"></i>
+                                                                                <h6>Đơn chờ xác nhận trống.</h6>
+                                                                            </div>`;
                         $('#table-order-services-pending').html(content);
                         $("#paging-pending").empty();
                     }
@@ -980,7 +973,7 @@
             orderServiceConfirmed.status = 'Đã xác nhận';
             orderServiceConfirmed.nameOrPhone = $("#customer-info-search-confirmed").val();
             orderServiceConfirmed.orderDate = $("#order-date-search-confirmed").val();
-            orderServiceConfirmed.serviceId = $("#service-id-search-confirmed").find(":selected").val();
+            orderServiceConfirmed.serviceId = $("#service-id-search-confirmed").find(".choose").attr("data-serviceId");
 
             resetOptionSortConfirmed();
             orderServiceConfirmed.sortServiceId = 'Ascending';
@@ -999,7 +992,9 @@
             fetchNewOrderServicesConfirmed();
         }
 
-        function searchServiceConfirmed() {
+        function searchServiceConfirmed(element) {
+            $("#service-id-search-confirmed").find("li a").removeClass("choose");
+            $(element).addClass("choose");
             refreshOrderServiceConfirmed();
             fetchNewOrderServicesConfirmed();
         }
@@ -1081,22 +1076,22 @@
                         let content = '';
                         response.orderedServices.forEach(function (order) {
                             content += `<li id="order-item-${order.orderServiceId}" class="countries-item">
-                                                                        <div class="body-text">#${order.orderServiceId}</div>
-                                                                        <div class="body-text name-cell">${order.name}</div>
-                                                                        <div class="body-text phone-cell">${order.phone}</div>
-                                                                        <div class="body-text orderdate-cell">${order.orderDate}</div>
-                                                                        <div class="body-text ordertime-cell">${order.orderTime.toString().substring(0, 5)}</div>
-                                                                        <div class="body-text servicename-cell">${order.serviceName}</div>
-                                                                        <div>
-                                                                                  <div class="block-published">${order.status}</div>
-                                                                        </div>
-                                                                        <div>
-                                                                            <div class="list-icon-function">
-                                                                                <a class="item edit order-service-detail-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-edit-3"></i></a>
-                                                                                <a class="item trash order-service-cancel-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-trash-2"></i></a>
+                                                                            <div class="body-text">#${order.orderServiceId}</div>
+                                                                            <div class="body-text name-cell">${order.name}</div>
+                                                                            <div class="body-text phone-cell">${order.phone}</div>
+                                                                            <div class="body-text orderdate-cell">${order.orderDate}</div>
+                                                                            <div class="body-text ordertime-cell">${order.orderTime.toString().substring(0, 5)}</div>
+                                                                            <div class="body-text servicename-cell">${order.serviceName}</div>
+                                                                            <div>
+                                                                                        <div class="block-published">${order.status}</div>
                                                                             </div>
-                                                                        </div>
-                                                                    </li>`;
+                                                                            <div>
+                                                                                <div class="list-icon-function">
+                                                                                    <a class="item edit order-service-detail-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-edit-3"></i></a>
+                                                                                    <a class="item trash order-service-cancel-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-trash-2"></i></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>`;
                         });
 
                         $('#table-order-services-confirmed').empty();
@@ -1115,9 +1110,9 @@
                     else {
                         $('#table-order-services-confirmed').empty();
                         let content = `<div class="empty-order-history">
-                                                <i class="fas fa-box-open"></i>
-                                                <h6>Đơn đã xác nhận trống.</h6>
-                                            </div>`;
+                                                                                <i class="fas fa-box-open"></i>
+                                                                                <h6>Đơn đã xác nhận trống.</h6>
+                                                                            </div>`;
                         $('#table-order-services-confirmed').html(content);
                         $("#paging-confirmed").empty();
                     }
@@ -1158,7 +1153,7 @@
             orderServicePaid.status = 'Đã thanh toán';
             orderServicePaid.nameOrPhone = $("#customer-info-search-paid").val();
             orderServicePaid.orderDate = $("#order-date-search-paid").val();
-            orderServicePaid.serviceId = $("#service-id-search-paid").find(":selected").val();
+            orderServicePaid.serviceId = $("#service-id-search-paid").find(".choose").attr("data-serviceId");
 
             resetOptionSortPaid();
             orderServicePaid.sortServiceId = 'Ascending';
@@ -1177,7 +1172,9 @@
             fetchNewOrderServicesPaid();
         }
 
-        function searchServicePaid() {
+        function searchServicePaid(element) {
+            $("#service-id-search-paid").find("li a").removeClass("choose");
+            $(element).addClass("choose");
             refreshOrderServicePaid();
             fetchNewOrderServicesPaid();
         }
@@ -1259,21 +1256,21 @@
                         let content = '';
                         response.orderedServices.forEach(function (order) {
                             content += `<li id="order-item-${order.orderServiceId}" class="countries-item">
-                                    <div class="body-text">#${order.orderServiceId}</div>
-                                    <div class="body-text name-cell">${order.name}</div>
-                                    <div class="body-text phone-cell">${order.phone}</div>
-                                    <div class="body-text orderdate-cell">${order.orderDate}</div>
-                                    <div class="body-text ordertime-cell">${order.orderTime.toString().substring(0, 5)}</div>
-                                    <div class="body-text servicename-cell">${order.serviceName}</div>
-                                    <div>
-                                                <div class="block-available">${order.status}</div>
-                                    </div>
-                                    <div>
-                                        <div class="list-icon-function">
-                                                    <a class="item eye order-service-detail-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-eye"></i></a>
-                                        </div>
-                                    </div>
-                                </li>`;
+                                                                    <div class="body-text">#${order.orderServiceId}</div>
+                                                                    <div class="body-text name-cell">${order.name}</div>
+                                                                    <div class="body-text phone-cell">${order.phone}</div>
+                                                                    <div class="body-text orderdate-cell">${order.orderDate}</div>
+                                                                    <div class="body-text ordertime-cell">${order.orderTime.toString().substring(0, 5)}</div>
+                                                                    <div class="body-text servicename-cell">${order.serviceName}</div>
+                                                                    <div>
+                                                                                <div class="block-available">${order.status}</div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="list-icon-function">
+                                                                                    <a class="item eye order-service-detail-btn" data-orderserviceid="${order.orderServiceId}"><i class="icon-eye"></i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>`;
                         });
 
                         $('#table-order-services-paid').empty();
@@ -1287,9 +1284,9 @@
                     else {
                         $('#table-order-services-paid').empty();
                         let content = `<div class="empty-order-history">
-                                                        <i class="fas fa-box-open"></i>
-                                                        <h6>Đơn đã thanh toán trống.</h6>
-                                                    </div>`;
+                                                                                        <i class="fas fa-box-open"></i>
+                                                                                        <h6>Đơn đã thanh toán trống.</h6>
+                                                                                    </div>`;
                         $('#table-order-services-paid').html(content);
                         $("#paging-paid").empty();
                     }
@@ -1309,6 +1306,8 @@
                 let content = '';
                 if (currentPage > 1) {
                     content += `<li id="page-${orderType}-${currentPage - 1}" class="page-item"><a class="page-link" onclick="selectPage${orderType}(${currentPage - 1})" href="javascript:void(0);">Trang trước</a></li>`;
+                } else {
+                    content += `<li class="page-item"> <a class="page-link" href="javascript:void(0);" style="pointer-events:none; cursor:default; color:#b7b7b7;">Trang trước</a></li> `;
                 }
                 var startPage = Math.max(1, currentPage - 2);
                 var endPage = Math.min(numberPage, currentPage + 2);
@@ -1334,6 +1333,8 @@
                 }
                 if (currentPage != numberPage) {
                     content += ` <li id="page-${orderType}-${currentPage + 1}" class="page-item"><a class="page-link" onclick="selectPage${orderType}(${currentPage + 1})" href="javascript:void(0);">Trang sau</a></li>`;
+                } else {
+                    content += `<li class="page-item" > <a class="page-link" href="javascript:void(0);" style="pointer-events:none; cursor:default; color:#b7b7b7;">Trang sau</a></li> `;
                 }
                 $(elementId).html(content);
             } else {

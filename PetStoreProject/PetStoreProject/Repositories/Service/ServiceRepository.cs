@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
@@ -147,7 +148,7 @@ namespace PetStoreProject.Repositories.Service
             var workingTimes = _context.WorkingTimes.Select(wt => wt.Time).ToList();
             var numberOfEmployee = _context.Employees.Where(e => e.IsDelete == false).ToList().Count;
             DateOnly? orderDate = null;
-            if(DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateParsed))
+            if (DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateParsed))
             {
                 orderDate = DateOnly.FromDateTime(dateParsed);
             }
@@ -156,13 +157,13 @@ namespace PetStoreProject.Repositories.Service
                 return workingTimes;
             }
             var orderTimeInDate = (from os in _context.OrderServices
-                                     where os.OrderDate == orderDate
-                                     && (os.Status == "Chưa xác nhận" || os.Status == "Đã xác nhận")
-                                     select os.OrderTime).ToList();
+                                   where os.OrderDate == orderDate
+                                   && (os.Status == "Chưa xác nhận" || os.Status == "Đã xác nhận")
+                                   select os.OrderTime).ToList();
             foreach (var workingTime in workingTimes)
             {
                 var count = orderTimeInDate.Count(ot => ot == workingTime);
-                if(count < numberOfEmployee)
+                if (count < numberOfEmployee)
                 {
                     listTime.Add(workingTime);
                 }
@@ -488,6 +489,106 @@ namespace PetStoreProject.Repositories.Service
 
             var totalItem = orderedServices.Count;
             return totalItem;
+        }
+
+        public List<String> GetListServiceTypes()
+        {
+            var listTypes = (from s in _context.Services
+                             select s.Type).Distinct().ToList();
+            return listTypes;
+        }
+
+        public List<ServiceTableViewModel> GetListServiceByConditions(ServiceFilterViewModel serviceFilterVM,
+            int pageIndex, int pageSize)
+        {
+            string? serviceName = serviceFilterVM.Name.IsNullOrEmpty() ? null : serviceFilterVM.Name;
+            string? serviceType = serviceFilterVM.ServiceType.IsNullOrEmpty() ? null : serviceFilterVM.ServiceType;
+            bool? status = serviceFilterVM.Status.IsNullOrEmpty() ? null : bool.Parse(serviceFilterVM.Status);
+            var listService = (from s in _context.Services
+                               where (serviceName == null || s.Name.Contains(serviceName))
+                               && (serviceType == null || s.Type == serviceType)
+                               && (status == null || s.IsDelete == status)
+                               select new ServiceTableViewModel
+                               {
+                                   ServiceId = s.ServiceId,
+                                   Name = s.Name,
+                                   Type = s.Type,
+                                   IsDelete = s.IsDelete,
+                               }).ToList();
+
+            if (listService != null)
+            {
+                foreach (var service in listService)
+                {
+                    service.ImageUrl = _context.Images.Where(i => i.ServiceId == service.ServiceId).FirstOrDefault().ImageUrl;
+                    service.Price = (from s in _context.Services
+                                     join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                                     where s.ServiceId == service.ServiceId
+                                     orderby so.Price ascending
+                                     select so.Price).FirstOrDefault();
+                    service.UsedQuantity = (from s in _context.Services
+                                            join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                                            join os in _context.OrderServices on so.ServiceOptionId equals os.ServiceOptionId
+                                            where s.ServiceId == service.ServiceId && os.Status == "Đã thanh toán"
+                                            select os.OrderServiceId).Count();
+                }
+
+                if (serviceFilterVM.SortServiceName != null)
+                {
+                    if (serviceFilterVM.SortServiceName == "Ascending")
+                        listService = listService.OrderBy(s => s.Name).ToList();
+                    else
+                        listService = listService.OrderByDescending(s => s.Name).ToList();
+                }
+
+                if (serviceFilterVM.SortServiceId != null)
+                {
+                    if (serviceFilterVM.SortServiceId == "Ascending")
+                        listService = listService.OrderBy(s => s.ServiceId).ToList();
+                    else
+                        listService = listService.OrderByDescending(s => s.ServiceId).ToList();
+                }
+
+                if (serviceFilterVM.SortPrice != null)
+                {
+                    if (serviceFilterVM.SortPrice == "Ascending")
+                        listService = listService.OrderBy(s => s.Price).ToList();
+                    else
+                        listService = listService.OrderByDescending(s => s.Price).ToList();
+                }
+
+                if (serviceFilterVM.SortUsedQuantity != null)
+                {
+                    if (serviceFilterVM.SortUsedQuantity == "Ascending")
+                        listService = listService.OrderBy(s => s.UsedQuantity).ToList();
+                    else
+                        listService = listService.OrderByDescending(s => s.UsedQuantity).ToList();
+                }
+            }
+
+
+            var listDisplay = listService.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return listDisplay;
+        }
+
+        public int GetTotalCountListServicesByConditions(ServiceFilterViewModel serviceFilterVM)
+        {
+            string? serviceName = serviceFilterVM.Name.IsNullOrEmpty() ? null : serviceFilterVM.Name;
+            string? serviceType = serviceFilterVM.ServiceType.IsNullOrEmpty() ? null : serviceFilterVM.ServiceType;
+            bool? status = serviceFilterVM.Status.IsNullOrEmpty() ? null : bool.Parse(serviceFilterVM.Status);
+            var listService = (from s in _context.Services
+                               where (serviceName == null || s.Name.Contains(serviceName))
+                               && (serviceType == null || s.Type == serviceType)
+                               && (status == null || s.IsDelete == status)
+                               select new ServiceTableViewModel
+                               {
+                                   ServiceId = s.ServiceId,
+                                   Name = s.Name,
+                                   Type = s.Type,
+                                   IsDelete = s.IsDelete,
+                               }).ToList();
+
+            return listService.Count;
         }
     }
 }

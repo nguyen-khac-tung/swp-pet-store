@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Areas.Employee.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
@@ -42,5 +43,12 @@ namespace PetStoreProject.Repositories.Service
              int pageIndex, int pageSize);
 
         public int GetTotalCountOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM);
+
+        public List<String> GetListServiceTypes();
+
+        public List<ServiceTableViewModel> GetListServiceByConditions(ServiceFilterViewModel serviceFilterVM,
+            int pageIndex, int pageSize);
+
+        public int GetTotalCountListServicesByConditions(ServiceFilterViewModel serviceFilterVM);
     }
 }

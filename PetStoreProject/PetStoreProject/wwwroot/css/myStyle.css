@@ -3,6 +3,10 @@
     border-color: #00adf6 !important;
 }
 
+.choose{
+    font-weight: bold !important;
+}
+
 .out-of-stock {
     opacity: 0.3; /* Làm nhạt màu */
     cursor: not-allowed; /* Con trỏ hiển thị không được phép */
@@ -90,3 +94,16 @@
         color: #fff;
     }
 
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    width: 4px;
+    border-radius: 20px;
+}

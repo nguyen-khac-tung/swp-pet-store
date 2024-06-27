@@ -58,7 +58,7 @@
         @if (@Model.TotalResults > 20)
         {
             <div class="row justify-content-center">
-                <button id="load-more" class="btn btn-primary col-md-3 mb-5 py-2">Xem thêm</button>
+                <button id="load-more" class="btn btn-primary col-md-3 mb-5 py-2" data-id="@ViewData["key"]">Xem thêm</button>
             </div>
         }
     </div>
@@ -140,9 +140,11 @@ else
     $(document).ready(function () {
         $('#load-more').click(function () {
             page++;
-            loadRecords('@ViewData["key"]', page);
+            var dataId = $(this).attr('data-id'); 
+            loadRecords(dataId, page); 
         });
     });
+
 
     function loadRecords(key, page) {
         console.log(page);

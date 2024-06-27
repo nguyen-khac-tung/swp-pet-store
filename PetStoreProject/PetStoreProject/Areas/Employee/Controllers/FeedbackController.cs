@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.FeedBack;
+using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Areas.Employee.Controllers
 {
@@ -15,10 +17,30 @@ namespace PetStoreProject.Areas.Employee.Controllers
 			_feedback = feedbackRepository;
 			_dbContext = petStoreDBContext;
 		}
+
+
+        [HttpPost]
+        public IActionResult LoadMoreFeedback(int page, int status, DateTime from, DateTime to)
+        {
+            var list = _feedback.GetListFeedBack(page).Where(x => x.CreatedDate > from && x.CreatedDate < to);
+            if (status == 1)
+            {
+                list = list.Where(x => x.Status == false);
+            }
+            else if (status == 2)
+            {
+                list = list.Where(x => x.Status == true);
+            }
+            return new JsonResult(new
+            {
+                listResult = list
+            });
+        }
+
         [HttpPost]
         public IActionResult List(int status, DateTime from, DateTime to)
         {
-            var list = _feedback.GetListFeedBack().Where(x => x.CreatedDate > from && x.CreatedDate < to);
+            var list = _feedback.GetListFeedBack(1).Where(x => x.CreatedDate > from && x.CreatedDate < to);
             if (status == 1)
             {
                 list = list.Where(x => x.Status == false);
@@ -31,7 +53,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
             ViewBag.Status = status;
             ViewBag.FirstDayOfWeek = from.ToString("yyyy-MM-dd");
             ViewBag.LastDayOfWeek = to.ToString("yyyy-MM-dd");
-            
+            ViewBag.Length = list.Count();
             return View(list);
         }
 
@@ -41,10 +63,11 @@ namespace PetStoreProject.Areas.Employee.Controllers
             DateTime today = DateTime.Today;
             DateTime firstDayOfWeek = DateTimeHelpers.GetFirstDayOfWeek(today);
             DateTime lastDayOfWeek = DateTimeHelpers.GetLastDayOfWeek(today);
-            var list = _feedback.GetListFeedBack().Where(x => x.CreatedDate > firstDayOfWeek && x.CreatedDate < lastDayOfWeek);
+            var list = _feedback.GetListFeedBack(1).Where(x => x.CreatedDate > firstDayOfWeek && x.CreatedDate < lastDayOfWeek);
             ViewBag.FirstDayOfWeek = firstDayOfWeek.ToString("yyyy-MM-dd");
             ViewBag.LastDayOfWeek = lastDayOfWeek.ToString("yyyy-MM-dd");
             ViewBag.Status = 0;
+            ViewBag.Length = list.Count();
             return View(list);
 		}
 

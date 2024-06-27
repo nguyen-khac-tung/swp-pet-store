@@ -51,22 +51,24 @@
                 <div class="flex items-center justify-between gap10 flex-wrap">
 
                     <div class="wg-filter flex-grow">
-                        <form class="form-search" asp-action="list" asp-controller="feedback" method="post">
+                        <form id="feedbackForm" class="form-search" asp-action="list" asp-controller="feedback" method="post">
                             <div class="show">
                                 <div class="text-tiny">Status</div>
                                 <div class="select">
-                                    <select style="width:100px; text-align: center" name="status">
-                                        @if(ViewBag.Status == 1)
+                                    <select id="statusSelect" style="width:100px; text-align: center" name="status">
+                                        @if (ViewBag.Status == 1)
                                         {
                                             <option value="0">All</option>
                                             <option value="1" selected>Pending</option>
                                             <option value="2">Replied</option>
-                                        } else if(ViewBag.Status == 2)
+                                        }
+                                        else if (ViewBag.Status == 2)
                                         {
                                             <option value="0">All</option>
                                             <option value="1">Pending</option>
                                             <option value="2" selected>Replied</option>
-                                        } else
+                                        }
+                                        else
                                         {
                                             <option value="0">All</option>
                                             <option value="1">Pending</option>
@@ -77,9 +79,9 @@
                             </div>
                             <div class="date-range">
                                 <label for="from">From:</label>
-                                <input id="from" type="date" name="from" value="@ViewBag.FirstDayOfWeek" />
+                                <input type="date" id="fromDate" name="from" value="@ViewBag.FirstDayOfWeek" />
                                 <label for="to">To:</label>
-                                <input id="to" type="date" name="to" value="@ViewBag.LastDayOfWeek" />
+                                <input type="date" id="toDate" name="to" value="@ViewBag.LastDayOfWeek" />
                             </div>
                             <button type="submit"><i class="icon-search"></i></button>
                         </form>
@@ -91,25 +93,25 @@
                     <a class="tf-button style-1 w208" href=""><i class="icon-refresh-cw"></i>Refresh</a>
                 </div>
 
-                <div class="wg-table table-all-attribute">
+                <div class="wg-table table-all-attribute" id="feedbackContainer">
                     <ul class="table-title flex gap20 mb-14">
                         <li style="width: 20%;">
-                            <div class="body-title">Product</div>
+                            <div class="body-title">Sản phẩm</div>
                         </li>
                         <li style="width: 16%;">
-                            <div class="body-title">Reviewer</div>
+                            <div class="body-title">Người đánh giá</div>
                         </li>
                         <li style="width: 32%;">
-                            <div class="body-title">Review</div>
+                            <div class="body-title">Đánh giá</div>
                         </li>
                         <li style="width: 12%;">
-                            <div class="body-title">Date</div>
+                            <div class="body-title">Ngày</div>
                         </li>
                         <li style="width: 12%;">
-                            <div class="body-title">Status</div>
+                            <div class="body-title">Trạng thái</div>
                         </li>
                         <li style="width: 8%;">
-                            <div class="body-title">Action</div>
+                            <div class="body-title">Phản hồi</div>
                         </li>
                     </ul>
 
@@ -125,7 +127,7 @@
                                     <p>Rating: @fb.Rating/5</p>
                                     <p>@fb.Content</p>
                                 </div>
-                                <div class="body-text" style="width: 12%;">@fb.CreatedDate</div>
+                                <div class="body-text" style="width: 12%;">@fb.CreatedDate.ToString("HH:mm:ss dd/MM/yyyy")</div>
                                 @if (fb.Status)
                                 {
                                     <div class="body-text" style="width: 12%; color:green">Replied</div>
@@ -161,19 +163,27 @@
                 </div>
             </div>
         }
+            @* <div class="row justify-content-center">
+                <button id="load-more" class="btn btn-primary col-md-3 mb-5 py-2" style="margin: 20px; font-size: 20px;">Xem thêm</button>
+            </div> *@
             <!-- /all-attribute -->
         </div>
         <!-- /main-content-wrap -->
     </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     document.getElementById("from").addEventListener("change", function () {
-        document.getElementById("to").min = this.value;
+        let fromDate = new Date(this.value);
+        fromDate.setDate(fromDate.getDate() + 1);
+        document.getElementById("to").min = fromDate.toISOString().split('T')[0];
     });
 
     document.getElementById("to").addEventListener("change", function () {
-        document.getElementById("from").max = this.value;
+        let toDate = new Date(this.value);
+        toDate.setDate(toDate.getDate() - 1);
+        document.getElementById("from").max = toDate.toISOString().split('T')[0];
     });
-
     function checkFormAndSubmit(event, feedbackId) {
         event.preventDefault();
 
@@ -196,8 +206,6 @@
 
         // Nếu form hợp lệ, gửi form đi
         if (isValid) {
-            // Thực hiện hành động gửi form (nếu có) tại đây
-            // Ví dụ: event.target.form.submit();
             event.target.form.submit();
         }
     }
@@ -228,6 +236,95 @@
             }
         });
     });
+
+    var page = 1;
+    $(document).ready(function () {
+        $('#load-more').click(function () {
+            page++;
+            const statusSelect = document.getElementById('statusSelect').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            loadRecords(page, statusSelect, fromDate, toDate);
+        });
+    });
+
+
+    function loadRecords(page, statusSelect, fromDate, toDate) {
+        console.log(page);
+        $.ajax({
+            url: '@Url.Action("LoadMoreFeedback", "Feedback")',
+            type: 'POST',
+            data: {
+                page: page,
+                status: statusSelect,
+                from: fromDate,
+                to: toDate
+            },
+            success: function (response) {
+                if (!response) {
+                    console.error("Response bị null hoặc undefined");
+                    return;
+                }
+
+                if (!response.listResult.length) {
+                    alert("Bạn đã xem hết sản phẩm tìm kiếm");
+                    return;
+                }
+                var FeedbackContainer = document.getElementById("feedbackContainer");
+                var html = "";
+                var items = response.listResult;
+                var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+               
+
+
+                for (var index = 0; index < items.length; index++) {
+                    var dateTime = new Date(items[index].createdDate);
+
+                    html += '<ul class="flex flex-column">';
+                    html += '<li class="attribute-item flex items-center justify-between gap20">';
+                    html += '<div class="name" style="width: 20%;">';
+                    html += '<a href="" class="body-title-2"> <p>' + items[index].productName + '</p></a>';
+                    html += '</div>';
+                    html += '<div class="body-text" style="width: 16%;">' + items[index].customerName + '</div>';
+                    html += '<div class="body-text" style="width: 32%; word-wrap: break-word;">';
+                    html += '<p>Rating: ' + items[index].rating + '/5</p>';
+                    html += '<p>' + items[index].content + '</p>';
+                    html += '</div>';
+                    html += '<div class="body-text" style="width: 12%;">' + dateTime.toLocaleDateString('vi-VN', options) + '</div>';
+                    html += items[index].status ? '<div class="body-text" style="width: 12%; color:green">Replied</div>' : '<div class="body-text" style="width: 12%; color: orange">Pending</div>';
+                    html += '<div class="list-icon-function" style="width:8%;">';
+                    html += '<div class="item edit" id="edit-icon" data-id="' + items[index].feedBackId + '">';
+                    html += '<i class="icon-edit-3"></i>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '</li>';
+                    html += '</ul>';
+
+                    html += '<div class="form-container hidden" id="edit-form-' + items[index].feedBackId + '" style="margin:20px">';
+                    html += '<form asp-area="Employee" asp-action="Submit" asp-controller="Feedback" method="post">';
+                    html += '<input type="hidden" name="FeedBackId" value="' + items[index].feedBackId + '"/>';
+                    html += '<div>';
+                    html += '<label for="response-' + items[index].feedBackId + '">Your Response:</label>';
+                    html += '<textarea id="response-' + items[index].feedBackId + '" name="response" rows="2" cols="50">' + (items[index].contentResponse ? items[index].contentResponse : '') + '</textarea>';
+                    html += '<span id="ContentError-' + items[index].feedBackId + '" class="text-danger"></span>';
+                    html += '</div>';
+                    html += '<div>';
+                    html += '<button type="submit" style="color:deepskyblue" onclick="checkFormAndSubmit(event, ' + items[index].feedBackId + ')">Submit</button>';
+                    html += '<button type="button" class="cancel-button" data-id="' + items[index].feedBackId + '" style="color:tomato">Cancel</button>';
+                    html += '</div>';
+                    html += '</form>';
+                    html += '</div>';
+                }
+
+                FeedbackContainer.innerHTML += html;
+
+
+            },
+            error: function () {
+                alert('Đã xảy ra lỗi khi tải dữ liệu.');
+            }
+        });
+    }
 </script>
 
 

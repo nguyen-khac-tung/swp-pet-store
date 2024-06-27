@@ -42,7 +42,24 @@
         <!-- main-content-wrap -->
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>Tất Cả Phản Hồi</h3>
+                <h3>Tất cả phản hồi</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Phản hồi</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">Danh sách phản hồi</div>
+                    </li>
+                </ul>
             </div>
         @if(Model != null)
         {
@@ -53,34 +70,34 @@
                     <div class="wg-filter flex-grow">
                         <form id="feedbackForm" class="form-search" asp-action="list" asp-controller="feedback" method="post">
                             <div class="show">
-                                <div class="text-tiny">Status</div>
+                                <div class="text-tiny">Trạng thái</div>
                                 <div class="select">
                                     <select id="statusSelect" style="width:100px; text-align: center" name="status">
                                         @if (ViewBag.Status == 1)
                                         {
-                                            <option value="0">All</option>
-                                            <option value="1" selected>Pending</option>
-                                            <option value="2">Replied</option>
+                                            <option value="0">Tất cả</option>
+                                            <option value="1" selected>Chưa phản hồi</option>
+                                            <option value="2">Đã phản hồi</option>
                                         }
                                         else if (ViewBag.Status == 2)
                                         {
-                                            <option value="0">All</option>
-                                            <option value="1">Pending</option>
-                                            <option value="2" selected>Replied</option>
+                                            <option value="0">Tất cả</option>
+                                            <option value="1">Chưa phản hồi</option>
+                                            <option value="2" selected>Đã phản hồi</option>
                                         }
                                         else
                                         {
-                                            <option value="0">All</option>
-                                            <option value="1">Pending</option>
-                                            <option value="2">Replied</option>
+                                            <option value="0">Tất cả</option>
+                                            <option value="1">Chưa phản hồi</option>
+                                            <option value="2">Đã phản hồi</option>
                                         }
                                     </select>
                                 </div>
                             </div>
                             <div class="date-range">
-                                <label for="from">From:</label>
+                                <label for="from">Từ:</label>
                                 <input type="date" id="fromDate" name="from" value="@ViewBag.FirstDayOfWeek" />
-                                <label for="to">To:</label>
+                                <label for="to">Đến:</label>
                                 <input type="date" id="toDate" name="to" value="@ViewBag.LastDayOfWeek" />
                             </div>
                             <button type="submit"><i class="icon-search"></i></button>
@@ -130,10 +147,10 @@
                                 <div class="body-text" style="width: 12%;">@fb.CreatedDate.ToString("HH:mm:ss dd/MM/yyyy")</div>
                                 @if (fb.Status)
                                 {
-                                    <div class="body-text" style="width: 12%; color:green">Replied</div>
+                                    <div class="body-text" style="width: 12%; color:green">Đã phản hồi</div>
                                 } else
                                 {
-                                    <div class="body-text" style="width: 12%; color: orange">Pending</div>
+                                    <div class="body-text" style="width: 12%; color: orange">Chưa phản hồi</div>
                                 }
 
 
@@ -173,17 +190,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    document.getElementById("from").addEventListener("change", function () {
-        let fromDate = new Date(this.value);
-        fromDate.setDate(fromDate.getDate() + 1);
-        document.getElementById("to").min = fromDate.toISOString().split('T')[0];
-    });
-
-    document.getElementById("to").addEventListener("change", function () {
-        let toDate = new Date(this.value);
-        toDate.setDate(toDate.getDate() - 1);
-        document.getElementById("from").max = toDate.toISOString().split('T')[0];
-    });
     function checkFormAndSubmit(event, feedbackId) {
         event.preventDefault();
 

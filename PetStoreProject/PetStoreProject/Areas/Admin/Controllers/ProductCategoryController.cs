@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.ProductCategory;
@@ -31,6 +32,27 @@ namespace PetStoreProject.Areas.Admin.Controllers
             ViewData["categories"] = categories;
             return View();
         }
+        [HttpPost]
+        public IActionResult ListCate(int? page, int pageSize = 8)
+        {
+            int PageIndex = page ?? 1;  
+            int PageSize = pageSize;    
+            var allCategories = _productCategoryRepository.GetListProductCategory();
+            int totalRow = allCategories.Count();  
+            int numberPage = (int)Math.Ceiling((double)totalRow / PageSize);  
+
+            var data = allCategories.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToList();
+
+
+            return new JsonResult(new
+            {
+                data = data,
+                pageSize = totalRow,
+                currentPage = PageIndex,
+                numberPage = numberPage
+            });
+        }
+
 
         [HttpPost]
         public JsonResult Create(string ProductCategoryName, int CategoryId)
@@ -39,6 +61,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return Json(new { productCateId = productCateId });
 
         }
+        
 
 
         [HttpDelete]

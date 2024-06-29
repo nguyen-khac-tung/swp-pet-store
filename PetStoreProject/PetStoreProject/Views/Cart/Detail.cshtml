@@ -1,9 +1,16 @@
 ﻿@using PetStoreProject.ViewModels
+@using Newtonsoft;
 @{
     ViewData["Title"] = "Chi tiết Giỏ Hàng";
     var cartItems = ViewData["cartItems"] as List<CartItemViewModel>;
     var total_price = Convert.ToSingle(ViewData["total_price"]);
 }
+
+<style>
+    .checkbox_style {
+        width: 25px !important;
+    }
+</style>
 <div class="cart-main-area adp_top adp_bottom">
     <div class="container">
         <div class="row" id="cart_content">
@@ -17,6 +24,7 @@
                             <table>
                                 <thead>
                                     <tr>
+                                        <th>Chọn</th>
                                         <th class="product-thumbnail">Ảnh</th>
                                         <th class="product-name">Tên sản phẩm</th>
                                         <th class="product-price">Giá</th>
@@ -27,41 +35,52 @@
                                     </tr>
                                 </thead>
                                 <tbody id="cartTable">
-                                    @foreach (var item in cartItems)
-                                    {
-                                        var option = "";
-                                        if (!(item.Attribute.Name == null && item.Size.Name == null))
+                                    @{
+                                        var i = 0;
+                                        foreach (var item in cartItems)
                                         {
-                                            if (item.Attribute.Name != null && item.Size.Name != null)
+                                            var option = "";
+                                            if (!(item.Attribute.Name == null && item.Size.Name == null))
                                             {
-                                                option += "( " + item.Attribute.Name + ", " + item.Size.Name + " )";
+                                                if (item.Attribute.Name != null && item.Size.Name != null)
+                                                {
+                                                    option += "( " + item.Attribute.Name + ", " + item.Size.Name + " )";
+                                                }
+                                                else if (item.Attribute.Name != null)
+                                                {
+                                                    option += "( " + item.Attribute.Name + " )";
+                                                }
+                                                else
+                                                {
+                                                    option += "( " + item.Size.Name + " )";
+                                                }
                                             }
-                                            else if (item.Attribute.Name != null)
-                                            {
-                                                option += "( " + item.Attribute.Name + " )";
-                                            }
-                                            else
-                                            {
-                                                option += "( " + item.Size.Name + " )";
-                                            }
+                                            var totalPrice = item.Price * item.Quantity;
+                                            <tr id="@item.ProductOptionId" class="item">
+                                                <td><input type="checkbox" name="checkbox" class="checkbox_style" id="checkbox_@i" /></td>
+                                                <td class="product-thumbnail">
+                                                    <a href="#"><img src="@item.ImgUrl" id="product_img_@i" alt="cart-image" /></a>
+                                                </td>
+                                                <td class="product-name" >
+                                                    <a href="http://localhost:5206/product/detail/@item.ProductId">@item.Name <br /> @option</a>
+                                                    <input type="hidden" id="product_name_@i" value="@item.Name" />
+                                                    <input type="hidden" value="@option" id="product_option_@i" />
+                                                </td>
+                                                <td class="product-price"><span class="amount " id="product_price_@i">@item.Price.ToString("#,###")đ</span></td>
+                                                <td class="product-quantity"><input id="product_quantity_@i" value="@item.Quantity" readonly /></td>
+                                                <td class="product-subtotal " id="product_totalPrice_@i">@totalPrice.ToString("#,###")đ</td>
+                                                <td>
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Chỉnh sửa" onclick="callQuickEdit(@item.ProductOptionId, @item.ProductId)" style="color: #666666; font-size:18px">
+                                                        <i class="icofont-edit"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="product-remove"> <a style="cursor:pointer" onclick="confirmDelete(@item.ProductOptionId, '@item.Name.Trim()')" title="Xóa sản phẩm"><i class="icofont-delete-alt"></i></a></td>
+                                            </tr>
+                                            i++;
                                         }
-                                        var totalPrice = item.Price * item.Quantity;
-                                        <tr id="@item.ProductOptionId" class="item">
-                                            <td class="product-thumbnail">
-                                                <a href="#"><img src="@item.ImgUrl" alt="cart-image" /></a>
-                                            </td>
-                                            <td class="product-name"><a href="http://localhost:5206/product/detail/@item.ProductId">@item.Name <br /> @option</a></td>
-                                            <td class="product-price"><span class="amount">@item.Price.ToString("#,###")đ</span></td>
-                                            <td class="product-quantity"><input value="@item.Quantity" readonly /></td>
-                                            <td class="product-subtotal">@totalPrice.ToString("#,###")đ</td>
-                                            <td>
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Chỉnh sửa" onclick="callQuickEdit(@item.ProductOptionId, @item.ProductId)" style="color: #666666; font-size:18px">
-                                                    <i class="icofont-edit"></i>
-                                                </a>
-                                            </td>
-                                            <td class="product-remove"> <a style="cursor:pointer" onclick="confirmDelete(@item.ProductOptionId, '@item.Name.Trim()')" title="Xóa sản phẩm"><i class="icofont-delete-alt"></i></a></td>
-                                        </tr>
+                                        <input type="hidden" value="@i" id="totalCheckboxId" />
                                     }
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -91,7 +110,8 @@
                                         </tbody>
                                     </table>
                                     <div class="wc-proceed-to-checkout">
-                                        <a href="#">Thanh Toán</a>
+                                        
+                                        <a href="#" onclick="selectedProductCheckout()">Thanh Toán</a>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +128,7 @@
                 <div class="row justify-content-center">
                     <div class="col-md-6 col-sm-10 text-center">
                         <div class="text-center">
-                        <img style="width: 70%" src="~/img/notfound/cart-empty.jpg" alt="Giỏ hàng trống" />
+                            <img style="width: 70%" src="~/img/notfound/cart-empty.jpg" alt="Giỏ hàng trống" />
                         </div>
                         <div class="buttons-cart d-inline-block ">
                             <a style="margin:0" href="/">Tiếp tục mua sắm</a>
@@ -116,11 +136,11 @@
                     </div>
                 </div>
                 @* <div class="alert alert-warning" role="alert">
-                    <h4 class="alert-heading">Giỏ hàng trống!</h4>
-                    <p>Giỏ hàng của bạn đang trống, hãy chọn sản phẩm để mua sắm.</p>
-                    <hr>
-                    <p class="mb-0">Nhấn vào <a href="/home/index" style="text-decoration:underline">đây</a> để quay lại trang chủ.</p>
-                </div> *@
+            <h4 class="alert-heading">Giỏ hàng trống!</h4>
+            <p>Giỏ hàng của bạn đang trống, hãy chọn sản phẩm để mua sắm.</p>
+            <hr>
+            <p class="mb-0">Nhấn vào <a href="/home/index" style="text-decoration:underline">đây</a> để quay lại trang chủ.</p>
+            </div> *@
             }
 
         </div>
@@ -244,8 +264,10 @@
         }
     }
 
-    function callQuickEdit(productOptionId, productId){
+    function callQuickEdit(productOptionId, productId) {
         quickEditCartItem(productOptionId, productId);
         $('#quick_add_to_cart').html('Lưu thay đổi');
     }
+
 </script>
+<script src="~/js/checkout.js"></script>

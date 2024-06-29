@@ -197,17 +197,17 @@
                     </ul>
                 </div>
                 <div class="divider"></div>
-                <div class="flex items-center justify-between flex-wrap gap40 row" style="font-size:16px;">
-                    <div id="total-user" class="col-lg-3 col-md-3"><strong>Tổng @ViewBag.totalOrders đơn</strong></div>
-                    @* <div class="text-tiny col=md-3" id="no_data"></div> *@
-                    <div id="pagination" class="col-lg-8 col-md-8 pagi_right" style="text-align:right">
+                <div class="flex items-center justify-between flex-wrap gap40" style="font-size:16px;">
+                    <div id="total-user">Tổng @ViewBag.totalOrders đơn</div>
+                    <div class="text-tiny" id="no_data"></div>
+                    <div id="pagination">
                         <nav aria-label="Page navigation example">
-                            <ul id="pagination">
+                            <ul class="pagination">
                                 @if ((int)@ViewBag.numberPage > 1)
                                 {
                                     @if ((int)ViewBag.pageIndex > 1)
                                     {
-                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageOrder(@(ViewBag.pageIndex - 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang trước</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(@(ViewBag.pageIndex - 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang trước</a></li>
                                     }
 
                                     var startPage = Math.Max(1, (int)ViewBag.pageIndex - 2);
@@ -215,21 +215,21 @@
 
                                     @if (startPage > 1)
                                     {
-                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageOrder(1, @(ViewBag.pageSize))" href="javascript:void(0);">1</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(1, @(ViewBag.pageSize))" href="javascript:void(0);">1</a></li>
                                         if (startPage > 2)
                                         {
-                                            <li class="page-item display_inline"><a class="page-link display_inline" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
                                         }
                                     }
                                     @for (var i = startPage; i <= endPage; i++)
                                     {
                                         @if ((int)ViewBag.pageIndex == i)
                                         {
-                                            <li class="page-item active display_inline"><a class="page-link display_inline" href="javascript:void(0);">@i</a></li>
+                                            <li class="page-item active"><a class="page-link" href="javascript:void(0);">@i</a></li>
                                         }
                                         else
                                         {
-                                            <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageOrder(@i, @(ViewBag.pageSize))" href="javascript:void(0);">@i</a></li>
+                                            <li class="page-item"><a class="page-link" onclick="nextPageOrder(@i, @(ViewBag.pageSize))" href="javascript:void(0);">@i</a></li>
                                         }
                                     }
                                     @if ((int)ViewBag.numberPage >= endPage + 1)
@@ -237,15 +237,15 @@
                                         @if ((int)ViewBag.numberPage >= endPage + 2)
                                         {
 
-                                            <li class="page-item display_inline"><a class="page-link display_inline" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
                                         }
 
-                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageOrder(@(ViewBag.numberPage), @(ViewBag.pageSize))" href="javascript:void(0);">@(ViewBag.numberPage)</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(@(ViewBag.numberPage), @(ViewBag.pageSize))" href="javascript:void(0);">@(ViewBag.numberPage)</a></li>
                                     }
                                     @if ((int)ViewBag.pageIndex != (int)ViewBag.numberPage)
                                     {
 
-                                        <li class="page-item display_inline"><a class="page-link display_inline" onclick="nextPageOrder(@(ViewBag.pageIndex + 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang sau</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(@(ViewBag.pageIndex + 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang sau</a></li>
                                     }
                                 }
                             </ul>

@@ -85,11 +85,11 @@ namespace PetStoreProject.CartController
             {
                 var customerEmail = HttpContext.Session.GetString("userEmail");
                 var customerID = _customer.GetCustomerId(customerEmail);
-                return CartDetailOfCustomer(customerID);
+                return CartDetailOfCustomer(customerID, "~/Views/Cart/Detail.cshtml");
             }
             else if (userRole == "Guest")
             {
-                return CartDetailOfGuest();
+                return CartDetailOfGuest("~/Views/Cart/Detail.cshtml");
             }
             else
             {
@@ -251,7 +251,7 @@ namespace PetStoreProject.CartController
             });
         }
 
-        public ActionResult CartDetailOfCustomer(int customerID)
+        public ActionResult CartDetailOfCustomer(int customerID, string url)
         {
             var cartItems = _cart.GetListCartItemsVM(customerID);
             float totalPrice = 0;
@@ -261,10 +261,10 @@ namespace PetStoreProject.CartController
             }
             ViewData["cartItems"] = cartItems;
             ViewData["total_price"] = totalPrice;
-            return View("~/Views/Cart/Detail.cshtml");
+            return View(url);
         }
 
-        public ActionResult CartDetailOfGuest()
+        public ActionResult CartDetailOfGuest(string url)
         {
             List<int> cookiesId = new List<int>();
             List<CartItemViewModel> cartItems = new List<CartItemViewModel>();
@@ -288,7 +288,7 @@ namespace PetStoreProject.CartController
             }
             ViewData["cartItems"] = cartItems;
             ViewData["total_price"] = total_price;
-            return View("~/Views/Cart/Detail.cshtml");
+            return View(url);
         }
 
         public ActionResult DeleteCartOfCustomer(int productOptionId, int customerID)

@@ -12,8 +12,14 @@
 
         public float Price { get; set; }
 
+        public bool IsDelete { get; set; }
+
         public List<string> PetTypes { get; set; }
 
         public List<string> Weights { get; set; }
+
+        public int OrderedQuantity { get; set; }
+
+        public int UsedQuantity { get; set; }
     }
 }

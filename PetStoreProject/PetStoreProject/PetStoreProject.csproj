@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Employee\Views\Account\**" />
+    <Content Remove="Areas\Employee\Views\Account\**" />
+    <EmbeddedResource Remove="Areas\Employee\Views\Account\**" />
+    <None Remove="Areas\Employee\Views\Account\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\areas\js\profile-user.js" />
     <Content Remove="wwwroot\js\checkout.js" />
     <Content Remove="wwwroot\js\myjs.js" />
@@ -82,7 +89,6 @@
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
   </ItemGroup>
-
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout.js" />

@@ -1,9 +1,11 @@
-﻿@using PetStoreProject.ViewModels;
+﻿
+
+@using PetStoreProject.ViewModels;
 @model UserViewModel;
 
 <style>
     .main_content_style {
-        min-height:700px;
+        min-height: 700px;
         padding: 20px;
         background: var(--White);
         border-radius: 10px;
@@ -14,7 +16,7 @@
         border-bottom-left-radius: 10px;
         border-start-start-radius: 10px;
         border-bottom-right-radius: 10px;
-        background: #f0f2f6;
+        background: #f0f2f682;
         padding: 20px 50px;
         font-size: 16px;
         position: relative;
@@ -62,17 +64,17 @@
                 outline: none;
             }
 
-            .button_click button:hover {
-                background: #f0f2f6;
-                color: #000;
-                border: none;
+    #btn_click_change button:hover {
+                background: var(--Main);
+                color: #fff;
+                border: 1px solid var(--Main) !important;
                 outline: none;
             }
 
             .button_click button.active {
                 background: #f0f2f6;
                 color: #000;
-                border: none;
+                border: none !important;
                 outline: none;
             }
 
@@ -94,11 +96,29 @@
     }
 
     .btn_submit {
+        border: 1px solid var(--Main) !important;
+        color: var(--Main);
+        font-weight: bold;
+        background: none;
         padding: 10px;
         font-size: 15px;
         border-radius: 5px;
     }
-    .btn_profile{
+
+        .btn_submit:hover {
+            border: 1px solid var(--Main) !important;
+            color: #fff;
+            font-weight: bold;
+            background: var(--Main);
+            padding: 10px;
+            font-size: 15px;
+            border-radius: 5px;
+    }
+
+    .btn_profile {
+        background: #fff;
+        border: 1px solid var(--Main) !important;
+        color: #0082f6;
         border-start-start-radius: 15px;
         font-size: 18px;
         position: absolute;
@@ -107,7 +127,11 @@
         right: 179px;
         padding: 10px;
     }
+
     .btn_changePassword {
+        background: #fff;
+        border: 1px solid var(--Main) !important;
+        color: #0082f6;
         border-start-end-radius: 15px;
         font-size: 18px;
         position: absolute;
@@ -116,20 +140,30 @@
         right: 0px;
         padding: 10px
     }
+
     .btn_active_style:active {
-        background: #f0f2f6;
+        background: rgb(20 111 255 / 22%);
         border: none;
-        color: black;
+        color: #0082f6;
+    }
+    .btn_active_style:hover {
+        border: 1px solid var(--Main) !important;
+        color: #fff;
+        background: var(--Main);
     }
 
-    .btn_click_change .active{
-        background: #f0f2f6;
-        border: none;
+    .btn_click_change .active {
+        background: #f0f2f6b0;
+        border: none!important;
         color: black;
     }
 
     .link_style:hover {
         color: #ffff;
+    }
+
+    .border_ra18 {
+        border-radius: 18px!important;
     }
 </style>
 
@@ -168,7 +202,7 @@
                                 <h3 id="user_name_style">@Model.FullName</h3>
                             </div>
                             <div style="display:inline; margin-top:10px;">
-                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" name="RoleName" value="@Model.RoleName" style="border:none" readonly/></label>
+                                <label asp-for="RoleName">Vai trò: <input asp-for="RoleName" name="RoleName" value="@Model.RoleName" style="border:none" readonly /></label>
                                 @* <select class="select-role">
                                 <option value="1">Quản trị viên</option>/option>
                                 <option value="2">Khách hàng</option>
@@ -191,9 +225,9 @@
                                 </div>
                                 <div class="form-group row padding_t_b" id="form-dob">
                                     <label class="col-sm-4 col-form-label label_style" asp-for="Gender"><strong>Giới tính: </strong></label>
-                                    <div class="col-sm-8 input_style_form padding_l30">
-                                        Nam <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" name="Gender" style="border:1px solid black!important; display:inline" name="gender" id="gender" value="true" checked="@(Model.Gender ? "checked" : null)">
-                                        Nữ <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio" name="Gender" style="border:1px solid black!important; display:inline " name="gender" id="gender" value="false" checked="@(Model.Gender ? null : "checked")">
+                                    <div class="col-sm-8 input_style_form">
+                                        Nam <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio border_ra18" name="Gender" style="border:1px solid black!important; display:inline " name="gender" id="gender" value="true" checked="@(Model.Gender ? "checked" : null)">
+                                        Nữ <input type="radio" asp-for="Gender" class="form-control form_control_style input_radio  border_ra18" name="Gender" style="border:1px solid black!important; display:inline" name="gender" id="gender" value="false" checked="@(Model.Gender ? null : "checked")">
                                         <span class="text-danger" asp-validation-for="Gender"></span>
                                     </div>
                                 </div>
@@ -239,14 +273,14 @@
                                 </div>
                                 <input asp-for="UserId" name="UserId" type="hidden" />
                                 <input asp-for="AccountId" name="AccountId" type="hidden" />
-                                <input asp-for="RoleName" name="RoleName" type="hidden"/>
+                                <input asp-for="RoleName" name="RoleName" type="hidden" />
                                 <div class="form-group row padding_t_b" id="btn_submit_update">
                                     <button class="btn btn-secondary btn_submit" type="submit">Cập nhật thông tin</button>
                                 </div>
                             </form>
                         </div>
                         <div class="btn_click_change">
-                            <button type="button" id="btn_profileInf" class="btn btn-secondary btn_profile active btn_active_style" onclick="profileInfo()">Thông tin tài khoản</button>
+                            <button type="button" id="btn_profileInf" class="btn btn-secondary btn_profile active btn_active_style " onclick="profileInfo()">Thông tin tài khoản</button>
                             <button type="button" id="btn_changePass" class="btn btn-secondary btn_changePassword btn_active_style" onclick="changePassword()">Thay đổi mật khẩu</button>
                         </div>
                     </div>
@@ -287,6 +321,7 @@
                         $('input[name="Email"]').val(response.updatedData.email);
                         $('input[name="Phone"]').val(response.updatedData.phone);
                         $('input[name="Address"]').val(response.updatedData.address);
+                        $('#user_name').text(response.updatedData.fullName)
                         $('#dob').val(response.updatedData.doB); // Update date input
                         // Update gender radio buttons
                         if (response.updatedData.gender) {
@@ -294,6 +329,7 @@
                         } else {
                             $('input[name="Gender"][value="false"]').prop('checked', true);
                         }
+                        
                     }
                 },
                 error: function (xhr, status, error) {

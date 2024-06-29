@@ -8,7 +8,11 @@ namespace PetStoreProject.Repositories.Service
     {
         public List<ServiceViewModel> GetListServices();
 
+        public List<int> GetAllServiceId();
+
         public ServiceDetailViewModel GetServiceDetail(int serviceId);
+
+        public List<ServiceOptionViewModel> GetServiceOptions(int serviceId);
 
         public ServiceOptionViewModel GetFistServiceOption(int serviceId);
 
@@ -42,5 +46,12 @@ namespace PetStoreProject.Repositories.Service
              int pageIndex, int pageSize);
 
         public int GetTotalCountOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM);
+
+        public List<string> GetListServiceTypes();
+
+        public List<ServiceTableViewModel> GetListServiceByConditions(ServiceFilterViewModel serviceFilterVM,
+            int pageIndex, int pageSize);
+
+        public int GetTotalCountListServicesByConditions(ServiceFilterViewModel serviceFilterVM);
     }
 }

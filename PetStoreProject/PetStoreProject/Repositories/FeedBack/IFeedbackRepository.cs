@@ -5,7 +5,7 @@ namespace PetStoreProject.Repositories.FeedBack
 {
     public interface IFeedbackRepository
     {
-        public List<FeedBackViewModels> GetListFeedBack();
+        public List<FeedBackViewModels> GetListFeedBack(int page);
 
         public List<FeedbackViewModels> GetListFeedBackForService(int serviceId);
     }

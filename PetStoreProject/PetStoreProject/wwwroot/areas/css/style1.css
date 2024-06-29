@@ -4296,10 +4296,12 @@ ul.promotion-list {
     padding: 2px;
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
-    padding: 5px 5px;
+    padding: 7px 6px;
     margin-top: 5px;
-    margin-right: 8px;
+    margin-right: 6px;
     font-size: 15px;
+    cursor: pointer;
+    border-radius: 8px;
 }
 
 .color-list li {
@@ -4545,6 +4547,10 @@ ul.promotion-list {
 
         .thumb-content #detail li {
             word-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .thumb-content #detail p {
             margin-bottom: 10px;
         }
 

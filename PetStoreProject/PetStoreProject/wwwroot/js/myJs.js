@@ -591,7 +591,15 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
                 onclick: `ChoosePage(${prevPage}, ${pageSize}, ${categoryId}, ${productCateId}, '${key}')`,
                 text: 'Trang trước'
             });
-            let prevPageItem = $('<li>', { class: 'page-item'}).append(prevPageLink);
+            let prevPageItem = $('<li>', { class: 'page-item' }).append(prevPageLink);
+            parentElement.append(prevPageItem);
+        } else {
+            let prevPageLink = $('<a>', {
+                class: 'page-link',
+                style: 'pointer-events: none; cursor: default; color: #b7b7b7;',
+                text: 'Trang trước'
+            });
+            let prevPageItem = $('<li>', { class: 'page-item' }).append(prevPageLink);
             parentElement.append(prevPageItem);
         }
 
@@ -636,7 +644,7 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
 
             let lastPageLink = $('<a>', {
                 class: 'page-link',
-                onclick: `ChoosePage(${totalPageNumber}, ${pageSize}, ${categoryId}, ${productCateId}, '${key})`,
+                onclick: `ChoosePage(${totalPageNumber}, ${pageSize}, ${categoryId}, ${productCateId}, '${key}')`,
                 text: totalPageNumber
             });
             let lastPageItem = $('<li>', { class: 'page-item' }).append(lastPageLink);
@@ -648,6 +656,14 @@ function generatePagination(totalPageNumber, currentPage, pageSize, categoryId, 
             let nextPageLink = $('<a>', {
                 class: 'page-link',
                 onclick: `ChoosePage(${nextPage}, ${pageSize}, ${categoryId}, ${productCateId}, '${key}')`,
+                text: 'Trang sau'
+            });
+            let nextPageItem = $('<li>', { class: 'page-item' }).append(nextPageLink);
+            parentElement.append(nextPageItem);
+        } else {
+            let nextPageLink = $('<a>', {
+                class: 'page-link',
+                style: 'pointer-events: none; cursor: default; color: #b7b7b7;',
                 text: 'Trang sau'
             });
             let nextPageItem = $('<li>', { class: 'page-item' }).append(nextPageLink);

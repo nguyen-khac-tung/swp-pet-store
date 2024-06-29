@@ -24,7 +24,7 @@ public partial class ServiceOption
 
     public float Price { get; set; }
 
-    public bool? IsDelete { get; set; }
+    public bool IsDelete { get; set; }
 
     [InverseProperty("ServiceOption")]
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();

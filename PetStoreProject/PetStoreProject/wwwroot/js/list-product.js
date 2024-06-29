@@ -312,6 +312,8 @@ function paging(currentPage, numberPage, pageSize) {
         var str = '<nav aria-label="Page navigation example"> <ul class="pagination">';
         if (currentPage > 1) {
             str += `<li class="page-item"><a class="page-link" onclick="nextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Trang trước</a></li>`;
+        } else {
+            str += `<li class="page-item"> <a class="page-link" href="javascript:void(0);" style="pointer-events:none; cursor:default; color:#b7b7b7;">Trang trước</a></li> `;
         }
         var startPage = Math.max(1, currentPage - 2);
         var endPage = Math.min(numberPage, currentPage + 2);
@@ -335,8 +337,11 @@ function paging(currentPage, numberPage, pageSize) {
             }
             str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${numberPage},${pageSize})" href="javascript:void(0);">${numberPage}</a></li>`;
         }
-        if (currentPage != numberPage)
+        if (currentPage != numberPage) {
             str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${currentPage + 1},${pageSize})" href="javascript:void(0);">Trang sau</a></li>`;
+        } else {
+            str += `<li class="page-item" > <a class="page-link" href="javascript:void(0);" style="pointer-events:none; cursor:default; color:#b7b7b7;">Trang sau</a></li> `;
+        }
         str += "</ul></nav>";
         $('#pagination').html(str);
     } else {

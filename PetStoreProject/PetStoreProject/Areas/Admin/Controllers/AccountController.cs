@@ -232,9 +232,8 @@ namespace PetStoreProject.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult ProfileAccount()
         {
-            //var email = HttpContext.Session.GetString("userEmail");
+            var email = HttpContext.Session.GetString("userEmail");
 
-            var email = "admin@gmail.com";
             var admin = _admin.GetAdmin(email);
             if (admin == null)
             {
@@ -262,8 +261,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 var errors = new Dictionary<string, string>();
 
-                //var oldEmail = HttpContext.Session.GetString("userEmail");
-                var oldEmail = "admin@gmail.com";
+                var oldEmail = HttpContext.Session.GetString("userEmail");
                 if (oldEmail != admin.Email)
                 {
                     bool isEmailExist = _account.CheckEmailExist(admin.Email);
@@ -314,8 +312,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult ChangePassword()
         {
-            //var email = HttpContext.Session.GetString("userEmail");
-            var email = "admin@gmail.com";
+            var email = HttpContext.Session.GetString("userEmail");
             var ChangePasswordVM = new ChangePasswordViewModel { Email = email };
             string? oldPassword = _account.GetOldPassword(email);
             if (oldPassword != null)
@@ -340,6 +337,14 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 {
                     ViewBag.Message = "Mật khẩu cũ không chính xác. Vui lòng thử lại.";
                     return View("_ChangePasswordUser", ChangePasswordVM);
+                }
+                else
+                {
+                    if (ChangePasswordVM.NewPassword.Equals(ChangePasswordVM.OldPassword))
+                    {
+                        ViewBag.MessageNewPass = "Bạn đã sử dụng mật khẩu này gần đây. Vui lòng sử dụng mật khẩu khác.";
+                        return View("_ChangePasswordUser", ChangePasswordVM);
+                    }
                 }
             }
 

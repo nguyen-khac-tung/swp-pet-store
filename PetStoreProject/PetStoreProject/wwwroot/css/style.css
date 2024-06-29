@@ -4546,11 +4546,11 @@ ul.promotion-list {
             }
 
 .tab-content.thumb-content {
-    padding: 30px 15px;
+    padding: 30px 50px;
 }
 
     .thumb-content #detail{
-        padding: 0px 35px;
+        padding: 0px 0px;
     }
 
         .thumb-content #detail li {

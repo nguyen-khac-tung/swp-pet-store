@@ -42,6 +42,13 @@ namespace PetStoreProject.Repositories.Service
             return services;
         }
 
+        public List<int> GetAllServiceId()
+        {
+            var serviceIds = (from s in _context.Services
+                              select s.ServiceId).ToList();
+            return serviceIds;
+        }
+
         public ServiceDetailViewModel GetServiceDetail(int serviceId)
         {
             var service = (from s in _context.Services
@@ -96,6 +103,7 @@ namespace PetStoreProject.Repositories.Service
                 PetType = firstServiceOption.PetType,
                 Weight = firstServiceOption.Weight,
                 Price = firstServiceOption.Price,
+                IsDelete = firstServiceOption.IsDelete,
                 Weights = listWeight
             };
         }
@@ -108,9 +116,35 @@ namespace PetStoreProject.Repositories.Service
                                  {
                                      ServiceOptionId = so.ServiceOptionId,
                                      Price = so.Price,
+                                     IsDelete = so.IsDelete,
                                  }).FirstOrDefault();
 
             return serviceOption;
+        }
+
+        public List<ServiceOptionViewModel> GetServiceOptions(int serviceId)
+        {
+            var serviceOptions = (from so in _context.ServiceOptions
+                                  where so.ServiceId == serviceId
+                                  select new ServiceOptionViewModel
+                                  {
+                                      ServiceOptionId = so.ServiceOptionId,
+                                      ServiceId = so.ServiceId,
+                                      PetType = so.PetType,
+                                      Weight = so.Weight,
+                                      Price = so.Price,
+                                      IsDelete = so.IsDelete,
+                                  }).ToList();
+            foreach (var serviceOption in serviceOptions)
+            {
+                serviceOption.OrderedQuantity = _context.OrderServices.Where
+                    (os => os.ServiceOptionId == serviceOption.ServiceOptionId).ToList().Count;
+
+                serviceOption.UsedQuantity = _context.OrderServices.Where(os =>
+                os.ServiceOptionId == serviceOption.ServiceOptionId && os.Status == "Đã thanh toán").ToList().Count;
+            }
+
+            return serviceOptions;
         }
 
         public BookServiceViewModel GetBookingServiceInFo(int serviceOptionId)

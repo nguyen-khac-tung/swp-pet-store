@@ -277,7 +277,6 @@ public partial class PetStoreDBContext : DbContext
             entity.HasKey(e => e.ServiceOptionId).HasName("PK_ServiceOption_1");
 
             entity.Property(e => e.ServiceOptionId).ValueGeneratedNever();
-            entity.Property(e => e.IsDelete).HasDefaultValue(false);
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)

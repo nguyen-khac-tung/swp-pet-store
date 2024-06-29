@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.ViewModels;
 using PetStoreProject.Repositories.Service;
+using PetStoreProject.Models;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -39,6 +40,28 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 listService = listService,
                 numberOfPage = numberOfPage
             });
+        }
+
+        [HttpGet("/Admin/Service/Detail/{serviceId}")]
+        public IActionResult Detail(int serviceId)
+        {
+            ViewData["ListServiceId"] = _service.GetAllServiceId();
+            ViewData["ServiceDetail"] = _service.GetServiceDetail(serviceId);
+            ViewData["FirstServiceOption"] = _service.GetFistServiceOption(serviceId);
+            ViewData["ListServiceOption"] = _service.GetServiceOptions(serviceId);
+            return View();
+        }
+
+        [HttpPost]
+        public ServiceOptionViewModel GetOptionViewModel(int serviceId, string petType)
+        {
+            return _service.GetFirstServiceAndListWeightOfPetType(serviceId, petType);
+        }
+
+        [HttpPost]
+        public ServiceOptionViewModel GetServiceOptionPrice(int serviceId, string petType, string weight)
+        {
+            return _service.GetNewServiceOptionBySelectWeight(serviceId, petType, weight);
         }
     }
 }

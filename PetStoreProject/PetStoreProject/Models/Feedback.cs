@@ -25,7 +25,7 @@ public partial class Feedback
     public string Phone { get; set; } = null!;
 
     [StringLength(150)]
-    public string? Email { get; set; } 
+    public string? Email { get; set; }
 
     public int Rating { get; set; }
 
@@ -49,5 +49,4 @@ public partial class Feedback
     [ForeignKey("ServiceId")]
     [InverseProperty("Feedbacks")]
     public virtual Service? Service { get; set; }
-
 }

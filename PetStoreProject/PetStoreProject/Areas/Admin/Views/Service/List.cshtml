@@ -23,7 +23,7 @@
             <div class="flex items-center justify-between gap10 flex-wrap">
                 <div class="wg-filter flex-grow">
                     <form class="form-search" onsubmit="searchServiceName(event)">
-                        <input id="service-name-search" type="text" placeholder="Tìm tên dịch vụ" tabindex="2" equired>
+                        <input id="service-name-search" type="text" placeholder="Tìm tên dịch vụ" tabindex="2" required>
                         <div class="button-submit">
                             <button type="submit"><i class="icon-search"></i></button>
                         </div>
@@ -95,7 +95,7 @@
                                 </div>
                                 <div>
                                     <div class="list-icon-function">
-                                        <a class="item eye " data-serviceid="@service.ServiceId"><i class="icon-eye"></i></a>
+                                        <a class="item eye " href="/Admin/Service/Detail/@service.ServiceId"><i class="icon-eye"></i></a>
                                         <a class="item edit " data-serviceid="@service.ServiceId"><i class="icon-edit-3"></i></a>
                                         <a class="item trash " data-serviceid="@service.ServiceId"><i class="icon-trash-2"></i></a>
                                     </div>
@@ -170,7 +170,7 @@
                             content += `</div >
                                         <div>
                                             <div class="list-icon-function">
-                                                <a class="item eye " data-serviceid="${service.serviceId}"><i class="icon-eye"></i></a>
+                                                <a class="item eye " href="/Admin/Service/Detail/${service.serviceId}"><i class="icon-eye"></i></a>
                                                 <a class="item edit " data-serviceid="${service.serviceId}"><i class="icon-edit-3"></i></a>
                                                 <a class="item trash " data-serviceid="${service.serviceId}"><i class="icon-trash-2"></i></a>
                                             </div>

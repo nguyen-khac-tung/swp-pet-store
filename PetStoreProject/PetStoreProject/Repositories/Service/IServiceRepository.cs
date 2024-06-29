@@ -8,7 +8,11 @@ namespace PetStoreProject.Repositories.Service
     {
         public List<ServiceViewModel> GetListServices();
 
+        public List<int> GetAllServiceId();
+
         public ServiceDetailViewModel GetServiceDetail(int serviceId);
+
+        public List<ServiceOptionViewModel> GetServiceOptions(int serviceId);
 
         public ServiceOptionViewModel GetFistServiceOption(int serviceId);
 

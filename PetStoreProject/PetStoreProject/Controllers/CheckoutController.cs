@@ -2,6 +2,7 @@
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.ViewModels;
+using PetStoreProject.Models;
 
 namespace PetStoreProject.Controllers
 {
@@ -57,10 +58,37 @@ namespace PetStoreProject.Controllers
         {
             // Lấy dữ liệu từ TempData
             var selectedProductsJson = TempData["selectedProducts"] as string;
+
             var selectedProductCheckout = string.IsNullOrEmpty(selectedProductsJson) ? null :
                 Newtonsoft.Json.JsonConvert.DeserializeObject<List<ItemsCheckoutViewModel>>(selectedProductsJson);
 
+            var email = HttpContext.Session.GetString("userEmail");
+            if (email != null)
+            {
+                Customer customer = _customer.GetCustomer(email);
+                if (customer != null)
+                {
+                    ViewBag.customer = customer;
+                }
+            }
+
             return View(selectedProductCheckout);
+        }
+
+        [HttpPost]
+        public IActionResult ProcessCheckout([FromBody] CheckoutViewModel checkout)
+        {
+
+            var orderId = DateTime.Now.Ticks.ToString();
+            var amount = checkout.TotalAmount;
+            return RedirectToAction("CreatePayment", new { orderId = orderId, amount = amount });
+        }
+
+        public IActionResult CreatePayment(string OrderId, int amount)
+        {
+
+
+            return View();
         }
     }
 }

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\areas\js\profile-user.js" />
+    <Content Remove="wwwroot\js\checkout-form.js" />
     <Content Remove="wwwroot\js\checkout.js" />
     <Content Remove="wwwroot\js\myjs.js" />
   </ItemGroup>
@@ -62,6 +63,7 @@
     <None Include="wwwroot\areas\js\tinymce\tinymce-custom.js" />
     <None Include="wwwroot\areas\js\tinymce\tinymce.min.js" />
     <None Include="wwwroot\areas\js\zoom.js" />
+    <None Include="wwwroot\js\checkout-form.js" />
     <None Include="wwwroot\js\checkout.js" />
     <None Include="wwwroot\js\myjs.js" />
   </ItemGroup>
@@ -91,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\checkout-form.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout.js" />
   </ItemGroup>
 

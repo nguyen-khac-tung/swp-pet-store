@@ -1,9 +1,11 @@
-﻿function ItemsCheckoutViewModel(Name, Option, Price, Quantity, ImgUrl) {
+﻿function ItemsCheckoutViewModel(Name, Option, Price, Quantity, ImgUrl, ProductOptionId, ProductId) {
     this.Name = Name;
     this.Option = Option;
     this.Price = Price;
     this.Quantity = Quantity;
     this.ImgUrl = ImgUrl;
+    this.ProductOptionId = ProductOptionId;
+    this.ProductId = ProductId;
 }
 
 function selectedProductCheckout() {
@@ -17,12 +19,16 @@ function selectedProductCheckout() {
             var productOption = $('#product_option_' + i).val();
             var productPrice = $('#product_price_' + i).text().replace(/[^0-9.-]+/g, ""); // Remove any non-numeric characters
             var productQuantity = $('#product_quantity_' + i).val();
+            var productOptionId = $('#product_productOption_' + i).val();
+            var productId = $('#product_id_' + i).val();
             var cart = new ItemsCheckoutViewModel(
                 productName,
                 productOption,
                 parseFloat(productPrice), // Convert price to float
                 parseInt(productQuantity), // Convert quantity to int
-                imgUrl
+                imgUrl,
+                productOptionId,
+                productId
             );
             selectedProduct.push(cart);
         }

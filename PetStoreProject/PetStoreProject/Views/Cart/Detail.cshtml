@@ -61,7 +61,7 @@
                                                 <td class="product-thumbnail">
                                                     <a href="#"><img src="@item.ImgUrl" id="product_img_@i" alt="cart-image" /></a>
                                                 </td>
-                                                <td class="product-name" >
+                                                <td class="product-name">
                                                     <a href="http://localhost:5206/product/detail/@item.ProductId">@item.Name <br /> @option</a>
                                                     <input type="hidden" id="product_name_@i" value="@item.Name" />
                                                     <input type="hidden" value="@option" id="product_option_@i" />
@@ -75,12 +75,14 @@
                                                     </a>
                                                 </td>
                                                 <td class="product-remove"> <a style="cursor:pointer" onclick="confirmDelete(@item.ProductOptionId, '@item.Name.Trim()')" title="Xóa sản phẩm"><i class="icofont-delete-alt"></i></a></td>
+                                                <input type="hidden" value="@item.ProductOptionId" id="product_productOption_@i"/>
+                                                <input type="hidden" value="@item.ProductId" id="product_id_@i"/>
                                             </tr>
                                             i++;
                                         }
                                         <input type="hidden" value="@i" id="totalCheckboxId" />
                                     }
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -110,7 +112,7 @@
                                         </tbody>
                                     </table>
                                     <div class="wc-proceed-to-checkout">
-                                        
+
                                         <a href="#" onclick="selectedProductCheckout()">Thanh Toán</a>
                                     </div>
                                 </div>

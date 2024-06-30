@@ -1,0 +1,33 @@
+﻿using PetStoreProject.Models;
+
+namespace PetStoreProject.ViewModels
+{
+    public class CheckoutViewModel
+    {
+        public int CheckoutId { get; set; }
+
+        public List<OrderItem> OrderItems { get; set; }
+
+        public string OrderName { get; set; }
+
+        public string OrderPhone { get; set; }
+
+        public string? OrderEmail { get; set; }
+
+        public string ConsigneeName { get; set; }
+
+        public string ConsigneePhone { get; set; }
+
+        public string ConsigneeProvince { get; set; }
+
+        public string ConsigneeDistrict { get; set; }
+
+        public string ConsigneeWard { get; set; }
+
+        public string ConsigneeAdressDetail { get; set; }
+
+        public string PaymentMethod { get; set; }
+
+        public float TotalAmount { get; set; }
+    }
+}

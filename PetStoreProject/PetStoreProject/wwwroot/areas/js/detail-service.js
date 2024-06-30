@@ -1,9 +1,9 @@
-﻿function confirmServiceId(serviceIds, role) {
+﻿function confirmServiceId(serviceIds, url) {
     let serviceId = Number($("#serviceId-search").val());
 
     if (!isNaN(serviceId)) {
         if (serviceIds.includes(serviceId)) {
-            window.location.href = "/" + role + "/Service/Detail/" + serviceId;
+            window.location.href = url + serviceId;
             return;
         }
     }

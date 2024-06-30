@@ -7,6 +7,9 @@
     var serviceOptions = ViewData["ListServiceOption"] as List<ServiceOptionViewModel>;
 }
 
+@section HeadOptional {
+    <link href="~/areas/css/style1.css" rel="stylesheet" />
+}
 
 <div class="main-content-inner">
     <!-- main-content-wrap -->
@@ -26,7 +29,6 @@
                         <span id="error-input" class="text-danger"></span>
                     </form>
                 </div>
-                <a class="tf-button style-1 w208"><i class="icon-plus"></i>Chỉnh sửa</a>
             </div>
             <!-- Header End-->
             <!-- Product Thumbnail Start -->
@@ -191,7 +193,7 @@
             $("#form-search-serviceId").on("submit", function (event) {
                 event.preventDefault();
                 let serviceIds = @Html.Raw(Json.Serialize(serviceIds));
-                confirmServiceId(serviceIds, "/Admin/Service/Detail/");
+                confirmServiceId(serviceIds, "/Employee/Service/ServiceDetail/");
             });
         });
     </script>

@@ -47,6 +47,16 @@ namespace PetStoreProject.Areas.Employee.Controllers
             });
         }
 
+        [HttpGet("/Employee/Service/ServiceDetail/{serviceId}")]
+        public IActionResult ServiceDetail(int serviceId)
+        {
+            ViewData["ListServiceId"] = _service.GetAllServiceId();
+            ViewData["ServiceDetail"] = _service.GetServiceDetail(serviceId);
+            ViewData["FirstServiceOption"] = _service.GetFistServiceOption(serviceId);
+            ViewData["ListServiceOption"] = _service.GetServiceOptions(serviceId);
+            return View();
+        }
+
         public IActionResult ListOrderService()
         {
             ViewData["Services"] = _service.GetListServices();

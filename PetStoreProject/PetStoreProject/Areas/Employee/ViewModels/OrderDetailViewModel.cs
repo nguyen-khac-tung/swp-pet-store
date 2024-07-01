@@ -4,7 +4,7 @@ namespace PetStoreProject.Areas.Employee.ViewModels
 {
     public class OrderDetailViewModel
     {
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         public int? CustomerId { get; set; }
 

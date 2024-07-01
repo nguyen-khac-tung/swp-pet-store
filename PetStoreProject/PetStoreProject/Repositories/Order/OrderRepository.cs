@@ -90,5 +90,11 @@ namespace PetStoreProject.Repositories.Order
 
             return countOrder;
         }
-    }
+
+		public void AddOrder(Models.Order order)
+		{
+			_context.Orders.Add(order);
+            _context.SaveChanges();
+		}
+	}
 }

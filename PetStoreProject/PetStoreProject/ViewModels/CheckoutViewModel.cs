@@ -5,7 +5,8 @@ namespace PetStoreProject.ViewModels
     public class CheckoutViewModel
     {
         public int CheckoutId { get; set; }
-
+        public long OrderId { get; set; }
+        public int? UserId { get; set; }
         public List<OrderItem> OrderItems { get; set; }
 
         public string OrderName { get; set; }

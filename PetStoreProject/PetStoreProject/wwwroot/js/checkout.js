@@ -52,3 +52,22 @@ function selectedProductCheckout() {
         });
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    var checkboxAll = document.getElementById('checkbox_all');
+    var totalCheckboxId = parseInt(document.getElementById('totalCheckboxId').value, 10);
+    var checkboxItems = document.querySelectorAll('.checkboxItem');
+
+    checkboxAll.addEventListener("change", function () {
+        for (var i = 0; i < totalCheckboxId; i++) {
+            var checkboxItem = document.getElementById('checkbox_' + i);
+            if (checkboxItem) {
+                checkboxItem.checked = checkboxAll.checked;
+            }
+        }
+    });
+
+    checkboxItems.forEach(item => item.addEventListener("change", function () {
+        checkboxAll.checked = Array.from(checkboxItems).every(checkbox => checkbox.checked);
+    }));
+});

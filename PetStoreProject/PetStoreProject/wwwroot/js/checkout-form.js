@@ -187,8 +187,8 @@ function processInfoCheckout(checkoutViewModel) {
         type: 'post',
         contentType: 'application/json',
         data: JSON.stringify(checkoutViewModel),
-        success: function () {
-
+        success: function (response) {
+            window.location.href = "/checkout/" + response.urlTransfer + '?orderId=' + response.orderId + '&amount=' + response.amount + '&HttpContext=' + response.httpContext;
         },
         error: function (xhr, status, error) {
             console.error(error);
@@ -209,7 +209,7 @@ function checkPhone(phoneNumber, typePhone) {
     const regex = /^(0|\+84)(3|5|7|8|9)\d{8}$/;
 
     if (phoneNumber.trim() === "" || !regex.test(phoneNumber)) {
-        $('#span_' + typePhone).text("Số điện thoại không hợp lệ");
+        $('#span_' + typePhone).text("Số điện thoại không hợp lệ!");
         return 0;
     }
     resetSpan();
@@ -219,7 +219,7 @@ function checkPhone(phoneNumber, typePhone) {
 function checkSelect(typeSelect, stringSelect) {
     var selectValue = $('#' + typeSelect).val();
     if (selectValue == "0") {
-        $('#span_' + typeSelect).text("Vui lòng chọn " + stringSelect);
+        $('#span_' + typeSelect).text("Vui lòng chọn " + stringSelect + "!");
         return 0;
     }
     resetSpan();

@@ -178,7 +178,13 @@
                                                         <div class="col-lg-12">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="orderEmail">Email (Không bắt buộc)</label>
-                                                                <input type="email" class="form-control" id="orderEmail" placeholder="Nhập email (không bắt buộc)">
+                                                                @if(ViewBag.Customer != null && ViewBag.Customer.Email != null)
+                                                                {
+                                                                    <input type="email" class="form-control" id="orderEmail" value="@ViewBag.Customer.Email" readonly placeholder="Nhập email (không bắt buộc)">
+                                                                }else
+                                                                {
+                                                                    <input type="email" class="form-control" id="orderEmail" placeholder="Nhập email (không bắt buộc)">
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -287,7 +293,7 @@
                                             <div class="col-lg-3 col-sm-6">
                                                 <div data-bs-toggle="collapse">
                                                     <label class="card-radio-label" for="paymentMethod">
-                                                        <input type="radio" name="pay-method" id="paymentMethod" value="VNPay" class="card-radio-input">
+                                                        <input type="radio" name="pay-method" id="paymentMethod" value="VNPay" class="card-radio-input" checked>
                                                         <span class="card-radio py-3 text-center text-truncate">
                                                             <img src="~/img/zalopay.jpg" />
                                                             VNpay

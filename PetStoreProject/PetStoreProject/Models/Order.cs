@@ -11,7 +11,7 @@ namespace PetStoreProject.Models;
 public partial class Order
 {
     [Key]
-    public int OrderId { get; set; }
+    public long OrderId { get; set; }
 
     public int? CustomerId { get; set; }
 

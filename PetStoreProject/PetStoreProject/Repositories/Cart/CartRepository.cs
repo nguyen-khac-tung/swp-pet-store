@@ -51,7 +51,7 @@ namespace PetStoreProject.Repositories.Cart
                                 join s in _context.Sizes on po.SizeId equals s.SizeId
                                 join a in _context.Attributes on po.AttributeId equals a.AttributeId
                                 join i in _context.Images on po.ImageId equals i.ImageId
-                                where ca.CustomerId == customerId
+                                where ca.CustomerId == customerId && p.IsDelete == false
                                 select new CartItemViewModel()
                                 {
                                     ProductId = p.ProductId,

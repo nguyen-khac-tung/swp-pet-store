@@ -11,6 +11,8 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Discount;
+using PetStoreProject.Repositories.DiscountType;
 using PetStoreProject.Repositories.Employee;
 using PetStoreProject.Repositories.FeedBack;
 using PetStoreProject.Repositories.Image;
@@ -83,7 +85,9 @@ builder.Services.AddTransient<IAttributeRepository, AttributeRepository>();
 
 builder.Services.AddTransient<ISizeRepository, SizeRepository>();
 
-builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+builder.Services.AddTransient<IDiscountTypeRepository, DiscountTypeRepository>();
+
+builder.Services.AddTransient<IDiscountRepository, DiscountRepository>();
 
 builder.Services.AddTransient<IProductOptionRepository, ProductOptionRepository>();
 

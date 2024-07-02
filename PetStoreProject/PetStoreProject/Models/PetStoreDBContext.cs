@@ -29,6 +29,10 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Customer> Customers { get; set; }
 
+    public virtual DbSet<Discount> Discounts { get; set; }
+
+    public virtual DbSet<DiscountType> DiscountTypes { get; set; }
+
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
@@ -49,6 +53,8 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<ProductOption> ProductOptions { get; set; }
 
+    public virtual DbSet<Promotion> Promotions { get; set; }
+
     public virtual DbSet<ResponseFeedback> ResponseFeedbacks { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -62,6 +68,9 @@ public partial class PetStoreDBContext : DbContext
     public virtual DbSet<TimeService> TimeServices { get; set; }
 
     public virtual DbSet<WorkingTime> WorkingTimes { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("name=PetStoreDBContext");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -126,6 +135,25 @@ public partial class PetStoreDBContext : DbContext
                 .HasConstraintName("FK_Customer_Account");
         });
 
+        modelBuilder.Entity<Discount>(entity =>
+        {
+            entity.Property(e => e.DiscountId).ValueGeneratedNever();
+            entity.Property(e => e.Code).IsFixedLength();
+            entity.Property(e => e.CreatedAt)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Discounts).HasConstraintName("FK_Discount_Admin");
+
+            entity.HasOne(d => d.DiscountType).WithMany(p => p.Discounts).HasConstraintName("FK_Discount_DiscountType");
+        });
+
+        modelBuilder.Entity<DiscountType>(entity =>
+        {
+            entity.Property(e => e.DiscountTypeId).ValueGeneratedNever();
+            entity.Property(e => e.DiscountName).IsFixedLength();
+        });
+
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.Property(e => e.IsDelete).HasDefaultValue(false);
@@ -168,6 +196,8 @@ public partial class PetStoreDBContext : DbContext
             entity.Property(e => e.Email).IsFixedLength();
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Customer");
+
+            entity.HasOne(d => d.Discount).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Discount");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -179,6 +209,8 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.ProductOption).WithMany(p => p.OrderItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderItem_ProductOption");
+
+            entity.HasOne(d => d.Promotion).WithMany(p => p.OrderItems).HasConstraintName("FK_OrderItem_Promotion");
         });
 
         modelBuilder.Entity<OrderService>(entity =>
@@ -251,6 +283,22 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Size).WithMany(p => p.ProductOptions).HasConstraintName("FK_ProductOption_Size");
         });
 
+        modelBuilder.Entity<Promotion>(entity =>
+        {
+            entity.Property(e => e.PromotionId).ValueGeneratedNever();
+            entity.Property(e => e.CreateAt)
+                .IsRowVersion()
+                .IsConcurrencyToken();
+
+            entity.HasOne(d => d.Brand).WithMany(p => p.Promotions).HasConstraintName("FK_Promotion_Brand");
+
+            entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Promotions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Promotion_Admin");
+
+            entity.HasOne(d => d.ProductCate).WithMany(p => p.Promotions).HasConstraintName("FK_Promotion_ProductCategory");
+        });
+
         modelBuilder.Entity<ResponseFeedback>(entity =>
         {
             entity.HasOne(d => d.Employee).WithMany(p => p.ResponseFeedbacks)
@@ -277,6 +325,7 @@ public partial class PetStoreDBContext : DbContext
             entity.HasKey(e => e.ServiceOptionId).HasName("PK_ServiceOption_1");
 
             entity.Property(e => e.ServiceOptionId).ValueGeneratedNever();
+            entity.Property(e => e.IsDelete).HasDefaultValue(false);
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)

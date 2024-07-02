@@ -31,28 +31,6 @@ namespace PetStoreProject.Controllers
 			_orderItem = orderItem;
 		}
 
-		private string CheckUserRole()
-		{
-			var email = HttpContext.Session.GetString("userEmail");
-			var role = _account.GetUserRoles(email);
-
-			if (email != null)
-			{
-				if (role == "Customer")
-				{
-					return "Customer";
-				}
-				else
-				{
-					return "Not Guest or Customer";
-				}
-			}
-			else
-			{
-				return "Guest";
-			}
-		}
-
 		[HttpPost]
 		public IActionResult Form([FromBody] List<ItemsCheckoutViewModel> selectedProductCheckout)
 		{
@@ -203,49 +181,57 @@ namespace PetStoreProject.Controllers
 
 			// Lưu đơn hàng vào database
 			var checkoutInfoCookie = Request.Cookies["CheckoutInfo"];
-			var checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
+			CheckoutViewModel checkoutInfo = new CheckoutViewModel();
+			if (checkoutInfoCookie != null)
+			{
+				checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
+			}
+            Order order = new Order()
+            {
+                OrderId = checkoutInfo.OrderId,
+                FullName = checkoutInfo.OrderName,
+				CustomerId = null,
+                Email = null,
+                Phone = checkoutInfo.OrderPhone,
+                TotalAmount = checkoutInfo.TotalAmount,
+                OrderDate = DateTime.Now,
+                ConsigneeFullName = checkoutInfo.ConsigneeName,
+                ConsigneePhone = checkoutInfo.ConsigneePhone,
+                PaymetMethod = checkoutInfo.PaymentMethod,
+                ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", " 
+								+ checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAddressDetail
+            };
 
 
-			//Xóa phần tử trong database || cookie
-			var email = HttpContext.Session.GetString("userEmail");
+
+            //Xóa phần tử trong database || cookie
+            var email = HttpContext.Session.GetString("userEmail");
 			var customerID = _customer.GetCustomerId(email);
 
 			List<int> productOptionId = new List<int>();
 			productOptionId = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(CheckoutCookie);
 			if (email != null)
 			{
-
-
 				//Thêm order
-				Order order = new Order()
-				{
-					OrderId = checkoutInfo.OrderId,
-					CustomerId = customerID,
-					FullName = checkoutInfo.OrderName,
-					Email = email,
-					Phone = checkoutInfo.OrderPhone,
-					TotalAmount = checkoutInfo.TotalAmount,
-					OrderDate = DateTime.Now,
-					PaymetMethod = checkoutInfo.PaymentMethod,
-					ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", " + checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAdressDetail
-				};
+				order.CustomerId = customerID;
+				order.Email = email;
+
 				_order.AddOrder(order);
 
-				foreach (var item in checkoutInfo.OrderItems)
-				{
-					OrderItem orderItem = new OrderItem()
-					{
-						OrderId = checkoutInfo.OrderId,
-						ProductOptionId = item.ProductOptionId,
-						Quantity = item.Quantity,
-						Price = item.Price
-					};
-					_orderItem.AddOrderItem(orderItem);
-				}
+                foreach (var item in checkoutInfo.OrderItems)
+                {
+                    OrderItem orderItem = new OrderItem()
+                    {
+                        OrderId = checkoutInfo.OrderId,
+                        ProductOptionId = item.ProductOptionId,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    };
+                    _orderItem.AddOrderItem(orderItem);
+                }
 
-
-				//Xóa cart
-				var cartItems = _cart.GetListCartItemsVM(customerID);
+                //Xóa cart
+                var cartItems = _cart.GetListCartItemsVM(customerID);
 				foreach (var item in cartItems)
 				{
 					if(productOptionId.Contains(item.ProductOptionId))
@@ -256,17 +242,32 @@ namespace PetStoreProject.Controllers
 			}
 			else
 			{
-				CookieOptions cookieOptions = new CookieOptions()
+				//Them order
+				order.Email = checkoutInfo.OrderEmail;
+
+				_order.AddOrder(order);
+
+                foreach (var item in checkoutInfo.OrderItems)
+                {
+                    OrderItem orderItem = new OrderItem()
+                    {
+                        OrderId = checkoutInfo.OrderId,
+                        ProductOptionId = item.ProductOptionId,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    };
+                    _orderItem.AddOrderItem(orderItem);
+                }
+
+                //Xoa cart
+                CookieOptions cookieOptions = new CookieOptions()
 				{
 					Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
-					HttpOnly = true, // Cookie chỉ được sử dụng trong HTTP(S) requests
-					Secure = true, // Cookie chỉ được gửi qua HTTPS
-					SameSite = SameSiteMode.Strict // Chỉ gửi cookie trong cùng site
 				};
 
-				if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
-				{
-					var cookieIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(list_cookie);
+                if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+                {
+                    var cookieIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(list_cookie);
 					List<int> productOptionIdRemaining = new List<int>();
 					foreach (var itemCookie in cookieIds)
 					{
@@ -292,6 +293,7 @@ namespace PetStoreProject.Controllers
 				}
 			}
 			Response.Cookies.Delete("Checkout_Id");
+			Response.Cookies.Delete("CheckoutInfo");
 
 			TempData["Status"] = "Thanh toán thành công";
 			TempData["Message"] = $"Thanh toán VNPay thành công";

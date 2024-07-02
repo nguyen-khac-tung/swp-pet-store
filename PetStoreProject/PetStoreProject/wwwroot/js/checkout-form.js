@@ -188,7 +188,7 @@ function processInfoCheckout(checkoutViewModel) {
         contentType: 'application/json',
         data: JSON.stringify(checkoutViewModel),
         success: function (response) {
-            window.location.href = "/checkout/" + response.urlTransfer + '?orderId=' + response.orderId + '&amount=' + response.amount + '&HttpContext=' + response.httpContext;
+            window.location.href = "/checkout/" + response.urlTransfer + '?orderId=' + response.orderId + '&amount=' + response.amount;
         },
         error: function (xhr, status, error) {
             console.error(error);

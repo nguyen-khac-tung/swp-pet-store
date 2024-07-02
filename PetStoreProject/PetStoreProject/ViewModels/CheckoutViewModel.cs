@@ -5,8 +5,11 @@ namespace PetStoreProject.ViewModels
     public class CheckoutViewModel
     {
         public int CheckoutId { get; set; }
+
         public long OrderId { get; set; }
+
         public int? UserId { get; set; }
+
         public List<OrderItem> OrderItems { get; set; }
 
         public string OrderName { get; set; }
@@ -25,7 +28,7 @@ namespace PetStoreProject.ViewModels
 
         public string ConsigneeWard { get; set; }
 
-        public string ConsigneeAdressDetail { get; set; }
+        public string ConsigneeAddressDetail { get; set; }
 
         public string PaymentMethod { get; set; }
 

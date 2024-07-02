@@ -291,11 +291,12 @@ namespace PetStoreProject.Repositories.Product
 
         public List<int> GetProductIDInWishList(int customerID)
         {
+
             var list = (from c in _context.Customers
                         where c.CustomerId == customerID
                         from p in c.Products
                         select p.ProductId
-                    ).ToList();
+                ).ToList();
             return list;
         }
 

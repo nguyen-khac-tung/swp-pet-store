@@ -29,6 +29,12 @@ public partial class Order
     [Column(TypeName = "datetime")]
     public DateTime OrderDate { get; set; }
 
+    [StringLength(250)]
+    public string ConsigneeFullName { get; set; }
+
+    [StringLength(50)]
+    public string ConsigneePhone { get; set; }
+
     [StringLength(50)]
     public string PaymetMethod { get; set; } = null!;
 

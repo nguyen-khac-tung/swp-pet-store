@@ -38,5 +38,21 @@ namespace PetStoreProject.Areas.Admin.Controllers
             ViewData["discounts"] = discount;
             return View();
         }
+
+        public IActionResult Edit(int id)
+        {
+            var discount = _discount.GetDiscount(id);
+            var discountType = _discountType.GetDiscountTypes();
+            ViewData["discountType"] = discountType;
+            ViewData["discount"] = discount;
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Edit(Discount discount)
+        {
+            var result = _discount.Edit(discount);
+            return Json(result);
+        }
     }
 }

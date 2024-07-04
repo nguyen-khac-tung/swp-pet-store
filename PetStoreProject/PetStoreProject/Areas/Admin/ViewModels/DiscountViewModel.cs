@@ -2,6 +2,7 @@
 {
     public class DiscountViewModel
     {
+        public int Id { get; set; }
         public string Code { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
@@ -13,5 +14,8 @@
         public int? Quantity { get; set; }
         public int? MaxUse { get; set; }
         public int? Used { get; set; }
+        public string Description { get; set; }
+        public bool? Status { get; set; }
+        public string? StatusString { get; set; }
     }
 }

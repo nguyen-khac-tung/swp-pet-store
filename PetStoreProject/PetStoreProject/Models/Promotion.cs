@@ -35,6 +35,8 @@ public partial class Promotion
     [StringLength(250)]
     public string? Name { get; set; }
 
+    public bool? Status { get; set; }
+
     [ForeignKey("CreateBy")]
     [InverseProperty("Promotions")]
     public virtual Admin? CreateByNavigation { get; set; }

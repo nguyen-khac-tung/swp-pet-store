@@ -17,7 +17,7 @@
         }
 
         .wg-table.table-all-category > * {
-            min-width: 1300px;
+            min-width: 1450px;
         }
 
     </style>
@@ -50,8 +50,11 @@
                     <li style="width: 180px">
                         <div style="width: 180px" class="body-title">Danh mục</div>
                     </li>
-                    <li style="width: 200px">
-                        <div class="body-title" style="width: 200px">Ngày tạo</div>
+                    <li style="width: 180px">
+                        <div class="body-title" style="width: 180px">Ngày tạo</div>
+                    </li>
+                    <li style="width: 130px">
+                        <div class="body-title" style="width: 130px">Trạng thái</div>
                     </li>
                 </ul>
                 <ul class="flex flex-column" id="list-category" style="width: 100%">
@@ -69,9 +72,11 @@
                                 <div class="body-text" style="width: 150px">@item.Name</div>
                                 <div class="body-text" style="width: 170px">@((int)item.Value + "% tối đa " + item.MaxValue?.ToString("#,###") + " vnd")</div>
                                 <div class="body-text" style="width: 180px">@item.StartDate - @item.EndDate</div>
-                                <div class="body-text" style="width: 120px">@item.Brand</div>
-                                <div class="body-text" style="width: 180px">@item.ProductCategory</div>
+                                <div class="body-text" style="width: 120px">@item.Brand.Name</div>
+                                <div class="body-text" style="width: 180px">@item.ProductCategory.Name</div>
                                 <div class="body-text" style="width: 200px">@item.CreatedAt</div>
+                                <div class="body-text @(item.Status == true ? "block-available" : "block-not-available")" style="width: 130px">@item.StatusString</div>
+                                <div class="body-text item edit" style="width: 40px; cursor: pointer"><a href="/admin/promotion/edit?id=@item.Id"><i class="icon-edit-3"></i></a></div>
                             </div>
                         </li>
                         index += 1;

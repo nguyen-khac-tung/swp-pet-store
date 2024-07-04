@@ -17,7 +17,7 @@
         }
 
         .wg-table.table-all-category > *{
-            min-width: 1300px;
+            min-width: 1470px;
         }
 
     </style>
@@ -56,8 +56,11 @@
                     <li style="width: 70px">
                         <div class="body-title" style="width: 70px">Đã dùng</div>
                     </li>
-                    <li style="width: 200px">
-                        <div class="body-title" style="width: 200px">Ngày tạo</div>
+                    <li style="width: 180px">
+                        <div class="body-title" style="width: 180px">Ngày tạo</div>
+                    </li>
+                    <li style="width: 130px">
+                        <div class="body-title" style="width: 130px">Trạng thái</div>
                     </li>
                 </ul>
                 <ul class="flex flex-column" id="list-category" style="width: 100%">
@@ -73,11 +76,13 @@
                                 <div class="body-text" style="width: 130px">@item.Code</div>
                                 <div class="body-text" style="width: 150px">@(item.DiscountType.Id == 1 ? (int)item.Value + "% tối đa " + item.MaxValue?.ToString("#,###") + " vnd" : item.Value?.ToString("#,###") + " vnd")</div>
                                 <div class="body-text" style="width: 180px">@item.StartDate - @item.EndDate</div>
-                                <div class="body-text" style="width: 150px">@item.MinPurchase?.ToString("#,###") vnd</div>
+                                <div class="body-text" style="width: 150px">@item.MinPurchase?.ToString("#,###.###") vnd</div>
                                 <div class="body-text" style="width: 80px">@item.Quantity</div>
                                 <div class="body-text" style="width: 70px">@item.MaxUse</div>
                                 <div class="body-text" style="width: 70px">@item.Used</div>
-                                <div class="body-text" style="width: 200px">@item.CreatedAt</div>
+                                <div class="body-text" style="width: 180px">@item.CreatedAt</div>
+                                <div class="body-text @(item.Status == true ? "block-available" : "block-not-available")" style="width: 130px">@item.StatusString</div>
+                                <div class="body-text item edit" style="width: 40px; cursor: pointer"><a href="/admin/discount/edit?id=@item.Id"><i class="icon-edit-3"></i></a></div>
                             </div>
                         </li>
                         index += 1;

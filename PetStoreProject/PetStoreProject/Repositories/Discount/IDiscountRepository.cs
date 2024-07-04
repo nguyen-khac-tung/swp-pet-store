@@ -6,5 +6,7 @@ namespace PetStoreProject.Repositories.Discount
     {
         public string Create(Models.Discount discount);
         public List<DiscountViewModel> GetDiscounts();
+        public DiscountViewModel GetDiscount(int id);
+        public string Edit(Models.Discount discount);
     }
 }

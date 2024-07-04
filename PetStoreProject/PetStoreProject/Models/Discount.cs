@@ -43,6 +43,8 @@ public partial class Discount
     [StringLength(20)]
     public string? CreatedAt { get; set; }
 
+    public bool? Status { get; set; }
+
     [ForeignKey("CreatedBy")]
     [InverseProperty("Discounts")]
     public virtual Admin? CreatedByNavigation { get; set; }

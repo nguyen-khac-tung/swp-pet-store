@@ -6,5 +6,7 @@ namespace PetStoreProject.Repositories.Promotion
     {
         public void CreatePromotion(PromotionCreateRequest promotion);
         public List<PromotionViewModel> GetPromotions();
+        public PromotionViewModel GetPromotion(int id);
+        public void UpdatePromotion(PromotionCreateRequest promotion);
     }
 }

@@ -36,10 +36,41 @@ namespace PetStoreProject.Repositories.Promotion
                 BrandId = promotion.BrandId,
                 ProductCateId = promotion.ProductCateId,
                 CreatedAt = DateTime.Now.ToString(),
+                Status = true
             };
             _context.Promotions.Add(p);
             _context.SaveChanges();
         }
+
+        public PromotionViewModel GetPromotion(int id)
+        {
+            var promotion = _context.Promotions
+                                    .Where(p => p.PromotionId == id)
+                                    .Select(p => new PromotionViewModel
+                                    {
+                                        Id = p.PromotionId,
+                                        Name = p.Name,
+                                        Value = p.Value,
+                                        MaxValue = p.MaxValue,
+                                        StartDate = p.StartDate,
+                                        EndDate = p.EndDate,
+                                        Brand = _context.Brands.FirstOrDefault(b => b.BrandId == p.BrandId) ?? new Models.Brand
+                                        {
+                                            BrandId = 0,
+                                            Name = "Tất cả"
+                                        },
+                                        ProductCategory = _context.ProductCategories.FirstOrDefault(pc => pc.ProductCateId == p.ProductCateId) ?? new Models.ProductCategory
+                                        {
+                                            ProductCateId = 0,
+                                            Name = "Tất cả"
+                                        },
+                                        CreatedAt = p.CreatedAt,
+                                    })
+                                    .FirstOrDefault();
+
+            return promotion;
+        }
+
 
         public List<PromotionViewModel> GetPromotions()
         {
@@ -47,20 +78,49 @@ namespace PetStoreProject.Repositories.Promotion
             var promotionViewModel = new List<PromotionViewModel>();
             foreach (var item in promotion)
             {
+                var now = DateTime.Now;
                 var p = new PromotionViewModel()
                 {
+                    Id = item.PromotionId,
                     Name = item.Name,
                     Value = item.Value,
                     MaxValue = item.MaxValue,
                     StartDate = item.StartDate,
                     EndDate = item.EndDate,
-                    Brand = _context.Brands.Find(item.BrandId) == null ? "Tất cả" : _context.Brands.Find(item.BrandId).Name,
-                    ProductCategory = _context.ProductCategories.Find(item.ProductCateId) == null ? "Tất cả" : _context.ProductCategories.Find(item.ProductCateId).Name,
+                    Brand = _context.Brands.Find(item.BrandId) == null ? (new Models.Brand()
+                    {
+                        BrandId = 0,
+                        Name = "Tất cả"
+                    }) : _context.Brands.Find(item.BrandId),
+                    ProductCategory = _context.ProductCategories.Find(item.ProductCateId) == null ? (new Models.ProductCategory()
+                    {
+                        ProductCateId = 0,
+                        Name = "Tất cả"
+                    }) : _context.ProductCategories.Find(item.ProductCateId),
                     CreatedAt = item.CreatedAt,
                 };
+
+                if (DateTime.Parse(p.StartDate) <= now && now <= DateTime.Parse(p.EndDate) && p.Status == true)
+                {
+                    p.Status = true;
+                    p.StatusString = "Đanh diễn ra";
+                }
+                else
+                {
+                    p.Status = false;
+                    p.StatusString = "Đã kết thúc";
+                }
                 promotionViewModel.Add(p);
             }
             return promotionViewModel;
+        }
+
+        public void UpdatePromotion(PromotionCreateRequest promotion)
+        {
+            var p = _context.Promotions.Find(promotion.Id);
+            p.Status = false;
+            _context.SaveChanges();
+            CreatePromotion(promotion);
         }
     }
 }

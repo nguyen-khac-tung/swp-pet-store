@@ -2,6 +2,7 @@
 {
     public class PromotionCreateRequest
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public int Value { get; set; }
         public decimal MaxValue { get; set; }

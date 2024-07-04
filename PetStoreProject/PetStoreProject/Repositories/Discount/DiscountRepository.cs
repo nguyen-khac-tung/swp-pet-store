@@ -117,8 +117,12 @@ namespace PetStoreProject.Repositories.Discount
             var now = DateOnly.FromDateTime(DateTime.Now);
             foreach (var item in discounts)
             {
-
-                if (item.StartDate <= now && now <= item.EndDate && item.Status == true)
+                if (item.DiscountType.Id == 3)
+                {
+                    item.Status = true;
+                    item.StatusString = "Đang diễn ra";
+                }
+                else if (item.StartDate <= now && now <= item.EndDate && item.Status == true)
                 {
                     if (item.Quantity < item.Used)
                     {

@@ -64,10 +64,9 @@
                         </fieldset>
                         <span id="error-max-value" class="text-danger"></span>
                     </div>
-                    
                 </div>
 
-                <div class="flex gap22">
+                <div class="flex gap22" id="date1">
                     <fieldset>
                         <label class="body-title mb-10">Từ ngày<span class="tf-color-1">*</span></label>
                         <input type="date" name="date" id="start-date" onchange="updateStartDate()" />
@@ -77,6 +76,12 @@
                         <label class="body-title mb-10">Đến ngày<span class="tf-color-1">*</span></label>
                         <input type="date" name="date" id="end-date" />
                         <span id="error-end-date" class="text-danger"></span>
+                    </fieldset>
+                </div>
+                <div class="flex gap22 hide" id="date2">
+                    <fieldset>
+                        <label class="body-title mb-10">Thời hạn</label>
+                        <input type="text" name="date" readonly value="Không thời hạn"/>
                     </fieldset>
                 </div>
                 
@@ -175,13 +180,30 @@
 
         function selectDiscountType(){
             var type = $('#discount-type').val()
-            if(type == 1){
+            if(type == 2){
+                $('#max-value').parent().parent().addClass('hide')
+                $('#value').parent().find('button').text('VND')
+            }
+            else{
                 $('#max-value').parent().parent().removeClass('hide')
                 $('#value').parent().find('button').text('%')
             }
+            if (type == 3) {
+                $('#date1').addClass('hide')
+                $('#date2').removeClass('hide')
+                $('#quantity').attr('value', 'Không giới hạn')
+                $('#max-use').attr('value', 1)
+                $('#quantity').attr('readonly', true)
+                $('#max-use').attr('readonly', true)
+
+            }
             else{
-                $('#max-value').parent().parent().addClass('hide')
-                $('#value').parent().find('button').text('VND')
+                $('#date2').addClass('hide')
+                $('#date1').removeClass('hide')
+                $('#quantity').attr('value', '')
+                $('#max-use').attr('value', '')
+                $('#quantity').attr('readonly', false)
+                $('#max-use').attr('readonly', false)
             }
         }
 
@@ -246,53 +268,56 @@
                 }
             }
             
+            if(type != 3){
+                if (startDate == '') {
+                    $('#error-start-date').text('Vui lòng chọn ngày bắt đầu')
+                    isValid = false
+                }
+                else {
+                    $('#error-start-date').text('')
+                }
 
-            if(startDate == ''){
-                $('#error-start-date').text('Vui lòng chọn ngày bắt đầu')
-                isValid = false
-            }
-            else{
-                $('#error-start-date').text('')
-            }
-
-            if(endDate == ''){
-                $('#error-end-date').text('Vui lòng chọn ngày kết thúc')
-                isValid = false
-            }
-            else{
-                $('#error-end-date').text('')
-            }
-
-            if(quantity == ''){
-                $('#error-quantity').text('Vui lòng nhập số lượng')
-                isValid = false
-            }
-            else if(!numberRegex.test(quantity)){
-                $('#error-quantity').text('Số lượng phải là số')
-                isValid = false
-            }
-            else if(quantity < 1){
-                $('#error-quantity').text('Số lượng không phù hợp')
-                isValid = false
-            }
-            else{
-                $('#error-quantity').text('')
+                if (endDate == '') {
+                    $('#error-end-date').text('Vui lòng chọn ngày kết thúc')
+                    isValid = false
+                }
+                else {
+                    $('#error-end-date').text('')
+                }
             }
 
-            if(maxUse == ''){
-                $('#error-max-use').text('Vui lòng nhập số lần sử dụng')
-                isValid = false
-            }
-            else if(!numberRegex.test(maxUse)){
-                $('#error-max-use').text('Số lần sử dụng phải là số')
-                isValid = false
-            }
-            else if(maxUse < 1){
-                $('#error-max-use').text('Số lần sử dụng không phù hợp')
-                isValid = false
-            }
-            else{
-                $('#error-max-use').text('')
+            if (type != 3) {
+                if (quantity == '') {
+                    $('#error-quantity').text('Vui lòng nhập số lượng')
+                    isValid = false
+                }
+                else if (!numberRegex.test(quantity)) {
+                    $('#error-quantity').text('Số lượng phải là số')
+                    isValid = false
+                }
+                else if (quantity < 1) {
+                    $('#error-quantity').text('Số lượng không phù hợp')
+                    isValid = false
+                }
+                else {
+                    $('#error-quantity').text('')
+                }
+
+                if (maxUse == '') {
+                    $('#error-max-use').text('Vui lòng nhập số lần sử dụng')
+                    isValid = false
+                }
+                else if (!numberRegex.test(maxUse)) {
+                    $('#error-max-use').text('Số lần sử dụng phải là số')
+                    isValid = false
+                }
+                else if (maxUse < 1) {
+                    $('#error-max-use').text('Số lần sử dụng không phù hợp')
+                    isValid = false
+                }
+                else {
+                    $('#error-max-use').text('')
+                }
             }
 
             if(minPurchase == ''){
@@ -330,7 +355,7 @@
                     type: "POST",
                     data: {discount : data},
                     success: function(response){
-                        alert('Mã giảm giá ' + response.trim() + 'được thêm thành công')
+                        alert('Mã giảm giá ' + response.trim() + ' được thêm thành công')
                     },
                     error: function (xhr, status, error) {
                         alert('Tạo mã giảm giá thất bại')

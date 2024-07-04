@@ -39,17 +39,18 @@ namespace PetStoreProject.Areas.Admin.Controllers
             int PageSize = pageSize;    
             var allCategories = _productCategoryRepository.GetListProductCategory();
             int totalRow = allCategories.Count();  
-            int numberPage = (int)Math.Ceiling((double)totalRow / PageSize);  
+            var startPage = (PageIndex - 1) * PageSize;
+            int numberPage = (int)Math.Ceiling((float)totalRow / PageSize);  
 
-            var data = allCategories.Skip((PageIndex - 1) * PageSize).Take(PageSize).ToList();
+            var data = allCategories.Skip(startPage).Take(PageSize).ToList();
 
 
             return new JsonResult(new
             {
-                data = data,
-                pageSize = totalRow,
+                data = allCategories,
+                TotalItems = totalRow,
                 currentPage = PageIndex,
-                numberPage = numberPage
+                PageSize = PageSize,
             });
         }
 
@@ -77,6 +78,5 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var result = _productCategoryRepository.UpdateProductCategory(ProductCategoryId, ProductCategoryName, CategoryId, IsDelete);
             return Json(new { result = result });
         }
-
     }
 }

@@ -41,10 +41,26 @@ namespace PetStoreProject.Repositories.Promotion
             _context.SaveChanges();
         }
 
-        public List<Models.Promotion> GetPromotions()
+        public List<PromotionViewModel> GetPromotions()
         {
             var promotion = _context.Promotions.ToList();
-            return promotion;
+            var promotionViewModel = new List<PromotionViewModel>();
+            foreach (var item in promotion)
+            {
+                var p = new PromotionViewModel()
+                {
+                    Name = item.Name,
+                    Value = item.Value,
+                    MaxValue = item.MaxValue,
+                    StartDate = item.StartDate,
+                    EndDate = item.EndDate,
+                    Brand = _context.Brands.Find(item.BrandId) == null ? "Tất cả" : _context.Brands.Find(item.BrandId).Name,
+                    ProductCategory = _context.ProductCategories.Find(item.ProductCateId) == null ? "Tất cả" : _context.ProductCategories.Find(item.ProductCateId).Name,
+                    CreatedAt = item.CreatedAt,
+                };
+                promotionViewModel.Add(p);
+            }
+            return promotionViewModel;
         }
     }
 }

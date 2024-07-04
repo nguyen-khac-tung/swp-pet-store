@@ -270,14 +270,17 @@
                     StartDate : startDate,
                     EndDate : endDate,
                     BrandId : brand,
-                    ProductCategoryId : productCategory
+                    ProductCateId : productCategory
                 }
                 $.ajax({
                     url: "/admin/promotion/create",
                     method: "POST",
                     data: {promotion : data},
                     success: function(response){
-                        console.log(response)
+                        alert('Tạo thành công chương trình khuyến mại ' + name)
+                    },
+                    error: function(response){
+                        alert('Tạo chương trình khuyến mại thất bại')
                     }
                 })
             }

@@ -22,6 +22,7 @@ using PetStoreProject.Repositories.OrderService;
 using PetStoreProject.Repositories.Product;
 using PetStoreProject.Repositories.ProductCategory;
 using PetStoreProject.Repositories.ProductOption;
+using PetStoreProject.Repositories.Promotion;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.Repositories.WishList;
@@ -88,6 +89,8 @@ builder.Services.AddTransient<ISizeRepository, SizeRepository>();
 builder.Services.AddTransient<IDiscountTypeRepository, DiscountTypeRepository>();
 
 builder.Services.AddTransient<IDiscountRepository, DiscountRepository>();
+
+builder.Services.AddTransient<IPromotionRepository, PromotionRepository>();
 
 builder.Services.AddTransient<IProductOptionRepository, ProductOptionRepository>();
 

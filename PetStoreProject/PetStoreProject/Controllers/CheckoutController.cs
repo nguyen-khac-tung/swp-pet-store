@@ -1,196 +1,196 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetStoreProject.Repositories.Accounts;
-using PetStoreProject.Repositories.Customers;
-using PetStoreProject.ViewModels;
-using PetStoreProject.Models;
-using PetStoreProject.Helpers;
 using Newtonsoft.Json;
+using PetStoreProject.Helpers;
+using PetStoreProject.Models;
+using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
+using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
+using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Controllers
 {
-	public class CheckoutController : Controller
-	{
-		private readonly ICustomerRepository _customer;
-		private readonly IAccountRepository _account;
-		private readonly IConfiguration _configuration;
-		private readonly ICartRepository _cart;
-		private readonly IOrderRepository _order;
-		private readonly IOrderItemRepository _orderItem;
+    public class CheckoutController : Controller
+    {
+        private readonly ICustomerRepository _customer;
+        private readonly IAccountRepository _account;
+        private readonly IConfiguration _configuration;
+        private readonly ICartRepository _cart;
+        private readonly IOrderRepository _order;
+        private readonly IOrderItemRepository _orderItem;
 
-		public CheckoutController(ICustomerRepository customer, IAccountRepository account, 
-			IConfiguration configuration, ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem)
-		{
-			_customer = customer;
-			_account = account;
-			_configuration = configuration;
-			_cart = cart;
-			_order = order;
-			_orderItem = orderItem;
-		}
+        public CheckoutController(ICustomerRepository customer, IAccountRepository account,
+            IConfiguration configuration, ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem)
+        {
+            _customer = customer;
+            _account = account;
+            _configuration = configuration;
+            _cart = cart;
+            _order = order;
+            _orderItem = orderItem;
+        }
 
-		[HttpPost]
-		public IActionResult Form([FromBody] List<ItemsCheckoutViewModel> selectedProductCheckout)
-		{
-			if (selectedProductCheckout == null || !selectedProductCheckout.Any())
-			{
-				return BadRequest("No items to checkout");
-			}
+        [HttpPost]
+        public IActionResult Form([FromBody] List<ItemsCheckoutViewModel> selectedProductCheckout)
+        {
+            if (selectedProductCheckout == null || !selectedProductCheckout.Any())
+            {
+                return BadRequest("No items to checkout");
+            }
 
-			// Lưu trữ dữ liệu vào session hoặc viewdata
-			TempData["selectedProducts"] = Newtonsoft.Json.JsonConvert.SerializeObject(selectedProductCheckout);
+            // Lưu trữ dữ liệu vào session hoặc viewdata
+            TempData["selectedProducts"] = Newtonsoft.Json.JsonConvert.SerializeObject(selectedProductCheckout);
 
-			List<int> itemCheckoutIds = new List<int>();
-			foreach (var item in selectedProductCheckout)
-			{
-				itemCheckoutIds.Add(item.ProductOptionId);
-			}
-			Response.Cookies.Append("Checkout_Id", Newtonsoft.Json.JsonConvert.SerializeObject(itemCheckoutIds));
-			return Ok();
-		}
+            List<int> itemCheckoutIds = new List<int>();
+            foreach (var item in selectedProductCheckout)
+            {
+                itemCheckoutIds.Add(item.ProductOptionId);
+            }
+            Response.Cookies.Append("Checkout_Id", Newtonsoft.Json.JsonConvert.SerializeObject(itemCheckoutIds));
+            return Ok();
+        }
 
-		[HttpGet]
-		public IActionResult Form()
-		{
-			// Lấy dữ liệu từ TempData
-			var selectedProductsJson = TempData["selectedProducts"] as string;
+        [HttpGet]
+        public IActionResult Form()
+        {
+            // Lấy dữ liệu từ TempData
+            var selectedProductsJson = TempData["selectedProducts"] as string;
 
-			var selectedProductCheckout = string.IsNullOrEmpty(selectedProductsJson) ? null :
-				Newtonsoft.Json.JsonConvert.DeserializeObject<List<ItemsCheckoutViewModel>>(selectedProductsJson);
+            var selectedProductCheckout = string.IsNullOrEmpty(selectedProductsJson) ? null :
+                Newtonsoft.Json.JsonConvert.DeserializeObject<List<ItemsCheckoutViewModel>>(selectedProductsJson);
 
-			var email = HttpContext.Session.GetString("userEmail");
-			if (email != null)
-			{
-				Customer customer = _customer.GetCustomer(email);
-				if (customer != null)
-				{
-					ViewBag.customer = customer;
-				}
-			}
+            var email = HttpContext.Session.GetString("userEmail");
+            if (email != null)
+            {
+                Customer customer = _customer.GetCustomer(email);
+                if (customer != null)
+                {
+                    ViewBag.customer = customer;
+                }
+            }
 
-			return View(selectedProductCheckout);
-		}
+            return View(selectedProductCheckout);
+        }
 
-		[HttpPost]
-		public IActionResult ProcessCheckout([FromBody] CheckoutViewModel checkout)
-		{
-			var orderId = DateTime.Now.Ticks.ToString();
-			var amount = checkout.TotalAmount;
+        [HttpPost]
+        public IActionResult ProcessCheckout([FromBody] CheckoutViewModel checkout)
+        {
+            var orderId = DateTime.Now.Ticks.ToString();
+            var amount = checkout.TotalAmount;
 
-			checkout.OrderId = Convert.ToInt64(orderId);
-			Response.Cookies.Append("CheckoutInfo", Newtonsoft.Json.JsonConvert.SerializeObject(checkout));
-			
-			return Json(new
-			{
-				UrlTransfer = "CreatePayment",
-				OrderId = orderId,
-				Amount = amount,
-			});
-		}
+            checkout.OrderId = (int)Convert.ToInt64(orderId);
+            Response.Cookies.Append("CheckoutInfo", Newtonsoft.Json.JsonConvert.SerializeObject(checkout));
 
-		public IActionResult CreatePayment(string orderId, int amount)
-		{
-			var context = HttpContext;
-			// Lấy thông tin cấu hình từ file config
-			string vnp_ReturnUrl = _configuration["VNPay:ReturnUrl"];
-			string vnp_Url = _configuration["VNPay:BaseUrl"];
-			string vnp_TmnCode = _configuration["VNPay:TmnCode"];
-			string vnp_HashSecret = _configuration["VNPay:HashSecret"];
+            return Json(new
+            {
+                UrlTransfer = "CreatePayment",
+                OrderId = orderId,
+                Amount = amount,
+            });
+        }
 
-			// Tạo mã đơn hàng duy nhất và xác định số tiền thanh toán
-			var vnpay = new VnPayLibrary();
+        public IActionResult CreatePayment(string orderId, int amount)
+        {
+            var context = HttpContext;
+            // Lấy thông tin cấu hình từ file config
+            string vnp_ReturnUrl = _configuration["VNPay:ReturnUrl"];
+            string vnp_Url = _configuration["VNPay:BaseUrl"];
+            string vnp_TmnCode = _configuration["VNPay:TmnCode"];
+            string vnp_HashSecret = _configuration["VNPay:HashSecret"];
 
-			// Thêm các thông tin cần thiết cho yêu cầu thanh toán
-			vnpay.AddRequestData("vnp_Version", _configuration["VNPay:Version"]);
-			vnpay.AddRequestData("vnp_Command", _configuration["VNPay:Command"]);
-			vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-			vnpay.AddRequestData("vnp_Amount", (amount * 100).ToString());
-			vnpay.AddRequestData("vnp_CurrCode", _configuration["VNPay:CurrCode"]);
-			vnpay.AddRequestData("vnp_TxnRef", orderId);
-			vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + orderId);
-			vnpay.AddRequestData("vnp_OrderType", "other");
-			vnpay.AddRequestData("vnp_Locale", _configuration["VNPay:Locale"]);
-			vnpay.AddRequestData("vnp_ReturnUrl", vnp_ReturnUrl);
-			vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
-			vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            // Tạo mã đơn hàng duy nhất và xác định số tiền thanh toán
+            var vnpay = new VnPayLibrary();
 
-			// Tạo URL thanh toán với các thông tin đã chuẩn bị
-			string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
+            // Thêm các thông tin cần thiết cho yêu cầu thanh toán
+            vnpay.AddRequestData("vnp_Version", _configuration["VNPay:Version"]);
+            vnpay.AddRequestData("vnp_Command", _configuration["VNPay:Command"]);
+            vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
+            vnpay.AddRequestData("vnp_Amount", (amount * 100).ToString());
+            vnpay.AddRequestData("vnp_CurrCode", _configuration["VNPay:CurrCode"]);
+            vnpay.AddRequestData("vnp_TxnRef", orderId);
+            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + orderId);
+            vnpay.AddRequestData("vnp_OrderType", "other");
+            vnpay.AddRequestData("vnp_Locale", _configuration["VNPay:Locale"]);
+            vnpay.AddRequestData("vnp_ReturnUrl", vnp_ReturnUrl);
+            vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
+            vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
 
-			// Chuyển hướng người dùng đến URL thanh toán của VNPAY
-			return Redirect(paymentUrl);
-		}
+            // Tạo URL thanh toán với các thông tin đã chuẩn bị
+            string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
 
-		public VNPaymentResponseViewModel PaymentExcute(IQueryCollection collections)
-		{
-			var vnpay = new VnPayLibrary();
-			foreach (var (key, value) in collections)
-			{
-				if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
-				{
-					vnpay.AddResponseData(key, value.ToString());
-				}
-			}
+            // Chuyển hướng người dùng đến URL thanh toán của VNPAY
+            return Redirect(paymentUrl);
+        }
 
-			var vnp_orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
-			var vnp_TransactionId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
-			var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
-			var vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
-			var vnp_OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
+        public VNPaymentResponseViewModel PaymentExcute(IQueryCollection collections)
+        {
+            var vnpay = new VnPayLibrary();
+            foreach (var (key, value) in collections)
+            {
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+                {
+                    vnpay.AddResponseData(key, value.ToString());
+                }
+            }
 
-			bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["VNPay:HashSecret"]);
-			if (!checkSignature)
-			{
-				return new VNPaymentResponseViewModel
-				{
-					Success = false
-				};
-			}
+            var vnp_orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+            var vnp_TransactionId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
+            var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
+            var vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
+            var vnp_OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
 
-			return new VNPaymentResponseViewModel
-			{
-				Success = true,
-				PaymentMethod = "VnPay",
-				OrderDescription = vnp_OrderInfo,
-				OrderId = vnp_orderId.ToString(),
-				TransactionId = vnp_TransactionId.ToString(),
-				Token = vnp_SecureHash,
-				VnPayResponseCode = vnp_ResponseCode
-			};
-		}
+            bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["VNPay:HashSecret"]);
+            if (!checkSignature)
+            {
+                return new VNPaymentResponseViewModel
+                {
+                    Success = false
+                };
+            }
 
-		public IActionResult PaymentCallBack()
-		{
-			var response = PaymentExcute(Request.Query);
+            return new VNPaymentResponseViewModel
+            {
+                Success = true,
+                PaymentMethod = "VnPay",
+                OrderDescription = vnp_OrderInfo,
+                OrderId = vnp_orderId.ToString(),
+                TransactionId = vnp_TransactionId.ToString(),
+                Token = vnp_SecureHash,
+                VnPayResponseCode = vnp_ResponseCode
+            };
+        }
 
-			var CheckoutCookie = Request.Cookies["Checkout_Id"];
+        public IActionResult PaymentCallBack()
+        {
+            var response = PaymentExcute(Request.Query);
 
-			if (response == null || response.VnPayResponseCode != "00")
-			{
-				if (CheckoutCookie != null)
-				{
-					Response.Cookies.Delete("Checkout_Id");
-				}
+            var CheckoutCookie = Request.Cookies["Checkout_Id"];
 
-				TempData["Status"] = "Thanh toán thất bại";
-				TempData["Message"] = $"Lỗi thanh toán VN Pay: {response.VnPayResponseCode}";
-				return RedirectToAction("NotificationPayment");
-			}
+            if (response == null || response.VnPayResponseCode != "00")
+            {
+                if (CheckoutCookie != null)
+                {
+                    Response.Cookies.Delete("Checkout_Id");
+                }
 
-			// Lưu đơn hàng vào database
-			var checkoutInfoCookie = Request.Cookies["CheckoutInfo"];
-			CheckoutViewModel checkoutInfo = new CheckoutViewModel();
-			if (checkoutInfoCookie != null)
-			{
-				checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
-			}
+                TempData["Status"] = "Thanh toán thất bại";
+                TempData["Message"] = $"Lỗi thanh toán VN Pay: {response.VnPayResponseCode}";
+                return RedirectToAction("NotificationPayment");
+            }
+
+            // Lưu đơn hàng vào database
+            var checkoutInfoCookie = Request.Cookies["CheckoutInfo"];
+            CheckoutViewModel checkoutInfo = new CheckoutViewModel();
+            if (checkoutInfoCookie != null)
+            {
+                checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
+            }
             Order order = new Order()
             {
                 OrderId = checkoutInfo.OrderId,
                 FullName = checkoutInfo.OrderName,
-				CustomerId = null,
+                CustomerId = null,
                 Email = null,
                 Phone = checkoutInfo.OrderPhone,
                 TotalAmount = checkoutInfo.TotalAmount,
@@ -198,25 +198,25 @@ namespace PetStoreProject.Controllers
                 ConsigneeFullName = checkoutInfo.ConsigneeName,
                 ConsigneePhone = checkoutInfo.ConsigneePhone,
                 PaymetMethod = checkoutInfo.PaymentMethod,
-                ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", " 
-								+ checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAddressDetail
+                ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", "
+                                + checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAddressDetail
             };
 
 
 
             //Xóa phần tử trong database || cookie
             var email = HttpContext.Session.GetString("userEmail");
-			var customerID = _customer.GetCustomerId(email);
+            var customerID = _customer.GetCustomerId(email);
 
-			List<int> productOptionId = new List<int>();
-			productOptionId = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(CheckoutCookie);
-			if (email != null)
-			{
-				//Thêm order
-				order.CustomerId = customerID;
-				order.Email = email;
+            List<int> productOptionId = new List<int>();
+            productOptionId = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(CheckoutCookie);
+            if (email != null)
+            {
+                //Thêm order
+                order.CustomerId = customerID;
+                order.Email = email;
 
-				_order.AddOrder(order);
+                _order.AddOrder(order);
 
                 foreach (var item in checkoutInfo.OrderItems)
                 {
@@ -232,20 +232,20 @@ namespace PetStoreProject.Controllers
 
                 //Xóa cart
                 var cartItems = _cart.GetListCartItemsVM(customerID);
-				foreach (var item in cartItems)
-				{
-					if(productOptionId.Contains(item.ProductOptionId))
-					{
-						_cart.DeleteCartItem(item.ProductOptionId, customerID);
-					}
-				}
-			}
-			else
-			{
-				//Them order
-				order.Email = checkoutInfo.OrderEmail;
+                foreach (var item in cartItems)
+                {
+                    if (productOptionId.Contains(item.ProductOptionId))
+                    {
+                        _cart.DeleteCartItem(item.ProductOptionId, customerID);
+                    }
+                }
+            }
+            else
+            {
+                //Them order
+                order.Email = checkoutInfo.OrderEmail;
 
-				_order.AddOrder(order);
+                _order.AddOrder(order);
 
                 foreach (var item in checkoutInfo.OrderItems)
                 {
@@ -261,48 +261,48 @@ namespace PetStoreProject.Controllers
 
                 //Xoa cart
                 CookieOptions cookieOptions = new CookieOptions()
-				{
-					Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
-				};
+                {
+                    Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
+                };
 
                 if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
                 {
                     var cookieIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(list_cookie);
-					List<int> productOptionIdRemaining = new List<int>();
-					foreach (var itemCookie in cookieIds)
-					{
-						if (productOptionId.Contains(itemCookie))
-						{
-							var item = Request.Cookies[$"Item_{itemCookie}"];
-							if (item != null) Response.Cookies.Delete($"Item_{itemCookie}");
-						}
-						else
-						{
-							productOptionIdRemaining.Add(itemCookie);
-						}
-					}
-					if (productOptionIdRemaining.Count > 0)
-					{
-						Response.Cookies.Append("Items_id", JsonConvert.SerializeObject(productOptionIdRemaining), cookieOptions);
-					}
-					else
-					{
-						Response.Cookies.Delete("Items_id");
-					}
+                    List<int> productOptionIdRemaining = new List<int>();
+                    foreach (var itemCookie in cookieIds)
+                    {
+                        if (productOptionId.Contains(itemCookie))
+                        {
+                            var item = Request.Cookies[$"Item_{itemCookie}"];
+                            if (item != null) Response.Cookies.Delete($"Item_{itemCookie}");
+                        }
+                        else
+                        {
+                            productOptionIdRemaining.Add(itemCookie);
+                        }
+                    }
+                    if (productOptionIdRemaining.Count > 0)
+                    {
+                        Response.Cookies.Append("Items_id", JsonConvert.SerializeObject(productOptionIdRemaining), cookieOptions);
+                    }
+                    else
+                    {
+                        Response.Cookies.Delete("Items_id");
+                    }
 
-				}
-			}
-			Response.Cookies.Delete("Checkout_Id");
-			Response.Cookies.Delete("CheckoutInfo");
+                }
+            }
+            Response.Cookies.Delete("Checkout_Id");
+            Response.Cookies.Delete("CheckoutInfo");
 
-			TempData["Status"] = "Thanh toán thành công";
-			TempData["Message"] = $"Thanh toán VNPay thành công";
-			return RedirectToAction("NotificationPayment");
-		}
+            TempData["Status"] = "Thanh toán thành công";
+            TempData["Message"] = $"Thanh toán VNPay thành công";
+            return RedirectToAction("NotificationPayment");
+        }
 
-		public IActionResult NotificationPayment()
-		{
-			return View();
-		}
-	}
+        public IActionResult NotificationPayment()
+        {
+            return View();
+        }
+    }
 }

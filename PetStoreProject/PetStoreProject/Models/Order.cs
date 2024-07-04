@@ -9,7 +9,7 @@ namespace PetStoreProject.Models;
 public partial class Order
 {
     [Key]
-    public long OrderId { get; set; }
+    public int OrderId { get; set; }
 
     public int? CustomerId { get; set; }
 
@@ -27,12 +27,6 @@ public partial class Order
     [Column(TypeName = "datetime")]
     public DateTime OrderDate { get; set; }
 
-    [StringLength(250)]
-    public string ConsigneeFullName { get; set; }
-
-    [StringLength(50)]
-    public string ConsigneePhone { get; set; }
-
     [StringLength(50)]
     public string PaymetMethod { get; set; } = null!;
 
@@ -40,6 +34,12 @@ public partial class Order
     public string ShipAddress { get; set; } = null!;
 
     public int? DiscountId { get; set; }
+
+    [StringLength(50)]
+    public string ConsigneePhone { get; set; } = null!;
+
+    [StringLength(200)]
+    public string ConsigneeFullName { get; set; } = null!;
 
     [ForeignKey("CustomerId")]
     [InverseProperty("Orders")]

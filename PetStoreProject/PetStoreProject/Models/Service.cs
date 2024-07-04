@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
@@ -19,7 +22,7 @@ public partial class Service
 
     public string? Description { get; set; }
 
-    public bool? IsDelete { get; set; }
+    public bool IsDelete { get; set; }
 
     [InverseProperty("Service")]
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

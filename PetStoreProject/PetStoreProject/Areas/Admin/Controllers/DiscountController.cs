@@ -31,5 +31,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var result = _discount.Create(discount);
             return Json(result);
         }
+
+        public IActionResult List()
+        {
+            var discount = _discount.GetDiscounts();
+            ViewData["discounts"] = discount;
+            return View();
+        }
     }
 }

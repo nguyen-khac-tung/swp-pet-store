@@ -17,30 +17,28 @@ public partial class Promotion
     [Column(TypeName = "decimal(18, 3)")]
     public decimal? MaxValue { get; set; }
 
-    public DateOnly? StartDate { get; set; }
+    [StringLength(20)]
+    public string? StartDate { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+    [StringLength(20)]
+    public string? EndDate { get; set; }
 
-    public int CreateBy { get; set; }
-
-    public byte[]? CreateAt { get; set; }
+    public int? CreateBy { get; set; }
 
     public int? BrandId { get; set; }
 
     public int? ProductCateId { get; set; }
 
-    [ForeignKey("BrandId")]
-    [InverseProperty("Promotions")]
-    public virtual Brand? Brand { get; set; }
+    [StringLength(20)]
+    public string? CreatedAt { get; set; }
+
+    [StringLength(250)]
+    public string? Name { get; set; }
 
     [ForeignKey("CreateBy")]
     [InverseProperty("Promotions")]
-    public virtual Admin CreateByNavigation { get; set; } = null!;
+    public virtual Admin? CreateByNavigation { get; set; }
 
     [InverseProperty("Promotion")]
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-
-    [ForeignKey("ProductCateId")]
-    [InverseProperty("Promotions")]
-    public virtual ProductCategory? ProductCate { get; set; }
 }

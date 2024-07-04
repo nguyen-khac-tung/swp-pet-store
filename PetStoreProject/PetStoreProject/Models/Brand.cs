@@ -19,7 +19,4 @@ public partial class Brand
 
     [InverseProperty("Brand")]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-
-    [InverseProperty("Brand")]
-    public virtual ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
 }

@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
@@ -29,8 +32,6 @@ public partial class Discount
 
     public int? CreatedBy { get; set; }
 
-    public byte[]? CreatedAt { get; set; }
-
     public int? Quantity { get; set; }
 
     public int? MaxUse { get; set; }
@@ -38,6 +39,9 @@ public partial class Discount
     public int? Used { get; set; }
 
     public string? Description { get; set; }
+
+    [StringLength(20)]
+    public string? CreatedAt { get; set; }
 
     [ForeignKey("CreatedBy")]
     [InverseProperty("Discounts")]

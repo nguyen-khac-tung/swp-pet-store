@@ -122,17 +122,17 @@
         var regex = /^[a-zA-Z0-9]+$/;
         var numberRegex = /^[0-9]+$/;
         var description = ''
-        // tinymce.init({
-        //     selector: '#description',
-        //     plugins: 'lists checklist',
-        //     toolbar: 'bold italic underline | align | checklist numlist bullist | removeformat',
-        //     menubar: false,
-        //     setup: function (editor) {
-        //         editor.on('input', function () {
-        //             description = editor.getContent();
-        //         });
-        //     }
-        // });
+        tinymce.init({
+            selector: '#description',
+            plugins: 'lists checklist',
+            toolbar: 'bold italic underline | align | checklist numlist bullist | removeformat',
+            menubar: false,
+            setup: function (editor) {
+                editor.on('input', function () {
+                    description = editor.getContent();
+                });
+            }
+        });
         $('form').find('.button-submit button').each(function () {
             $(this).on('click', function (event) {
                 event.preventDefault();
@@ -187,16 +187,16 @@
 
         function addDiscountCode() {
             var isValid = true
-            var code = $('#code').val()
-            var value = $('#value').val()
-            var maxValue = $('#max-value').val()
-            var startDate = $('#start-date').val()
-            var endDate = $('#end-date').val()
-            var quantity = $('#quantity').val()
-            var maxUse = $('#max-use').val()
-            var minPurchase = $('#min-purchase').val()
-            var type = $('#discount-type').val()
-            var description = $('#description').val()
+            var code = $('#code').val().trim()
+            var value = $('#value').val().trim()
+            var maxValue = $('#max-value').val().trim()
+            var startDate = $('#start-date').val().trim()
+            var endDate = $('#end-date').val().trim()
+            var quantity = $('#quantity').val().trim()
+            var maxUse = $('#max-use').val().trim()
+            var minPurchase = $('#min-purchase').val().trim()
+            var type = $('#discount-type').val().trim()
+            var description = $('#description').val().trim()
             if(code == ''){
                 $('#error-code').text('Vui lòng nhập mã giảm giá')
                 isValid = false
@@ -217,33 +217,35 @@
                 $('#error-value').text('Vui lòng nhập giá trị')
                 isValid = false
             }
-            else if(!numberRegex.test(value)){
+            else if( (type == 1 && !numberRegex.test(value)) || (type == 2 && !decimalRegex.test(value))){
                 $('#error-value').text('Giá trị phải là số')
                 isValid = false
             }
-            else if(value < 1 || value > 100){
+            else if ((type == 1 && (value < 1 || value > 100)) || (type == 2 && value < 1000)) {
                 $('#error-value').text('Giá trị không phù hợp')
                 isValid = false
             }
             else{
                 $('#error-value').text('')
             }
-
-            if(maxValue == '' && type == 1){
-                $('#error-max-value').text('Vui lòng nhập giá trị giảm tối đa')
-                isValid = false
+            if(type == 1){
+                if (maxValue == '') {
+                    $('#error-max-value').text('Vui lòng nhập giá trị giảm tối đa')
+                    isValid = false
+                }
+                else if (!decimalRegex.test(maxValue)) {
+                    isValid = false
+                    $('#error-max-value').text('Giá trị phải là số')
+                }
+                else if (maxValue < 1000 || maxValue > 10000000) {
+                    $('#error-max-value').text('Giá trị không phù hợp')
+                    isValid = false
+                }
+                else {
+                    $('#error-max-value').text('')
+                }
             }
-            else if(!decimalRegex.test(maxValue) && type == 1){
-                isValid = false
-                $('#error-max-value').text('Giá trị phải là số')
-            }
-            else if(maxValue < 1000 || maxValue > 10000000){
-                $('#error-max-value').text('Giá trị không phù hợp')
-                isValid = false
-            }
-            else{
-                $('#error-max-value').text('')
-            }
+            
 
             if(startDate == ''){
                 $('#error-start-date').text('Vui lòng chọn ngày bắt đầu')
@@ -328,9 +330,10 @@
                     type: "POST",
                     data: {discount : data},
                     success: function(response){
-                        alert('Them thanh cong '+ response)
+                        alert('Mã giảm giá ' + response + 'được thêm thành công')
                     },
                     error: function (xhr, status, error) {
+                        alert('Tạo mã giảm giá thất bại')
                         // Handle AJAX error
                         console.error("AJAX error: " + error);
                     }

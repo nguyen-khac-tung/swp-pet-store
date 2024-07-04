@@ -139,9 +139,7 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.Property(e => e.DiscountId).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
-            entity.Property(e => e.CreatedAt)
-                .IsRowVersion()
-                .IsConcurrencyToken();
+            entity.Property(e => e.CreatedAt).IsFixedLength();
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Discounts).HasConstraintName("FK_Discount_Admin");
 
@@ -193,6 +191,8 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
+            entity.Property(e => e.ConsigneeFullName).IsFixedLength();
+            entity.Property(e => e.ConsigneePhone).IsFixedLength();
             entity.Property(e => e.Email).IsFixedLength();
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Customer");
@@ -286,17 +286,9 @@ public partial class PetStoreDBContext : DbContext
         modelBuilder.Entity<Promotion>(entity =>
         {
             entity.Property(e => e.PromotionId).ValueGeneratedNever();
-            entity.Property(e => e.CreateAt)
-                .IsRowVersion()
-                .IsConcurrencyToken();
+            entity.Property(e => e.Name).IsFixedLength();
 
-            entity.HasOne(d => d.Brand).WithMany(p => p.Promotions).HasConstraintName("FK_Promotion_Brand");
-
-            entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Promotions)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Promotion_Admin");
-
-            entity.HasOne(d => d.ProductCate).WithMany(p => p.Promotions).HasConstraintName("FK_Promotion_ProductCategory");
+            entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.Promotions).HasConstraintName("FK_Promotion_Admin");
         });
 
         modelBuilder.Entity<ResponseFeedback>(entity =>
@@ -325,7 +317,6 @@ public partial class PetStoreDBContext : DbContext
             entity.HasKey(e => e.ServiceOptionId).HasName("PK_ServiceOption_1");
 
             entity.Property(e => e.ServiceOptionId).ValueGeneratedNever();
-            entity.Property(e => e.IsDelete).HasDefaultValue(false);
 
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)

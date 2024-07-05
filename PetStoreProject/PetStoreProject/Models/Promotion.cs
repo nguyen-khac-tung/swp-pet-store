@@ -14,13 +14,10 @@ public partial class Promotion
 
     public int? Value { get; set; }
 
-    [Column(TypeName = "decimal(18, 3)")]
-    public decimal? MaxValue { get; set; }
-
-    [StringLength(20)]
+    [StringLength(25)]
     public string? StartDate { get; set; }
 
-    [StringLength(20)]
+    [StringLength(25)]
     public string? EndDate { get; set; }
 
     public int? CreateBy { get; set; }
@@ -29,7 +26,7 @@ public partial class Promotion
 
     public int? ProductCateId { get; set; }
 
-    [StringLength(20)]
+    [StringLength(25)]
     public string? CreatedAt { get; set; }
 
     [StringLength(250)]

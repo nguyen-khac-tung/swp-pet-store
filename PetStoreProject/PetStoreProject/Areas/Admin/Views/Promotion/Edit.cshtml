@@ -21,15 +21,15 @@
         <!-- form-add-product -->
         <form class="tf-section-1 form-add-product form-search">
             <div class="wg-box">
-                <div class="gap22">
-                    <label class="body-title mb-10">Tên<span class="tf-color-1">*</span></label>
-                    <fieldset class="select">
-                        <input type="text" id="name" value="@promotion.Name"/>
-                    </fieldset>
-                    <span id="error-name" class="text-danger"></span>
-                </div>
                 <div class="gap22 cols">
-                    <div style="flex: 1">
+                    <div class="gap22" style="width: 50%">
+                        <label class="body-title mb-10">Tên<span class="tf-color-1">*</span></label>
+                        <fieldset class="select">
+                            <input type="text" id="name" value="@promotion.Name" />
+                        </fieldset>
+                        <span id="error-name" class="text-danger"></span>
+                    </div>
+                    <div style="width: 50%">
                         <label class="body-title mb-10">Giá trị<span class="tf-color-1">*</span></label>
                         <fieldset class="select">
                             <input type="text" id="value" value="@promotion.Value"/>
@@ -39,17 +39,6 @@
                         </fieldset>
                         <span id="error-value" class="text-danger"></span>
                     </div>
-                    <div style="width:50%">
-                        <label class="body-title mb-10">Giảm tối đa<span class="tf-color-1">*</span></label>
-                        <fieldset class="select">
-                            <input type="text" id="max-value" value="@promotion.MaxValue?.ToString("#.###")" />
-                            <div class="button-submit">
-                                <button style="font-size: 12px">VND</button>
-                            </div>
-                        </fieldset>
-                        <span id="error-max-value" class="text-danger"></span>
-                    </div>
-
                 </div>
 
                 <div class="flex gap22">
@@ -250,7 +239,6 @@
             var isValid = true
             var name = $('#name').val().trim()
             var value = $('#value').val().trim()
-            var maxValue = $('#max-value').val().trim()
             var startDate = $('#start-date').val()
             var endDate = $('#end-date').val()
             var brand = $('#brand').val()
@@ -279,17 +267,6 @@
                 $('#error-value').text('')
             }
 
-            if (maxValue == '') {
-                $('#error-max-value').text('Giảm tối đa không được để trống')
-                isValid = false
-            }
-            else if (!decimalRegex.test(maxValue)) {
-                $('#error-max-value').text('Giảm tối đa phải là một số')
-                isValid = false
-            }
-            else {
-                $('#error-max-value').text('')
-            }
             console.log(startDate, endDate)
 
             if (startDate == '') {
@@ -312,7 +289,6 @@
                     Id : @promotion.Id,
                     Name: name,
                     Value: value,
-                    MaxValue: maxValue,
                     StartDate: startDate,
                     EndDate: endDate,
                     BrandId: brand,

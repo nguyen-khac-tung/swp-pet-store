@@ -113,6 +113,7 @@ namespace PetStoreProject.Repositories.Discount
                                  Quantity = d.Quantity,
                                  MaxUse = d.MaxUse,
                                  Used = d.Used,
+                                 Status = d.Status
                              }).ToList();
             var now = DateOnly.FromDateTime(DateTime.Now);
             foreach (var item in discounts)

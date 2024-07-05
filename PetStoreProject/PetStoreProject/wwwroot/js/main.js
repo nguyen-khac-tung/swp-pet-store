@@ -1,4 +1,4 @@
-/*--------------------------------------------------
+﻿/*--------------------------------------------------
 Template Name: fondle ;
 Description: pet shop, pet shitter, pet food, pet care bootstrap 5 Template
 Version: 1.0;
@@ -903,7 +903,7 @@ NOTE: main.js, All custom script and plugin activation script in this file.
         var $this = $(this),
             finalDate = $(this).data('countdown');
         $this.countdown(finalDate, function(event) {
-            $this.html(event.strftime('<div class="count"><p>%D</p><span>Days</span></div><div class="count"><p>%H</p> <span>Hours</span></div><div class="count"><p>%M</p> <span>Mins</span></div><div class="count"> <p>%S</p> <span>Secs</span></div>'));
+            $this.html(event.strftime('<div class="count"><p>%D</p><span>Ngày</span></div><div class="count"><p>%H</p> <span>Giờ</span></div><div class="count"><p>%M</p> <span>Phút</span></div><div class="count"> <p>%S</p> <span>Giây</span></div>'));
         });
     });
 

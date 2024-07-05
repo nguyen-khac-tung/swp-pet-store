@@ -17,7 +17,7 @@
         }
 
         .wg-table.table-all-category > * {
-            min-width: 1450px;
+            min-width: 1290px;
         }
 
     </style>
@@ -38,8 +38,8 @@
                     <li style="width: 150px">
                         <div style="width: 150px" class="body-title">Tên chương trình</div>
                     </li>
-                    <li style="width: 170px">
-                        <div style="width: 170px" class="body-title">Giảm giá</div>
+                    <li style="width: 70px">
+                        <div style="width: 70px" class="body-title">Giảm giá</div>
                     </li>
                     <li style="width: 180px">
                         <div style="width: 180px" class="body-title">Thời gian</div>
@@ -50,8 +50,8 @@
                     <li style="width: 180px">
                         <div style="width: 180px" class="body-title">Danh mục</div>
                     </li>
-                    <li style="width: 180px">
-                        <div class="body-title" style="width: 180px">Ngày tạo</div>
+                    <li style="width: 200px">
+                        <div class="body-title" style="width: 200px">Ngày tạo</div>
                     </li>
                     <li style="width: 130px">
                         <div class="body-title" style="width: 130px">Trạng thái</div>
@@ -70,7 +70,7 @@
                                 </div>
 
                                 <div class="body-text" style="width: 150px">@item.Name</div>
-                                <div class="body-text" style="width: 170px">@((int)item.Value + "% tối đa " + item.MaxValue?.ToString("#,###") + " vnd")</div>
+                                <div class="body-text" style="width: 70px">@((int)item.Value + "%")</div>
                                 <div class="body-text" style="width: 180px">@item.StartDate - @item.EndDate</div>
                                 <div class="body-text" style="width: 120px">@item.Brand.Name</div>
                                 <div class="body-text" style="width: 180px">@item.ProductCategory.Name</div>

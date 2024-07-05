@@ -1,6 +1,9 @@
 ﻿window.onload = function () {
     getCartBoxItems();
 };
+
+let discount = 0;
+
 function addToCart(productOptionId, quantity) {
     $.ajax({
         type: "POST",
@@ -213,9 +216,19 @@ function quickView(productId) {
         url: "http://localhost:5206/Product/quickPreview",
         data: { productId: productId },
         success: function (response) {
-            console.log(response.productOption)
+            console.log(response)
             $('#quick_name').html(response.name);
-            $('#quick_price').html(response.productOption[0].price.toLocaleString('en-US'));
+            if (response.promotion != null) {
+                $('#quick_price_discount').html(response.productOption[0].price.toLocaleString('en-US'));
+                let price = response.productOption[0].price*(1- response.promotion.value / 100);
+                $('#quick_price').html(price);
+                discount = response.promotion.value;
+                console.log(price)
+            }
+            else {
+                $('#quick_price').html(response.productOption[0].price.toLocaleString('en-US'));
+            }
+            
             $('#quick_image').empty();
             $('#quick_amount').html(response.productOption[0].price.toLocaleString('en-US'));
             $('#quick_add_to_cart').attr('data-product-option-id', response.productOption[0].id)
@@ -229,7 +242,12 @@ function quickView(productId) {
             });
             imgDiv.append(imgElement);
             $('#quick_image').append(imgDiv);
-
+            let sale = $('<span>', {
+                class: 'sticker-sale',
+                text: '-' + response.promotion.value + '%'
+            })
+            $('#quick_image').append(imgElement);
+            $('#quick_image').append(sale);
             $('#quick_brand').html('Thương hiệu: ' + response.brand);
             let jsonStr = JSON.stringify(response.productOption);
 
@@ -419,13 +437,18 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
     for (const element of productOptions_json) {
         if (element['attribute']['attributeId'] == attribute_id && element['size']['sizeId'] == size_id) {
             quick_price = element.price;
+            if (discount != 0) {
+                document.getElementById('quick_price_discount').innerText = quick_price.toLocaleString('en-US');
+                quick_price = quick_price * (1 - discount / 100)
+                document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
+            }
             quick_img_url = element.img_url;
             $('#quick_add_to_cart').attr('data-product-option-id', element.id)
             break;
         }
     }
     document.querySelector('#quick_image img').setAttribute('src', quick_img_url);
-    document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
+    
     quick_total_price();
     quickCheckOutOfStock(size_id, attribute_id, productOptions_json);
 }

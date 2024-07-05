@@ -40,7 +40,7 @@ public partial class Discount
 
     public string? Description { get; set; }
 
-    [StringLength(20)]
+    [StringLength(25)]
     public string? CreatedAt { get; set; }
 
     public bool? Status { get; set; }

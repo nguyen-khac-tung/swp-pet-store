@@ -11,7 +11,7 @@
         public Models.Brand Brand { get; set; }
         public Models.ProductCategory ProductCategory { get; set; }
         public string CreatedAt { get; set; }
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
         public string StatusString { get; set; }
     }
 }

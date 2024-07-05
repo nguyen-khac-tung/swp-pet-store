@@ -45,6 +45,7 @@ namespace PetStoreProject.Controllers
             List<int> itemCheckoutIds = new List<int>();
             foreach (var item in selectedProductCheckout)
             {
+                item.Promotion = _cart.GetItemPromotion(item.ProductOptionId);
                 itemCheckoutIds.Add(item.ProductOptionId);
             }
             Response.Cookies.Append("Checkout_Id", Newtonsoft.Json.JsonConvert.SerializeObject(itemCheckoutIds));

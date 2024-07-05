@@ -18,5 +18,7 @@ namespace PetStoreProject.Repositories.Cart
 		public void UpdateNewCartItem(int oldProductOptionId, int newProductOptionId, int quantity, int customerID);
 
 		public CartItemViewModel? findCartItemViewModel(int productOptionId, int customerID);
-    }
+
+		public Models.Promotion GetItemPromotion(int itemId);
+	}
 }

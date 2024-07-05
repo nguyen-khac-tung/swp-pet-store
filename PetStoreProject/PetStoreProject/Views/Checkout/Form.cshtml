@@ -70,12 +70,12 @@
                                                             <i class="bx bxs-star text-warning"></i>
                                                             <i class="bx bxs-star-half text-warning"></i>
                                                         </p>
-                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###")đ x @itemCart.Quantity</p>
+                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</p>
                                                         <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index"/>
                                                         <input type="hidden" value="@itemCart.Price" id="product_price_@index" />
                                                         <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index" />
                                                     </td>
-                                                    <td><p class="float_r margin_auto">@amount.ToString("#,###")đ</p></td>
+                                                    <td style="display:flex; justify-content:center; align-items: center"><p class="float_r margin_auto">@amount.ToString("#,###") VND</p></td>
                                                 </tr>
                                             }
                                             else
@@ -92,12 +92,12 @@
                                                             <i class="bx bxs-star text-warning"></i>
                                                             <i class="bx bxs-star-half text-warning"></i>
                                                         </p>
-                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###")đ x @itemCart.Quantity</p>
+                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</p>
                                                         <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index" />
                                                         <input type="hidden" value="@itemCart.Price" id="product_price_@index"/>
                                                         <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index"/>
                                                     </td>
-                                                    <td><p class="float_r margin_auto">@amount.ToString("#,###")đ</p></td>
+                                                    <td style="text-align: center"><p class="float_r margin_auto">@amount.ToString("#,###") VND</p></td>
                                                 </tr>
                                             }
                                             index++;
@@ -350,7 +350,7 @@
                                         </td>
                                         <td>
                                             <p class="float_r margin_auto">
-                                                @totalAmount.ToString("#,###")đ
+                                                @totalAmount.ToString("#,###") VND
                                                 @{
                                                     moneyToCheckout = totalAmount;
                                                 }
@@ -388,7 +388,7 @@
                                             <h5 class="font-size-14 m-0"><strong>Thành tiền: </strong></h5>
                                         </td>
                                         <td>
-                                            <p class="float_r margin_auto"><strong>@moneyToCheckout.ToString("#,###")đ</strong></p>
+                                            <p class="float_r margin_auto"><strong>@moneyToCheckout.ToString("#,###") VND</strong></p>
                                             <input type="hidden" value="@moneyToCheckout" id="moneyToCheckout"/>
                                         </td>
                                     </tr>

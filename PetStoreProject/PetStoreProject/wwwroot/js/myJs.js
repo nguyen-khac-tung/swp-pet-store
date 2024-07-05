@@ -1,5 +1,6 @@
 ﻿window.onload = function () {
     getCartBoxItems();
+    amountCart();
 };
 
 let discount = 0;
@@ -38,7 +39,12 @@ function getCartBoxItems() {
                 $('#list_item').html('<h5>Không có sản phẩm nào trong giỏ hàng</h5>')
             }
             else {
+                console.log(response)
                 for (const element of response) {
+
+                    if (element.promotion != null) {
+                        element.price = element.price * (1 - element.promotion.value/100)
+                    }
                     let divSingleCart = $('<div>', {
                         class: "single-cart-box"
                     })
@@ -76,7 +82,9 @@ function getCartBoxItems() {
                     let spanOption = $('<div>', {
                         style: "font-size: 13px; margin-top: 3px; margin-bottom: 3px"
                     }).text(option)
-                    let spanPrice = $('<span>').text(element.price.toLocaleString('en-US') + ' x ' + element.quantity)
+                    let spanPrice = $('<span>', {
+                        class: 'cart-price'
+                    }).text(element.price.toLocaleString('en-US') + ' x ' + element.quantity)
                     h6.append(aTitle)
                     divCartImg.append(img)
                     divCartContent.append(h6)
@@ -132,13 +140,15 @@ function deleteCartItem(productOptionId) {
 
 function amountCart() {
     let total_amount = 0.0;
-    let subTotalElements = document.getElementsByClassName('product-subtotal');
-    for (let i = 1; i < subTotalElements.length; i++) {
-        total_amount += parseFloat(subTotalElements[i].innerText.replace(/,/g, ''))
+    let totalCheckboxId = $('#totalCheckboxId').val();
+    for (let i = 0; i < totalCheckboxId; i++) {
+        let checkbox = $('#checkbox_' + i);
+        if (checkbox.prop('checked')) {
+            total_amount += parseFloat($('#product_totalPrice_' + i).text().replace(/[^0-9.-]+/g, ""));
+        }
     }
     $('#amount').html(total_amount.toLocaleString('en-US'))
 }
-
 function quickEditCartItem(oldProductOptionId, productId) {
     $('#quick_add_to_cart').attr('data-old-product-option-id', oldProductOptionId)
     quickView(productId)
@@ -177,6 +187,7 @@ function updateCartItem(oldId, cartItem) {
             option += "( " + cartItem.size.name + " )";
         }
     }
+    console.log(cartItem)
     // Find the row by ProductOptionId
     let row = $('#' + oldId);
     // Update the product name and link
@@ -186,15 +197,25 @@ function updateCartItem(oldId, cartItem) {
     // Update the product image
     row.find('.product-thumbnail img').attr('src', cartItem.imgUrl);
 
+    let price = cartItem.price;
+
+    if (cartItem.promotion != null) {
+        price = price * (1 - (parseFloat(cartItem.promotion.value) / 100));
+        console.log('price_discount', price)
+    }
+    console.log('price_discount', price)
     // Update the product price
-    row.find('.product-price .amount').text(cartItem.price.toLocaleString('en-US'));
+    row.find('.product-price .amount').text(price.toLocaleString('en-US') + ' VND');
+    if (cartItem.promotion != null) {
+        row.find('.discount_price').text(cartItem.price.toLocaleString('en-US') + ' VND')
+    }
 
     // Update the product quantity
     row.find('.product-quantity input').val(cartItem.quantity);
 
     // Update the product subtotal
-    let sub_total = parseFloat(cartItem.price) * parseFloat(cartItem.quantity)
-    row.find('.product-subtotal').text(sub_total.toLocaleString('en-US'))
+    let sub_total = parseFloat(price) * parseFloat(cartItem.quantity)
+    row.find('.product-subtotal').text(sub_total.toLocaleString('en-US') + ' VND')
 
     // Update the edit button
     row.find('a[title="Chỉnh sửa"]').attr('onclick', `quickEditCartItem(${cartItem.productOptionId}, ${cartItem.productId})`);
@@ -206,7 +227,6 @@ function updateCartItem(oldId, cartItem) {
 
 function quickView(productId) {
     $('#quick_add_to_cart').removeClass('out-of-stock');
-    $('#quick_add_to_cart').html('Thêm vào giỏ hàng');
     $('#quick_quantity').attr('readonly', false);
     $('#myModal').modal('show');
     $('#quick_attribute').empty();
@@ -219,7 +239,7 @@ function quickView(productId) {
             console.log(response)
             $('#quick_name').html(response.name);
             if (response.promotion != null) {
-                $('#quick_price_discount').html(response.productOption[0].price.toLocaleString('en-US'));
+                $('#quick_price_discount').html(response.productOption[0].price.toLocaleString('en-US') + ' VND');
                 let price = response.productOption[0].price*(1- response.promotion.value / 100);
                 $('#quick_price').html(price);
                 discount = response.promotion.value;
@@ -227,6 +247,7 @@ function quickView(productId) {
             }
             else {
                 $('#quick_price').html(response.productOption[0].price.toLocaleString('en-US'));
+                $('#quick_price_discount').html('');
             }
             
             $('#quick_image').empty();
@@ -438,7 +459,7 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
         if (element['attribute']['attributeId'] == attribute_id && element['size']['sizeId'] == size_id) {
             quick_price = element.price;
             if (discount != 0) {
-                document.getElementById('quick_price_discount').innerText = quick_price.toLocaleString('en-US');
+                document.getElementById('quick_price_discount').innerText = quick_price.toLocaleString('en-US') + ' VND';
                 quick_price = quick_price * (1 - discount / 100)
                 document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
             }

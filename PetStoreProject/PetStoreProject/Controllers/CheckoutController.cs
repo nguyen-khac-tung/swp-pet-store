@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
-using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
 using PetStoreProject.ViewModels;
@@ -14,21 +14,21 @@ namespace PetStoreProject.Controllers
     public class CheckoutController : Controller
     {
         private readonly ICustomerRepository _customer;
-        private readonly IAccountRepository _account;
         private readonly IConfiguration _configuration;
         private readonly ICartRepository _cart;
         private readonly IOrderRepository _order;
         private readonly IOrderItemRepository _orderItem;
+        private readonly IDiscountRepository _discount;
 
-        public CheckoutController(ICustomerRepository customer, IAccountRepository account,
-            IConfiguration configuration, ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem)
+        public CheckoutController(ICustomerRepository customer, IConfiguration configuration,
+            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount)
         {
             _customer = customer;
-            _account = account;
             _configuration = configuration;
             _cart = cart;
             _order = order;
             _orderItem = orderItem;
+            _discount = discount;
         }
 
         [HttpPost]
@@ -71,6 +71,15 @@ namespace PetStoreProject.Controllers
                 }
             }
 
+            var total_amount = 0.0;
+
+            foreach (var item in selectedProductCheckout)
+            {
+                total_amount += item.Price * item.Quantity;
+            }
+
+            var discounts = _discount.GetDiscounts(total_amount, email);
+            ViewData["Discounts"] = discounts;
             return View(selectedProductCheckout);
         }
 

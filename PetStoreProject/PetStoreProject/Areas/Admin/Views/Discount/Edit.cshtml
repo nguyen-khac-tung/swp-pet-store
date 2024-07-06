@@ -89,12 +89,12 @@
 
                 <fieldset>
                     <label class="body-title mb-10">Số lượng<span class="tf-color-1">*</span></label>
-                    <input type="text" id="quantity" value="@discount.Quantity"/>
+                    <input type="text" id="quantity" value="@discount.Quantity.ToString()" />
                     <span id="error-quantity" class="text-danger"></span>
                 </fieldset>
                 <fieldset>
                     <label class="body-title mb-10">Giới hạn sử dụng<span class="tf-color-1">*</span></label>
-                    <input type="text" id="max-use" value="@discount.MaxUse"/>
+                    <input type="text" id="max-use" value="@discount.MaxUse.ToString()"/>
                     <span id="error-max-use" class="text-danger"></span>
                 </fieldset>
             </div>
@@ -228,8 +228,8 @@
             else {
                 $('#date2').addClass('hide')
                 $('#date1').removeClass('hide')
-                $('#quantity').attr('value', '')
-                $('#max-use').attr('value', '')
+                $('#quantity').attr('value', @discount.Quantity)
+                $('#max-use').attr('value', @discount.MaxUse)
                 $('#quantity').attr('readonly', false)
                 $('#max-use').attr('readonly', false)
             }

@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 checkboxItem.checked = checkboxAll.checked;
             }
         }
+        amountCart();
     });
 
     checkboxItems.forEach(item => item.addEventListener("change", function () {

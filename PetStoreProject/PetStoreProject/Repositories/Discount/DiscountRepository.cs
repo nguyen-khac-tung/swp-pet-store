@@ -133,7 +133,7 @@ namespace PetStoreProject.Repositories.Discount
                     else
                     {
                         item.Status = true;
-                        item.StatusString = "Đanh diễn ra";
+                        item.StatusString = "Đang diễn ra";
 
                     }
                 }
@@ -149,6 +149,98 @@ namespace PetStoreProject.Repositories.Discount
                         item.Status = false;
                         item.StatusString = "Đã kết thúc";
                     }
+                }
+            }
+            return discounts;
+        }
+
+        public List<DiscountViewModel> GetDiscounts(double total_amount, string email)
+        {
+            var now = DateOnly.FromDateTime(DateTime.Now);
+            var discounts = new List<DiscountViewModel>();
+            bool isFirstOrder = true;
+
+            if (email == null)
+            {
+                discounts = (from d in _context.Discounts
+                             join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
+                             where d.EndDate >= now && d.Status == true && d.StartDate <= now && dt.DiscountTypeId != 3
+                             select new DiscountViewModel
+                             {
+                                 Id = d.DiscountId,
+                                 Code = d.Code,
+                                 StartDate = d.StartDate,
+                                 EndDate = d.EndDate,
+                                 CreatedAt = d.CreatedAt,
+                                 DiscountType = new DiscountTypeViewModel
+                                 {
+                                     Id = dt.DiscountTypeId,
+                                     Name = dt.DiscountName
+                                 },
+                                 Value = d.Value,
+                                 MaxValue = d.MaxValue,
+                                 MinPurchase = d.MinPurchase,
+                                 Quantity = d.Quantity,
+                                 MaxUse = d.MaxUse,
+                                 Used = d.Used,
+                                 Status = d.Status
+                             }).ToList();
+                isFirstOrder = false;
+            }
+            else
+            {
+                discounts = (from d in _context.Discounts
+                             join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
+                             where d.EndDate >= now && d.Status == true && d.StartDate <= now
+                             select new DiscountViewModel
+                             {
+                                 Id = d.DiscountId,
+                                 Code = d.Code,
+                                 StartDate = d.StartDate,
+                                 EndDate = d.EndDate,
+                                 CreatedAt = d.CreatedAt,
+                                 DiscountType = new DiscountTypeViewModel
+                                 {
+                                     Id = dt.DiscountTypeId,
+                                     Name = dt.DiscountName
+                                 },
+                                 Value = d.Value,
+                                 MaxValue = d.MaxValue,
+                                 MinPurchase = d.MinPurchase,
+                                 Quantity = d.Quantity,
+                                 MaxUse = d.MaxUse,
+                                 Used = d.Used,
+                                 Status = d.Status
+                             }).ToList();
+                var customerId = _context.Customers.Where(c => c.Email == email).FirstOrDefault().CustomerId;
+                var order = _context.Orders.Where(o => o.CustomerId == customerId).FirstOrDefault();
+                if (order != null)
+                {
+                    isFirstOrder = false;
+                }
+            }
+
+            foreach (var item in discounts)
+            {
+                if (item.DiscountType.Id == 3 && !isFirstOrder)
+                {
+                    discounts.Remove(item);
+                }
+                else if (item.Used >= item.Quantity)
+                {
+                    item.Status = false;
+                    item.StatusString = "Đã hết lượt sử dụng";
+                }
+                else if ((double)item.MinPurchase > total_amount)
+                {
+                    item.Status = false;
+                    item.StatusString = "Mua thêm " + ((double)item.MinPurchase - total_amount).ToString("#,###.###") + " VND sản phẩm để sử dụng";
+                }
+                else
+                {
+                    item.Status = true;
+                    item.Reduce = item.Value * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value * (decimal)total_amount;
+                    item.Title = "-" + ((decimal)item.Reduce).ToString("#,###") + " VND";
                 }
             }
             return discounts;

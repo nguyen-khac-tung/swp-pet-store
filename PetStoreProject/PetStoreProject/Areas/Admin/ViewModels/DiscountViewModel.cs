@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Code { get; set; }
+        public string? Title { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
         public string? CreatedAt { get; set; }
@@ -17,5 +18,6 @@
         public string Description { get; set; }
         public bool? Status { get; set; }
         public string? StatusString { get; set; }
+        public decimal? Reduce { get; set; }
     }
 }

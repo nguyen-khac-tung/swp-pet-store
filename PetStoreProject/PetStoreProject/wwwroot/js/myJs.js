@@ -199,7 +199,7 @@ function updateCartItem(oldId, cartItem) {
 
     let price = cartItem.price;
 
-    if (cartItem.promotion != null) {
+    if (cartItem.promotion.value != null) {
         price = price * (1 - (parseFloat(cartItem.promotion.value) / 100));
         console.log('price_discount', price)
     }
@@ -248,6 +248,7 @@ function quickView(productId) {
             else {
                 $('#quick_price').html(response.productOption[0].price.toLocaleString('en-US'));
                 $('#quick_price_discount').html('');
+                discount = 0;
             }
             
             $('#quick_image').empty();
@@ -263,12 +264,16 @@ function quickView(productId) {
             });
             imgDiv.append(imgElement);
             $('#quick_image').append(imgDiv);
-            let sale = $('<span>', {
-                class: 'sticker-sale',
-                text: '-' + response.promotion.value + '%'
-            })
+
+            if (response.promotion != null) {
+                let sale = $('<span>', {
+                    class: 'sticker-sale',
+                    text: '-' + response.promotion.value + '%'
+                })
+                $('#quick_image').append(sale);
+            }
+
             $('#quick_image').append(imgElement);
-            $('#quick_image').append(sale);
             $('#quick_brand').html('Thương hiệu: ' + response.brand);
             let jsonStr = JSON.stringify(response.productOption);
 
@@ -461,6 +466,9 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
             if (discount != 0) {
                 document.getElementById('quick_price_discount').innerText = quick_price.toLocaleString('en-US') + ' VND';
                 quick_price = quick_price * (1 - discount / 100)
+                document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
+            }
+            else {
                 document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
             }
             quick_img_url = element.img_url;

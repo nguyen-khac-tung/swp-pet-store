@@ -140,6 +140,10 @@ namespace PetStoreProject.CartController
         public ActionResult GetCartBoxItemsOfCustomer(int customerID)
         {
             List<CartItemViewModel> cartItems = _cart.GetListCartItemsVM(customerID);
+            foreach (var item in cartItems)
+            {
+                item.Promotion = _cart.GetItemPromotion(item.ProductOptionId);
+            }
             return Json(cartItems);
         }
 
@@ -159,10 +163,16 @@ namespace PetStoreProject.CartController
                         var check = _cart.GetCartItemVM(item.ProductOptionId, item.Quantity);
                         if (check.isDeleted == false)
                         {
+                            item.Promotion = _cart.GetItemPromotion(item.ProductOptionId);
                             cartItems.Add(item);
+                        }
+                        else
+                        {
+                            cookiesId.Remove(itemId);
                         }
                     }
                 }
+                Response.Cookies.Append("Items_id", JsonConvert.SerializeObject(cookiesId));
             }
             return Json(cartItems);
         }
@@ -202,9 +212,9 @@ namespace PetStoreProject.CartController
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
-                //HttpOnly = true, // Cookie chỉ được sử dụng trong HTTP(S) requests
-                //Secure = true, // Cookie chỉ được gửi qua HTTPS
-                //SameSite = SameSiteMode.Strict // Chỉ gửi cookie trong cùng site
+                                                   //HttpOnly = true, // Cookie chỉ được sử dụng trong HTTP(S) requests
+                                                   //Secure = true, // Cookie chỉ được gửi qua HTTPS
+                                                   //SameSite = SameSiteMode.Strict // Chỉ gửi cookie trong cùng site
             };
 
             if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
@@ -254,13 +264,11 @@ namespace PetStoreProject.CartController
         public ActionResult CartDetailOfCustomer(int customerID, string url)
         {
             var cartItems = _cart.GetListCartItemsVM(customerID);
-            float totalPrice = 0;
-            foreach (var cartItem in cartItems)
+            foreach (var item in cartItems)
             {
-                totalPrice += cartItem.Price * cartItem.Quantity;
+                item.Promotion = _cart.GetItemPromotion(item.ProductOptionId);
             }
             ViewData["cartItems"] = cartItems;
-            ViewData["total_price"] = totalPrice;
             return View(url);
         }
 
@@ -276,18 +284,13 @@ namespace PetStoreProject.CartController
                     if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
                     {
                         var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
+                        item.Promotion = _cart.GetItemPromotion(itemId);
                         cartItems.Add(item);
                     }
                 }
 
             }
-            var total_price = 0.0;
-            foreach (var item in cartItems)
-            {
-                total_price += item.Price * item.Quantity;
-            }
             ViewData["cartItems"] = cartItems;
-            ViewData["total_price"] = total_price;
             return View(url);
         }
 
@@ -330,6 +333,7 @@ namespace PetStoreProject.CartController
             {
                 _cart.UpdateNewCartItem(oldProductOptionId, newProductOptionId, quantity, customerID);
                 var newItem = _cart.findCartItemViewModel(oldProductOptionId, customerID);
+                newItem.Promotion = _cart.GetItemPromotion(newProductOptionId);
                 return Json(newItem);
             }
             else
@@ -343,6 +347,7 @@ namespace PetStoreProject.CartController
                 {
                     _cart.UpdateNewCartItem(oldProductOptionId, newProductOptionId, quantity, customerID);
                     var cartItem = _cart.findCartItemViewModel(newProductOptionId, customerID);
+                    cartItem.Promotion = _cart.GetItemPromotion(newProductOptionId);
                     return Json(cartItem);
                 }
             }
@@ -364,6 +369,7 @@ namespace PetStoreProject.CartController
             };
 
             var new_item = _cart.GetCartItemVM(newProductOptionId, quantity);
+            new_item.Promotion = _cart.GetItemPromotion(newProductOptionId);
             if (oldProductOptionId == newProductOptionId)
             {
                 Response.Cookies.Append($"Item_{newProductOptionId}", JsonConvert.SerializeObject(new_item), cookieOptions);

@@ -3,12 +3,15 @@
 @{
     ViewData["Title"] = "Chi tiết Giỏ Hàng";
     var cartItems = ViewData["cartItems"] as List<CartItemViewModel>;
-    var total_price = Convert.ToSingle(ViewData["total_price"]);
 }
 
 <style>
     .checkbox_style {
         width: 25px !important;
+    }
+
+    .cart-price{
+        color: #00adf6;
     }
 </style>
 <div class="cart-main-area adp_top adp_bottom">
@@ -24,14 +27,13 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" name="checkbox" class="checkbox_style" style="height:25px" id="checkbox_all" /></th>
+                                        <th style="width: 60px"><input type="checkbox" name="checkbox" class="checkbox_style" style="height:25px" id="checkbox_all" /></th>
                                         <th class="product-thumbnail">Ảnh</th>
                                         <th class="product-name">Tên sản phẩm</th>
                                         <th class="product-price">Giá</th>
                                         <th class="product-quantity">Số lượng</th>
                                         <th class="product-subtotal">Tổng</th>
-                                        <th class="product-remove">Sửa</th>
-                                        <th class="product-remove">Xóa</th>
+                                        <th class="product-remove" style="width: 100px">Chỉnh sửa</th>
                                     </tr>
                                 </thead>
                                 <tbody id="cartTable">
@@ -55,9 +57,17 @@
                                                     option += "( " + item.Size.Name + " )";
                                                 }
                                             }
-                                            var totalPrice = item.Price * item.Quantity;
+
+                                            var price = item.Price;
+
+                                            if (item.Promotion.Value != null)
+                                            {
+                                                price = price * (1 - (float)item.Promotion.Value / 100);
+                                            }
+
+                                            var totalPrice = price * item.Quantity;
                                             <tr id="@item.ProductOptionId" class="item">
-                                                <td><input type="checkbox" name="checkbox" class="checkboxItem checkbox_style" id="checkbox_@i" /></td>
+                                                <td style="width: 60px"><input type="checkbox" name="checkbox" class="checkboxItem checkbox_style" id="checkbox_@i" onchange="amountCart()" /></td>
                                                 <td class="product-thumbnail">
                                                     <a href="#"><img src="@item.ImgUrl" id="product_img_@i" alt="cart-image" /></a>
                                                 </td>
@@ -66,15 +76,24 @@
                                                     <input type="hidden" id="product_name_@i" value="@item.Name" />
                                                     <input type="hidden" value="@option" id="product_option_@i" />
                                                 </td>
-                                                <td class="product-price"><span class="amount " id="product_price_@i">@item.Price.ToString("#,###")đ</span></td>
+                                                <td class="product-price">
+                                                <span class="amount cart-price" id="product_price_@i">@price.ToString("#,###") VND</span>
+                                                    @if(item.Promotion.Value != null)
+                                                    {
+                                                        <div>
+                                                            <del class="discount_price">@item.Price.ToString("#,###.###") VND</del>
+                                                        </div>
+                                                        
+                                                    }
+                                                </td>
                                                 <td class="product-quantity"><input id="product_quantity_@i" value="@item.Quantity" readonly /></td>
-                                                <td class="product-subtotal " id="product_totalPrice_@i">@totalPrice.ToString("#,###")đ</td>
-                                                <td>
+                                                <td class="product-subtotal cart-price" id="product_totalPrice_@i">@totalPrice.ToString("#,###") VND</td>
+                                                <td style="width: 60px">
                                                     <a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Chỉnh sửa" onclick="callQuickEdit(@item.ProductOptionId, @item.ProductId)" style="color: #666666; font-size:18px">
                                                         <i class="icofont-edit"></i>
                                                     </a>
+                                                    <a style="cursor:pointer" onclick="confirmDelete(@item.ProductOptionId, '@item.Name.Trim()')" title="Xóa sản phẩm"><i class="icofont-delete-alt" style="font-size: 18px; margin-left: 10px"></i></a>
                                                 </td>
-                                                <td class="product-remove"> <a style="cursor:pointer" onclick="confirmDelete(@item.ProductOptionId, '@item.Name.Trim()')" title="Xóa sản phẩm"><i class="icofont-delete-alt"></i></a></td>
                                                 <input type="hidden" value="@item.ProductOptionId" id="product_productOption_@i"/>
                                                 <input type="hidden" value="@item.ProductId" id="product_id_@i"/>
                                             </tr>
@@ -106,7 +125,7 @@
                                             <tr class="order-total">
                                                 <th>Tổng</th>
                                                 <td>
-                                                    <strong><span class="amount" id="amount">@total_price.ToString("#,###")</span><span class="amount">VND</span></strong>
+                                                    <strong><span class="amount" id="amount">0</span><span class="amount">VND</span></strong>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -203,6 +222,8 @@
                                     <!--Price-->
                                     <div class="pro-thumb-price mt-20">
                                         <span class="regular-price" id="quick_price"></span>
+                                        <span class="regular-price">VND</span>
+                                        <del class="discount_price" id="quick_price_discount"></del>
                                     </div>
 
                                     @* 										<!--Detail-->

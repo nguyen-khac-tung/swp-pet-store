@@ -4,6 +4,7 @@
 	var product = ViewData["product_detail"] as ProductDetailViewModel;
 	var productOptions = Newtonsoft.Json.JsonConvert.SerializeObject(product.productOption);
 	var related_products = ViewData["related_products"] as List<RelatedProductViewModel>;
+	var product_json = Newtonsoft.Json.JsonConvert.SerializeObject(product);
 }
 
 @section HeadOptional {
@@ -97,6 +98,16 @@
 			color: #777;
 		}
 
+		.main{
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.main > div {
+			width: 40px;
+			height: 40px;
+		}
 	</style>
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -126,7 +137,7 @@
 								var isOutOfStock = "";
 								if (product.IsSoldOut != null && product.IsSoldOut == true)
 								{
-									<div class="overlay">Hết hàng</div>
+										<div class="overlay">Hết hàng</div>
 									isOutOfStock = "out-of-stock";
 								}
 
@@ -141,9 +152,11 @@
 							</a>
 							</div> *@
 						</div>
-
-						@* <span class="sticker-sale">-25%</span>
-						<span class="sticker-new">New</span> *@
+						@if(product.Promotion != null)
+						{
+							<span class="sticker-sale">-@product.Promotion.Value%</span>
+						}
+						@*<span class="sticker-new">New</span> *@
 
 					</div>
 				</div>
@@ -165,10 +178,28 @@
 					<div class="rating-summary">
 						Thương hiệu : @product.Brand
 					</div>
+					@if(product.Promotion != null){
+						<div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px">
+							<div>
+								Diễn ra trong: 
+							</div>
+							<div>
+								<div style="display: flex; align-items: center; gap: 10px">
+									<div class="product-countdown main" data-countdown="@(DateTime.Parse(product.Promotion.EndDate).ToString("MM/dd/yyyy hh:mm"))">
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+					
 					<!--Price-->
 					<div class="pro-thumb-price mt-20">
-						<span class="regular-price" id="price">@product.productOption[0].price.ToString("#,###")</span>
+						<span class="regular-price" id="price">
+							
+						</span>
 						<span class="regular-price">VND</span>
+						
+						<del class="discount_price_main"></del>
 					</div>
 
 					<!--Attribute-->
@@ -218,11 +249,9 @@
 					</div>
 
 					<div>
-						Tổng số tiền: <span id="amount">@product.productOption[0].price.ToString("#,###")</span>
+						Tổng số tiền: <span id="amount"></span>
 						<span>VND</span>
 					</div>
-
-
 
 					<div class="details_action_wraper">
 						<a class="details_cart link " title="" data-original-title="Add to Cart" tabindex="0" data-product-option-id="@product.productOption[0].Id" id="add_to_cart" onclick="addToCart(this.dataset.productOptionId, document.getElementById('quantity').value)" style="cursor: pointer;">
@@ -324,51 +353,51 @@
 									{
 										foreach (var list in listFeedbacks)
 										{
-											<div class="review-header">
-												<h2>@list.CustomerName</h2>
-												@{
+												<div class="review-header">
+													<h2>@list.CustomerName</h2>
+													@{
 													switch (@list.Rating)
 													{
 														case 1:
-															<span class="rating">★☆☆☆☆</span>
+																	<span class="rating">★☆☆☆☆</span>
 															break;
 														case 2:
-															<span class="rating">★★☆☆☆</span>
+																	<span class="rating">★★☆☆☆</span>
 															break;
 														case 3:
-															<span class="rating">★★★☆☆</span>
+																	<span class="rating">★★★☆☆</span>
 															break;
 														case 4:
-															<span class="rating">★★★★☆</span>
+																	<span class="rating">★★★★☆</span>
 															break;
 														case 5:
-															<span class="rating">★★★★★</span>
+																	<span class="rating">★★★★★</span>
 															break;
 														default:
-															<span class="rating">★★★★★</span>
+																	<span class="rating">★★★★★</span>
 															break;
 
 													}
-												}
-											</div>
+													}
+												</div>
 
-											<p class="review-content">@list.Content</p>
-											<p>@list.DateCreated</p>
+												<p class="review-content">@list.Content</p>
+												<p>@list.DateCreated</p>
 
 											if (@list.EmployeeName != null)
 											{
-												<div class="response">
-													<p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
-													<p class="response-content">@list.ContentResponse </p>
-													<p>@list.DateResp</p>
-												</div>
+													<div class="response">
+														<p class="response-header">Nhân viên @list.EmployeeName trả lời:</p>
+														<p class="response-content">@list.ContentResponse </p>
+														<p>@list.DateResp</p>
+													</div>
 											}
 
 										}
 									}
 									else
 									{
-										<h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
+											<h3 style="text-align:center;">Sản phẩm hiện chưa có đánh giá nào!</h3>
 									}
 								}
 							</div>
@@ -403,9 +432,10 @@
 						<div class="single-template-product">
 							<!-- Product Image Start -->
 							<div class="pro-img">
-
-								@* <span class="sticker-sale">-25%</span>
-							<span class="sticker-new">New</span> *@
+								@if( p.Promotion != null){
+								<span class="sticker-sale">@p.Promotion?.Value%</span>
+								}
+							@* <span class="sticker-new">New</span> *@
 
 								<a href="/product/detail/@p.ProductId">
 									<img class="primary-img" src="@p.images[0].ImageUrl" alt="single-product">
@@ -415,10 +445,11 @@
 								<div class="item_quick_link">
 									<a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)"><i class="icofont-search"></i></a>
 								</div>
-
-								@* <div class="product-count-wrap">
-							<div class="product-countdown" data-countdown="2022/06/01"></div>
-							</div> *@
+								@if(p.Promotion != null){
+									<div class="product-count-wrap">
+										<div class="product-countdown" data-countdown="@(DateTime.Parse(p.Promotion.EndDate).ToString("MM/dd/yyyy hh:mm:00"))"></div>
+									</div>
+								}
 
 							</div>
 							<!-- Product Image End -->
@@ -433,8 +464,20 @@
 									</h5>
 
 									<div class="grid_price" style="text-align:center">
-										<span class="regular-price">@p.Price.ToString("#,###") VND</span>
-										@* <del class="discount_price">$75.50</del> *@
+										@if(p.Promotion != null)
+										{
+											var price = (decimal)p.Price * (1 - (decimal)p.Promotion.Value / 100);
+											@if (price != null)
+											{
+												<span class="regular-price">@price.ToString("#,###.###") VND</span>
+											}
+											<del class="discount_price">@p.Price.ToString("#,###.###") VND</del>
+										}
+										else
+										{
+											<span class="regular-price">@p.Price.ToString("#,###.###") VND</span>
+										}
+
 									</div>
 								</div>
 								<div class="item_add_cart">
@@ -467,9 +510,37 @@
 @section ScriptOptional {
 
 	<script>
+		var product = @Html.Raw(product_json);
 		var attributeId, sizeId, price, img_url;
 		var productOptions = @Html.Raw(productOptions);
 		var isStill = false;
+		function formatDate(str) {
+			var s = str.split(' ');
+			console.log(s);
+
+			var dateParts = s[0].split('/');
+			var year = dateParts[2];
+			var month = dateParts[1].padStart(2, '0'); // Đảm bảo tháng có 2 chữ số
+			var day = dateParts[0].padStart(2, '0'); // Đảm bảo ngày có 2 chữ số
+
+			var timeParts = s[1].split(':');
+			var hour = parseInt(timeParts[0]);
+			var minute = timeParts[1];
+
+			if (s[2] == 'PM' && hour !== 12) {
+				hour += 12;
+			} else if (s[2] == 'AM' && hour === 12) {
+				hour = 0;
+			}
+
+			hour = hour.toString().padStart(2, '0'); // Đảm bảo giờ có 2 chữ số
+
+			var formattedDate = `${month}/${day}/${year} ${hour}:${minute}:00`;
+			console.log(formattedDate);
+
+			return formattedDate;
+		}
+
 		for (var index = 0; index < productOptions.length; index++) {
 			if (!productOptions[index].IsSoldOut) { // status is boolean
 				attributeId = productOptions[index].attribute.AttributeId;
@@ -478,10 +549,12 @@
 				img_url = productOptions[index].img_url;
 				isStill = true
 				break;
+				console.logg(attributeId, sizeId)
 			}
 
 		}
-		// updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
+		updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
+		checkOutOfStock()
 		if (isStill) {
 			console.log('Con hang')
 			var list_size = document.getElementById('size').querySelectorAll('li');
@@ -580,9 +653,14 @@
 
 		function updatePriceAndImage() {
 			var productOptions_json = @Html.Raw(productOptions);
+			console.log(product)
 			for (var id = 0; id <= productOptions_json.length; id++) {
 				if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
 					price = productOptions_json[id].price
+					if (product.Promotion != null) {
+						$('.discount_price_main').text(price.toLocaleString() + ' VND')
+						price = price*(100 - product.Promotion.Value)/100
+					}
 					img_url = productOptions_json[id].img_url
 					$('#add_to_cart').attr('data-product-option-id', productOptions_json[id].Id)
 					if (productOptions_json[id].IsSoldOut) {
@@ -593,7 +671,7 @@
 			}
 			document.getElementById('large_image').setAttribute('src', img_url)
 			document.getElementById('large_image').setAttribute('data-zoom-image', img_url)
-			document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
+			// document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
 			document.getElementById('price').innerText = price.toLocaleString('en-US')
 			total_price()
 			checkOutOfStock()

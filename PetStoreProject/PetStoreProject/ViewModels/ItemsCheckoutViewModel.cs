@@ -1,4 +1,6 @@
-﻿namespace PetStoreProject.ViewModels
+﻿using PetStoreProject.Models;
+
+namespace PetStoreProject.ViewModels
 {
     public class ItemsCheckoutViewModel
     {
@@ -9,5 +11,6 @@
         public string ImgUrl { get; set; }
         public int ProductOptionId { get; set; }
         public int ProductId { get; set; }
+        public Promotion? Promotion { get; set; }
     }
 }

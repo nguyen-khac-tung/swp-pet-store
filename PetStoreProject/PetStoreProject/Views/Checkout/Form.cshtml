@@ -3,18 +3,140 @@
     double totalAmount = 0;
     double moneyToCheckout = 0;
     int index = 0;
+    var discounts = ViewData["Discounts"] as List<DiscountViewModel>;
 }
 
+@using PetStoreProject.Areas.Admin.ViewModels
 @using PetStoreProject.ViewModels;
 @model List<ItemsCheckoutViewModel>
+@section HeadOptional{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="~/css/checkout_style.css" rel="stylesheet" />
+    <style>
+        .block-available {
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: max-content;
+            height: 24px;
+            padding: 2px 8px;
+            gap: 10px;
+            border-radius: 4px;
+            background: #F0FDF4;
+            color: var(--22-c-55-e);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .out-of-stock {
+            opacity: 0.3; /* Làm nhạt màu */
+            cursor: not-allowed; /* Con trỏ hiển thị không được phép */
+            pointer-events: none; /* Ngăn chặn sự kiện click */
+        }
+        .discount-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: Arial, sans-serif;
+            margin: 16px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+            .discount-card .header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+                .discount-card .header img {
+                    height: 40px;
+                    margin-right: 8px;
+                }
+
+                .discount-card .header .title {
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+
+            .discount-card .content {
+                margin-bottom: 8px;
+            }
+
+                .discount-card .content .description {
+                    font-size: 14px;
+                    margin-bottom: 4px;
+                }
+
+            .discount-card .footer {
+                font-size: 12px;
+                color: #999;
+            }
+
+                .discount-card .footer .condition {
+                    color: #00f;
+                    text-decoration: underline;
+                }
+
+        .warning {
+            font-size: 12px;
+            color: #f00;
+            margin-top: 8px;
+        }
+
+        .text-tiny{
+            color: rgba(0,0,0,.54);
+            font-size: 12px;
+        }
+
+        .progress-level-bar.t1 {
+            background: #FFE9E0;
+        }
+
+        .progress-level-bar {
+            position: relative;
+            display: block;
+            width: 70px;
+            height: 4px;
+            border-radius: 14px;
+            background: #EBFFF1;
+        }
+
+        .w-full {
+            width: 100% !important;
+        }
+
+        .progress-level-bar.t1 span {
+            background: #FF5200;
+        }
+
+        .progress-level-bar span {
+            position: relative;
+            display: block;
+            width: 0%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 14px;
+            background: #22C55E;
+            transition-property: width;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+            transition-duration: 2s;
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+        #title{
+            color: red;
+        }
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-<link href="~/css/checkout_style.css" rel="stylesheet" />
+    </style>
+}
 
 <div class="cart-main-area adp_bottom">
-
     <div class="container">
         <div class="row my-4">
             <div class="col">
@@ -70,12 +192,12 @@
                                                             <i class="bx bxs-star text-warning"></i>
                                                             <i class="bx bxs-star-half text-warning"></i>
                                                         </p>
-                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###")đ x @itemCart.Quantity</p>
+                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</p>
                                                         <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index"/>
                                                         <input type="hidden" value="@itemCart.Price" id="product_price_@index" />
                                                         <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index" />
                                                     </td>
-                                                    <td><p class="float_r margin_auto">@amount.ToString("#,###")đ</p></td>
+                                                    <td style="display:flex; justify-content:center; align-items: center"><p class="float_r margin_auto">@amount.ToString("#,###") VND</p></td>
                                                 </tr>
                                             }
                                             else
@@ -92,12 +214,12 @@
                                                             <i class="bx bxs-star text-warning"></i>
                                                             <i class="bx bxs-star-half text-warning"></i>
                                                         </p>
-                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###")đ x @itemCart.Quantity</p>
+                                                        <p class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</p>
                                                         <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index" />
                                                         <input type="hidden" value="@itemCart.Price" id="product_price_@index"/>
                                                         <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index"/>
                                                     </td>
-                                                    <td><p class="float_r margin_auto">@amount.ToString("#,###")đ</p></td>
+                                                    <td style="text-align: center"><p class="float_r margin_auto">@amount.ToString("#,###") VND</p></td>
                                                 </tr>
                                             }
                                             index++;
@@ -350,7 +472,7 @@
                                         </td>
                                         <td>
                                             <p class="float_r margin_auto">
-                                                @totalAmount.ToString("#,###")đ
+                                                @totalAmount.ToString("#,###") VND
                                                 @{
                                                     moneyToCheckout = totalAmount;
                                                 }
@@ -362,7 +484,7 @@
                                             <h5 class="font-size-14 m-0">Mã giảm giá: </h5>
                                         </td>
                                         <td>
-                                            <p class="float_r margin_auto">-123$</p>
+                                            <p class="float_r margin_auto"><a href="#" onclick="showDiscount(event)" id="link">Chọn mã giảm giá</a></p>
                                         </td>
                                     </tr>
 
@@ -371,7 +493,7 @@
                                             <h5 class="font-size-14 m-0">Tiết kiệm được: </h5>
                                         </td>
                                         <td>
-                                            <p class="float_r margin_auto">-123$</p>
+                                            <p class="float_r margin_auto" id="save">-0 VND</p>
                                         </td>
                                     </tr>
                                     @*                                     <tr>
@@ -388,8 +510,9 @@
                                             <h5 class="font-size-14 m-0"><strong>Thành tiền: </strong></h5>
                                         </td>
                                         <td>
-                                            <p class="float_r margin_auto"><strong>@moneyToCheckout.ToString("#,###")đ</strong></p>
+                                            <p class="float_r margin_auto"><strong id="money">@moneyToCheckout.ToString("#,###") VND</strong></p>
                                             <input type="hidden" value="@moneyToCheckout" id="moneyToCheckout"/>
+                                            <input type="hidden" value="@moneyToCheckout" id="order_value"></input>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -406,8 +529,99 @@
 
     </div>
 </div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Mã giảm giá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(discounts == null)
+                {
+                    <span>Không có mã giảm giá nào</span>
+                }
+                else
+                {
+                    @foreach(var item in discounts)
+                    {
+                        <div class="discount-card @(item.Status == false ? "out-of-stock" : "")">
+                            <div>
+                                <div class="header">
+                                    <img src="~/img/coupon.png" />
+                                    <span class="title">@(item.DiscountType.Id != 2 ? "Giảm " + (int)item.Value + "% Giảm tối đa " + item.MaxValue?.ToString("#,###") + " VND" : "Giảm" + item.Value?.ToString("#,###") + " VND")</span>
+                                </div>
+                                <div class="content">
+                                    <div class="description">Đơn Tối Thiểu @(((decimal)item.MinPurchase).ToString("#,###.###")) VND</div>
+                                </div>
+                                <div class="flex items-center justify-between gap10">
+                                    <div class="progress-level-bar w-full">
+                                        <span data-progress="@item.Used" data-max="@item.Quantity" class="">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="text-tiny">Đã dùng @((int)(((decimal)item.Used / item.Quantity) * 100))%, HSD: @item.EndDate.ToString()</div>
+                                <div class="footer">
+                                    <div class="warning">@item.StatusString</div>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="radio" name="discount" value="@item.Id" onclick="chooseDiscount.call(this)"></input>
+                                <input type="hidden" name="title" value="@item.Title"></input>
+                                <input type="hidden" name="reduce" value= "@item.Reduce"></input>
+                            </div>
+                        </div>
+                        
+                    }
+                }
+            </div>
+            <div class="modal-footer" style="justify-content: space-between">
+                <div style="width: 60%">
+                    <div class="hide">
+                        <span>1 mã giảm giá được áp dụng. </span>
+                        <span id="title"></span>
+                    </div>
+                </div>
+                
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="useDiscount()">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/js/checkout-form.js"></script>
 <script>
+    let title = '';
+    let reduce = 0;
+    let discountId = 0;
+    function showDiscount(event){
+        event.preventDefault()
+        $('#staticBackdrop').modal('show')
+    }
+
+    function chooseDiscount() {
+        title = $(this).parent().find('input[name="title"]').val();
+        discountId = $(this).val();
+        $('#title').text("Giảm " + title);
+        $('#title').parent().removeClass('hide')
+        reduce = $(this).parent().find('input[name="reduce"]').val();
+        console.log(title);
+    }
+
+    function useDiscount(){
+        $('#staticBackdrop').modal('hide')
+        let moneyToCheckout = $('#moneyToCheckout').val()
+        console.log(moneyToCheckout, reduce)
+        moneyToCheckout = parseFloat(moneyToCheckout) - reduce;
+        $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")
+        $('#moneyToCheckout').val(moneyToCheckout)
+        $('#save').text(title)
+    }
+
     function AddViewProduct() {
         if ($('#selectViewProduct').text() === "Rút gọn") {
             for (let i = 2; i <= @index; i++) {
@@ -438,3 +652,5 @@
         }
     }
 </script>
+<script src="~/areas/js/jquery.min.js"></script>
+<script src="~/areas/js/main.js"></script>

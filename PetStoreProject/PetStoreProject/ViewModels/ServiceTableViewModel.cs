@@ -14,6 +14,6 @@
 
         public string Type { get; set; } = null!;
 
-        public bool IsDelete { get; set; }
+        public bool? IsDelete { get; set; }
     }
 }

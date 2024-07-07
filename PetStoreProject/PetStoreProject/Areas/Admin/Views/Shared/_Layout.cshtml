@@ -28,7 +28,7 @@
     <link href="~/areas/css/style1.css" rel="stylesheet" />
     <link href="~/css/mystyle.css" rel="stylesheet" />
     <link href="~/css/icofont.css" rel="stylesheet" />
-
+    
     <!-- Font -->
     <link rel="stylesheet" href="/areas/font/fonts.css">
 
@@ -210,6 +210,34 @@
                                         </li>
                                     </ul>
                                 </li>
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-tag"></i></div>
+                                        <div class="text">Khuyến mại</div>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="sub-menu-item">
+                                            <a href="/admin/discount/list" class="">
+                                                <div class="text">Danh sách mã giảm giá</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="/admin/promotion/list" class="">
+                                                <div class="text">Danh sách khuyến mại</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="/admin/discount/create" class="">
+                                                <div class="text">Tạo mã giảm giá</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="/admin/promotion/create/" class="">
+                                                <div class="text">Tạo khuyến mại</div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
                                 @* <li class="menu-item">
                                     <a href="gallery.html" class="">
                                         <div class="icon"><i class="icon-image"></i></div>
@@ -308,10 +336,10 @@
                                     <i class="icon-menu-left"></i>
                                 </div>
                                 <form class="form-search flex-grow">
-                                    <fieldset class="name">
+                                    <fieldset class="name hide">
                                         <input type="text" placeholder="Tìm kiếm " class="show-search" name="name" tabindex="2" value="" aria-required="true" required="">
                                     </fieldset>
-                                    <div class="button-submit">
+                                    <div class="button-submit hide">
                                         <button class="" type="submit"><i class="icon-search"></i></button>
                                     </div>
                                     <div class="box-content-search" id="box-content-search">
@@ -558,6 +586,7 @@
     <script src="/areas/js/bootstrap.min.js"></script>
     <script src="/areas/js/bootstrap-select.min.js"></script>
     <script src="/areas/js/zoom.js"></script>
+    <script src="~/areas/js/raphael.min.js"></script>
     <script src="/areas/js/apexcharts/apexcharts.js"></script>
     <script src="/areas/js/apexcharts/line-chart-1.js"></script>
     <script src="/areas/js/apexcharts/line-chart-2.js"></script>

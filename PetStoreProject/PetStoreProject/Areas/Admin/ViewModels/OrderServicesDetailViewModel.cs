@@ -1,13 +1,13 @@
 ﻿using PetStoreProject.Models;
 using EmployeeModel = PetStoreProject.Models;
-namespace PetStoreProject.Areas.Employee.ViewModels
+namespace PetStoreProject.Areas.Admin.ViewModels
 {
     public class OrderServicesDetailViewModel
     {
         public int OrderServiceId { get; set; }
 
         public int? CustomerId { get; set; }
-        
+
         public string Name { get; set; }
 
         public string Phone { get; set; }
@@ -20,7 +20,7 @@ namespace PetStoreProject.Areas.Employee.ViewModels
 
         public string Status { get; set; }
 
-        public bool IsDeleted { get; set; } 
+        public bool IsDeleted { get; set; }
 
         public EmployeeModel.Employee? employee { get; set; }
 

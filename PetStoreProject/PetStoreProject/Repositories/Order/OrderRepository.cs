@@ -1,4 +1,4 @@
-﻿using PetStoreProject.Areas.Employee.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 
 namespace PetStoreProject.Repositories.Order
@@ -13,8 +13,29 @@ namespace PetStoreProject.Repositories.Order
         }
         public List<OrderDetailViewModel> GetOrderDetailByCustomerId(int customerId)
         {
-            var orders = (from o in _context.Orders
-                          where o.CustomerId == customerId
+            var orders = new List<OrderDetailViewModel>();
+            if (customerId > 0)
+            {
+                orders = (from o in _context.Orders
+                              where o.CustomerId == customerId
+                              select new OrderDetailViewModel
+                              {
+                                  CustomerId = o.CustomerId,
+                                  Email = o.Email,
+                                  FullName = o.FullName,
+                                  Phone = o.Phone,
+                                  ShipAddress = o.ShipAddress,
+                                  OrderDate = o.OrderDate,
+                                  TotalAmount = o.TotalAmount,
+                                  PaymentMethod = o.PaymetMethod,
+                                  OrderId = o.OrderId.ToString(),
+                                  ConsigneeName = o.ConsigneeFullName,
+                                  ConsigneePhone = o.ConsigneePhone,
+                                  totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
+                              }).ToList();
+            }else
+            {
+                orders = (from o in _context.Orders
                           select new OrderDetailViewModel
                           {
                               CustomerId = o.CustomerId,
@@ -25,10 +46,12 @@ namespace PetStoreProject.Repositories.Order
                               OrderDate = o.OrderDate,
                               TotalAmount = o.TotalAmount,
                               PaymentMethod = o.PaymetMethod,
-                              OrderId = o.OrderId,
+                              OrderId = o.OrderId.ToString(),
+                              ConsigneeName = o.ConsigneeFullName,
+                              ConsigneePhone = o.ConsigneePhone,
                               totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
                           }).ToList();
-
+            }
             return orders;
         }
 
@@ -36,9 +59,9 @@ namespace PetStoreProject.Repositories.Order
         {
             var orders = GetOrderDetailByCustomerId(orderModel.UserId);
 
-            if (int.TryParse(orderModel.SearchOrderId, out int searchOrderId))
+            if (long.TryParse(orderModel.SearchOrderId, out long searchOrderId))
             {
-                orders = orders.Where(o => o.OrderId == searchOrderId).ToList();
+                orders = orders.Where(o => o.OrderId.Equals(searchOrderId.ToString())).ToList();
             }
 
             if(orderModel.SearchName != null)
@@ -52,6 +75,11 @@ namespace PetStoreProject.Repositories.Order
                 {
                     orders = orders.Where(o => DateOnly.FromDateTime(o.OrderDate) == searchDate).ToList();
                 }
+            }
+
+            if(orderModel.SearchConsigneeName != null)
+            {
+                orders = orders.Where(o => o.ConsigneeName.ToLower().Contains(orderModel.SearchConsigneeName.ToLower())).ToList();
             }
 
             if (orderModel.SortOrderId == "abc")

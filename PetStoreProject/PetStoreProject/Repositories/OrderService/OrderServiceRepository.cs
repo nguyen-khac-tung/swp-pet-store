@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet;
 using Microsoft.IdentityModel.Tokens;
-using PetStoreProject.Areas.Employee.ViewModels;
+using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 using System.Threading;
 using static NuGet.Packaging.PackagingConstants;

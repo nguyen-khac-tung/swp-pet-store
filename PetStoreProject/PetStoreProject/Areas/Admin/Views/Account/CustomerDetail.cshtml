@@ -373,7 +373,7 @@
         resetOptionOrder();
     }
 
-    function orderHistoryLoad(optionOrders) {
+    function LoadOrderHistory(optionOrders) {
         $.ajax({
             url: '/Admin/Account/OrderHistory',
             type: 'post',
@@ -487,7 +487,7 @@
         searchNameOrder.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Ngăn chặn hành động mặc định của form
-                search();
+                searchNameOrder();
             }
         });
         sOrderServiceId.addEventListener('keypress', function (event) {

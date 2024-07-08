@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinyMCE Example</title>
+    <script src="https://cdn.tiny.cloud/1/uiwhzjziqcvy2k00ba4501fd7kxlegjb34byjaglp1cy70qh/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+            images_upload_url: '/Employee/News/UploadImage',
+            automatic_uploads: true
+        });
+
+        function previewThumbnail(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('thumbnailPreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+    <style>
+        .img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .submit-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px;
+        }
+
+        .btn-lg {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h3 style="text-align:center; margin: 20px">Tạo bài viết mới</h3>
+    <form method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data">
+        <label for="title" style="font-size: 24px; font-weight: bold; margin-right: 10px;">Title:</label>
+        <input type="text" id="title" name="Title" style="margin-bottom:20px; font-size: 20px; padding: 10px; width: 90%; box-sizing: border-box; background-color: white; border: 1px solid #ccc;" />
+        <label for="thumbnail" style="font-size: 24px; font-weight: bold; margin-right: 10px;">Thumbnail:</label>
+        <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" style="margin-bottom:20px; font-size: 20px; padding: 10px; width: 50%;" onchange="previewThumbnail(event)" />
+        <div class="img-container">
+            <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+        </div>
+
+        <textarea id="editor" name="content"></textarea>
+        <div class="submit-container">
+            <button type="submit" class="btn btn-primary btn-lg">Save</button>
+        </div>
+    </form>
+</body>
+</html>

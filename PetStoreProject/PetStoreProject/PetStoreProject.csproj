@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Employee\Views\News\CreateNews.cshtml" />
     <None Include="Views\WishList\Detail.cshtml" />
     <None Include="wwwroot\areas\icon\fonts\icomoon93d9.svg" />
     <None Include="wwwroot\areas\js\apexcharts\apexcharts.js" />
@@ -93,6 +94,7 @@
     <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
   </ItemGroup>
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\areas\css\List-order-history.css" />
     <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout-form.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout.js" />

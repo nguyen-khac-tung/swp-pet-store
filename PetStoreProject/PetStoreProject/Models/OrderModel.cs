@@ -23,5 +23,7 @@
 
         public string SearchOrderId { get; set; }
 
+        public string SearchConsigneeName { get; set; }
+
     }
 }

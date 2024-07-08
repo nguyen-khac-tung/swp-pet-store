@@ -1,10 +1,10 @@
 ﻿using PetStoreProject.Models;
 
-namespace PetStoreProject.Areas.Employee.ViewModels
+namespace PetStoreProject.Areas.Admin.ViewModels
 {
     public class OrderDetailViewModel
     {
-        public long OrderId { get; set; }
+        public string OrderId { get; set; }
 
         public int? CustomerId { get; set; }
 
@@ -12,7 +12,11 @@ namespace PetStoreProject.Areas.Employee.ViewModels
 
         public string Phone { get; set; }
 
-        public string Email { get; set; }
+        public string? Email { get; set; }
+
+        public string ConsigneeName { get; set; }
+
+        public string ConsigneePhone { get; set; }
 
         public string ShipAddress { get; set; }
 

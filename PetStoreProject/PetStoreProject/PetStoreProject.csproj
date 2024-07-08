@@ -94,6 +94,7 @@
     <EditorConfigFiles Remove="C:\Users\tu\OneDrive\Desktop\Git\PetStoreProject\PetStoreProject\ViewModels\.editorconfig" />
   </ItemGroup>
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\areas\css\List-order-history.css" />
     <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout-form.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout.js" />

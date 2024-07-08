@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Areas\Employee\Views\News\CreateNews.cshtml" />
     <None Include="Views\WishList\Detail.cshtml" />
     <None Include="wwwroot\areas\icon\fonts\icomoon93d9.svg" />
     <None Include="wwwroot\areas\js\apexcharts\apexcharts.js" />

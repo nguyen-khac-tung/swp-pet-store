@@ -239,7 +239,7 @@ namespace PetStoreProject.Repositories.Discount
                 else
                 {
                     item.Status = true;
-                    item.Reduce = item.Value * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value * (decimal)total_amount;
+                    item.Reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
                     item.Title = "-" + ((decimal)item.Reduce).ToString("#,###") + " VND";
                 }
             }

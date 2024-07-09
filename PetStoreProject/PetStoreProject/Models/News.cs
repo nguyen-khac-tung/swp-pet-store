@@ -14,7 +14,9 @@ public partial class News
     [StringLength(100)]
     public string Title { get; set; } = null!;
 
-    public string Content { get; set; } = null!;
+	public string Summary { get; set; } = null!;
+
+	public string Content { get; set; } = null!;
 
     public DateOnly DatePosted { get; set; }
 

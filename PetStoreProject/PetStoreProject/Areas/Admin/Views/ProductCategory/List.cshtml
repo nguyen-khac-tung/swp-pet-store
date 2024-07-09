@@ -7,7 +7,13 @@
 }
 
 @section HeadOptional {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+   
     <style>
+        a{
+            cursor: pointer;
+        }
         div input {
             outline: 0;
             -webkit-box-shadow: none;
@@ -26,13 +32,31 @@
             overflow: hidden;
         }
 
-    </style>
-    <style>
         .scrollable-brand-list {
             max-height: 400px; /* Giới hạn chiều cao của danh sách */
             overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung vượt quá chiều cao tối đa */
             overflow-x: hidden; /* Ẩn thanh cuộn ngang */
         }
+
+        .header-menu-list > li, .cart-box > ul > li{
+            padding: 0;
+        }
+
+        .hidden{
+            display: none!important;
+        }
+
+        .empty-order-history {
+            margin-top: 4%;
+            margin-bottom: 4%;
+            text-align: center;
+        }
+
+            .empty-order-history h6 {
+                font-family: "Inter", sans-serif;
+                line-height: 25px;
+            }
+
     </style>
 }
 <!--List Category-->
@@ -48,21 +72,26 @@
                 <a class="btn btn-primary tf-button style-1 w208" href="new-category.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class=" icon-plus"></i>Thêm mới</a>
             </div>
             <div class="wg-table table-all-category">
-                <ul class="table-title flex gap20 mb-14">
-                    <li>
-                        <div class="body-title">Tên danh mục sản phẩm</div>
+                <ul class="table-title flex gap20 mb-14 header-menu-list">
+                    <li style="width: 280px">
+                        <a class="body-title" onclick="sortProductCateName()">Tên danh mục sản phẩm<i class="bi bi-chevron-expand"></i></a>
                     </li>
                     <li>
-                        <div class="body-title">Tên danh mục</div>
+                        <a class="body-title" onclick="sortCateName()">Tên danh mục<i class="bi bi-chevron-expand"></i></a>
                     </li>
                     <li>
-                        <div class="body-title">Số lượng sản phẩm</div>
+                        <a class="body-title" onclick="sortQuantity()">Số lượng sản phẩm<i class="bi bi-chevron-expand"></i></a>
                     </li>
                     <li>
-                        <div class="body-title">Số lượng đã bán</div>
+                        <a class="body-title" onclick="sortQuantitySold()">Số lượng đã bán<i class="bi bi-chevron-expand"></i></a>
                     </li>
                     <li>
-                        <div class="body-title">Trạng thái</div>
+                        <a class="drop-icon " href="#">Trạng thái</a>
+                        <ul class="common_ddown dropdown_style" id="status_list_customer">
+                            <li><a href="#" onclick="orderStatus('isDelete')">- Tất cả</a></li>
+                            <li><a href="#" onclick="orderStatus('block-available')">- Còn bán</a></li>
+                            <li><a href="#" onclick="orderStatus('block-not-available')">- Ngừng bán</a></li>
+                        </ul>
                     </li>
                     <li>
                         <div class="body-title">Tùy chỉnh</div>
@@ -75,13 +104,13 @@
                             <input type="hidden" value="@category.Id" class="productCategoryId">
                             <input type="hidden" value="@category.CategoryId" class="categoryId">
                             <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name" style="width: 350px">
+                                <div class="productCateName" style="width: 280px">
                                     @category.ProductCateName
                                 </div>
                                 <div class="body-text cateName">@category.CategoryName</div>
-                                <div class="body-text">@category.TotalProducts</div>
-                                <div class="body-text">@category.QuantitySoldProduct</div>
-                                <div class="body-text @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete" value="@(category.IsDelete == true ? 1 : 0)">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div>
+                                <div class="body-text totalProduct">@category.TotalProducts</div>
+                                <div class="body-text quantitySold">@category.QuantitySoldProduct</div>
+                                <div class="body-text isDelete @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete" value="@(category.IsDelete == true ? 1 : 0)">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div>
                                 <div class="list-icon-function">
                                     <div class="item edit" onclick="updateProductCategory(this, @category.Id)">
                                         <i class="icon-edit-3"></i>
@@ -93,6 +122,10 @@
                             </div>
                         </li>
                     }
+                    <div class="empty-order-history hidden">
+                        <i class="fas fa-box-open"></i>
+                        <h6>Trống</h6>
+                    </div>
                 </ul>
             </div>
         </div>
@@ -116,14 +149,14 @@
             </div>
             <div class="wg-table table-all-category">
                 <ul class="table-title flex gap20 mb-14">
-                    <li>
-                        <div class="body-title">Tên Nhãn Hàng</div>
+                    <li style="width: 300px">
+                        <a class="body-title" onclick="sortBrandName()">Tên Nhãn Hàng<i class="bi bi-chevron-expand"></i></a>
                     </li>
-                    <li>
-                        <div class="body-title">Số lượng sản phẩm</div>
+                    <li style="width: 150px">
+                        <a style="width: 150px" class="body-title" onclick="sortQuantityOfBrand()">Số lượng sản phẩm<i class="bi bi-chevron-expand"></i></a>
                     </li>
-                    <li>
-                        <div class="body-title">Số lượng đã bán</div>
+                    <li style="width: 150px">
+                        <a class="body-title" onclick="sortQuantitySoldOfBrand()">Số lượng đã bán<i class="bi bi-chevron-expand"></i></a>
                     </li>
                     <li>
                         <div class="body-title">Tùy chỉnh</div>
@@ -136,11 +169,11 @@
                         <li class="product-item gap14 brand-id-@(brand.Id)">
                             <input type="hidden" value="@brand.Id" class="brandId">
                             <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name" style="width: 350px">
+                                <div class="name" style="width: 300px">
                                     @brand.Name
                                 </div>
-                                <div class="body-text">@brand.Quantity</div>
-                                <div class="body-text">@brand.QuantityOfSold</div>
+                                <div class="body-text quantityx" style="width: 150px">@brand.Quantity</div>
+                                <div class="body-text quantitySold" style="width: 150px">@brand.QuantityOfSold</div>
                                 <div class="list-icon-function">
                                     <div class="item edit" onclick="updateBrand(@brand.Id)">
                                         <i class="icon-edit-3"></i>
@@ -278,6 +311,166 @@
 
 @section ScriptOptional {
     <script>
+        let productCateName = true;
+        let cateName = true;
+        let quantity = true;
+        let quantitySold = true;
+        let isDelete = true;
+        let brandName = true;
+        let quantityOfBrand = true;
+        let quantitySoldOfBrand = true;
+
+        function sortBrandName() {
+
+            var list = $('#list-brand').find('li')
+            list.sort(function (a, b) {
+                var nameA = $(a).find('.name').text().trim();
+                var nameB = $(b).find('.name').text().trim();
+                if (brandName) {
+                    return nameA.localeCompare(nameB, 'vi');
+                }
+                else {
+                    return nameB.localeCompare(nameA, 'vi');
+                }
+
+            })
+            brandName = !(brandName);
+            $('#list-brand').empty().append(list);
+
+        }
+
+        function sortQuantityOfBrand() {
+
+            var list = $('#list-brand').find('li')
+            list.sort(function (a, b) {
+                var nameA = $(a).find('.quantityx').text().trim();
+                var nameB = $(b).find('.quantityx').text().trim();
+                if (quantityOfBrand) {
+                    return nameA - nameB;
+                }
+                else {
+                    return nameB - nameA;
+                }
+
+            })
+            quantityOfBrand = !(quantityOfBrand);
+            $('#list-brand').empty().append(list);
+
+        }
+
+
+        function sortQuantitySoldOfBrand() {
+
+            var list = $('#list-brand').find('li')
+            list.sort(function (a, b) {
+                var nameA = $(a).find('.quantitySold').text().trim();
+                var nameB = $(b).find('.quantitySold').text().trim();
+                if (quantitySoldOfBrand) {
+                    return nameA - nameB;
+                }
+                else {
+                    return nameB - nameA;
+                }
+
+            })
+            quantitySoldOfBrand = !(quantitySoldOfBrand);
+            $('#list-brand').empty().append(list);
+
+        }
+
+        function sortProductCateName(){
+            var list = $('#list-category').find('li')
+            console.log(productCateName)
+            list.sort(function(a, b){
+                var nameA = $(a).find('.productCateName').text().trim();
+                var nameB = $(b).find('.productCateName').text().trim();
+                if(productCateName){
+                    return nameA.localeCompare(nameB, 'vi');
+                }
+                else{
+                    return nameB.localeCompare(nameA, 'vi');
+                }
+                
+            })
+            productCateName = !(productCateName);
+            $('#list-category').empty().append(list);
+        }
+
+        function sortCateName(){
+            var list = $('#list-category').find('li')
+            console.log(cateName)
+            list.sort(function(a, b){
+                var nameA = $(a).find('.cateName').text().trim();
+                var nameB = $(b).find('.cateName').text().trim();
+                if(cateName){
+                    return nameA.localeCompare(nameB, 'vi');
+                }
+                else{
+                    return nameB.localeCompare(nameA, 'vi');
+                }
+                
+            })
+            cateName = !(cateName);
+            $('#list-category').empty().append(list);
+        }
+
+        function sortQuantity(){
+            var list = $('#list-category').find('li')
+            console.log(quantity)
+            list.sort(function(a, b){
+                var nameA = $(a).find('.totalProduct').text().trim();
+                var nameB = $(b).find('.totalProduct').text().trim();
+                if(quantity){
+                    return nameA - nameB;
+                }
+                else{
+                    return nameB - nameA;
+                }
+                
+            })
+            quantity = !(quantity);
+            $('#list-category').empty().append(list);
+        }
+
+        function sortQuantitySold(){
+            var list = $('#list-category').find('li')
+            console.log(quantitySold)
+            list.sort(function(a, b){
+                var nameA = $(a).find('.quantitySold').text().trim();
+                var nameB = $(b).find('.quantitySold').text().trim();
+                if(quantitySold){
+                    return nameA - nameB;
+                }
+                else{
+                    return nameB - nameA;
+                }
+                
+            })
+            quantitySold = !quantitySold
+            $('#list-category').empty().append(list);
+        }
+
+        function orderStatus(str) {
+            var list = $('#list-category').find('li');
+            var flag = false;
+
+            list.each(function () {
+                if ($(this).find('.isDelete').hasClass(str)) {
+                    flag = true;
+                    $(this).removeClass('hidden');
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+
+            if (!flag) {
+                $('.empty-order-history').removeClass('hidden');
+            } else {
+                $('.empty-order-history').addClass('hidden');
+            }
+        }
+
+
         var regex = /^[0-9\W]+$/;
         var error = ""
         function isValidString(name) {
@@ -560,8 +753,7 @@
                 $('#error-brand').text(error)
             }
         }
-        }
-        }
+        
 </script>
 }
         

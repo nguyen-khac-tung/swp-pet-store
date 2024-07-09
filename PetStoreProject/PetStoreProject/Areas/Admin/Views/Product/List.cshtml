@@ -45,6 +45,17 @@
             color: var(--Heading);
             overflow: hidden;
         }
+
+        .empty-order-history {
+            margin-top: 4%;
+            margin-bottom: 4%;
+            text-align: center;
+        }
+
+        .empty-order-history h6 {
+            font-family: "Inter", sans-serif;
+            line-height: 25px;
+        }
     </style>
 }
 <div class="main-content-inner">
@@ -66,24 +77,9 @@
                                 <div class="text-tiny"> sản phẩm</div>
                             </div>
                         </li>
-                        <li>
+                        <li style="flex: 1">
                             <span class="form-search" id="form-search">
                             </span>
-                        </li>
-                        <li style="padding: 10px">
-                            <a class="drop-icon" href="#">Danh Mục</i></a>
-                            <!-- Home Version Dropdown Start -->
-                            <ul class="common_ddown" id="category-list" style="width: 190px">
-                                
-                            </ul>
-                            <!-- Home Version Dropdown End -->
-                        </li>
-                        <li style="padding: 10px">
-                            <a class="drop-icon" href="#">Danh Mục Sản Phẩm</a>
-                            <!-- Home Version Dropdown Start -->
-                            <ul class="common_ddown" id="product-category-list" style="max-height:235px; overflow: auto; width:290px">
-                                
-                            </ul>
                         </li>
                         <li>
                             <a class="tf-button style-1 w208" href="Create"><i class="icon-plus"></i>Thêm mới</a>
@@ -113,10 +109,17 @@
                         </ul>
                     </li>
                     <li style ="padding: 10px">
-                        <div class="body-title">Danh mục</div>
+                        <a class="drop-icon" href="#">Danh Mục</i></a>
+                        <!-- Home Version Dropdown Start -->
+                        <ul class="common_ddown" id="category-list" style="width: 190px">
+                        </ul>
+                        <!-- Home Version Dropdown End -->
                     </li>
                     <li style="padding: 10px">
-                        <div class="body-title">Danh mục sản phẩm</div>
+                        <a class="drop-icon" href="#">Danh Mục Sản Phẩm</a>
+                        <!-- Home Version Dropdown Start -->
+                        <ul class="common_ddown" id="product-category-list" style="max-height:235px; overflow: auto; width:290px">
+                        </ul>
                     </li>
                     <li style="padding: 10px">
                         <a class="drop-icon" href="#" style="width:100%">Trong kho</a>
@@ -137,6 +140,10 @@
                     <ul class="flex flex-column" id="product-list">
                         
                     </ul>
+                </div>
+                <div class="empty-order-history hidden">
+                    <i class="fas fa-box-open"></i>
+                    <h6>Trống</h6>
                 </div>
             </div>
             <div class="divider"></div>
@@ -231,6 +238,7 @@
         }
 
         function filter(tag) {
+            var isNull = true;
             $(tag).parent().parent().find('a').each(function () {
                 $(this).removeClass('choose');
             });
@@ -252,6 +260,7 @@
                 products.each(function () {
                     if ($(this).find('.isDelete').hasClass(delete_class) && $(this).find('.isSoldOut').hasClass(soldOut_class)) {
                         $(this).removeClass('hide')
+                        isNull = false;
                     }
                 })
             }
@@ -259,6 +268,7 @@
                 products.each(function () {
                     if ($(this).find('.isDelete').hasClass(delete_class)) {
                         $(this).removeClass('hide')
+                        isNull = false;
                     }
                 })
             }
@@ -267,13 +277,21 @@
                 products.each(function () {
                     if ($(this).find('.isSoldOut').hasClass(soldOut_class)) {
                         $(this).removeClass('hide')
+                        isNull = false;
                     }
                 })
             }
             else{
                 products.each(function () {
                     $(this).removeClass('hide')
+                    isNull = false;
                 })
+            }
+
+            if (!isNull) {
+                $('.empty-order-history').addClass('hidden');
+            } else {
+                $('.empty-order-history').removeClass('hidden');
             }
         }
 

@@ -4,6 +4,7 @@ namespace PetStoreProject.ViewModels
 {
     public class ItemsCheckoutViewModel
     {
+        public long OrderId { get; set; }
         public string Name { get; set; }
         public string Option { get; set; }
         public float Price { get; set; }

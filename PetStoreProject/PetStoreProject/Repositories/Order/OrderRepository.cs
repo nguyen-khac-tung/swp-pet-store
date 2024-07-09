@@ -17,23 +17,25 @@ namespace PetStoreProject.Repositories.Order
             if (customerId > 0)
             {
                 orders = (from o in _context.Orders
-                              where o.CustomerId == customerId
-                              select new OrderDetailViewModel
-                              {
-                                  CustomerId = o.CustomerId,
-                                  Email = o.Email,
-                                  FullName = o.FullName,
-                                  Phone = o.Phone,
-                                  ShipAddress = o.ShipAddress,
-                                  OrderDate = o.OrderDate,
-                                  TotalAmount = o.TotalAmount,
-                                  PaymentMethod = o.PaymetMethod,
-                                  OrderId = o.OrderId.ToString(),
-                                  ConsigneeName = o.ConsigneeFullName,
-                                  ConsigneePhone = o.ConsigneePhone,
-                                  totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
-                              }).ToList();
-            }else
+                          where o.CustomerId == customerId
+                          select new OrderDetailViewModel
+                          {
+                              CustomerId = o.CustomerId,
+                              Email = o.Email,
+                              FullName = o.FullName,
+                              Phone = o.Phone,
+                              ShipAddress = o.ShipAddress,
+                              OrderDate = o.OrderDate,
+                              TotalAmount = o.TotalAmount,
+                              PaymentMethod = o.PaymetMethod,
+                              OrderId = o.OrderId.ToString(),
+                              ConsigneeName = o.ConsigneeFullName,
+                              ConsigneePhone = o.ConsigneePhone,
+                              totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
+                              DiscountId = o.DiscountId
+                          }).ToList();
+            }
+            else
             {
                 orders = (from o in _context.Orders
                           select new OrderDetailViewModel
@@ -50,6 +52,7 @@ namespace PetStoreProject.Repositories.Order
                               ConsigneeName = o.ConsigneeFullName,
                               ConsigneePhone = o.ConsigneePhone,
                               totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
+                              DiscountId = o.DiscountId
                           }).ToList();
             }
             return orders;
@@ -64,7 +67,7 @@ namespace PetStoreProject.Repositories.Order
                 orders = orders.Where(o => o.OrderId.Equals(searchOrderId.ToString())).ToList();
             }
 
-            if(orderModel.SearchName != null)
+            if (orderModel.SearchName != null)
             {
                 orders = orders.Where(o => o.FullName.ToLower().Contains(orderModel.SearchName.ToLower())).ToList();
             }
@@ -77,7 +80,7 @@ namespace PetStoreProject.Repositories.Order
                 }
             }
 
-            if(orderModel.SearchConsigneeName != null)
+            if (orderModel.SearchConsigneeName != null)
             {
                 orders = orders.Where(o => o.ConsigneeName.ToLower().Contains(orderModel.SearchConsigneeName.ToLower())).ToList();
             }
@@ -119,10 +122,10 @@ namespace PetStoreProject.Repositories.Order
             return countOrder;
         }
 
-		public void AddOrder(Models.Order order)
-		{
-			_context.Orders.Add(order);
+        public void AddOrder(Models.Order order)
+        {
+            _context.Orders.Add(order);
             _context.SaveChanges();
-		}
-	}
+        }
+    }
 }

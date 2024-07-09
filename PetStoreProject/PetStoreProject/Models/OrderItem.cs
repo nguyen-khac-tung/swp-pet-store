@@ -12,7 +12,7 @@ public partial class OrderItem
     [Key]
     public int OrderItemId { get; set; }
 
-    public int OrderId { get; set; }
+    public long OrderId { get; set; }
 
     public int ProductOptionId { get; set; }
 

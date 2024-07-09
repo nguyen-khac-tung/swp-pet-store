@@ -6,7 +6,7 @@ namespace PetStoreProject.ViewModels
     {
         public int CheckoutId { get; set; }
 
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         public int? UserId { get; set; }
 
@@ -17,6 +17,8 @@ namespace PetStoreProject.ViewModels
         public string OrderPhone { get; set; }
 
         public string? OrderEmail { get; set; }
+
+        public DateTime OrderDate { get; set; }
 
         public string ConsigneeName { get; set; }
 
@@ -33,5 +35,7 @@ namespace PetStoreProject.ViewModels
         public string PaymentMethod { get; set; }
 
         public float TotalAmount { get; set; }
+
+        public int DiscountId { get; set; }
     }
 }

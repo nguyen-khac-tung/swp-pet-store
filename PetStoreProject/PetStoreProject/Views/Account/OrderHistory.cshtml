@@ -1,0 +1,52 @@
+﻿@using PetStoreProject.Areas.Admin.ViewModels;
+@model List<OrderDetailViewModel>;
+
+@{
+    Layout = null;
+}
+
+<div class="card">
+    <div class="card-header">Đơn Đặt Hàng</div>
+    <div class="card-body position-relative overflow-auto p-0">
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="table-order-history">
+                <table class="table align-middle">
+                    <thead>
+                    <th class="ps-4">Mã dịch vụ</th>
+                    <th>Người nhận</th>
+                    <th>SĐT nhận</th>
+                    <th>Ngày đặt</th>
+                    @* <th>Địa chỉ</th> *@
+                    <th>Sản phẩm</th>
+                    <th>Tổng tiền</th>
+                    <th>Hành động</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var orderHistory in Model)
+                        {
+                            <tr id="order-item-@orderHistory.OrderId">
+                                <td class="ps-4">#@orderHistory.OrderId</td>
+                                <td>@orderHistory.ConsigneeName</td>
+                                <td>@orderHistory.ConsigneePhone</td>
+                                <td class="orderdate-cell">@orderHistory.OrderDate</td>
+                                @* <td>@orderHistory.ShipAddress</td> *@
+                                <td>@orderHistory.totalOrderItems</td>
+                                <td>@orderHistory.TotalAmount.ToString("#,###")đ</td>
+                                <td><a class="btn btn-primary order-service-detail-btn" 
+                                    data-orderserviceid="@orderHistory.OrderId">Chi Tiết</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="order-empty text-center align-self-center">
+                <img src="~/img/order-service-empty.png" alt="Order service empty" />
+                <h3>Lịch Sử Đặt Lịch Trống</h3>
+            </div>
+        }
+    </div>
+</div>

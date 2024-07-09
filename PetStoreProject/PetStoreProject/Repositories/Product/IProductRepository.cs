@@ -37,6 +37,5 @@ namespace PetStoreProject.Repositories.Product
         public Task<string> UpdateProduct(ProductDetailForAdmin productUpdateRequest);
 
         public void DeleteProduct(int productId);
-
     }
 }

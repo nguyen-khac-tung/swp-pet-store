@@ -39,15 +39,16 @@ namespace PetStoreProject.Controllers
                 return BadRequest("No items to checkout");
             }
 
-            // Lưu trữ dữ liệu vào session hoặc viewdata
-            TempData["selectedProducts"] = Newtonsoft.Json.JsonConvert.SerializeObject(selectedProductCheckout);
-
             List<int> itemCheckoutIds = new List<int>();
             foreach (var item in selectedProductCheckout)
             {
                 item.Promotion = _cart.GetItemPromotion(item.ProductOptionId);
                 itemCheckoutIds.Add(item.ProductOptionId);
             }
+
+            // Lưu trữ dữ liệu vào session hoặc viewdata
+            TempData["selectedProducts"] = Newtonsoft.Json.JsonConvert.SerializeObject(selectedProductCheckout);
+
             Response.Cookies.Append("Checkout_Id", Newtonsoft.Json.JsonConvert.SerializeObject(itemCheckoutIds));
             return Ok();
         }
@@ -89,7 +90,7 @@ namespace PetStoreProject.Controllers
             var orderId = DateTime.Now.Ticks.ToString();
             var amount = checkout.TotalAmount;
 
-            checkout.OrderId = (int)Convert.ToInt64(orderId);
+            checkout.OrderId = long.Parse(orderId);
             Response.Cookies.Append("CheckoutInfo", Newtonsoft.Json.JsonConvert.SerializeObject(checkout));
 
             return Json(new
@@ -235,7 +236,8 @@ namespace PetStoreProject.Controllers
                         OrderId = checkoutInfo.OrderId,
                         ProductOptionId = item.ProductOptionId,
                         Quantity = item.Quantity,
-                        Price = item.Price
+                        Price = item.Price,
+                        PromotionId = item.PromotionId,
                     };
                     _orderItem.AddOrderItem(orderItem);
                 }
@@ -264,7 +266,8 @@ namespace PetStoreProject.Controllers
                         OrderId = checkoutInfo.OrderId,
                         ProductOptionId = item.ProductOptionId,
                         Quantity = item.Quantity,
-                        Price = item.Price
+                        Price = item.Price,
+                        PromotionId = item.PromotionId,
                     };
                     _orderItem.AddOrderItem(orderItem);
                 }

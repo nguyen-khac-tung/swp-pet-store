@@ -163,8 +163,12 @@
     margin-top: 100px;
 }
 /*Order detail*/
+#order-detail-body {
+    padding: 0px 10px;
+
+}
 #order-detail-body .row {
-    padding: 10px 0px;
+    padding: 5px 0px;
 }
 
 #orderDetail .form-group {

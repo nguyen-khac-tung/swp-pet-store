@@ -91,7 +91,7 @@
                         <div class="body-title no-select" onclick="SortByTotalAmount()">Tổng tiền<i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li>
-                        <div class="body-title">Action</div>
+                        <div class="body-title">Hành động</div>
                     </li>
                 </ul>
                 <ul class="flex flex-column" id="list-order-history">
@@ -112,59 +112,9 @@
 
 <div id="orderDetail" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content" style="border-radius:10px;">
+        <div class="modal-content" style="border-radius:10px;" id="modal_content_detail">
             <!-- Modal Header -->
-            <div class="modal-header" id="modal-header-style">
-                <h4 class="modal-title" id="orderId">Chi tiết đơn hàng (<p id="orderId"></p>)</h4>
-                <button type="button" class="close" data-dismiss="modal" style="font-size:20px; background: none" onclick="CloseDetail()">&times;</button>
-            </div>
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <form id="order-detail-body">
-                    <div class="row">
-                        <div class="form-group col-xl-8">
-                            <label for="orderName">Người đặt</label>
-                            <input type="text" class="form-control" id="orderName" placeholder="Người đặt" readonly>
-                        </div>
-                        <div class="form-group col-xl-4">
-                            <label for="orderPhone">SĐT đặt</label>
-                            <input type="text" class="form-control" id="orderPhone" placeholder="SĐT đặt" readonly>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-xl-8">
-                            <label for="consigneeName">Người nhận</label>
-                            <input type="text" class="form-control" id="consigneeName" placeholder="Người nhận" readonly>
-                        </div>
-                        <div class="form-group col-xl-4">
-                            <label for="consigneePhone">SĐT nhận</label>
-                            <input type="text" class="form-control" id="consigneePhone" placeholder="SĐT nhận" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="Address">Địa chỉ nhận hàng</label>
-                        <input type="text" class="form-control" id="Address" placeholder="Địa chỉ nhận hàng" readonly>
-                    </div>
-                    <div class="form-group row">
-                        <label for="paymethod">Phương thức thanh toán</label>
-                        <input type="text" class="form-control" id="paymethod" placeholder="Phương thức thanh toán" readonly>
-                    </div>
-                    <div class="form-group row">
-                        <label for="email">Email</label>
-                        <input type="text" class="form-control" id="email" placeholder="Email" readonly>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-xl-6">
-                            <label for="totalOrder">SL sản phẩm</label>
-                            <input type="text" class="form-control" id="totalOrder" placeholder="SL sản phẩm" readonly>
-                        </div>
-                        <div class="form-group col-xl-6">
-                            <label for="totalAmount">Tổng tiền</label>
-                            <input type="text" class="form-control" id="totalAmount" placeholder="Tổng tiền" readonly>
-                        </div>
-                    </div>
-                </form>
-            </div>
+            @* @Html.Partial("Detail"); *@
         </div>
     </div>
 </div>
@@ -229,7 +179,7 @@
     }
 
     function cycleSortOrder(currentOrder) {
-        const nextIndex = (sortingOrder.indexOf(currentOrder) + 1) % sortingOrder.length;
+        let nextIndex = (sortingOrder.indexOf(currentOrder) + 1) % sortingOrder.length;
         return sortingOrder[nextIndex];
     }
 
@@ -245,8 +195,8 @@
             success: function (response) {
                 $('#list-order-history').empty();
                 if (response.orderHistory.length > 0) {
-                    var html = "";
-                    for (var i = 0; i < response.orderHistory.length; i++) {
+                    let html = "";
+                    for (let i = 0; i < response.orderHistory.length; i++) {
                         html += ElementHtmlOrderHistory(response.orderHistory[i]);
                     }
                     $('#list-order-history').html(html);
@@ -267,8 +217,8 @@
     }
 
     function ElementHtmlOrderHistory(order) {
-        var html = "";
-        var amount = formatVND(order.totalAmount);
+        let html = "";
+        let amount = formatVND(order.totalAmount);
         let datetimeString = order.orderDate;
         let date = new Date(datetimeString);
         let year = date.getFullYear();
@@ -292,9 +242,6 @@
                             <div class="item eye">
                                 <i class="icon-eye" onclick="OrderDetail(this.parentElement.parentElement.parentElement)"></i>
                             </div>
-                            <div class="item trash">
-                                <i class="icon-trash-2"></i>
-                            </div>
                         </div>
                     </li>`;
         return html;
@@ -306,14 +253,14 @@
 
     function paging(currentPage, numberPage, pageSize) {
         if (numberPage > 0) {
-            var str = '<nav aria-label="Page navigation example"> <ul class="pagination">';
+            let str = '<nav aria-label="Page navigation example"> <ul class="pagination">';
             if (currentPage > 1) {
                 str += `<li class="page-item"><a class="page-link" onclick="nextPage(${currentPage - 1},${pageSize})" href="javascript:void(0);">Trang trước</a></li>`;
             } else {
                 str += `<li class="page-item"> <a class="page-link" href="javascript:void(0);" style="pointer-events:none; cursor:default; color:#b7b7b7;">Trang trước</a></li> `;
             }
-            var startPage = Math.max(1, currentPage - 2);
-            var endPage = Math.min(numberPage, currentPage + 2);
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(numberPage, currentPage + 2);
             if (startPage > 1) {
                 str += ` <li class="page-item"><a class="page-link" onclick="nextPage(${1},${pageSize})" href="javascript:void(0);">1</a></li>`;
                 if (startPage > 2) {
@@ -396,9 +343,9 @@
     }
 
     function DomLoaded() {
-        var searchOrderIdInput = document.querySelector('input[name="nameOrderId"]');
-        var searchNameOrder = document.querySelector('input[name="sNameOrder"]');
-        var sConsigneeName = document.querySelector('input[name="sConsigneeName"]');
+        let searchOrderIdInput = document.querySelector('input[name="nameOrderId"]');
+        let searchNameOrder = document.querySelector('input[name="sNameOrder"]');
+        let sConsigneeName = document.querySelector('input[name="sConsigneeName"]');
 
         searchOrderIdInput.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
@@ -458,24 +405,9 @@
 
     //detail
 
-    function OrderDetail(element) {
-        var orderData = element.getAttribute('data-order');
-        var order = JSON.parse(decodeURIComponent(orderData));
-        var money = formatVND(order.totalAmount);
-        $('#orderId').text('Chi tiết đơn hàng ( #' + order.orderId + ' )');
-        $('#orderName').val(order.fullName);
-        $('#orderPhone').val(order.phone);
-        $('#consigneeName').val(order.consigneeName);
-        $('#consigneePhone').val(order.consigneePhone);
-        $('#email').val(order.email);
-        $('#paymethod').val(order.paymentMethod);
-        $('#Address').val(order.shipAddress);
-        $('#totalOrder').val(order.totalOrderItems);
-        $('#totalAmount').val(money + "đ");
-        $('#orderDetail').modal("show");
-    }
 
     function CloseDetail() {
         $('#orderDetail').modal('hide');
     }
 </script>
+<script src="~/areas/js/list-order-history.js"></script>

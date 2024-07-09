@@ -1066,6 +1066,7 @@ namespace PetStoreProject.Repositories.Product
 			_context.Products.Update(product);
 			_context.SaveChangesAsync();
 		}
+
 	}
 }
 

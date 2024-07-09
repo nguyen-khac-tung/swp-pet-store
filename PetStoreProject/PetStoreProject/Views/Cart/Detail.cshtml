@@ -63,6 +63,7 @@
                                             if (item.Promotion.Value != null)
                                             {
                                                 price = price * (1 - (float)item.Promotion.Value / 100);
+                                                <input type="hidden" value="@item.Promotion.PromotionId" id="product_promotionId_@i"/>
                                             }
 
                                             var totalPrice = price * item.Quantity;
@@ -77,7 +78,8 @@
                                                     <input type="hidden" value="@option" id="product_option_@i" />
                                                 </td>
                                                 <td class="product-price">
-                                                <span class="amount cart-price" id="product_price_@i">@price.ToString("#,###") VND</span>
+                                                    <span class="amount cart-price" >@price.ToString("#,###") VND</span>
+                                                    <input type="hidden" value="@item.Price" id="product_price_@i"/>
                                                     @if(item.Promotion.Value != null)
                                                     {
                                                         <div>

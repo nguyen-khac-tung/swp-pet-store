@@ -19,6 +19,7 @@
     <Content Remove="wwwroot\js\checkout-form.js" />
     <Content Remove="wwwroot\js\checkout.js" />
     <Content Remove="wwwroot\js\myjs.js" />
+    <Content Remove="wwwroot\js\order-history-customer.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,6 +69,7 @@
     <None Include="wwwroot\js\checkout-form.js" />
     <None Include="wwwroot\js\checkout.js" />
     <None Include="wwwroot\js\myjs.js" />
+    <None Include="wwwroot\js\order-history-customer.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,6 +100,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\areas\css\list-service-style.css" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout-form.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\checkout.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\order-history-customer.js" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,6 +8,7 @@ using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
 using System.Globalization;
@@ -21,14 +22,16 @@ namespace PetStoreProject.Controllers
         private readonly EmailService _emailService;
         private readonly ICustomerRepository _customer;
         private readonly IServiceRepository _service;
+        private readonly IOrderRepository _order;
 
         public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer,
-            IServiceRepository service)
+            IServiceRepository service, IOrderRepository order)
         {
             _account = accountRepo;
             _emailService = emailService;
             _customer = customer;
             _service = service;
+            _order = order;
         }
 
         [HttpGet]
@@ -478,6 +481,20 @@ namespace PetStoreProject.Controllers
         public void CancelOrderService(int orderServiceId)
         {
             _service.DeleteOrderService(orderServiceId);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpPost]
+        public IActionResult OrderHistory(OrderModel orderCondition)
+        {
+            var email = HttpContext.Session.GetString("userEmail");
+            var customer = _customer.GetCustomer(email);
+
+            orderCondition.UserId = customer.CustomerId;
+
+            var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
+
+            return View(listOrderHistory);
         }
     }
 }

@@ -22,10 +22,12 @@ namespace PetStoreProject.Areas.Admin.ViewModels
 
         public string PaymentMethod { get; set; }
 
-        public double TotalAmount { get; set; }
+        public float TotalAmount { get; set; }
 
         public DateTime OrderDate { get; set; }
 
         public int totalOrderItems { get; set; } = 0;
+
+        public int? DiscountId { get; set; }
     }
 }

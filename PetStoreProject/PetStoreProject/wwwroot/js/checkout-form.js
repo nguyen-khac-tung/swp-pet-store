@@ -67,11 +67,12 @@ function fetchWards(district_id) {
 var OrderItems = [];
 var checkoutViewModel = "";
 
-function ItemOrders(OrderId, ProductOptionId, Quantity, Price) {
+function ItemOrders(OrderId, ProductOptionId, Quantity, Price, PromotionId) {
     this.OrderId = OrderId;
     this.ProductOptionId = ProductOptionId;
     this.Quantity = Quantity;
     this.Price = Price;
+    this.PromotionId = PromotionId;
 }
 
 function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderEmail, ConsigneeName,
@@ -98,11 +99,13 @@ function AddOrderItems() {
         var productOptionId = $('#product_productOptionId_' + i).val();
         var productPrice = $('#product_price_' + i).val();
         var productQuantity = $('#product_quantity_' + i).val();
+        var promotionId = $('#product_promotionId_' + i).val();
         var items = new ItemOrders(
             orderId,
             productOptionId,
             productQuantity,
-            productPrice
+            productPrice,
+            promotionId
         );
         OrderItems.push(items);
     }

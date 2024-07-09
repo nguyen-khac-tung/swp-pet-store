@@ -14,9 +14,6 @@
 
 <style>
 
-    #data-grid-view {
-        margin-left: 30px !important;
-    }
 
     .sidebar-scroll-list {
         max-height: 300px;
@@ -164,6 +161,12 @@
 
     .img_sold_out {
         opacity: 0.4;
+    }
+
+    .selected_style {
+        border:none;
+        border-radius: 5px;
+        padding: 5px;
     }
 
 </style>
@@ -327,19 +330,18 @@
 
 
                     <div class="single-select-block">
-                        <select name="pageSize" id="pageSizeSelect" onchange="changePageSize()">
+                        <select name="pageSize" id="pageSizeSelect" class="selected_style" onchange="changePageSize()">
                             <!option @(selectPageSize == 20 ? "selected" : "") value="21">20</!option>
                             <!option @(selectPageSize == 30 ? "selected" : "") value="30">30</!option>
                             <!option @(selectPageSize == 40 ? "selected" : "") value="39">40</!option>>
-
                         </select>
                     </div>
 
                     <!-- Toolbar Short Area Start -->
                     <div class="main-toolbar-sorter clearfix">
-                        <div class="toolbar-sorter d-md-flex align-items-center">
+                        <div class=" d-md-flex align-items-center">
                             @* <label style="width:80px">Sắp xếp:</label> *@
-                            <select id="selected_sort" onchange="selectedSort()" class="sorter wide">
+                            <select id="selected_sort" onchange="selectedSort()" class="sorter wide selected_style">
                                 <option selected value="">-- Sắp xếp --</option>
                                 <option value="ProductNameAZ">Tên, A tới Z</option>
                                 <option value="ProductNameZA">Tên, Z tới A</option>

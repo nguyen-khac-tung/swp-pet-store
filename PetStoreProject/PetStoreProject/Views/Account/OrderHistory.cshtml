@@ -17,7 +17,7 @@
                     <th>Người nhận</th>
                     <th>SĐT nhận</th>
                     <th>Ngày đặt</th>
-                    @* <th>Địa chỉ</th> *@
+                        @* <th>Địa chỉ</th> *@
                     <th>Sản phẩm</th>
                     <th>Tổng tiền</th>
                     <th>Hành động</th>
@@ -25,7 +25,7 @@
                     <tbody>
                         @foreach (var orderHistory in Model)
                         {
-                            <tr id="order-item-@orderHistory.OrderId">
+                            <tr id="order-item-@orderHistory.OrderId" data-order='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(orderHistory))'>
                                 <td class="ps-4">#@orderHistory.OrderId</td>
                                 <td>@orderHistory.ConsigneeName</td>
                                 <td>@orderHistory.ConsigneePhone</td>
@@ -33,8 +33,7 @@
                                 @* <td>@orderHistory.ShipAddress</td> *@
                                 <td>@orderHistory.totalOrderItems</td>
                                 <td>@orderHistory.TotalAmount.ToString("#,###")đ</td>
-                                <td><a class="btn btn-primary order-service-detail-btn" 
-                                    data-orderserviceid="@orderHistory.OrderId">Chi Tiết</a></td>
+                                <td><a class="btn btn-primary order-service-detail-btn" onclick="OrderHistoryDetail(this.parentElement.parentElement)">Chi Tiết</a></td>
                             </tr>
                         }
                     </tbody>
@@ -45,8 +44,37 @@
         {
             <div class="order-empty text-center align-self-center">
                 <img src="~/img/order-service-empty.png" alt="Order service empty" />
-                <h3>Lịch Sử Đặt Lịch Trống</h3>
+                <h3>Lịch Sử Đơn Hàng Trống</h3>
             </div>
         }
     </div>
 </div>
+
+<div id="orderDetail" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content" id="modal_content_detail">
+            <!-- Modal Header -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function OrderHistoryDetail(element) {
+        let orderData = element.getAttribute('data-order');
+        let order = JSON.parse(orderData);
+
+        $.ajax({
+            type: 'POST',
+            url: '/Account/OrderHistoryDetail',
+            data: JSON.stringify(order),
+            contentType: 'application/json; charset=utf-8',
+            success: function (response) {
+                $('#modal_content_detail').html(response);
+                $('#orderDetail').modal("show");
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+</script>

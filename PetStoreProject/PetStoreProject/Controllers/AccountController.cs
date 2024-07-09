@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Filters;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.Order;
+using PetStoreProject.Repositories.OrderItem;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
 using System.Globalization;
@@ -23,15 +26,19 @@ namespace PetStoreProject.Controllers
         private readonly ICustomerRepository _customer;
         private readonly IServiceRepository _service;
         private readonly IOrderRepository _order;
+        private readonly IDiscountRepository _discount;
+        private readonly IOrderItemRepository _orderItem;
 
         public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer,
-            IServiceRepository service, IOrderRepository order)
+            IServiceRepository service, IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem)
         {
             _account = accountRepo;
             _emailService = emailService;
             _customer = customer;
             _service = service;
             _order = order;
+            _discount = discount;
+            _orderItem = orderItem;
         }
 
         [HttpGet]
@@ -89,7 +96,7 @@ namespace PetStoreProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(RegisterViewModel registerInfor)
+        public IActionResult Register(ViewModels.RegisterViewModel registerInfor)
         {
             if (ModelState.IsValid)
             {
@@ -248,7 +255,7 @@ namespace PetStoreProject.Controllers
                 }
                 else
                 {
-                    var resgister = new RegisterViewModel { FullName = fullName, Email = email };
+                    var resgister = new ViewModels.RegisterViewModel { FullName = fullName, Email = email };
                     _account.AddNewCustomer(resgister);
                     HttpContext.Session.SetString("userEmail", email);
                     HttpContext.Session.SetString("userName", fullName);
@@ -495,6 +502,43 @@ namespace PetStoreProject.Controllers
             var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
 
             return View(listOrderHistory);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpPost]
+        public IActionResult OrderHistoryDetail([FromBody] OrderDetailViewModel order)
+        {
+            if (order.DiscountId.HasValue)
+            {
+                var discount = _discount.GetDiscount(order.DiscountId.Value);
+                ViewBag.discount = discount;
+            }
+            else
+            {
+                ViewBag.discount = null;
+            }
+            var checkoutDetail = new CheckoutViewModel
+            {
+                OrderId = long.Parse(order.OrderId),
+                OrderEmail = order.Email,
+                OrderName = order.FullName,
+                OrderPhone = order.Phone,
+                ConsigneeAddressDetail = order.ShipAddress,
+                ConsigneeName = order.ConsigneeName,
+                ConsigneePhone = order.ConsigneePhone,
+                PaymentMethod = order.PaymentMethod,
+                TotalAmount = order.TotalAmount,
+                ConsigneeWard = "",
+                ConsigneeProvince = "",
+                ConsigneeDistrict = "",
+                OrderDate = order.OrderDate
+            };
+
+            var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
+
+            ViewBag.listItemOrder = listItemOrder;
+
+            return View(checkoutDetail);
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using PetStoreProject.Areas.Admin.Service.Cloudinary;
+using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
@@ -9,10 +13,12 @@ namespace PetStoreProject.Repositories.Service
     public class ServiceRepository : IServiceRepository
     {
         private readonly PetStoreDBContext _context;
+        private readonly ICloudinaryService _cloudinary;
 
-        public ServiceRepository(PetStoreDBContext context)
+        public ServiceRepository(PetStoreDBContext context, ICloudinaryService cloudinary)
         {
             _context = context;
+            _cloudinary = cloudinary;
         }
 
         public List<ServiceViewModel> GetListServices()
@@ -122,6 +128,13 @@ namespace PetStoreProject.Repositories.Service
             return serviceOption;
         }
 
+        public List<string> GetAllWeightOfPet()
+        {
+            var weights = (from so in _context.ServiceOptions
+                           select so.Weight).Distinct().ToList();
+            return weights;
+        }
+
         public List<ServiceOptionViewModel> GetServiceOptions(int serviceId)
         {
             var serviceOptions = (from so in _context.ServiceOptions
@@ -163,6 +176,13 @@ namespace PetStoreProject.Repositories.Service
                                }).FirstOrDefault();
 
             return bookService;
+        }
+
+        public List<WorkingTime> GetAllWorkingTime()
+        {
+            var workingTimes = (from w in _context.WorkingTimes
+                                select w).ToList();
+            return workingTimes;
         }
 
         public List<TimeOnly> GetWorkingTime(int serviceId)
@@ -418,8 +438,68 @@ namespace PetStoreProject.Repositories.Service
             _context.SaveChanges();
         }
 
+        public async Task AddNewService(ServiceAdditionViewModel serviceAddition)
+        {
+            Models.Service service = new Models.Service();
+            service.Name = serviceAddition.Name;
+            service.Type = serviceAddition.Type;
+            service.SupDescription = serviceAddition.Subdescription;
+            service.Description = serviceAddition.Description;
+            service.IsDelete = false;
+
+            _context.Services.Add(service);
+            await _context.SaveChangesAsync();
+
+            var serviceId = service.ServiceId;
+            await AddWorkingTime(serviceAddition, serviceId);
+            await AddServiceOption(serviceAddition, serviceId);
+            await AddImageService(serviceAddition, serviceId);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddWorkingTime(ServiceAdditionViewModel serviceAddition, int serviceId)
+        {
+            var workingTimes = serviceAddition.WorkingTimes.Select(workingTime => new TimeService
+            {
+                WorkingTimeId = workingTime,
+                ServiceId = serviceId
+            });
+
+            _context.TimeServices.AddRange(workingTimes);
+        }
+
+        public async Task AddServiceOption(ServiceAdditionViewModel serviceAddition, int serviceId)
+        {
+            var serviceOptions = serviceAddition.ServiceOptions.Select(option => new ServiceOption
+            {
+                ServiceId = serviceId,
+                PetType = option.PetType,
+                Weight = option.Weight,
+                Price = option.Price,
+                IsDelete = false
+            });
+
+            _context.ServiceOptions.AddRange(serviceOptions);
+        }
+
+        public async Task AddImageService(ServiceAdditionViewModel serviceAddition, int serviceId)
+        {
+            int maxImageId = await _context.Images.MaxAsync(i => i.ImageId);
+            foreach (var imageData in serviceAddition.Images)
+            {
+                maxImageId++;
+                Models.Image image = new Models.Image();
+                image.ImageId = maxImageId;
+                ImageUploadResult result = await _cloudinary.UploadImage(imageData, "image_" + maxImageId);
+                image.ImageUrl = result.Url.ToString();
+                image.ServiceId = serviceId;
+                _context.Images.Add(image);
+            }
+        }
+
         public List<BookServiceViewModel> GetOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM,
-            int pageIndex, int pageSize)
+        int pageIndex, int pageSize)
         {
             List<BookServiceViewModel> orderedServices = new List<BookServiceViewModel>();
 
@@ -527,7 +607,7 @@ namespace PetStoreProject.Repositories.Service
         public List<String> GetListServiceTypes()
         {
             var listTypes = (from s in _context.Services
-                             select s.Type).Distinct().ToList();
+                             select s.Type).Distinct().OrderByDescending(s => s).ToList();
             return listTypes;
         }
 

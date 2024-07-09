@@ -25,6 +25,7 @@ namespace PetStoreProject.Controllers
 
         public IActionResult List()
         {
+            ViewData["ServiceTypes"] = _service.GetListServiceTypes();
             var services = _service.GetListServices();
             return View(services);
         }

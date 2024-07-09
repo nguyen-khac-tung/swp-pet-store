@@ -50,7 +50,7 @@
                             <li><a data-service-type="" onclick="searchServiceType(this)">- Tất cả dịch vụ</a></li>
                             @foreach (var type in serviceTypes)
                             {
-                                <li><a data-service-type="@type" onclick="searchServiceType(this)">- Dịch Vụ @type</a></li>
+                                <li><a data-service-type="@type" onclick="searchServiceType(this)">- @type</a></li>
                             }
                         </ul>
                     </li>
@@ -81,7 +81,7 @@
                                 <div class="body-text">#@service.ServiceId</div>
                                 <div class="body-text">@service.Price.ToString("#,###") VND</div>
                                 <div class="body-text">@service.UsedQuantity</div>
-                                <div class="body-text">Dịch Vụ @service.Type</div>
+                                <div class="body-text">@service.Type</div>
                                 <div>
                                     @if (service.IsDelete == true)
                                     {
@@ -155,7 +155,7 @@
                                             <div class="body-text">#${service.serviceId}</div>
                                             <div class="body-text">${service.price.toLocaleString('en-US')} VND</div>
                                             <div class="body-text">${service.usedQuantity}</div>
-                                            <div class="body-text">Dịch Vụ ${service.type}</div>
+                                            <div class="body-text">${service.type}</div>
                                             <div>`;
                             if (service.isDelete) {
                                 content += '<div class="block-not-available" > Ngừng kinh doanh</div>';

@@ -8,15 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("Size")]
-public partial class Size
+public partial class TagNews
 {
     [Key]
-    public int SizeId { get; set; }
+    public int TagId { get; set; }
 
     [StringLength(50)]
-    public string Name { get; set; }
+    public string TagName { get; set; }
 
-    [InverseProperty("Size")]
-    public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
+    [InverseProperty("Tag")]
+    public virtual ICollection<News> News { get; set; } = new List<News>();
 }

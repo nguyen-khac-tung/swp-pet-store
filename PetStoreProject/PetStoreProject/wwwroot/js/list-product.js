@@ -3,6 +3,7 @@ var selectedBrands = [];
 var selectedColors = [];
 var selectedSizes = [];
 var selectedStatus = [];
+var selectedPromotion = [];
 var pageSize = 21;
 var pageIndex = 1;
 var selectSort = "";
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedColors = [];
         selectedSizes = [];
         selectedStatus = [];
+        selectedPromotion = [];
         //---brands
         var checkboxesBrands = document.querySelectorAll(".brand-checkbox");
         checkboxesBrands.forEach(function (checkbox) {
@@ -95,8 +97,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         console.log("status: " + selectedColors);
 
+        //-- Promotion
+        let checkboxesPromotion = document.querySelectorAll(".promotion-checkboxes");
+        checkboxesPromotion.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedPromotion.push(checkbox.value);
+            }
+        });
 
-        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+
+        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -131,13 +141,18 @@ document.addEventListener('DOMContentLoaded', function () {
         range.style.left = "0%";
         range.style.right = "0%";
 
+        var checkboxes = document.querySelectorAll('.promotion-checkboxes');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+
         console.log("Filters cleared");
-        loadData(url, pageSize, 1, [], selectSort, priceMinInit, priceMaxInit, [], [], []);
+        loadData(url, pageSize, 1, [], selectSort, priceMinInit, priceMaxInit, [], [], [], []);
     });
 
 });
 
-function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
+function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus, selectedPromotion) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
@@ -147,7 +162,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
             url: url,
             pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectSort,
             priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes,
-            selectedStatus: selectedStatus
+            selectedStatus: selectedStatus, selectedPromotion: selectedPromotion
         },
         success: function (response) {
             if (response.data.length > 0) {
@@ -176,7 +191,9 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html += "<div class='single-template-product'>";
                     html += "<!-- Product Image Start -->";
                     html += "<div class='pro-img'>";
-
+                    if (items[index].promotion != null) {
+                        html += "<span class='sticker-sale'>-" + items[index].promotion.value + "%</span>";
+                    }
                     html += "<a href='/product/detail/" + items[index].productId + "'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
@@ -353,7 +370,7 @@ function paging(currentPage, numberPage, pageSize) {
 function nextPage(page, pageSize) {
     console.log("Nextpage:");
 
-    loadData(url, pageSize, page, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, page, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
 }
 function changePageSize() {
     console.log("changePageSize:");
@@ -361,7 +378,7 @@ function changePageSize() {
     console.log("PriceMax: " + priceInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
 }
 
 function formatVND(amount) {

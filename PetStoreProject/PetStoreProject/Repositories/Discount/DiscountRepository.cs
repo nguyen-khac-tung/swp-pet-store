@@ -245,6 +245,13 @@ namespace PetStoreProject.Repositories.Discount
             }
             return discounts;
         }
+
+        public float GetDiscountPrice(double total_amount, int discountId)
+        {
+            var item = _context.Discounts.Find(discountId);
+            var reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
+            return (float)reduce;
+        }
     }
 
 }

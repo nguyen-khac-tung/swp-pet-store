@@ -76,7 +76,7 @@ function ItemOrders(OrderId, ProductOptionId, Quantity, Price, PromotionId) {
 }
 
 function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderEmail, ConsigneeName,
-    ConsigneePhone, ConsigneeProvince, ConsigneeDistrict, ConsigneeWard, ConsigneeAddressDetail, PaymentMethod, TotalAmount) {
+    ConsigneePhone, ConsigneeProvince, ConsigneeDistrict, ConsigneeWard, ConsigneeAddressDetail, PaymentMethod, TotalAmount, DiscountId) {
     this.CheckoutId = 0;
     this.OrderItems = OrderItems;
     this.OrderName = OrderName;
@@ -90,6 +90,7 @@ function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderE
     this.ConsigneeAddressDetail = ConsigneeAddressDetail;
     this.PaymentMethod = PaymentMethod;
     this.TotalAmount = TotalAmount;
+    this.DiscountId = DiscountId;
 }
 
 function AddOrderItems() {
@@ -155,6 +156,7 @@ function ProcessPay() {
     var moneyToCheckout = $('#moneyToCheckout').val();
 
     var paymentMethod = $('#paymentMethod').val();
+    
 
     console.log(orderName + ' ' + orderPhone + ' ' + consigneeName + ' ' + consigneePhone +
         ' ' + selectConsigneeProvince + ' ' + selectConsigneeDistrict + ' ' + selectConsigneeWard +
@@ -175,7 +177,8 @@ function ProcessPay() {
         selectConsigneeWard,
         consigneeAddress,
         paymentMethod,
-        moneyToCheckout
+        moneyToCheckout,
+        discountId
     );
 
     processInfoCheckout(checkoutViewModel);
@@ -252,3 +255,31 @@ document.addEventListener('DOMContentLoaded', function () {
         consigneePhone.value = orderPhone.value;
     });
 });
+
+
+let title = '';
+let reduce = 0;
+let discountId = 0;
+function showDiscount(event) {
+    event.preventDefault()
+    $('#staticBackdrop').modal('show')
+}
+
+function chooseDiscount() {
+    title = $(this).parent().find('input[name="title"]').val();
+    discountId = $(this).val();
+    $('#title').text("Giảm " + title);
+    $('#title').parent().removeClass('hide')
+    reduce = $(this).parent().find('input[name="reduce"]').val();
+    console.log(title);
+}
+
+function useDiscount() {
+    $('#staticBackdrop').modal('hide')
+    let moneyToCheckout = $('#moneyToCheckout').val()
+    console.log(moneyToCheckout, reduce)
+    moneyToCheckout = parseFloat(moneyToCheckout) - reduce;
+    $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")
+    $('#moneyToCheckout').val(moneyToCheckout)
+    $('#save').text(title)
+}

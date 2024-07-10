@@ -125,5 +125,15 @@ namespace PetStoreProject.Repositories.Promotion
 			_context.SaveChanges();
 			CreatePromotion(promotion);
 		}
+
+		public List<int> GetBrandIdsByProductCateId(int productCateId)
+		{
+			List<int> listBrandIds = null;
+			listBrandIds = _context.Promotions
+							.Where(p => p.ProductCateId == productCateId)
+							.Select(p => p.BrandId ?? 0).ToList();
+
+			return listBrandIds;
+		}
 	}
 }

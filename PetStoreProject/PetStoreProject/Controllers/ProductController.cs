@@ -97,22 +97,22 @@ namespace PetStoreProject.Controllers
             return Json(new { success = true });
         }
 
-		[HttpGet("{productId}")]
-		public ActionResult Detail(int productId)
-		{
-			var email = HttpContext.Session.GetString("userEmail");
-			var customerId = _customer.GetCustomerId(email);
-			var product_detail = _product.GetDetail(productId);
+        [HttpGet("{productId}")]
+        public ActionResult Detail(int productId)
+        {
+            var email = HttpContext.Session.GetString("userEmail");
+            var customerId = _customer.GetCustomerId(email);
+            var product_detail = _product.GetDetail(productId);
 
-			ViewData["product_detail"] = product_detail;
-			ViewData["related_products"] = _product.getRelatedProduct(productId);
-			ViewData["listPID"] = _product.GetProductIDInWishList(customerId);
+            ViewData["product_detail"] = product_detail;
+            ViewData["related_products"] = _product.getRelatedProduct(productId);
+            ViewData["listPID"] = _product.GetProductIDInWishList(customerId);
             ViewData["listFeedback"] = _product.GetListFeedBack(productId);
 
             return View();
-		}
+        }
 
-		[HttpPost]
+        [HttpPost]
         public ActionResult quickPreview(int productId)
         {
             var product_detail = _product.GetDetail(productId);
@@ -151,7 +151,7 @@ namespace PetStoreProject.Controllers
                     categoryIds = [2];
                     break;
             }
-            var productDetails = _product.GetProductDetailDoGet(categoryIds, productCateId ?? 0); // thay doi
+            var productDetails = _product.GetProductDetail(categoryIds, productCateId ?? 0); // thay doi
             var totalItems = productDetails.Count();
             var pageIndex = page ?? 1;
             var _pageSize = pageSize ?? 21;
@@ -181,7 +181,7 @@ namespace PetStoreProject.Controllers
 
         [HttpPost]
         public ActionResult ListProduct(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
-            int priceMax, List<string>? selectedColors, List<string>? selectedSizes, List<string>? selectedStatus)
+            int priceMax, List<string>? selectedColors, List<string>? selectedSizes, List<string>? selectedStatus, List<string>? selectedPromotion)
         {
             List<int> cateId = new List<int>();
             int productCateId = 0;
@@ -216,12 +216,12 @@ namespace PetStoreProject.Controllers
 
             //Filter brand
             if (!selectedBrands.IsNullOrEmpty())
-                productDetails = _product.GetProductDetailDoPost(cateId, productCateId)
+                productDetails = _product.GetProductDetail(cateId, productCateId)
                     .Where(p => selectedBrands
                     .Contains(p.Brand) && (p.productOption[0].price >= priceMin && p.productOption[0].price <= priceMax))
                     .ToList();
             else
-                productDetails = _product.GetProductDetailDoPost(cateId, productCateId)
+                productDetails = _product.GetProductDetail(cateId, productCateId)
                     .Where(p => p.productOption[0].price >= priceMin && p.productOption[0].price <= priceMax)
                     .ToList();
 
@@ -282,6 +282,18 @@ namespace PetStoreProject.Controllers
                     .Where(p => p.productOption != null && p.productOption
                     .All(po => po != null && po.IsSoldOut == true))
                     .ToList();
+                }
+            }
+
+            if (!selectedPromotion.IsNullOrEmpty())
+            {
+                if (selectedPromotion.Count == 1 && selectedPromotion[0] == "True")
+                {
+                    productDetails = productDetails.Where(p => p.Promotion != null && p.Promotion.Status == true).ToList();
+                }
+                else if (selectedPromotion.Count == 1 && selectedPromotion[0] == "False")
+                {
+                    productDetails = productDetails.Where(p => p.Promotion == null).ToList();
                 }
             }
             var _pageSize = pageSize ?? 21;

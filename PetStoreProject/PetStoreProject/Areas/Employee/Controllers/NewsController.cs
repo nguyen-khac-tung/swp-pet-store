@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.News;
 
 namespace PetStoreProject.Areas.Employee.Controllers
 {
@@ -9,11 +10,19 @@ namespace PetStoreProject.Areas.Employee.Controllers
 	{
 		private readonly PetStoreDBContext _dbContext;
 		private readonly ICloudinaryService _cloudinaryService;
+		private readonly INewsRepository _newsRepository;
 
-		public NewsController(PetStoreDBContext petStoreDBContext, ICloudinaryService cloudinaryService)
+		public NewsController(PetStoreDBContext petStoreDBContext, ICloudinaryService cloudinaryService, INewsRepository newsRepository)
 		{
 			_dbContext = petStoreDBContext;
+			_newsRepository = newsRepository;
 			_cloudinaryService = cloudinaryService;
+		}
+
+		public IActionResult ListNews()
+		{
+			var listNews = _newsRepository.GetListNewsForEmployee();
+			return View(listNews);
 		}
 		public IActionResult CreateNews()
 		{

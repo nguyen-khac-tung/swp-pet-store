@@ -14,5 +14,11 @@
 
         public string url_thumnail { get; set;} 
 
+        public string tagName { get; set;}
+
+        public string employeeName { get; set;}
+
+        public bool status { get; set;}
+
     }
 }

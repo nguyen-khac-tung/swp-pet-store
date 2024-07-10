@@ -7,5 +7,7 @@ namespace PetStoreProject.Repositories.News
         public NewsViewModel GetNewsById(int id);
 
         public List<NewsViewModel> GetListNews();
+
+        public List<NewsViewModel> GetListNewsForEmployee();
     }
 }

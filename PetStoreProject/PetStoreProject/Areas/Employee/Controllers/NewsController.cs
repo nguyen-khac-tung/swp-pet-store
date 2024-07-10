@@ -1,54 +1,66 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.News;
 
 namespace PetStoreProject.Areas.Employee.Controllers
-{ 
-    [Area("Employee")]
-    public class NewsController : Controller
-    {
-        private readonly PetStoreDBContext _dbContext;
-        private readonly ICloudinaryService _cloudinaryService;
+{
+	[Area("Employee")]
+	public class NewsController : Controller
+	{
+		private readonly PetStoreDBContext _dbContext;
+		private readonly ICloudinaryService _cloudinaryService;
+		private readonly INewsRepository _newsRepository;
 
-        public NewsController(PetStoreDBContext petStoreDBContext, ICloudinaryService cloudinaryService)
-        {
-            _dbContext = petStoreDBContext;
-            _cloudinaryService = cloudinaryService;
-        }
-        public IActionResult CreateNews()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> SaveContent(string content, string title, IFormFile thumbnail)
-        {
-            var article = new News { Content = content, Title = title, EmployeeId = 1, DatePosted = DateOnly.FromDateTime(DateTime.Now)};
-            var uploadResult = await _cloudinaryService.UploadImage(thumbnail);
-            var url = uploadResult.Url.ToString();
-            int maxImgId = _dbContext.Images.Max(img => img.ImageId);
-            var newImage = new Image
-            {
-                ImageId = ++maxImgId,
-                ImageUrl =url!,
-                News = article,
-            };
-            _dbContext.News.Add(article);
-            _dbContext.Images.Add(newImage);
-            await _dbContext.SaveChangesAsync();
-            return RedirectToAction("CreateNews");
-        }
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file)
-        {
-            var uploadResult = await _cloudinaryService.UploadImage(file);
+		public NewsController(PetStoreDBContext petStoreDBContext, ICloudinaryService cloudinaryService, INewsRepository newsRepository)
+		{
+			_dbContext = petStoreDBContext;
+			_newsRepository = newsRepository;
+			_cloudinaryService = cloudinaryService;
+		}
 
-            if (uploadResult == null || uploadResult.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                return BadRequest("Could not upload image to Cloudinary");
-            }
+		public IActionResult ListNews()
+		{
+			var listNews = _newsRepository.GetListNewsForEmployee();
+			return View(listNews);
+		}
+		public IActionResult CreateNews()
+		{
+			var listag = _dbContext.TagNews.ToList();
+			return View(listag);
+		}
+		[HttpPost]
+		public async Task<IActionResult> SaveContent(string content, string title, string summary, IFormFile thumbnail, int tag)
+		{
+			var email = HttpContext.Session.GetString("userEmail");
+			var eid = _dbContext.Employees.Where(e => e.Email == email).Select(e => e.EmployeeId).FirstOrDefault();
+			var article = new News { Content = content, Title = title, Summary = summary, EmployeeId = eid, DatePosted = DateOnly.FromDateTime(DateTime.Now), TagId = tag };
+			var uploadResult = await _cloudinaryService.UploadImage(thumbnail);
+			var url = uploadResult.Url.ToString();
+			int maxImgId = _dbContext.Images.Max(img => img.ImageId);
+			var newImage = new Image
+			{
+				ImageId = ++maxImgId,
+				ImageUrl = url!,
+				News = article,
+			};
+			_dbContext.News.Add(article);
+			_dbContext.Images.Add(newImage);
+			await _dbContext.SaveChangesAsync();
+			return RedirectToAction("CreateNews");
+		}
+		[HttpPost]
+		public async Task<IActionResult> UploadImage(IFormFile file)
+		{
+			var uploadResult = await _cloudinaryService.UploadImage(file);
 
-            var url = uploadResult.Url.ToString();
-            return Json(new { location = url });
-        }
-    }
+			if (uploadResult == null || uploadResult.StatusCode != System.Net.HttpStatusCode.OK)
+			{
+				return BadRequest("Could not upload image to Cloudinary");
+			}
+
+			var url = uploadResult.Url.ToString();
+			return Json(new { location = url });
+		}
+	}
 }

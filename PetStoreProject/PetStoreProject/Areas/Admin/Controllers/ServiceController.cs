@@ -2,6 +2,7 @@
 using PetStoreProject.ViewModels;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.Models;
+using PetStoreProject.Areas.Admin.ViewModels;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -50,6 +51,23 @@ namespace PetStoreProject.Areas.Admin.Controllers
             ViewData["FirstServiceOption"] = _service.GetFistServiceOption(serviceId);
             ViewData["ListServiceOption"] = _service.GetServiceOptions(serviceId);
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            ViewData["ServiceTypes"] = _service.GetListServiceTypes();
+            ViewData["AllWorkingTime"] = _service.GetAllWorkingTime();
+            ViewData["AllPetWeight"] = _service.GetAllWeightOfPet();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ServiceAdditionViewModel serviceAddition)
+        {
+            await _service.AddNewService(serviceAddition);
+            var lastestServiceId = _service.GetAllServiceId().OrderByDescending(s => s).FirstOrDefault();
+            return Json(new { serviceId = lastestServiceId });
         }
     }
 }

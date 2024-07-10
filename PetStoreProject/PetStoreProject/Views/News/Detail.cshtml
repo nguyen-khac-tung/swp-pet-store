@@ -1,0 +1,55 @@
+﻿@model PetStoreProject.ViewModels.NewsViewModel
+
+@{
+    ViewData["Title"] = "News Detail";
+}
+
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewData["Title"]</title>
+    <style>
+        .blog-details ul {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+
+        .blog-details li {
+            margin-left: 1em; /* Điều chỉnh khoảng cách lùi vào */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blog-details-area adp_top adp_bottom news-detail">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-10 col-lg-10">
+                    <div class="blog-details">
+                        <div class="single-animart-blog">
+                            <div class="blog-img">
+                                <a href="blog-details.html">
+                                    <img class="full-img img-fluid" src="@Model.url_thumnail" alt="blog-details">
+                                </a>
+                                <div class="publish-meta-date">
+                                    <span>@Model.DateOnly</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-top-side mt-4">
+                            <h3 class="blog-dtl-header portfolio-header">@Model.Title</h3>
+                            <ul class="meta-box meta-blog d-flex">
+                                <li><i class="fa fa-user" aria-hidden="true"></i>By: Animart</li>
+                            </ul>
+                        </div>
+                        <p class="card-text">@Html.Raw(Model.Content)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

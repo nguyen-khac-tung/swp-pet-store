@@ -1,4 +1,5 @@
-﻿using PetStoreProject.Areas.Employee.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
@@ -20,7 +21,11 @@ namespace PetStoreProject.Repositories.Service
         
         public ServiceOptionViewModel GetNewServiceOptionBySelectWeight(int serviceId, string petType, string weight);
 
+        public List<string> GetAllWeightOfPet();
+
         public BookServiceViewModel GetBookingServiceInFo(int serviceOptionId);
+
+        public List<WorkingTime> GetAllWorkingTime();
 
         public List<TimeOnly> GetWorkingTime(int serviceId);
 
@@ -28,7 +33,7 @@ namespace PetStoreProject.Repositories.Service
 
         public List<TimeOnly> GetWorkingTimeByDateForUpdate(string date, TimeOnly orderTime);
 
-        public void AddOrderService(BookServiceViewModel bookServiceInfo);
+        public List<string> GetListServiceTypes();
 
         public List<ServiceViewModel> GetOtherServices(int serviceId);
 
@@ -36,9 +41,19 @@ namespace PetStoreProject.Repositories.Service
 
         public BookServiceViewModel GetOrderServiceDetail(int orderServiceId);
 
+        public void AddOrderService(BookServiceViewModel bookServiceInfo);
+
         public void UpdateOrderService(BookServiceViewModel orderService);
 
         public void DeleteOrderService(int orderServiceId);
+
+        public Task AddNewService(ServiceAdditionViewModel serviceAddition);
+
+        public Task AddWorkingTime(ServiceAdditionViewModel serviceAddition, int serviceId);
+
+        public Task AddServiceOption(ServiceAdditionViewModel serviceAddition, int serviceId);
+
+        public Task AddImageService(ServiceAdditionViewModel serviceAddition, int serviceId);
 
         public void UpdateStatusOrderService(int orderServiceId, string status, int employeeId);
 
@@ -46,8 +61,6 @@ namespace PetStoreProject.Repositories.Service
              int pageIndex, int pageSize);
 
         public int GetTotalCountOrderedServicesByConditions(OrderedServiceViewModel orderServiceVM);
-
-        public List<string> GetListServiceTypes();
 
         public List<ServiceTableViewModel> GetListServiceByConditions(ServiceFilterViewModel serviceFilterVM,
             int pageIndex, int pageSize);

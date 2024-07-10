@@ -25,7 +25,7 @@
     <link rel="stylesheet" type="text/css" href="/areas/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/areas/css/bootstrap-select.min.css">
     <link rel="stylesheet" type="text/css" href="/areas/css/style.css">
-    @* <link href="~/css/style.css" rel="stylesheet" /> *@
+    <link href="~/areas/css/style1.css" rel="stylesheet" />
     <link href="~/css/mystyle.css" rel="stylesheet" />
     <link href="~/css/icofont.css" rel="stylesheet" />
 
@@ -74,6 +74,24 @@
                             <ul class="menu-list">
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
+                                        <div class="text">Sản phẩm</div>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="sub-menu-item">
+                                            <a href="/employee/product/list" class="">
+                                                <div class="text">Danh sách sản phẩm</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="/employee/product/detail?productId=2" class="">
+                                                <div class="text">Chi tiết sản phẩm</div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-shopping-bag"></i></div>
                                         <div class="text">Dịch vụ</div>
                                     </a>
@@ -86,11 +104,6 @@
                                         <li class="sub-menu-item">
                                             <a href="/Employee/Service/ListService" class="">
                                                 <div class="text">Danh sách dịch vụ</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="/Employee/Service/ServiceDetail/1" class="">
-                                                <div class="text">Chi tiết dịch vụ</div>
                                             </a>
                                         </li>
                                     </ul>
@@ -132,12 +145,12 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="listCustomer" class="">
+                                            <a asp-action="ListNews" asp-controller="news" class="">
                                                 <div class="text">Danh Sách Bài Viết</div>
                                             </a>
                                         </li>
                                         <li class="sub-menu-item">
-                                            <a href="listCustomer" class="">
+                                            <a asp-action="CreateNews" asp-controller="news" class="">
                                                 <div class="text">Tạo Bài Viết</div>
                                             </a>
                                         </li>
@@ -406,7 +419,7 @@
                                                     <img src="~/img/profile-user-2.png" alt="">
                                                 </span>
                                                 <span class="flex flex-column">
-                                                    <span class="body-title mb-2" id="user_name">@userName</span>
+                                                    <span class="body-title mb-2">@userName</span>
                                                     <span class="text-tiny">Nhân viên</span>
                                                 </span>
                                             </span>
@@ -514,6 +527,7 @@
     <script src="~/js/plugins.js"></script>
     <!-- Main activaion js -->
     <script src="~/js/main.js"></script>
+    <script src="~/js/myjs.js"></script>
     @RenderSection("ScriptOptional", required: false)
 
 </body>

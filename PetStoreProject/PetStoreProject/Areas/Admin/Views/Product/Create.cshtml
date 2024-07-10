@@ -354,14 +354,18 @@
                 }
             }
         });
+
         tinymce.init({
             selector: '#description',
-            plugins: 'lists checklist',
-            toolbar: 'bold italic underline | align | checklist numlist bullist | removeformat',
+            plugins: 'lists link',
+            toolbar: 'bold italic underline | align | link numlist bullist | removeformat',
             menubar: false,
             setup: function (editor) {
+                editor.on('change', function () {
+                    $("#Description").val(editor.getContent());
+                });
                 editor.on('input', function () {
-                    description = editor.getContent();
+                    $("#Description").val(editor.getContent());
                 });
             }
         });

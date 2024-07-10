@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Dịch Vụ Thú Cưng";
+    var listServiceType = ViewData["ServiceTypes"] as List<string>;
 }
 
 <!-- Service Title Area Start Here -->
@@ -65,76 +66,43 @@
 </div>
 <!-- Service Title Area End  Here -->
 <!--Single service table area start -->
-<div class="pricing-table-area adp_top">
-    <div class="container">
-        <!-- Section Title Start Here -->
-        <div class="section-title">
-            <span>#Spa & Grooming</span>
-            <h2>Gói Dịch Vụ Lẻ</h2>
-        </div>
-        <!-- Section Title End Here -->
-        <div class="row">
-            @foreach (var service in Model)
-            {
-                if (service.Type == "Lẻ")
+@foreach (var type in listServiceType)
+{
+    <div class="pricing-table-area adp_top">
+        <div class="container">
+            <!-- Section Title Start Here -->
+            <div class="section-title mb-0">
+                <span>#Spa & Grooming</span>
+                <h2>Gói @type</h2>
+            </div>
+            <!-- Section Title End Here -->
+            <div class="row">
+                @foreach (var service in Model)
                 {
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="single-pricing-table text-center">
-                            <div class="price-icon">
-                                <img class="rounded-circle" src="@service.ImageUrl" alt="pric icon">
-                            </div>
-                            <h4 class="d-flex align-items-center justify-content-center">@service.Name</h4>
-                            <div class="price-tag">
-                                <span>@service.Price.ToString("#,###") VND</span>
-                            </div>
-                            <div class="adv-area">
-                                @Html.Raw(service.SupDescription)
-                            </div>
-                            <div class="small-btn">
-                                <a href="/service/detail/@service.ServiceId" tabindex="0">Xem Chi Tiết</a>
+                    if (service.Type == type)
+                    {
+                        <div class="col-lg-4 col-md-6 col-12 mt-5">
+                            <div class="single-pricing-table text-center">
+                                <div class="price-icon">
+                                    <img class="rounded-circle" src="@service.ImageUrl" alt="pric icon">
+                                </div>
+                                <h4 class="d-flex align-items-center justify-content-center">@service.Name</h4>
+                                <div class="price-tag">
+                                    <span>@service.Price.ToString("#,###") VND</span>
+                                </div>
+                                <div class="adv-area">
+                                    @Html.Raw(service.SupDescription)
+                                </div>
+                                <div class="small-btn">
+                                    <a href="/service/detail/@service.ServiceId" tabindex="0">Xem Chi Tiết</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
-            }
+            </div>
         </div>
     </div>
-</div>
+}
 <!--Single service area end -->
-<!--Single service table area start -->
-<div class="pricing-table-area adp_top adp_bottom">
-    <div class="container">
-        <!-- Section Title Start Here -->
-        <div class="section-title">
-            <span>#Spa & Grooming</span>
-            <h2>Gói Dịch Vụ Kết Hợp</h2>
-        </div>
-        <!-- Section Title End Here -->
-        <div class="row">
-            @foreach (var service in Model)
-            {
-                if (service.Type == "Kết hợp")
-                {
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="single-pricing-table text-center">
-                            <div class="price-icon">
-                                <img class="rounded-circle" src="@service.ImageUrl" alt="pric icon">
-                            </div>
-                            <h4 class="d-flex align-items-center justify-content-center">@service.Name</h4>
-                            <div class="price-tag">
-                                <span>@service.Price.ToString("#,###") VND</span>
-                            </div>
-                            <div class="adv-area">
-                                @Html.Raw(service.SupDescription)
-                            </div>
-                            <div class="small-btn">
-                                <a href="/service/detail/@service.ServiceId" tabindex="0">Xem Chi Tiết</a>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
-        </div>
-    </div>
-</div>
-<!--Single service area end -->
+<div class="adp_bottom"></div>

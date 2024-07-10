@@ -21,11 +21,11 @@ namespace PetStoreProject.Areas.Employee.Controllers
 			return View(listag);
 		}
 		[HttpPost]
-		public async Task<IActionResult> SaveContent(string content, string title, string summary, IFormFile thumbnail)
+		public async Task<IActionResult> SaveContent(string content, string title, string summary, IFormFile thumbnail, int tag)
 		{
 			var email = HttpContext.Session.GetString("userEmail");
 			var eid = _dbContext.Employees.Where(e => e.Email == email).Select(e => e.EmployeeId).FirstOrDefault();
-			var article = new News { Content = content, Title = title, Summary = summary, EmployeeId = eid, DatePosted = DateOnly.FromDateTime(DateTime.Now) };
+			var article = new News { Content = content, Title = title, Summary = summary, EmployeeId = eid, DatePosted = DateOnly.FromDateTime(DateTime.Now), TagId = tag };
 			var uploadResult = await _cloudinaryService.UploadImage(thumbnail);
 			var url = uploadResult.Url.ToString();
 			int maxImgId = _dbContext.Images.Max(img => img.ImageId);

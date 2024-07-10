@@ -105,9 +105,12 @@
                         width: auto;
                     }
 
-                form#newsForm .form-group .img-container {
-                    margin-left: 160px;
-                }
+        .img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
                     form#newsForm .form-group .img-container img {
                         display: block;
@@ -154,6 +157,7 @@
         </div>
         <div class="img-container">
             <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+        </div>
         <div class="form-group">
             <label for="editor">Content:</label>
             <textarea id="editor" name="content"></textarea>

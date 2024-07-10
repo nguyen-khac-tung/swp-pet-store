@@ -17,7 +17,8 @@ namespace PetStoreProject.Areas.Employee.Controllers
 		}
 		public IActionResult CreateNews()
 		{
-			return View();
+			var listag = _dbContext.TagNews.ToList();
+			return View(listag);
 		}
 		[HttpPost]
 		public async Task<IActionResult> SaveContent(string content, string title, string summary, IFormFile thumbnail)

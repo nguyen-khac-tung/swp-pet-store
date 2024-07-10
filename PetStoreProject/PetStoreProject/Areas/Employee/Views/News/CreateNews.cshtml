@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@model IEnumerable<PetStoreProject.Models.TagNews>
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -8,6 +11,7 @@
     <script>
         tinymce.init({
             selector: 'textarea',
+            height: 1000,
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
             tinycomments_mode: 'embedded',
@@ -30,41 +34,134 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         }
+        function validateForm() {
+            const title = document.getElementById('title').value;
+            const summary = document.getElementById('summary').value;
+            const thumbnail = document.getElementById('thumbnail').files.length;
+            const content = tinymce.get('editor').getContent();
+
+            if (title.trim() === "") {
+                alert("Tiêu đề không được bỏ trống.");
+                return false;
+            }
+
+            if (title.length > 100) {
+                alert("Tiêu đề không được vượt quá 100 ký tự.");
+                return false;
+            }
+
+            if (summary.trim() === "") {
+                alert("Tóm tắt không được bỏ trống.");
+                return false;
+            }
+
+            if (summary.length > 250) {
+                alert("Tóm tắt không được vượt quá 250 ký tự.");
+                return false;
+            }
+
+            if (thumbnail === 0) {
+                alert("Ảnh đại diện không được bỏ trống.");
+                return false;
+            }
+
+            if (content.trim() === "") {
+                alert("Nội dung không được bỏ trống.");
+                return false;
+            }
+
+            return true;
+        }
     </script>
     <style>
-        .img-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
+        form#newsForm {
+            width: 100%;
         }
 
-        .submit-container {
-            display: flex;
-            justify-content: center;
-            margin: 30px;
-        }
+            form#newsForm .form-group {
+                display: flex;
+                align-items: center;
+                margin: 20px;
+            }
 
-        .btn-lg {
-            font-size: 20px;
-        }
+                form#newsForm .form-group label {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin-right: 10px;
+                    width: 150px;
+                }
+
+                form#newsForm .form-group input,
+                form#newsForm .form-group select {
+                    font-size: 20px;
+                    padding: 10px;
+                    width: calc(100% - 160px);
+                    box-sizing: border-box;
+                    background-color: white;
+                    border: 1px solid #ccc;
+                }
+
+                    form#newsForm .form-group input[type="file"] {
+                        width: auto;
+                    }
+
+                form#newsForm .form-group .img-container {
+                    margin-left: 160px;
+                }
+
+                    form#newsForm .form-group .img-container img {
+                        display: block;
+                        width: 250px;
+                        height: 250px;
+                    }
+
+            form#newsForm .submit-container {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            form#newsForm .btn {
+                font-size: 20px;
+            }
+
     </style>
 </head>
 <body>
     <h3 style="text-align:center; margin: 20px">Tạo bài viết mới</h3>
-    <form method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data">
-        <label for="title" style="font-size: 24px; font-weight: bold; margin-right: 10px;">Title:</label>
-        <input type="text" id="title" name="Title" style="margin-bottom:20px; font-size: 20px; padding: 10px; width: 90%; box-sizing: border-box; background-color: white; border: 1px solid #ccc;" />
-        <label for="thumbnail" style="font-size: 24px; font-weight: bold; margin-right: 10px;">Thumbnail:</label>
-        <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" style="margin-bottom:20px; font-size: 20px; padding: 10px; width: 50%;" onchange="previewThumbnail(event)" />
-        <div class="img-container">
-            <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+    <form id="newsForm" method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="Title" />
+        </div>
+        <div class="form-group">
+            <label for="summary">Summary:</label>
+            <input type="text" id="summary" name="Summary" />
         </div>
 
-        <textarea id="editor" name="content"></textarea>
+        <div class="form-group">
+            <label for="tag">Tag:</label>
+            <select name="tag" id="tag">
+                @foreach(var tag in Model)
+                {
+                    <option value="@tag.TagId">@tag.TagName</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="thumbnail">Thumbnail:</label>
+            <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
+        </div>
+        <div class="img-container">
+            <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+        <div class="form-group">
+            <label for="editor">Content:</label>
+            <textarea id="editor" name="content"></textarea>
+        </div>
         <div class="submit-container">
             <button type="submit" class="btn btn-primary btn-lg">Save</button>
         </div>
     </form>
+
 </body>
 </html>

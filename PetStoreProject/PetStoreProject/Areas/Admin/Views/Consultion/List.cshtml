@@ -14,7 +14,7 @@
             cursor: pointer;
         }
 
-        div input {
+        div input, textarea {
             outline: 0;
             -webkit-box-shadow: none;
             -moz-box-shadow: none;
@@ -68,9 +68,6 @@
         </div>
         <!-- all-category -->
         <div class="wg-box">
-            <div class="flex items-center justify-between gap10 flex-wrap">
-                <a class="btn btn-primary tf-button style-1 w208" href="new-category.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class=" icon-plus"></i>Thêm mới</a>
-            </div>
             <div class="wg-table table-all-category">
                 <ul class="table-title flex gap20 mb-14 header-menu-list">
                     <li style="width: 280px">
@@ -100,25 +97,25 @@
                         <div class="body-title">Hành động</div>
                     </li>
                 </ul>
-                <ul class="flex flex-column scrollable-brand-list" id="list-category">
-                    @foreach (var category in listConsultion)
+                <ul class="flex flex-column scrollable-brand-list" id="list-consultation">
+                    @foreach (var item in listConsultion)
                     {
-                        <li class="product-item gap14 product-category-@category.Id">
-                            <input type="hidden" value="@category.Id" class="productCategoryId">
-                            <input type="hidden" value="@category.Id" class="categoryId">
+                        <li class="product-item gap14 consultation-@item.Id">
+                            <input type="hidden" value="@item.Id" class="productCategoryId">
+                            <input type="hidden" value="@item.Id" class="categoryId">
                             <div class="flex items-center justify-between gap20 flex-grow">
                                 <div class="productCateName" style="width: 280px">
-                                    @category.Name
+                                    @item.Name
                                 </div>
-                                <div class="body-text totalProduct">@category.Phone</div>
-                                <div class="body-text quantitySold">@category.Email</div>
-                                <div class="body-text quantitySold">@category.Title</div>
-                                <div class="body-text quantitySold">@category.Date</div>
-                                <div class="body-text isDelete @(category.Status ? "block-available" : "block-not-available") isDelete" value="@(category.Status ? 1 : 0)">
-                                    @(category.Status ? "Đã trả lời" : "Chưa trả lời")
+                                <div class="body-text totalProduct">@item.Phone</div>
+                                <div class="body-text quantitySold">@item.Email</div>
+                                <div class="body-text quantitySold">@item.Title</div>
+                                <div class="body-text quantitySold">@item.Date</div>
+                                <div class="body-text status @(item.Status ? "block-available" : "block-not-available") isDelete" value="@(item.Status ? 1 : 0)">
+                                    @(item.Status ? "Đã trả lời" : "Chưa trả lời")
                                 </div>
                                 <div class="list-icon-function">
-                                    <div class="item edit" onclick="updateProductCategory(this, @category.Name)">
+                                    <div class="item edit" onclick="responseConsultation(this, @item.Id)">
                                         <i class="icon-edit-3"></i>
                                     </div>
                                 </div>
@@ -137,3 +134,92 @@
     </div>
     <!-- /main-content-wrap -->
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mb-10" id="staticBackdropLabel">Yêu cầu từ khách hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-add-product">
+                    <div class="wg-box" style="gap: 0px">
+                        <input type="hidden" id="consultationId"></input>
+                        <div class="flex gap14">
+                            <fieldset class="name">
+                                <label class="body-title mb-10">Tên khách hàng</label>
+                                <input type="text" class="mb-10" id="name" readonly>
+                            </fieldset>
+                            <fieldset class="name">
+                                <label class="body-title mb-10">Số điện thoại</label>
+                                <input type="text" class="mb-10" id="phone" readonly>
+                            </fieldset>
+                        </div>
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Nội dung</label>
+                            <textarea type="text" class="mb-10" id="content" readonly></textarea>
+                        </fieldset>
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Trả lời<span class="tf-color-1">*</span></label>
+                            <input type="text" class="mb-10" placeholder="Nhập câu trả lời" id="messagge">
+                            <span class="text-danger" id="error-message"></span>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                <button type="button" class="btn btn-primary" onclick="reply()">Gửi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ScriptOptional{
+    <script>
+        function responseConsultation(tag, consultationId){
+            $('#staticBackdrop').modal('show')
+            $.ajax({
+                url: "/admin/consultion/detail",
+                type: "POST",
+                data: {consultionId : consultationId},
+                success: function (response) {
+                    console.log(response)
+                    $('#staticBackdropLabel').text(response.title);
+                    $('#name').val(response.name)
+                    $('#phone').val(response.phone)
+                    $('#content').val(response.content)
+                    $('#consultationId').val(response.id)
+                }
+            })
+        }
+
+        function reply(){
+            var message = $('#messagge').val().trim();
+            if(message == ''){
+                $('#error-message').text('Câu trả lời không được để trống.')
+            }
+            else{
+                var consultationId = $('#consultationId').val();
+            $.ajax({
+                url: "/admin/consultion/reply",
+                type: "POST",
+                data: {consultionId : consultationId, messagge : message},
+                success: function (response) {
+                    console.log(response)
+                    $('#staticBackdrop').modal('hide')
+                    let li = $('#list-consultation .consultation-'+consultationId)
+                    li.find('.status').text('Đã trả lời')
+                    li.find('.status').addClass('block-available')
+                    li.find('.status').removeClass('block-not-available')
+                    li.find('.edit').addClass('hidden')
+                }
+            })
+            }
+        }
+
+
+    </script>
+}

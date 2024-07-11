@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Consultion;
 using PetStoreProject.ViewModels;
@@ -18,25 +17,20 @@ namespace PetStoreProject.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Create()
         {
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            var formconsultion = new ConsultionViewModels();
-            ViewData["formconsultion"] = formconsultion;
-            return View(formconsultion);
-        }
-
         [HttpPost]
-        public JsonResult Create(CreateConsultion consultion)
+        public IActionResult Create(ConsultionCreateRequestViewModel consultion)
         {
-            var date = DateTime.Now;
-            var consultionId = _consultionRepository.CreateConsultion(consultion);
-            return Json(new { consultionId = consultionId });
+            if (ModelState.IsValid)
+            {
+                var consultionId = _consultionRepository.CreateConsultion(consultion);
+                ViewData["Result"] = "Success";
+            }
+            return View();
         }
     }
 }

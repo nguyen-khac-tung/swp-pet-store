@@ -18,7 +18,7 @@ namespace PetStoreProject.Repositories.Discount
             var duplicate = _context.Discounts.Any(d => d.Code == discount.Code && !((d.StartDate > discount.EndDate) || (d.EndDate < discount.StartDate)));
             if (duplicate)
             {
-                return "Không thể có 2 mã giảm giá trùng nhau tại một thời điểm";
+                return "Fail";
             }
             else
             {
@@ -51,7 +51,7 @@ namespace PetStoreProject.Repositories.Discount
                 };
                 _context.Discounts.Add(dis);
                 _context.SaveChanges();
-                return _context.Discounts.Where(d => d.DiscountId == id)?.Select(d => d.Code).FirstOrDefault();
+                return "Success";
             }
         }
 

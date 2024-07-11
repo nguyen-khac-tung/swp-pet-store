@@ -144,7 +144,7 @@ namespace PetStoreProject.Repositories.Product
                                  && p.Status == true
                               select p).ToList();
 
-            if (promotions != null)
+            if (promotions.Count != 0)
             {
                 int max = 0;
                 Models.Promotion p = new Models.Promotion();
@@ -195,32 +195,7 @@ namespace PetStoreProject.Repositories.Product
                     image.ImageUrl = formatUrl(image.ImageUrl);
                 }
 
-                var now = DateTime.Now;
-
-                var promotion = (from pm in _context.Promotions
-                                 where (pm.BrandId == 0 || pm.BrandId == p.BrandId)
-                                    && (pm.ProductCateId == 0 || pm.ProductCateId == p.ProductCateId)
-                                    && pm.Status == true
-                                 select pm).ToList();
-
-                if (promotion != null)
-                {
-                    var max_value = 0.0;
-                    var max_value_upcoming = 0.0;
-
-                    foreach (var item in promotion)
-                    {
-                        if (DateTime.Parse(item.StartDate.Trim()) <= now && DateTime.Parse(item.EndDate.Trim()) >= now)
-                        {
-                            var calculatedValue = (item.Value * p.Price / 100);
-                            if (calculatedValue > max_value)
-                            {
-                                max_value = (double)calculatedValue;
-                                p.Promotion = item;
-                            }
-                        }
-                    }
-                }
+                p.Promotion = GetPromotionForProduct(p.BrandId, p.ProductCateId);
 
                 p.images = images;
             }

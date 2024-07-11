@@ -171,8 +171,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                 var html = "";
                 var items = response.data;
                 for (var index = 0; index < items.length; index++) {
-                    const amount = items[index].productOption[0].price;
-                    const formattedAmount = formatVND(amount);
+
 
                     var isFavorite = false;
                     for (var i = 0; i < response.wishlist.length; i++) {
@@ -230,7 +229,16 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html += "<div class='grid_price'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html += "<span class='regular-price'>" + formattedAmount + " VND</span>";
+                        const amount = items[index].productOption[0].price;
+                        const formattedAmount = formatVND(amount);
+                        if (items[index].promotion != null) {
+                            const amountAfterDiscount = amount * (1 - items[index].promotion.value / 100);
+                            html += "<span class='regular-price'>" + formatVND(amountAfterDiscount) + " VND</span>";
+                            html += "<del class='discount_price'>" + formatVND(amount) + "VND</del>";
+                        } else {
+                            html += "<span class='regular-price'>" + formatVND(amount) + " VND</span>";
+                        }
+
                     }
 
                     html += "</div>";
@@ -250,7 +258,9 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html1 += "<div class='single-template-product'>";
                     html1 += "<!-- Product Image Start -->";
                     html1 += "<div class='pro-img'>";
-
+                    if (items[index].promotion != null) {
+                        html1 += "<span class='sticker-sale'>-" + items[index].promotion.value + "%</span>";
+                    }
                     html1 += "<a href='/product/detail/" + items[index].productId + "'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         var isSoldOutAll = true;
@@ -285,7 +295,16 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html1 += "</div>";
                     html1 += "<div class='grid_price'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html1 += "<span class='regular-price'>" + formattedAmount + " VND</span>";
+                        const amount = items[index].productOption[0].price;
+                        const formattedAmount = formatVND(amount);
+                        if (items[index].promotion != null) {
+                            const amountAfterDiscount = amount * (1 - items[index].promotion.value / 100);
+                            html1 += "<span class='regular-price'>" + formatVND(amountAfterDiscount) + " VND</span>";
+                            html1 += "<del class='discount_price'>" + formatVND(amount) + "VND</del>";
+                        } else {
+                            html1 += "<span class='regular-price'>" + formatVND(amount) + " VND</span>";
+                        }
+
                     }
                     html1 += "</div>";
                     html1 += "</div>";

@@ -69,5 +69,38 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var lastestServiceId = _service.GetAllServiceId().OrderByDescending(s => s).FirstOrDefault();
             return Json(new { serviceId = lastestServiceId });
         }
+
+        [HttpGet("/Admin/Service/Update/{serviceId}")]
+        public IActionResult Update(int serviceId)
+        {
+            ViewData["ServiceTypes"] = _service.GetListServiceTypes();
+            ViewData["AllWorkingTime"] = _service.GetAllWorkingTime();
+            ViewData["AllPetWeight"] = _service.GetAllWeightOfPet();
+            ViewData["ListServiceOption"] = _service.GetServiceOptions(serviceId);
+            var service = _service.GetServiceDetail(serviceId);
+            ViewData["ServiceDetail"] = new ServiceAdditionViewModel
+            {
+                ServiceId = service.ServiceId,
+                Name = service.Name,
+                Type = service.Type,
+                Subdescription = service.SubDescription,
+                Description = service.Description,
+                IsDelete = (bool)service.IsDelete,
+                Images = service.Images.Select(i => i.ImageUrl).ToList(),
+                WorkingTimes = _service.GetWorkingTimeId(serviceId)
+            };
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(ServiceAdditionViewModel serviceAddition) {
+            await _service.UpdateService(serviceAddition);
+            return Json(new { serviceId = serviceAddition.ServiceId });
+        }
+
+        [HttpPost]
+        public void Delete(int serviceId) { 
+            _service.DeleteService(serviceId);
+        }
     }
 }

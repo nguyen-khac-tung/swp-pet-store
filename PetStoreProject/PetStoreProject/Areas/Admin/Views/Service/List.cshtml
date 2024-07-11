@@ -72,7 +72,7 @@
                     <ul id="table-services" class="flex flex-column">
                         @foreach (var service in listServices)
                         {
-                            <li id="" class="countries-item">
+                            <li id="service-@service.ServiceId" class="countries-item">
                                 <div class="body-text">
                                     <img src="@service.ImageUrl" alt="Image" />
                                     <div>
@@ -86,18 +86,18 @@
                                 <div>
                                     @if (service.IsDelete == true)
                                     {
-                                        <div class="block-not-available">Ngừng kinh doanh</div>
+                                        <div class="service-status block-not-available">Ngừng kinh doanh</div>
                                     }
                                     else
                                     {
-                                        <div class="block-available">Còn kinh doanh</div>
+                                        <div class="service-status block-available">Còn kinh doanh</div>
                                     }
                                 </div>
                                 <div>
                                     <div class="list-icon-function">
                                         <a class="item eye " href="/Admin/Service/Detail/@service.ServiceId"><i class="icon-eye"></i></a>
-                                        <a class="item edit " data-serviceid="@service.ServiceId"><i class="icon-edit-3"></i></a>
-                                        <a class="item trash " data-serviceid="@service.ServiceId"><i class="icon-trash-2"></i></a>
+                                        <a class="item edit " href="/Admin/Service/Update/@service.ServiceId"><i class="icon-edit-3"></i></a>
+                                        <a class="item trash " onclick="@(service.IsDelete == false? "deleteService(" + @service.ServiceId + ")" : "")"><i class="icon-trash-2"></i></a>
                                     </div>
                                 </div>
                             </li>
@@ -125,6 +125,26 @@
     </div>
     <!-- /main-content-wrap -->
 </div>
+<!-- Confirm Delete Service modal start-->
+<div class="modal fade" id="confirmDeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content" style=" border-radius: 7px;">
+            <div class="modal-header pb-0 border-bottom-0" style="padding:16px; font-size: 14px;">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 16px 30px;">
+                <h5 style="margin-bottom: 14px;">Bạn có chắc chắn muốn xóa dịch vụ này?</h5>
+                <p class="mb-0">Bạn có thể cập nhật lại trạng thái trong phần cập nhật dịch vụ.</p>
+            </div>
+            <div class="modal-footer border-top-0" style="padding: 12px 20px;">
+                <button type="button" class="btn btn-light" style="font-size: 16px" data-bs-dismiss="modal">Không</button>
+                <button type="button" class="btn btn-danger" style="font-size: 16px; border-radius: 5px;" id="confirmDeleteBtn">Có, hãy xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Confirm Delete Service modal end-->
 @section ScriptOptional {
     <script>
         $("document").ready(function () {
@@ -148,34 +168,34 @@
                     if (response.listService != null && response.listService.length > 0) {
                         let content = '';
                         response.listService.forEach(function (service) {
-                            content += `<li id="" class="countries-item">
-                                        <div class="body-text">
-                                            <img src="${service.imageUrl}" alt="Image" />
-                                            <div>
-                                                ${service.name}
-                                            </div>
-                                        </div>
-                                        <div class="body-text">#${service.serviceId}</div>
-                                        <div class="body-text">${service.price.toLocaleString('en-US')} VND</div>
-                                        <div class="body-text">${service.usedQuantity}</div>
-                                        <div class="body-text">${service.type}</div>
-                                        <div>`;
+                            content += `<li id="service-${service.serviceId}" class="countries-item">
+                                                        <div class="body-text">
+                                                            <img src="${service.imageUrl}" alt="Image" />
+                                                            <div>
+                                                                ${service.name}
+                                                            </div>
+                                                        </div>
+                                                        <div class="body-text">#${service.serviceId}</div>
+                                                        <div class="body-text">${service.price.toLocaleString('en-US')} VND</div>
+                                                        <div class="body-text">${service.usedQuantity}</div>
+                                                        <div class="body-text">${service.type}</div>
+                                                        <div>`;
                             if (service.isDelete) {
-                                content += '<div class="block-not-available" > Ngừng kinh doanh</div>';
+                                content += '<div class="service-status block-not-available" > Ngừng kinh doanh</div>';
                             }
                             else {
-                                content += '<div class="block-available">Còn kinh doanh</div>';
+                                content += '<div class="service-status block-available">Còn kinh doanh</div>';
                             }
 
                             content += `</div >
-                                        <div>
-                                            <div class="list-icon-function">
-                                                <a class="item eye " href="/Admin/Service/Detail/${service.serviceId}"><i class="icon-eye"></i></a>
-                                                <a class="item edit " data-serviceid="${service.serviceId}"><i class="icon-edit-3"></i></a>
-                                                <a class="item trash " data-serviceid="${service.serviceId}"><i class="icon-trash-2"></i></a>
+                                            <div>
+                                                <div class="list-icon-function">
+                                                    <a class="item eye " href="/Admin/Service/Detail/${service.serviceId}"><i class="icon-eye"></i></a>
+                                                    <a class="item edit " href="/Admin/Service/Update/${service.serviceId}"><i class="icon-edit-3"></i></a>
+                                                    <a class="item trash " onclick="${service.isDelete == false ? `deleteService(${service.serviceId})` : ''}"><i class="icon-trash-2"></i></a>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li> `;
+                                        </li> `;
                         });
 
                         $("#table-services").empty();
@@ -184,9 +204,9 @@
                     } else {
                         $('#table-services').empty();
                         let content = `<div class="empty-order-history">
-                                            <i class="fas fa-box-open"></i>
-                                            <h6>Dịch vụ thú cưng trống.</h6>
-                                        </div>`;
+                                                            <i class="fas fa-box-open"></i>
+                                                            <h6>Dịch vụ thú cưng trống.</h6>
+                                                        </div>`;
                         $('#table-services').html(content);
                         $("#paging-navigation").empty();
                     }
@@ -195,6 +215,31 @@
                 error(xhr, status, error) {
                     console.error("Error:", error);
                 }
+            });
+        }
+
+        function deleteService(serviceId) {
+            $("#confirmDeleteModal").modal("show");
+
+            $('#confirmDeleteBtn').click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/Service/Delete',
+                    data: { serviceId: serviceId },
+
+                    success: function () {
+                        let status = $("#service-" + serviceId).find(".service-status");
+                        status.text("Ngừng kinh doanh").removeClass("block-available").addClass("block-not-available");
+
+                        $("#service-" + serviceId).find(".trash").removeAttr("onclick");
+
+                        $("#confirmDeleteModal").modal("hide");
+                    },
+
+                    error(xhr, status, error) {
+                        console.error("Error:", error);
+                    },
+                });
             });
         }
     </script>

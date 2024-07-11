@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.News;
 using PetStoreProject.ViewModels;
@@ -26,10 +27,18 @@ namespace PetStoreProject.Controllers
 			return View(model);
 		}
 
-		public IActionResult List()
+		public IActionResult List(int? page, int? pageSize)
         {
+            if(page == null)
+            {
+                page = 1;
+            }
+            if(pageSize == null)
+            {
+                pageSize = 12;
+            }
             var listNews = _newsRepository.GetListNews();
-            return View(listNews);
+            return View(listNews.ToPagedList((int)page, (int)pageSize));
         }
     }
 }

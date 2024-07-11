@@ -191,8 +191,8 @@
             if (type == 3) {
                 $('#date1').addClass('hide')
                 $('#date2').removeClass('hide')
-                $('#quantity').attr('value', 'Không giới hạn')
-                $('#max-use').attr('value', 1)
+                $('#quantity').val('Không giới hạn');
+                $('#max-use').val('1');
                 $('#quantity').attr('readonly', true)
                 $('#max-use').attr('readonly', true)
 
@@ -200,8 +200,8 @@
             else{
                 $('#date2').addClass('hide')
                 $('#date1').removeClass('hide')
-                $('#quantity').attr('value', '')
-                $('#max-use').attr('value', '')
+                $('#quantity').val('')
+                $('#max-use').val('')
                 $('#quantity').attr('readonly', false)
                 $('#max-use').attr('readonly', false)
             }
@@ -355,7 +355,12 @@
                     type: "POST",
                     data: {discount : data},
                     success: function(response){
-                        alert('Mã giảm giá ' + response.trim() + ' được thêm thành công')
+                        if(response == "Success"){
+                            alert('Mã giảm giá ' + code + ' được thêm thành công')
+                        }
+                        else{
+                            alert('Tạo thất bại. Mã giảm giá ' + code + ' đã tồn tại')
+                        }
                     },
                     error: function (xhr, status, error) {
                         alert('Tạo mã giảm giá thất bại')

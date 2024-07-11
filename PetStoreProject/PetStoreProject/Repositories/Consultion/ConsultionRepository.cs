@@ -22,7 +22,7 @@ namespace PetStoreProject.Repositories.Consultion
                 PhoneNumber = consultion.Phone,
                 Title = consultion.Title,
                 Content = consultion.Content,
-                Date = DateTime.Now,
+                Date = new DateOnly(),
                 Status = false,
             };
             _dbContext.Consultations.Add(newConsultation);
@@ -33,18 +33,19 @@ namespace PetStoreProject.Repositories.Consultion
 
         public List<ConsultionViewForAdmin> GetListConsultion()
         {
-            var listConsultion = (from c in _dbContext.Consultations
-                                  select new ConsultionViewForAdmin
-                                  {
-                                      Id = c.ConsultationId,
-                                      Name = c.Name,
-                                      Email = c.Email,
-                                      Phone = c.PhoneNumber,
-                                      Title = c.Title,
-                                      Date = c.Date,
-                                      Status = c.Status,
-                                  }).ToList();
-            return listConsultion;
+            var listConsultation = (from c in _dbContext.Consultations
+                                    select new ConsultionViewForAdmin
+                                    {
+                                        Id = c.ConsultationId,
+                                        Name = c.Name,  // Giả sử Name không bao giờ là NULL
+                                        Email = c.Email ?? "No email provided",  // Nếu Email là NULL, sử dụng giá trị mặc định
+                                        Phone = c.PhoneNumber ?? "No phone number",  // Tương tự như trên
+                                        Title = c.Title ?? "No title",  // Tương tự như trên
+                                        Date = c.Date,  // Giả sử Date không bao giờ là NULL
+                                        Status = c.Status 
+                                    }).ToList();
+
+            return listConsultation;
         }
     }
 }

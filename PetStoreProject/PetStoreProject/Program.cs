@@ -16,6 +16,7 @@ using PetStoreProject.Repositories.DiscountType;
 using PetStoreProject.Repositories.Employee;
 using PetStoreProject.Repositories.FeedBack;
 using PetStoreProject.Repositories.Image;
+using PetStoreProject.Repositories.News;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
 using PetStoreProject.Repositories.OrderService;
@@ -69,6 +70,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IWishListRepository, WishListRepository>();
 
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
 
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 

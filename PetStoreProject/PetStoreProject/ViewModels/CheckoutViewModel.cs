@@ -36,6 +36,6 @@ namespace PetStoreProject.ViewModels
 
         public float TotalAmount { get; set; }
 
-        public int DiscountId { get; set; }
+        public int? DiscountId { get; set; }
     }
 }

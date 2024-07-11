@@ -3,6 +3,7 @@ var selectedBrands = [];
 var selectedColors = [];
 var selectedSizes = [];
 var selectedStatus = [];
+var selectedPromotion = [];
 var pageSize = 21;
 var pageIndex = 1;
 var selectSort = "";
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedColors = [];
         selectedSizes = [];
         selectedStatus = [];
+        selectedPromotion = [];
         //---brands
         var checkboxesBrands = document.querySelectorAll(".brand-checkbox");
         checkboxesBrands.forEach(function (checkbox) {
@@ -95,8 +97,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         console.log("status: " + selectedColors);
 
+        //-- Promotion
+        let checkboxesPromotion = document.querySelectorAll(".promotion-checkboxes");
+        checkboxesPromotion.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedPromotion.push(checkbox.value);
+            }
+        });
 
-        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+
+        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -131,13 +141,18 @@ document.addEventListener('DOMContentLoaded', function () {
         range.style.left = "0%";
         range.style.right = "0%";
 
+        var checkboxes = document.querySelectorAll('.promotion-checkboxes');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+
         console.log("Filters cleared");
-        loadData(url, pageSize, 1, [], selectSort, priceMinInit, priceMaxInit, [], [], []);
+        loadData(url, pageSize, 1, [], selectSort, priceMinInit, priceMaxInit, [], [], [], []);
     });
 
 });
 
-function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus) {
+function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus, selectedPromotion) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
@@ -147,7 +162,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
             url: url,
             pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectSort,
             priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes,
-            selectedStatus: selectedStatus
+            selectedStatus: selectedStatus, selectedPromotion: selectedPromotion
         },
         success: function (response) {
             if (response.data.length > 0) {
@@ -156,8 +171,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                 var html = "";
                 var items = response.data;
                 for (var index = 0; index < items.length; index++) {
-                    const amount = items[index].productOption[0].price;
-                    const formattedAmount = formatVND(amount);
+
 
                     var isFavorite = false;
                     for (var i = 0; i < response.wishlist.length; i++) {
@@ -176,7 +190,9 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html += "<div class='single-template-product'>";
                     html += "<!-- Product Image Start -->";
                     html += "<div class='pro-img'>";
-
+                    if (items[index].promotion != null) {
+                        html += "<span class='sticker-sale'>-" + items[index].promotion.value + "%</span>";
+                    }
                     html += "<a href='/product/detail/" + items[index].productId + "'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
@@ -213,7 +229,16 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html += "<div class='grid_price'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html += "<span class='regular-price'>" + formattedAmount + " VND</span>";
+                        const amount = items[index].productOption[0].price;
+                        const formattedAmount = formatVND(amount);
+                        if (items[index].promotion != null) {
+                            const amountAfterDiscount = amount * (1 - items[index].promotion.value / 100);
+                            html += "<span class='regular-price'>" + formatVND(amountAfterDiscount) + " VND</span>";
+                            html += "<del class='discount_price'>" + formatVND(amount) + "VND</del>";
+                        } else {
+                            html += "<span class='regular-price'>" + formatVND(amount) + " VND</span>";
+                        }
+
                     }
 
                     html += "</div>";
@@ -233,7 +258,9 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html1 += "<div class='single-template-product'>";
                     html1 += "<!-- Product Image Start -->";
                     html1 += "<div class='pro-img'>";
-
+                    if (items[index].promotion != null) {
+                        html1 += "<span class='sticker-sale'>-" + items[index].promotion.value + "%</span>";
+                    }
                     html1 += "<a href='/product/detail/" + items[index].productId + "'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         var isSoldOutAll = true;
@@ -268,7 +295,16 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html1 += "</div>";
                     html1 += "<div class='grid_price'>";
                     if (items[index].productOption && items[index].productOption.length > 0) {
-                        html1 += "<span class='regular-price'>" + formattedAmount + " VND</span>";
+                        const amount = items[index].productOption[0].price;
+                        const formattedAmount = formatVND(amount);
+                        if (items[index].promotion != null) {
+                            const amountAfterDiscount = amount * (1 - items[index].promotion.value / 100);
+                            html1 += "<span class='regular-price'>" + formatVND(amountAfterDiscount) + " VND</span>";
+                            html1 += "<del class='discount_price'>" + formatVND(amount) + "VND</del>";
+                        } else {
+                            html1 += "<span class='regular-price'>" + formatVND(amount) + " VND</span>";
+                        }
+
                     }
                     html1 += "</div>";
                     html1 += "</div>";
@@ -353,7 +389,7 @@ function paging(currentPage, numberPage, pageSize) {
 function nextPage(page, pageSize) {
     console.log("Nextpage:");
 
-    loadData(url, pageSize, page, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, page, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
 }
 function changePageSize() {
     console.log("changePageSize:");
@@ -361,7 +397,7 @@ function changePageSize() {
     console.log("PriceMax: " + priceInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
+    loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
 }
 
 function formatVND(amount) {

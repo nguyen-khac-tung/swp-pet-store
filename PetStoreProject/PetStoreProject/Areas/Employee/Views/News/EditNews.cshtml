@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PetStoreProject.Models.TagNews>
+﻿@model PetStoreProject.ViewModels.NewsViewModel
+
 
 
 <!DOCTYPE html>
@@ -57,11 +58,6 @@
 
             if (summary.length > 250) {
                 alert("Tóm tắt không được vượt quá 250 ký tự.");
-                return false;
-            }
-
-            if (thumbnail === 0) {
-                alert("Ảnh đại diện không được bỏ trống.");
                 return false;
             }
 
@@ -131,36 +127,41 @@
 </head>
 <body>
     <h3 style="text-align:center; margin: 20px">Tạo bài viết mới</h3>
-    <form id="newsForm" method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <form id="newsForm" method="post" action="/Employee/news/UpdateNews" enctype="multipart/form-data" onsubmit="return validateForm()">
         <div class="form-group">
             <label for="title">Title:</label>
-            <input type="text" id="title" name="Title" />
+            <input type="text" id="title" name="Title" value="@Model.Title"/>
         </div>
+        
         <div class="form-group">
             <label for="summary">Summary:</label>
-            <input type="text" id="summary" name="Summary" />
+            <input type="text" id="summary" name="Summary" value="@Model.Description"/>
         </div>
 
         <div class="form-group">
             <label for="tag">Tag:</label>
             <select name="tag" id="tag">
-                @foreach(var tag in Model)
+                @foreach (var tag in ViewBag.listTag as List<TagNews>)
                 {
+                    @if(tag.TagId == Model.tagId)
+                    {
+                        <option value="@tag.TagId" selected>@tag.TagName</option>
+                    }
                     <option value="@tag.TagId">@tag.TagName</option>
                 }
             </select>
         </div>
-
+        <input type="hidden" name="newsId" value="@Model.NewsId" />
         <div class="form-group">
             <label for="thumbnail">Thumbnail:</label>
-            <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
+            <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" value="@Model.url_thumnail" onchange="previewThumbnail(event)" />
         </div>
         <div class="img-container">
-            <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+            <img id="thumbnailPreview" class="thumbnail-preview" src="@Model.url_thumnail" alt="Thumbnail Preview" style=" width: 250px; height: 250px;" />
         </div>
         <div class="form-group">
             <label for="editor">Content:</label>
-            <textarea id="editor" name="content"></textarea>
+            <textarea id="editor" name="content" >@Model.Content</textarea>
         </div>
         <div class="submit-container">
             <button type="submit" class="btn btn-primary btn-lg">Save</button>

@@ -19,9 +19,10 @@ namespace PetStoreProject.Controllers
         private readonly IOrderRepository _order;
         private readonly IOrderItemRepository _orderItem;
         private readonly IDiscountRepository _discount;
+        private readonly PetStoreDBContext _context;
 
         public CheckoutController(ICustomerRepository customer, IConfiguration configuration,
-            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount)
+            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context)
         {
             _customer = customer;
             _configuration = configuration;
@@ -29,6 +30,7 @@ namespace PetStoreProject.Controllers
             _order = order;
             _orderItem = orderItem;
             _discount = discount;
+            _context = context;
         }
 
         [HttpPost]
@@ -197,6 +199,7 @@ namespace PetStoreProject.Controllers
             {
                 checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
             }
+
             Order order = new Order()
             {
                 OrderId = checkoutInfo.OrderId,
@@ -210,7 +213,8 @@ namespace PetStoreProject.Controllers
                 ConsigneePhone = checkoutInfo.ConsigneePhone,
                 PaymetMethod = checkoutInfo.PaymentMethod,
                 ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", "
-                                + checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAddressDetail
+                                + checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAddressDetail,
+                DiscountId = checkoutInfo.DiscountId,
             };
 
 
@@ -304,6 +308,14 @@ namespace PetStoreProject.Controllers
                     }
 
                 }
+                
+            }
+            var discountId = checkoutInfo.DiscountId;
+            if (discountId != null)
+            {
+                var discount = _context.Discounts.Where(d => d.DiscountId == discountId).FirstOrDefault();
+                discount.Used += 1;
+                _context.SaveChanges();
             }
             Response.Cookies.Delete("Checkout_Id");
             Response.Cookies.Delete("CheckoutInfo");

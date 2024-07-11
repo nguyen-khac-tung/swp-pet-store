@@ -34,7 +34,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
 
-            var totalOrder = _order.GetCountOrder(0);
+            var totalOrder = _order.GetCountOrder(orderCondition);
 
             var totalPage = (int)Math.Ceiling((double)totalOrder / (double)10);
 
@@ -53,11 +53,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Detail(OrderDetailViewModel order)
         {
-            if(order.DiscountId.HasValue)
+            if (order.DiscountId.HasValue)
             {
                 var discount = _discount.GetDiscount(order.DiscountId.Value);
                 ViewBag.discount = discount;
-            }else
+            }
+            else
             {
                 ViewBag.discount = null;
             }
@@ -80,8 +81,21 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
 
-            ViewBag.listItemOrder = listItemOrder;
 
+            var totalAmount = 0.0;
+
+            foreach(var item in listItemOrder)
+            {
+                var price = item.Price * (1 - (float)item.Promotion.Value / 100);
+                totalAmount += price;
+            }
+            if (order.DiscountId.HasValue)
+            {
+                var priceDiscount = _discount.GetDiscountPrice(totalAmount, order.DiscountId.Value);
+                ViewBag.priceDiscount = priceDiscount;
+            }
+
+            ViewBag.listItemOrder = listItemOrder;
             return View(checkoutDetail);
         }
     }

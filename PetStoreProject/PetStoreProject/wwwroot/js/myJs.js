@@ -519,9 +519,9 @@ function generateProductList(products) {
                         </div>
                         <div class="flex items-center justify-between gap20 flex-grow">
                             <div class="name">
-                                <a href="/admin/product/detail?productId=${product.id}" class="body-title-2">${product.name}</a>
+                                <a href="/admin/product/detail?productId=${product.id}" class="body-title-2 product-name">${product.name}</a>
                             </div>
-                            <div class="body-text">#${product.id}</div>
+                            <div class="body-text product-id">#${product.id}</div>
                             <div class="body-text"><span class="price">${product.price.toLocaleString()}</span> VND</div>
                             <div class="body-text" class="soldQuantity">${product.soldQuantity}</div>
                             <div class="body-text">${product.category.name}</div>

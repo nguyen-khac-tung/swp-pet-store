@@ -19,7 +19,7 @@ namespace PetStoreProject.Repositories.Consultion
             {
                 Name = consultion.CustomerName,
                 Email = consultion.Email,
-                Phone = consultion.Phone,
+                PhoneNumber = consultion.Phone,
                 Title = consultion.Title,
                 Content = consultion.Content,
                 Date = DateTime.Now,

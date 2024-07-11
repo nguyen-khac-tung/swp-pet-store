@@ -24,6 +24,7 @@ public partial class Consultation
     public string Content { get; set; } = null!;
 
     public DateOnly Date { get; set; }
+    public string PhoneNumber { get; set; } = null!;
 
     public bool Status { get; set; }
 

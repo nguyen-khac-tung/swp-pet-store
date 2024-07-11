@@ -17,6 +17,9 @@ public partial class Consultation
     [Required]
     [StringLength(100)]
     public string Name { get; set; }
+    [Required]
+    [StringLength(100)]
+    public string PhoneNumber { get; set; }
 
     [Required]
     [StringLength(150)]
@@ -29,7 +32,7 @@ public partial class Consultation
     [Required]
     public string Content { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateTime Date { get; set; }
 
     public bool Status { get; set; }
 

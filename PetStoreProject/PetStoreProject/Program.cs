@@ -10,6 +10,7 @@ using PetStoreProject.Repositories.Attribute;
 using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Category;
+using PetStoreProject.Repositories.Consultion;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.DiscountType;
@@ -110,6 +111,8 @@ builder.Services.AddTransient<IAdminRepository, AdminRepository>();
 builder.Services.AddTransient<IEmployeeRepository, EmployeeReporistory>();
 
 builder.Services.AddTransient<IOrderItemRepository, OrderItemRepository>();
+
+builder.Services.AddTransient<IConsultionRepository, ConsultionRepository>();
 
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
         builder.Configuration.GetSection("Cloudinary:CloudName").Value,

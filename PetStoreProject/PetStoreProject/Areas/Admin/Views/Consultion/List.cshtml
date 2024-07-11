@@ -1,0 +1,144 @@
+﻿@using PetStoreProject.Areas.Admin.ViewModels
+@model IEnumerable<PetStoreProject.Areas.Admin.ViewModels.ConsultionViewForAdmin>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var listConsultion = (List<ConsultionViewForAdmin>)ViewData["consultion"];
+}
+
+@section HeadOptional {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+    <style>
+        a {
+            cursor: pointer;
+        }
+
+        div input {
+            outline: 0;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            width: 100%;
+            padding: 14px 22px;
+            font-size: 14px;
+            font-family: "Inter", sans-serif;
+            font-weight: 400;
+            line-height: 20px;
+            background-color: transparent;
+            border: 1px solid var(--Input);
+            border-radius: 12px;
+            color: var(--Heading);
+            overflow: hidden;
+        }
+
+        .scrollable-brand-list {
+            max-height: 400px; /* Giới hạn chiều cao của danh sách */
+            overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung vượt quá chiều cao tối đa */
+            overflow-x: hidden; /* Ẩn thanh cuộn ngang */
+        }
+
+        .header-menu-list > li, .cart-box > ul > li {
+            padding: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-order-history {
+            margin-top: 4%;
+            margin-bottom: 4%;
+            text-align: center;
+        }
+
+            .empty-order-history h6 {
+                font-family: "Inter", sans-serif;
+                line-height: 25px;
+            }
+
+    </style>
+}
+<!--List Category-->
+<div class="main-content-inner">
+    <!-- main-content-wrap -->
+    <div class="main-content-wrap">
+        <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+            <h3>Tất cả các danh mục</h3>
+        </div>
+        <!-- all-category -->
+        <div class="wg-box">
+            <div class="flex items-center justify-between gap10 flex-wrap">
+                <a class="btn btn-primary tf-button style-1 w208" href="new-category.html" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class=" icon-plus"></i>Thêm mới</a>
+            </div>
+            <div class="wg-table table-all-category">
+                <ul class="table-title flex gap20 mb-14 header-menu-list">
+                    <li style="width: 280px">
+                        <a class="body-title" onclick="sortProductCateName()">ID đơn tư vấn<i class="bi bi-chevron-expand"></i></a>
+                    </li>
+                    <li>
+                        <a class="body-title" onclick="sortCateName()">Tên khách hàng<i class="bi bi-chevron-expand"></i></a>
+                    </li>
+                    <li>
+                        <a class="body-title" onclick="sortQuantity()">Email khách hàng<i class="bi bi-chevron-expand"></i></a>
+                    </li>
+                    <li>
+                        <a class="body-title" onclick="sortQuantitySold()">Số điện thoại<i class="bi bi-chevron-expand"></i></a>
+                    </li>
+                    <li>
+                        <a class="body-title" onclick="sortQuantitySold()">Tiêu đề<i class="bi bi-chevron-expand"></i></a>
+                    </li>
+                    <li>
+                        <a class="body-title" onclick="sortQuantitySold()">Ngày gửi<i class="bi bi-chevron-expand"></i></a>
+                    </li>
+                    <li>
+                        <a class="drop-icon " href="#">Trạng thái</a>
+                        <ul class="common_ddown dropdown_style" id="status_list_customer">
+                            <li><a href="#" onclick="orderStatus('Status')">- Tất cả</a></li>
+                            <li><a href="#" onclick="orderStatus('block-available')">- Đã trả lời</a></li>
+                            <li><a href="#" onclick="orderStatus('block-not-available')">- Chưa trả lời</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <div class="body-title">Hành động</div>
+                    </li>
+                </ul>
+                <ul class="flex flex-column scrollable-brand-list" id="list-category">
+                    @foreach (var category in listConsultion)
+                    {
+                        <li class="product-item gap14 product-category-@category.Id">
+                            <input type="hidden" value="@category.Id" class="productCategoryId">
+                            <input type="hidden" value="@category.Id" class="categoryId">
+                            <div class="flex items-center justify-between gap20 flex-grow">
+                                <div class="productCateName" style="width: 280px">
+                                    @category.Name
+                                </div>
+                                <div class="body-text cateName">@category.Name</div>
+                                <div class="body-text totalProduct">@category.Phone</div>
+                                <div class="body-text quantitySold">@category.Email</div>
+                                <div class="body-text quantitySold">@category.Title</div>
+                                <div class="body-text quantitySold">@category.Date</div>
+                                <div class="body-text isDelete @(category.Status == true ? "block-not-available" : "block-available") isDelete" value="@(category.Status == true ? 1 : 0)">@(category.Status == true ? "Chưa trả lời" : "Đã trả lời")</div>
+                                <div class="list-icon-function">
+                                    <div class="item edit" onclick="updateProductCategory(this, @category.Name)">
+                                        <i class="icon-edit-3"></i>
+                                    </div>
+                                    <div class="item tras @((category.Status== true) ? "hide" : "")" onclick="deleteProductCategory(this, @category.Name)">
+                                        <i class="icon-trash-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                    <div class="empty-order-history hidden">
+                        <i class="fas fa-box-open"></i>
+                        <h6>Trống</h6>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <!-- /all-category -->
+
+    </div>
+    <!-- /main-content-wrap -->
+</div>

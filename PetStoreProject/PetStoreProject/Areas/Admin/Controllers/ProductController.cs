@@ -132,6 +132,28 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult GetDetail(int productId)
+        {
+            var product = _product.GetProductDetailForAdmin(productId);
+            if (product != null && product.ProductOptions != null && product.ProductOptions[0].Attribute.AttributeId != 1)
+            {
+                var uniqueAttributes = new HashSet<int>();
+                var attributes = new List<Models.Attribute>();
+
+                foreach (var option in product.ProductOptions)
+                {
+                    if (option.Attribute != null && uniqueAttributes.Add(option.Attribute.AttributeId))
+                    {
+                        attributes.Add(option.Attribute);
+                    }
+                }
+                ViewData["attributes"] = attributes;
+            }
+            ViewData["product"] = product;
+            return Json(new { product = product });
+        }
+
         [HttpGet]
         public ActionResult Update(int productId)
         {

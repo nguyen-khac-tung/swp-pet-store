@@ -23,7 +23,7 @@
             <div class="wg-box">
                 <fieldset>
                     <label class="body-title mb-10">Loại giảm giá</label>
-                    <select id="discount-type" onchange="selectDiscountType()">
+                    <select id="discount-type" onchange="selectDiscountType()" disabled>
                         @foreach (var item in discountTypes)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -35,10 +35,7 @@
                         <label class="body-title mb-10">Mã giảm giá<span class="tf-color-1">*</span></label>
                         <div class="flex gap22">
                             <fieldset class="name select">
-                                <input type="text" id="code" placeholder="Nhập mã " class="show-search" name="code" tabindex="2" value="@discount.Code" aria-required="true" required="">
-                                <div class="button-submit">
-                                    <button class=""><i class="icon-refresh-ccw" onclick="generateDiscountCode(event)"></i></button>
-                                </div>
+                                <input type="text" id="code" placeholder="Nhập mã " class="show-search" name="code" tabindex="2" value="@discount.Code" aria-required="true" required="" readonly>
                             </fieldset>
                         </div>
                         <span id="error-code" class="text-danger"></span>

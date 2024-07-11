@@ -11,141 +11,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/9s8hpt376cqgercibz8phu2ikr2851ax4l7fpxmlkux3ge6c/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    <style>
-        .display {
-            opacity: 1;
-            visibility: visible;
-            transform: scaleY(1);
-            border-radius: 12px;
-            width: 100%;
-            margin-top: -10px;
-            overflow-y: scroll;
-        }
-
-        ul.common_ddown li a {
-            color: #1b1b1c;
-            display: block;
-            font-size: 14px;
-            font-weight: 400;
-            padding: 5px 10px;
-            text-transform: capitalize;
-            text-align: left;
-            line-height: 25px;
-        }
-
-            ul.common_ddown li a:hover {
-                color: #2275fc !important;
-                cursor: pointer;
-            }
-
-        .caret {
-            display: none;
-        }
-
-        .btn-group,
-        .btn-group .multiselect-container {
-            width: 100%;
-        }
-
-            .btn-group button {
-                width: 100%;
-                padding: 14px 12px;
-                border-radius: 12px;
-                border: 1px solid #ecf0f4;
-            }
-
-        .multiselect-container label {
-            font-size: 16px;
-        }
-
-            .multiselect-container label input[type=checkbox] {
-                padding-right: 5px;
-                width: 16px;
-                margin: 0px 0px 0px -20px;
-            }
-
-        .dropdown-menu > .active > a {
-            color: black;
-            background-color: white;
-        }
-
-        #supdescriptionContainer {
-            max-height: 125px;
-            overflow-y: scroll;
-        }
-
-        .supdescription .subdescription-tag {
-            display: inline-block;
-            background-color: #2b75ece0;
-            color: white;
-            padding: 5px 10px;
-            margin: 5px;
-            border-radius: 12px;
-        }
-
-            .supdescription .subdescription-tag button {
-                padding: 0;
-                background: none;
-                border: none;
-                color: white;
-                font-weight: bold;
-                margin-left: 10px;
-                cursor: pointer;
-            }
-
-        .upload-image .item.up-load {
-            min-height: 165px;
-        }
-
-        .upload-image .item img {
-            height: 155px;
-        }
-
-        #preview-image {
-            overflow-x: auto;
-            min-height: 160px;
-        }
-
-            #preview-image .item {
-                position: relative;
-                min-width: 25%;
-            }
-
-        .btn-remove {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 0;
-            border: none;
-            font-size: 16px;
-        }
-
-        #list-service-option li:nth-child(2n+1) {
-            background-color: #f6f8fbcc;
-        }
-
-        #list-service-option .text-tiny {
-            font-size: 14px;
-        }
-
-        a:focus, a:hover {
-            text-decoration: none;
-            color: #00adf6;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            color: #1b1b1c;
-            line-height: 1.25;
-            font-family: 'Roboto Condensed', sans-serif;
-            margin: 0;
-            font-weight: 700;
-            text-rendering: optimizeLegibility;
-        }
-
-        .tox-statusbar {
-            display: none !important;
-        }
-    </style>
+    <link href="~/areas/css/manage-service-style.css" rel="stylesheet" />
 }
 
 <div class="main-content-inner">
@@ -245,8 +111,8 @@
                     </fieldset>
                     <div style="font-size: 11px; color:red;margin-bottom: 10px">*Lưu ý: Bạn cần thêm các tùy chọn của dịch vụ trước khi bạn có thể lưu dịch vụ</div>
                     <div class="cols gap10">
-                        <button class="tf-button w-full" type="button" onclick="saveServicOption()">Thêm tùy chọn dịch vụ</button>
-                        <button class="tf-button style-1 w-full" type="button" onclick="saveService()">Lưu dịch vụ</button>
+                        <button class="tf-button w-full" type="button" onclick="addServicOption()">Thêm Tùy Chọn Dịch Vụ</button>
+                        <button class="tf-button style-1 w-full" type="button" onclick="saveService()">Lưu Dịch Vụ</button>
                     </div>
                 </div>
                 <div style="max-height: 155px; overflow-x: auto">
@@ -263,7 +129,6 @@
 @section ScriptOptional {
     <script>
         let listServiceType = @Html.Raw(Json.Serialize(serviceTypes));
-        console.log(listServiceType);
         let listPetWeight = @Html.Raw(Json.Serialize(weights));
         let isValidService = true;
         let isValidServiceOption = true;
@@ -277,272 +142,33 @@
             serviceOptions: []
         }
 
-        /* Working Time */
         $(document).ready(function () {
-            $('#working-times').multiselect({
-                includeSelectAllOption: true,
-                maxHeight: 200,
-                selectAllText: 'Chọn tất cả',
-                buttonText: function (options, select) {
-                    if (options.length === 0) {
-                        return 'Chọn giờ làm việc';
-                    } else if (options.length > 3) {
-                        return options.length + ' giờ làm việc đã chọn';
-                    } else {
-                        let selected = '';
-                        options.each(function () {
-                            selected += $(this).text() + ', ';
-                        });
-                        return selected.substr(0, selected.length - 2);
-                    }
-                }
-            });
+            bootstrapMultiselectInitial();
+            tinyCloudInitial();
         });
 
-        /* Service Type */
-        function suggestServiceTypes() {
-            let content = '';
-            let inputValue = $("#service-type").val().toLowerCase();
-            if (inputValue.length === 0) {
-                listServiceType.forEach(function (type) {
-                    content += `<li><a onclick="selectServiceType(this)">${type}</a></li>`;
-                });
-            } else {
-                listServiceType.forEach(function (type) {
-                    let typeUnaccent = removeVietnameseAccents(type.toLowerCase());
-                    let inputUnaccent = removeVietnameseAccents(inputValue);
-                    if (typeUnaccent.includes(inputUnaccent)) {
-                        content += `<li><a onclick="selectServiceType(this)">${type}</a></li>`;
-                    }
-                });
-            }
-
-            if (content.length === 0) {
-                hiddenSuggest('list-service-type');
-            } else {
-                $("#list-service-type").empty();
-                $("#list-service-type").html(content);
-                $("#list-service-type").addClass("display");
-            }
-        }
-
-        function selectServiceType(element) {
-            $("#service-type").val($(element).text());
-        }
-
-        function hiddenSuggest(elementId) {
-            $("#" + elementId).removeClass("display");
-        }
-
-        function removeVietnameseAccents(str) {
-            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        }
-
-        /* Subdescription */
-        // function subdescriptionContainerInitial() {
-        //     let container = document.getElementById("supdescriptionContainer");
-        //     $(subdesc).children('li').each(function () {
-        //         let div = document.createElement('div');
-        //         div.className = 'subdescription-tag';
-        //         div.textContent = $(this).text().trim();
-
-        //         let removeBtn = document.createElement('button');
-        //         removeBtn.textContent = 'x';
-        //         removeBtn.addEventListener('click', function () {
-        //             container.removeChild(div);
-        //             updateSupdescription();
-        //         });
-
-        //         div.appendChild(removeBtn);
-        //         container.appendChild(div);
-        //     });
-        // }
-
-        function addSentence(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-
-                let input = document.getElementById("supdescriptionInput");
-                let container = document.getElementById("supdescriptionContainer");
-                let sentence = input.value.trim();
-                if (sentence.length > 0) {
-                    let div = document.createElement("div");
-                    div.className = 'subdescription-tag';
-                    div.textContent = sentence;
-
-                    let removeBtn = document.createElement("button");
-                    removeBtn.textContent = "x";
-                    removeBtn.addEventListener("click", function () {
-                        container.removeChild(div);
-                        updateSupdescription();
+        function tinyCloudInitial() {
+            tinymce.init({
+                selector: '#description',
+                plugins: 'lists link',
+                toolbar: 'bold italic underline | align | link numlist bullist | removeformat',
+                menubar: false,
+                setup: function (editor) {
+                    editor.on('change', function () {
+                        service.description = editor.getContent();
                     });
 
-                    div.appendChild(removeBtn);
-                    container.appendChild(div);
-
-                    input.value = '';
-                    updateSupdescription();
+                    editor.on('input', function () {
+                        service.description = editor.getContent();
+                    });
                 }
-            }
-        }
-
-        function updateSupdescription() {
-            let content = '<ul>';
-            let container = $("#supdescriptionContainer");
-
-            container.children('.subdescription-tag').each(function () {
-                content += `<li>${$(this).text().slice(0, -1).trim()}</li>`;
             });
-
-            content += '</ul>';
-
-            service.subdescription = content;
-            console.log("alo: ", service.subdescription);
-        }
-
-        /* Images */
-        function uploadImages(event) {
-            let files = event.target.files;
-            let previewContainer = document.getElementById('preview-image');
-
-            for (let file of files) {
-                let div = document.createElement('div');
-                div.className = 'item';
-
-                let reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function (e) {
-                    let img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.alt = file.name;
-
-                    div.appendChild(img);
-
-                    let removeBtn = document.createElement('button');
-                    removeBtn.className = 'btn-remove';
-                    removeBtn.innerHTML = '<i class="icon-x-circle"></i>';
-                    removeBtn.onclick = function () {
-                        previewContainer.removeChild(div);
-                        updateListImage();
-                        $("#image").val('');
-                    }
-
-                    div.appendChild(removeBtn);
-                    previewContainer.appendChild(div);
-
-                    updateListImage();
-                }
-            }
-        }
-
-        function updateListImage() {
-            let previewContainer = document.getElementById('preview-image');
-            let images = previewContainer.getElementsByTagName('img');
-            let imageList = [];
-
-            for (let image of images) {
-                imageList.push(image.src);
-            }
-
-            service.images = imageList;
-        }
-
-        /* Description */
-        tinymce.init({
-            selector: '#description',
-            plugins: 'lists link',
-            toolbar: 'bold italic underline | align | link numlist bullist | removeformat',
-            menubar: false,
-            setup: function (editor) {
-                editor.on('change', function () {
-                    service.description = editor.getContent();
-                });
-                editor.on('input', function () {
-                    service.description = editor.getContent();
-                });
-            }
-        });
-
-        /* Pet Weight */
-        function suggestPetWeights() {
-            let content = '';
-            let inputValue = $("#pet-weight").val().toLowerCase();
-            if (inputValue.length === 0) {
-                listPetWeight.forEach(function (weight) {
-                    content += `<li><a onclick="selectPetWeight(this)">${weight}</a></li>`;
-                });
-            } else {
-                listPetWeight.forEach(function (weight) {
-                    let weightUnaccent = removeVietnameseAccents(weight.toLowerCase());
-                    let inputUnaccent = removeVietnameseAccents(inputValue);
-                    if (weightUnaccent.includes(inputUnaccent)) {
-                        content += `<li><a onclick="selectPetWeight(this)">${weight}</a></li>`;
-                    }
-                });
-            }
-
-            if (content.length === 0) {
-                hiddenSuggest('list-pet-weight');
-            } else {
-                $("#list-pet-weight").empty();
-                $("#list-pet-weight").html(content);
-                $("#list-pet-weight").addClass("display");
-            }
-        }
-
-        function selectPetWeight(element) {
-            $("#pet-weight").val('');
-            $("#pet-weight").val($(element).text());
         }
 
         /* Service Option */
-        function validationOfServiceOption() {
-            let petType = $("#pet-type").val();
-
-            let petWeight = $("#pet-weight").val().trim();
-            if (petWeight === '') {
-                isValidServiceOption = false;
-                $("#error-pet-weight").text("Khối lượng không được để trống");
-            } else if (petWeight.length >= 50) {
-                isValidServiceOption = false;
-                $("#error-pet-weight").text("Khối lượng không được vượt quá 50 ký tự");
-            } else {
-                $("#error-pet-weight").text('');
-            }
-
-            let price = $("#price").val().trim();
-            if (price === '') {
-                isValidServiceOption = false;
-                $("#error-price").text("Giá dịch vụ không được để trống");
-            } else {
-                let priceParsed = Number(price);
-                if (!isNaN(priceParsed)) {
-                    if (priceParsed < 0) {
-                        isValidServiceOption = false;
-                        $("#error-price").text("Giá dịch vụ phải là số dương");
-                    } else {
-                        $("#error-price").text('');
-                    }
-                } else {
-                    isValidServiceOption = false;
-                    $("#error-price").text("Giá dịch vụ phải là một số");
-                }
-            }
-
-            if (isValidServiceOption && service.serviceOptions.length > 0) {
-                for (let option of service.serviceOptions) {
-                    if (option.petType === petType && option.weight === petWeight) {
-                        isValidServiceOption = false;
-                        alert("Tùy chọn dịch vụ này đã tồn tại. Vui lòng thay đổi loại thú cưng hoặc khối lượng để thêm mới.");
-                        break;
-                    }
-                }
-            }
-        }
-
-        function saveServicOption() {
+        function addServicOption() {
             isValidServiceOption = true;
-            validationOfServiceOption();
+            validationOfServiceOption('create');
 
             if (isValidServiceOption) {
                 let serviceOptionContainer = $("#list-service-option");
@@ -551,13 +177,13 @@
                 let price = Number($("#price").val().trim());
 
                 let serviceOption = `<li style="border-radius:12px; padding: 5px 10px; position: relative">
-                                                                    <div class="gap15" style="align-items: center; height: 50px; width: 100%; display: flex">
-                                                                        <div style="width: 34%" class="text-tiny pet-type" data-type="${petType}">Loại: <span class="tf-color">${petType}</span></div>
-                                                                        <div style="width: 34%" class="text-tiny pet-weight" data-weight="${petWeight}">Khối lượng: <span class="tf-color">${petWeight}</span></div>
-                                                                        <div style="width: 25%" class="text-tiny price" data-price="${price}">Giá: <span class="tf-color">${price}</span> đ</div>
-                                                                    </div>
-                                                                    <button class="btn-remove"><i class="icon-x-circle"></i></button>
-                                                                </li>`;
+                                        <div class="gap15" style="align-items: center; height: 50px; width: 100%; display: flex">
+                                            <div style="width: 34%" class="text-tiny pet-type" data-type="${petType}">Loại: <span class="tf-color">${petType}</span></div>
+                                            <div style="width: 34%" class="text-tiny pet-weight" data-weight="${petWeight}">Khối lượng: <span class="tf-color">${petWeight}</span></div>
+                                            <div style="width: 25%" class="text-tiny price" data-price="${price}">Giá: <span class="tf-color">${price}</span> đ</div>
+                                        </div>
+                                        <button class="btn-remove"><i class="icon-x-circle"></i></button>
+                                    </li>`;
                 serviceOptionContainer.append(serviceOption);
                 attachEventForRemoveBtn();
                 updateListServiceOption();
@@ -594,64 +220,11 @@
             console.log(service.serviceOptions);
         }
 
+        
         /* Service */
-        function validationOfService() {
-            service.name = $("#service-name").val().trim();
-            if (service.name === '') {
-                isValidService = false;
-                $("#error-service-name").text("Tên dịch vụ không được để trống");
-            } else if (service.name.length >= 200) {
-                isValidService = false;
-                $("#error-service-name").text("Tên dịch vụ không được vượt quá 200 ký tự");
-            } else {
-                $('#error-service-name').text('');
-            }
-
-            service.type = $("#service-type").val().trim();
-            if (service.type === '') {
-                isValidService = false;
-                $("#error-service-type").text("Tên loại dịch vụ không được để trống");
-            } else if (service.type.length >= 200) {
-                isValidService = false;
-                $("#error-service-type").text("Tên loại dịch vụ không được vượt quá 200 ký tự");
-            } else {
-                $('#error-service-type').text('');
-            }
-
-            service.workingTimes = $('#working-times').val();
-            console.log(service.workingTimes);
-            if (service.workingTimes.length === 0) {
-                isValidService = false;
-                $("#error-working-times").text("Cần chọn ít nhất một giờ làm việc");
-            } else {
-                $("#error-working-times").text('');
-            }
-
-            if (service.subdescription === '' || service.subdescription === '<ul></ul>') {
-                isValidService = false;
-                $("#error-subdescription").text("Cần ít nhất một mô tả phụ của dịch vụ");
-            } else {
-                $("#error-subdescription").text('');
-            }
-
-            if (service.images.length === 0) {
-                isValidService = false;
-                $("#error-images").text("Cần ít nhất một ảnh của dịch vụ");
-            } else {
-                $("#error-images").text('');
-            }
-
-            if (service.serviceOptions.length === 0) {
-                isValidService = false;
-                alert("Cần thêm ít nhất một tùy chọn của dịch vụ");
-            } else {
-                $("#error-service-option").text('');
-            }
-        }
-
         function saveService() {
             isValidService = true;
-            validationOfService();
+            validationOfService('create');
 
             if (isValidService) {
                 $.ajax({
@@ -670,8 +243,8 @@
                 });
             };
         }
-
     </script>
+    <script src="~/areas/js/manage-service.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
 }

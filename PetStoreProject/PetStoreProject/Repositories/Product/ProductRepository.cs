@@ -7,7 +7,6 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.ViewModels;
-using System.Drawing.Drawing2D;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -131,43 +130,35 @@ namespace PetStoreProject.Repositories.Product
             product.productOption = productOptions;
             product.IsSoldOut = isSoldOut;
 
-            var now = DateTime.Now;
-
-            var promotion = (from p in _context.Promotions
-                             where (p.BrandId == 0 || p.BrandId == product.BrandId)
-                                && (p.ProductCateId == 0 || p.ProductCateId == product.ProductCateId)
-                                && p.Status == true
-                             select p).ToList();
-
-            if (promotion != null)
-            {
-                var max_value = 0.0;
-                var max_value_upcoming = 0.0;
-
-                foreach (var item in promotion)
-                {
-                    if (DateTime.Parse(item.StartDate.Trim()) <= now && DateTime.Parse(item.EndDate.Trim()) >= now)
-                    {
-                        var calculatedValue = (item.Value * max_price / 100);
-                        if (calculatedValue > max_value)
-                        {
-                            max_value = (double)calculatedValue;
-                            product.Promotion = item;
-                        }
-                    }
-                    else
-                    {
-                        var calculatedValue = (item.Value * max_price / 100);
-                        if (calculatedValue > max_value_upcoming)
-                        {
-                            max_value_upcoming = (double)calculatedValue;
-                            product.PromotionUpcoming = item;
-                        }
-                    }
-                }
-            }
+            product.Promotion = GetPromotionForProduct(product.BrandId, product.ProductCateId);
 
             return product;
+        }
+
+        private Models.Promotion GetPromotionForProduct(int brandId, int productCateId)
+        {
+            var now = DateTime.Now;
+            var promotions = (from p in _context.Promotions
+                              where (p.BrandId == 0 || p.BrandId == brandId)
+                                 && (p.ProductCateId == 0 || p.ProductCateId == productCateId)
+                                 && p.Status == true
+                              select p).ToList();
+
+            if (promotions.Count != 0)
+            {
+                int max = 0;
+                Models.Promotion p = new Models.Promotion();
+                foreach (var item in promotions)
+                {
+                    if (item.Value > max && (DateTime.Parse(item.StartDate) <= now && DateTime.Parse(item.EndDate) >= now))
+                    {
+                        max = (int)item.Value;
+                        p = item;
+                    }
+                }
+                return p;
+            }
+            return null;
         }
 
         public List<RelatedProductViewModel> getRelatedProduct(int productId)
@@ -204,32 +195,7 @@ namespace PetStoreProject.Repositories.Product
                     image.ImageUrl = formatUrl(image.ImageUrl);
                 }
 
-                var now = DateTime.Now;
-
-                var promotion = (from pm in _context.Promotions
-                                 where (pm.BrandId == 0 || pm.BrandId == p.BrandId)
-                                    && (pm.ProductCateId == 0 || pm.ProductCateId == p.ProductCateId)
-                                    && pm.Status == true
-                                 select pm).ToList();
-
-                if (promotion != null)
-                {
-                    var max_value = 0.0;
-                    var max_value_upcoming = 0.0;
-
-                    foreach (var item in promotion)
-                    {
-                        if (DateTime.Parse(item.StartDate.Trim()) <= now && DateTime.Parse(item.EndDate.Trim()) >= now)
-                        {
-                            var calculatedValue = (item.Value * p.Price / 100);
-                            if (calculatedValue > max_value)
-                            {
-                                max_value = (double)calculatedValue;
-                                p.Promotion = item;
-                            }
-                        }
-                    }
-                }
+                p.Promotion = GetPromotionForProduct(p.BrandId, p.ProductCateId);
 
                 p.images = images;
             }
@@ -346,9 +312,7 @@ namespace PetStoreProject.Repositories.Product
             var productDetails = products.Select(p =>
             {
                 var brand = GetBrandByProductId(p.ProductId);
-                var brandPromotion = GetPromotionByBrandIdAndProductCateId(brand.BrandId, productCateId);
-
-                Models.Promotion effectivePromotion = GetEffectivePromotion(promotionDefault, brandPromotion);
+                var promotion = GetPromotionForProduct(brand.BrandId, p.ProductCateId);
 
                 return new ProductDetailViewModel
                 {
@@ -357,40 +321,12 @@ namespace PetStoreProject.Repositories.Product
                     Brand = brand.Name,
                     Description = p.Description,
                     productOption = GetProductOptionsByProductId(p.ProductId),
-                    Promotion = effectivePromotion,
+                    Promotion = promotion,
                 };
             }).ToList();
 
             return productDetails;
         }
-
-        private Models.Promotion GetPromotionByBrandIdAndProductCateId(int brandId, int productCateId)
-        {
-            return _context.Promotions
-                .Where(pro => pro.BrandId == brandId && pro.ProductCateId == productCateId)
-                .OrderByDescending(pro => pro.Value)
-                .FirstOrDefault();
-        }
-
-        private Models.Promotion GetEffectivePromotion(Models.Promotion promotionDefault, Models.Promotion brandPromotion)
-        {
-            if (promotionDefault != null)
-            {
-                if (brandPromotion == null)
-                {
-                    return promotionDefault;
-                }
-                else
-                {
-                    return (promotionDefault.Value > brandPromotion.Value) ? promotionDefault : brandPromotion;
-                }
-            }
-            else
-            {
-                return brandPromotion;
-            }
-        }
-
 
         public List<int> GetProductIDInWishList(int customerID)
         {

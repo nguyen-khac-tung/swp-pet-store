@@ -61,5 +61,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
             _promotion.UpdatePromotion(promotion);
             return Json("OK");
         }
+
+        [HttpPost]
+        public JsonResult Delete(int id)
+        {
+            _promotion.DeletePromotion(id);
+            return Json("OK");
+        }
     }
 }

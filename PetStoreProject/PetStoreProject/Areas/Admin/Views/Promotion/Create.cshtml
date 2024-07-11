@@ -189,7 +189,7 @@
 
         function addPromotion(){
             var decimalRegex = /^-?\d+(\.\d+)?$/;
-            var regex = /^[a-zA-Z0-9\/ ]+$/;
+            const regex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯăạảấầẩẫậắằẳẵặẹẻẽềềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ\s]+$/;
             var numberRegex = /^[0-9]+$/;
             var isValid = true
             var name = $('#name').val().trim()
@@ -216,6 +216,10 @@
             }
             else if(!numberRegex.test(value)){
                 $('#error-value').text('Giá trị phải là một số nguyên')
+                isValid = false
+            }
+            else if(value <= 0 || value >= 100){
+                $('#error-value').text('Giá trị phải nằm trong khoảng từ 1% đến 99%')
                 isValid = false
             }
             else{

@@ -38,10 +38,8 @@
     <link rel="stylesheet" href="~/css/style.css">
     <!-- Responsive css -->
     <link rel="stylesheet" href="~/css/responsive.css">
-
     <!-- Modernizer js -->
     <script src="~/js/vendor/modernizr-3.5.0.min.js"></script>
-
     @RenderSection("HeadOptional", required: false)
 </head>
 
@@ -248,9 +246,9 @@
                                     </ul>
                                     <!-- Home Version Dropdown End -->
                                 </li>
-                                <li><a asp-controller="news" asp-action="List">Blog</a></li>
+                                <li><a href="blog.html">Blog</a></li>
                                 <li><a href="about.html">Giới Thiệu</a></li>
-                                <li><a href="contact.html">Liên Hệ</a></li>
+                                <li><a href="/Consultion/Index">Tư vấn</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -299,7 +297,7 @@
                                                     </li>
                                                 </ul>
                                                 <div class="cart-actions text-center">
-                                                    <a class="cart-checkout" href="checkout.html">Thanh toán</a>
+                                                    @* <a class="cart-checkout" href="checkout.html">Thanh toán</a> *@
                                                     <a class="cart-checkout" href="/cart/detail">Xem giỏ hàng</a>
                                                 </div>
                                             </div>
@@ -612,5 +610,23 @@
     <script src="~/js/myjs.js"></script>
     @RenderSection("ScriptOptional", required: false)
 </body>
-
+<script>
+    $(document).ready(function () {
+        $('#myForm').submit(function (e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: '@Url.Action("Create", "Consultion")',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    $('#resultMessage').html("Form đã được gửi thành công!");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#resultMessage').html("Có lỗi xảy ra, không thể gửi form.");
+                }
+            });
+        });
+    });
+</script>
 </html>

@@ -380,7 +380,7 @@
                                             <div class="single-template-product">
                                                 <!-- Product Image Start -->
                                                 <div class="pro-img">
-                                                    @if (product.Promotion != null)
+                                                    @if (product.Promotion != null && product.Promotion.Value != null)
                                                     {
                                                         <span class="sticker-sale">-@product.Promotion.Value%</span>
                                                     }
@@ -429,8 +429,8 @@
                                                             @if (product.productOption != null && product.productOption.Count > 0)
                                                             {
                                                                 float amount = @product.productOption[0].price;
-                                                                
-                                                                if (product.Promotion != null)
+
+                                                                if (product.Promotion != null && product.Promotion.Value != null)
                                                                 {
                                                                     float amountAfterDiscount = amount * (1 - (float)product.Promotion.Value / 100);
                                                                     <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
@@ -488,7 +488,7 @@
                                     <div class="single-template-product">
                                         <!-- Product Image Start -->
                                         <div class="pro-img">
-                                            @if (product.Promotion != null)
+                                            @if (product.Promotion != null && product.Promotion.Value != null)
                                             {
                                                 <span class="sticker-sale">-@product.Promotion.Value%</span>
                                             }
@@ -538,7 +538,7 @@
                                                     {
                                                         float amount = @product.productOption[0].price;
 
-                                                        if (product.Promotion != null)
+                                                        if (product.Promotion != null && product.Promotion.Value != null)
                                                         {
                                                             float amountAfterDiscount = amount * (1 - (float)product.Promotion.Value / 100);
                                                             <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>

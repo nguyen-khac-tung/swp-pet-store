@@ -24,6 +24,38 @@
         .list-box-value .box-value-item{
             width: auto !important;
         }
+
+        div input{
+            outline: 0;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            width: 100%;
+            padding: 14px 22px;
+            font-size: 14px;
+            font-family: "Inter", sans-serif;
+            font-weight: 400;
+            line-height: 20px;
+            background-color: transparent;
+            border: 1px solid var(--Input);
+            border-radius: 12px;
+            color: var(--Heading);
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+
+        .button-submit button {
+            padding: 0;
+            border: 0;
+            font-size: 20px;
+            color: var(--Heading);
+        }
+
+        .button-submit {
+            position: absolute;
+            top: 15px;
+            right: 22px;
+        }
     </style>
 }
 <div class="main-content-inner">
@@ -34,15 +66,15 @@
     
             <div class="wg-box">
                 <div class="flex items-center flex-wrap justify-between gap20">
-                    <form class="form-search">
-                        <fieldset class="name">
-                            <input type="text" placeholder="Nhập id sản phẩm" class="" name="name" tabindex="2" value="" aria-required="true" required="">
-                        </fieldset>
-                        <div class="button-submit">
-                            <button class="" type="submit"><i class="icon-search"></i></button>
-                        </div>
-                        <span class="block-not-available mt-2 hide" id="error-id"></span>
-                    </form>
+                <div class="form-search" style="position: relative">
+                    <fieldset class="name">
+                        <input type="text" placeholder="Nhập id sản phẩm" id="product-id" class="" name="name" tabindex="2" value="" aria-required="true" required="">
+                    </fieldset>
+                    <div class="button-submit" style="width:20px; height: 20px">
+                        <button class="" type="submit" onclick="searchProduct()"><i class="icon-search" style="background-color: white"></i></button>
+                    </div>
+                    <span class="text-danger mt-2" id="error-id"></span>
+                </div>
                     @if (product != null && product.IsDeleted == true)
                     {
                         <div class="block-not-available"> Ngừng bán</div>
@@ -81,7 +113,7 @@
                                                     var isOutOfStock = "";
                                                     if (product.IsSoldOut != null && product.IsSoldOut == true)
                                                     {
-                                                        <div class="overlay">Hết hàng</div>
+                                                                <div class="overlay">Hết hàng</div>
                                                         isOutOfStock = "out-of-stock";
                                                     }
                                                 }
@@ -362,7 +394,6 @@
                     sizeId = list_size[0].id.split('_')[1]
                 }
             }
-            
             updatePriceAndImage();
         }
 
@@ -395,6 +426,26 @@
                 zoomWindowContainer.children[0].style.backgroundImage = `url(${img_url})`;
             }
             document.getElementById('price').innerText = price.toLocaleString('en-US');
+        }
+
+        function searchProduct(){
+            var productId = $('#product-id').val();
+            console.log(productId)
+            $.ajax({
+                url: '/admin/product/getdetail',
+                type: 'POST',
+                data: {productId : productId},
+                success: function(response){
+                    console.log(response.product)
+                    if (response.product == null) {
+                        $('#error-id').text('Id "' + productId + '" không tồn tại')
+                        $('#error-id').removeClass('hide')
+                    }
+                    else {
+                        window.location.href = 'http://localhost:5206/admin/product/detail?productId=' + productId
+                    }
+                }
+            })
         }
     </script>
 }

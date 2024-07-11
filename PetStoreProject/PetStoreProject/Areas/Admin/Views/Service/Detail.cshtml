@@ -7,6 +7,9 @@
     var serviceOptions = ViewData["ListServiceOption"] as List<ServiceOptionViewModel>;
 }
 
+@section HeadOptional {
+    <link rel="stylesheet" href="~/css/slick-slider.css">
+}
 
 <div class="main-content-inner">
     <!-- main-content-wrap -->
@@ -26,7 +29,7 @@
                         <span id="error-input" class="text-danger"></span>
                     </form>
                 </div>
-                <a class="tf-button style-1 w208"><i class="icon-plus"></i>Chỉnh sửa</a>
+                <a class="tf-button style-1 w208" href="/Admin/Service/Update/@service.ServiceId"><i class="icon-plus"></i>Chỉnh sửa</a>
             </div>
             <!-- Header End-->
             <!-- Product Thumbnail Start -->
@@ -160,7 +163,7 @@
                                                                 <div style="width: 15%" class="body-text">@so.Price.ToString("#,###") VND</div>
                                                                 <div style="width: 15%" class="body-text">@so.OrderedQuantity đã đặt lịch</div>
                                                                 <div style="width: 15%" class="body-text">@so.UsedQuantity đã thanh toán</div>
-                                                                <div style="width: 15%" class="body-text @((so.IsDelete) ? "block-not-available" : "block-available")">@((so.IsDelete) ? "Ngừng kinh doanh" : "Còn kinh danh")</div>
+                                                                <div style="width: 15%" class="body-text @((so.IsDelete) ? "block-not-available" : "block-available")">@((so.IsDelete) ? "Ngừng kinh doanh" : "Còn kinh doanh")</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -182,6 +185,7 @@
 </div>
 @section ScriptOptional {
     <script>
+        console.log(@service.Images.Count);
         document.addEventListener("DOMContentLoaded", function () {
             let petType = "@Html.Raw(firstServiceOption.PetType)";
             let weight = "@Html.Raw(firstServiceOption.Weight)";

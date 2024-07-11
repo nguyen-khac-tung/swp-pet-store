@@ -54,5 +54,11 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var result = _discount.Edit(discount);
             return Json(result);
         }
+
+        public JsonResult Delete(int id)
+        {
+            _discount.DeleteDiscount(id);
+            return Json("OK");
+        }
     }
 }

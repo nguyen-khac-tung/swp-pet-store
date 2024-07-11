@@ -1,0 +1,85 @@
+﻿@using PetStoreProject.ViewModels
+@model PetStoreProject.ViewModels.CreateConsultion;
+@{
+    ViewData["Title"] = "Tư Vấn";
+}
+
+
+    <!-- Regester Page Start Here -->
+    <div class="register-area adp_top adp_bottom">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 col-md-4 col-12">
+                    <div class="area-details">
+                        <ul>
+                            <li class="single-quick-contact">
+                                <h5>Số điện thoại liên lạc</h5>
+                                <p>
+                                    <a href="tel:+0987456321">039 848 6547</a>
+                                </p>
+                            </li>
+                            <li class="single-quick-contact">
+                                <h5>Email liên lạc</h5>
+                                <p>
+                                    <a href="mailto:animartpetshop@gmail.com">animartpetshop@gmail.com</a>
+                                </p>
+                            </li>
+                            <li class="single-quick-contact">
+                                <h5>Địa chỉ liên lạc</h5>
+                                <p>Khu Giáo dục và Đào tạo, Khu Công Nghệ Cao Hòa Lạc, Km29 Đại lộ Thăng Long, Thạch Hoà, Thạch Thất, Hà Nội</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 col-md-8 col-12">
+                    <div class="contact_wrapper clearfix">
+                        <div class="small-title">
+                            <h3>Hộp thoại tư vấn</h3>
+                            <br>
+                        </div>
+                        <form id="myForm" class="contact-form" asp-controller="Consultation" asp-action="Create" method="post" novalidate>
+                            <div class="address-wrapper row">
+                                <div class="col-md-12">
+                                    <div class="address-fname">
+                                        <input asp-for="CustomerName" class="form-control" placeholder="Tên khách hàng">
+                                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="address-email">
+                                        <input asp-for="Email" class="form-control" placeholder="Email khách hàng">
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="address-web">
+                                        <input asp-for="Phone" class="form-control" placeholder="Số điện thoại">
+                                        <span asp-validation-for="Phone" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="address-subject">
+                                        <input asp-for="Title" class="form-control" placeholder="Tiêu đề">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="address-textarea">
+                                        <textarea asp-for="Content" class="form-control" placeholder="Nội dung cần tư vấn"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="footer-content mail-content clearfix">
+                                <div class="send-email float-md-right">
+                                    <button type="submit" class="login-btn">Gửi</button>
+                                </div>
+                            </div>
+                            <div id="resultMessage"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    

@@ -27,6 +27,8 @@ namespace PetStoreProject.Repositories.Service
 
         public List<WorkingTime> GetAllWorkingTime();
 
+        public List<int> GetWorkingTimeId(int serviceId);
+
         public List<TimeOnly> GetWorkingTime(int serviceId);
 
         public List<TimeOnly> GetWorkingTimeByDate(string date);
@@ -54,6 +56,12 @@ namespace PetStoreProject.Repositories.Service
         public Task AddServiceOption(ServiceAdditionViewModel serviceAddition, int serviceId);
 
         public Task AddImageService(ServiceAdditionViewModel serviceAddition, int serviceId);
+
+        public Task UpdateService(ServiceAdditionViewModel serviceAddition);
+
+        public Task UpdateServiceOptions(ServiceAdditionViewModel serviceAddition);
+
+        public void DeleteService(int serviceId);
 
         public void UpdateStatusOrderService(int orderServiceId, string status, int employeeId);
 

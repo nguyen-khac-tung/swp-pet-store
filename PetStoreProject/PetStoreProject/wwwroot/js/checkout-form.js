@@ -153,7 +153,7 @@ function ProcessPay() {
     }
     var consigneeAddress = $('#consigneeAddress').val();
 
-    var moneyToCheckout = $('#moneyToCheckout').val();
+    var moneyToCheckout = $('#order_value').val();
 
     var paymentMethod = $('#paymentMethod').val();
     

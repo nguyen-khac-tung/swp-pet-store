@@ -42,7 +42,7 @@ function getCartBoxItems() {
                 console.log(response)
                 for (const element of response) {
 
-                    if (element.promotion != null) {
+                    if (element.promotion.vailue != null) {
                         element.price = element.price * (1 - element.promotion.value/100)
                     }
                     let divSingleCart = $('<div>', {
@@ -206,7 +206,7 @@ function updateCartItem(oldId, cartItem) {
     console.log('price_discount', price)
     // Update the product price
     row.find('.product-price .amount').text(price.toLocaleString('en-US') + ' VND');
-    if (cartItem.promotion != null) {
+    if (cartItem.promotion.value != null) {
         row.find('.discount_price').text(cartItem.price.toLocaleString('en-US') + ' VND')
     }
 
@@ -227,6 +227,7 @@ function updateCartItem(oldId, cartItem) {
 
 function quickView(productId) {
     $('#quick_add_to_cart').removeClass('out-of-stock');
+    $('#quick_add_to_cart').html('Thêm vào giỏ hàng');
     $('#quick_quantity').attr('readonly', false);
     $('#myModal').modal('show');
     $('#quick_attribute').empty();
@@ -238,7 +239,7 @@ function quickView(productId) {
         success: function (response) {
             console.log(response)
             $('#quick_name').html(response.name);
-            if (response.promotion != null) {
+            if (response.promotion.value != null) {
                 $('#quick_price_discount').html(response.productOption[0].price.toLocaleString('en-US') + ' VND');
                 let price = response.productOption[0].price*(1- response.promotion.value / 100);
                 $('#quick_price').html(price);
@@ -265,7 +266,7 @@ function quickView(productId) {
             imgDiv.append(imgElement);
             $('#quick_image').append(imgDiv);
 
-            if (response.promotion != null) {
+            if (response.promotion.value != null) {
                 let sale = $('<span>', {
                     class: 'sticker-sale',
                     text: '-' + response.promotion.value + '%'

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PetStoreProject.Areas.Admin.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 
@@ -21,7 +19,7 @@ namespace PetStoreProject.Repositories.Consultion
             {
                 Name = consultion.CustomerName,
                 Email = consultion.Email,
-                PhoneNumber = consultion.Phone,
+                Phone = consultion.Phone,
                 Title = consultion.Title,
                 Content = consultion.Content,
                 Date = DateTime.Now,

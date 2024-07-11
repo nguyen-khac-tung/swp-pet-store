@@ -152,7 +152,7 @@
 							</a>
 							</div> *@
 						</div>
-						@if(product.Promotion != null)
+						@if(product.Promotion.Value != null)
 						{
 							<span class="sticker-sale">-@product.Promotion.Value%</span>
 						}
@@ -178,7 +178,7 @@
 					<div class="rating-summary">
 						Thương hiệu : @product.Brand
 					</div>
-					@if(product.Promotion != null){
+					@if(product.Promotion.Value != null){
 						<div style="display: flex; align-items: center; margin-bottom: 10px; gap: 10px">
 							<div>
 								Diễn ra trong: 
@@ -432,7 +432,7 @@
 						<div class="single-template-product">
 							<!-- Product Image Start -->
 							<div class="pro-img">
-								@if( p.Promotion != null){
+								@if( p.Promotion.Value != null){
 								<span class="sticker-sale">@p.Promotion?.Value%</span>
 								}
 							@* <span class="sticker-new">New</span> *@
@@ -445,7 +445,7 @@
 								<div class="item_quick_link">
 									<a href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Quick View" onclick="quickView(@p.ProductId)"><i class="icofont-search"></i></a>
 								</div>
-								@if(p.Promotion != null){
+								@if(p.Promotion.Value != null){
 									<div class="product-count-wrap">
 										<div class="product-countdown" data-countdown="@(DateTime.Parse(p.Promotion.EndDate).ToString("MM/dd/yyyy hh:mm:00"))"></div>
 									</div>
@@ -464,7 +464,7 @@
 									</h5>
 
 									<div class="grid_price" style="text-align:center">
-										@if(p.Promotion != null)
+										@if(p.Promotion.Value != null)
 										{
 											var price = (decimal)p.Price * (1 - (decimal)p.Promotion.Value / 100);
 											@if (price != null)
@@ -657,7 +657,7 @@
 			for (var id = 0; id <= productOptions_json.length; id++) {
 				if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
 					price = productOptions_json[id].price
-					if (product.Promotion != null) {
+					if (product.Promotion.Value != null) {
 						$('.discount_price_main').text(price.toLocaleString() + ' VND')
 						price = price*(100 - product.Promotion.Value)/100
 					}

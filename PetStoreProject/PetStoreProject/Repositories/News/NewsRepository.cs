@@ -56,6 +56,8 @@ namespace PetStoreProject.Repositories.News
                         where n.NewsId == id && n.IsDelete == false   
                         select new NewsViewModel
                         {
+                            tagId = (int)n.TagId,
+                            Description = n.Summary,
                             url_thumnail = img.ImageUrl,
                             NewsId = id,
                             Title = n.Title,
@@ -63,6 +65,23 @@ namespace PetStoreProject.Repositories.News
                             DateOnly = n.DatePosted,
                         }).FirstOrDefault();
             return news;
+        }
+
+        public bool UpdateNewsStatus(int newsId)
+        {
+            try
+            {
+                var news = _dbContext.News.FirstOrDefault(n => n.NewsId == newsId);
+                news.IsDelete = !news.IsDelete;
+
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating status: {ex.Message}");
+                return false;
+            }
         }
     }
 }

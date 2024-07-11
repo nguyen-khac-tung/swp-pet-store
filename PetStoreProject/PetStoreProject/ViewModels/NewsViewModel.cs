@@ -14,6 +14,7 @@
 
         public string url_thumnail { get; set;} 
 
+        public int tagId { get; set;}
         public string tagName { get; set;}
 
         public string employeeName { get; set;}

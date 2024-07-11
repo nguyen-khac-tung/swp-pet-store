@@ -641,7 +641,6 @@
 
             var token = $('input[name="__RequestVerificationToken"]').val();
 
-            // Send AJAX request to update the favorite status
             $.ajax({
                 url: '@Url.Action("ToggleFavorite", "Product")',
                 type: 'POST',

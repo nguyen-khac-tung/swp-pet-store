@@ -533,8 +533,21 @@ namespace PetStoreProject.Controllers
                 ConsigneeDistrict = "",
                 OrderDate = order.OrderDate
             };
-
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
+
+
+            var totalAmount = 0.0;
+
+            foreach (var item in listItemOrder)
+            {
+                var price = item.Price * (1 - (float)item.Promotion.Value / 100);
+                totalAmount += price;
+            }
+            if (order.DiscountId.HasValue)
+            {
+                var priceDiscount = _discount.GetDiscountPrice(totalAmount, order.DiscountId.Value);
+                ViewBag.priceDiscount = priceDiscount;
+            }
 
             ViewBag.listItemOrder = listItemOrder;
 

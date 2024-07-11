@@ -8,8 +8,8 @@ namespace PetStoreProject.Repositories.Product
         public List<FeedbackViewModels> GetListFeedBack(int productId);
         public ProductDetailViewModel GetDetail(int productId);
         public List<RelatedProductViewModel> getRelatedProduct(int productId);
-        public List<ProductDetailViewModel> GetProductDetailDoGet(List<int> cateId, int productCateId);
-        public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId);
+        //public List<ProductDetailViewModel> GetProductDetailDoGet(List<int> cateId, int productCateId);
+        //public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId);
         public List<PetStoreProject.Models.Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
         public List<PetStoreProject.Models.Size> GetSizesByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
         public List<int> GetProductIDInWishList(int customerID);
@@ -37,5 +37,7 @@ namespace PetStoreProject.Repositories.Product
         public Task<string> UpdateProduct(ProductDetailForAdmin productUpdateRequest);
 
         public void DeleteProduct(int productId);
+
+        public List<ProductDetailViewModel> GetProductDetail(List<int> cateId, int productCateId);
     }
 }

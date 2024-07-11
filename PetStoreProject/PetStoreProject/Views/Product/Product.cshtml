@@ -164,7 +164,7 @@
     }
 
     .selected_style {
-        border:none;
+        border: none;
         border-radius: 5px;
         padding: 5px;
     }
@@ -233,8 +233,6 @@
                                         </li>
                                     }
                                 }
-
-
                             </ul>
                         </div>
 
@@ -247,6 +245,17 @@
                                 <label class="form-check-label" for="con_hang"> Còn hàng </label>
                                 <input class="form-check-input status-checkboxes" value="True" id="het_hang" type="checkbox">
                                 <label class="form-check-label" for="het_hang"> Hết hàng </label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="single_sidebar">
+                        <h3 class="sidebar-title">Khuyến mại</h3>
+                        <ul class="status-option sidbar-style">
+                            <li class="form-check">
+                                <input class="form-check-input promotion-checkboxes" value="True" id="active_promotion" type="checkbox">
+                                <label class="form-check-label" for="active_promotion"> Hoạt động </label>
+                                <input class="form-check-input promotion-checkboxes" value="False" id="no_active_promotion" type="checkbox">
+                                <label class="form-check-label" for="no_active_promotion"> Không hoạt động </label>
                             </li>
                         </ul>
                     </div>
@@ -371,8 +380,10 @@
                                             <div class="single-template-product">
                                                 <!-- Product Image Start -->
                                                 <div class="pro-img">
-
-
+                                                    @if (product.Promotion != null)
+                                                    {
+                                                        <span class="sticker-sale">-@product.Promotion.Value%</span>
+                                                    }
                                                     <a href="/product/detail/@product.ProductId">
                                                         @if (product.productOption != null && product.productOption.Count > 0)
                                                         {
@@ -418,9 +429,18 @@
                                                             @if (product.productOption != null && product.productOption.Count > 0)
                                                             {
                                                                 float amount = @product.productOption[0].price;
-                                                                string formattedAmount = amount.ToString("#,###", CultureInfo.GetCultureInfo("en-US"));
-                                                                <span class="regular-price">@formattedAmount VND</span>
-                                                                @* <del class="discount_price">$75.50</del> *@
+                                                                
+                                                                if (product.Promotion != null)
+                                                                {
+                                                                    float amountAfterDiscount = amount * (1 - (float)product.Promotion.Value / 100);
+                                                                    <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
+                                                                    <del class="discount_price">@amount.ToString("#,###")VND</del>
+                                                                }else
+                                                                {
+                                                                    <span class="regular-price">@amount.ToString("#,###")VND</span>
+                                                                }
+
+
                                                             }
                                                         </div>
 
@@ -468,7 +488,10 @@
                                     <div class="single-template-product">
                                         <!-- Product Image Start -->
                                         <div class="pro-img">
-
+                                            @if (product.Promotion != null)
+                                            {
+                                                <span class="sticker-sale">-@product.Promotion.Value%</span>
+                                            }
                                             <a href="/product/detail/@product.ProductId">
                                                 @if (product.productOption != null && product.productOption.Count > 0)
                                                 {
@@ -514,9 +537,17 @@
                                                     @if (product.productOption != null && product.productOption.Count > 0)
                                                     {
                                                         float amount = @product.productOption[0].price;
-                                                        string formattedAmount = amount.ToString("#,###", CultureInfo.GetCultureInfo("en-US"));
-                                                        <span class="regular-price">@formattedAmount VND</span>
-                                                        @* <del class="discount_price">$75.50</del> *@
+
+                                                        if (product.Promotion != null)
+                                                        {
+                                                            float amountAfterDiscount = amount * (1 - (float)product.Promotion.Value / 100);
+                                                            <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
+                                                            <del class="discount_price">@amount.ToString("#,###")VND</del>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="regular-price">@amount.ToString("#,###")VND</span>
+                                                        }
                                                     }
                                                 </div>
 

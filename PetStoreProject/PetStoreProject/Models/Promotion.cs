@@ -16,9 +16,6 @@ public partial class Promotion
 
     public int? Value { get; set; }
 
-    [Column(TypeName = "decimal(18, 3)")]
-    public decimal? MaxValue { get; set; }
-
     [StringLength(20)]
     public string StartDate { get; set; }
 

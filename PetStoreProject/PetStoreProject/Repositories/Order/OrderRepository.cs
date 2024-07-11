@@ -60,6 +60,15 @@ namespace PetStoreProject.Repositories.Order
 
         public List<OrderDetailViewModel> GetOrderDetailByCondition(OrderModel orderModel)
         {
+            var orders = GetOrderDetailExcuteCondition(orderModel);
+
+            orders = orders.Skip((orderModel.pageIndex - 1) * orderModel.pageSize).Take(orderModel.pageSize).ToList();
+
+            return orders;
+        }
+
+        public List<OrderDetailViewModel> GetOrderDetailExcuteCondition(OrderModel orderModel)
+        {
             var orders = GetOrderDetailByCustomerId(orderModel.UserId);
 
             if (long.TryParse(orderModel.SearchOrderId, out long searchOrderId))
@@ -110,14 +119,17 @@ namespace PetStoreProject.Repositories.Order
             else if (orderModel.SortPrice == "zxy")
                 orders = orders.OrderByDescending(o => o.TotalAmount).ToList();
 
-            orders = orders.Skip((orderModel.pageIndex - 1) * orderModel.pageSize).Take(orderModel.pageSize).ToList();
+            if (orderModel.SortConsigneeName == "abc")
+                orders = orders.OrderBy(o => o.ConsigneeName).ToList();
+            else if (orderModel.SortConsigneeName == "zxy")
+                orders = orders.OrderByDescending(o => o.ConsigneeName).ToList();
 
             return orders;
         }
 
-        public int GetCountOrder(int customerId)
+        public int GetCountOrder(OrderModel orderCondition)
         {
-            int countOrder = GetOrderDetailByCustomerId(customerId).Count;
+            int countOrder = GetOrderDetailExcuteCondition(orderCondition).Count;
 
             return countOrder;
         }

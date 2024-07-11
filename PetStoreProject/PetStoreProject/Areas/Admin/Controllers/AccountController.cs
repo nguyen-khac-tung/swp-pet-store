@@ -180,7 +180,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var orders = _order.GetOrderDetailByCondition(orderModel);
 
-            var totalOrders = _order.GetCountOrder(orderModel.UserId);
+            var totalOrders = _order.GetCountOrder(orderModel);
 
             ViewBag.searchOrderId = orderModel.SearchOrderId;
             ViewBag.searchName = orderModel.SearchName;

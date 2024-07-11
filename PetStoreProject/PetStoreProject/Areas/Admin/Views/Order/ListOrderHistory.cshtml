@@ -175,7 +175,6 @@
         optionOrders.SearchOrderId = "";
         optionOrders.SearchConsigneeName = "";
         resetOptionOrder();
-        resetSearchInput();
     }
 
     function cycleSortOrder(currentOrder) {
@@ -377,8 +376,18 @@
 
     function search() {
         searchOrderId = document.getElementById('search-input-orderId').value;
+        // Kiểm tra nếu searchOrderId không phải là số
+        if (isNaN(searchOrderId)) {
+            // Thực hiện hành động phù hợp khi searchOrderId không hợp lệ, ví dụ như thông báo lỗi
+            alert('Vui lòng nhập vào một số hợp lệ.');
+            return; // Dừng hàm search() nếu searchOrderId không hợp lệ
+        }
+
         console.log('search' + searchOrderId);
         resetSearchOrder();
+        document.querySelector('input[name="sNameOrder"]').value = "";
+        document.querySelector('input[name="sConsigneeName"]').value = "";
+        document.getElementById('select-dateOrder-input').value = "";
         optionOrders.SearchOrderId = searchOrderId;
         LoadOrderHistory(optionOrders);
     }
@@ -386,6 +395,9 @@
     function searchNameOrder() {
         searchName = document.getElementById('search-nameOrder-input').value;
         resetSearchOrder();
+        document.querySelector('input[name="nameOrderId"]').value = "";
+        document.querySelector('input[name="sConsigneeName"]').value = "";
+        document.getElementById('select-dateOrder-input').value = "";
         optionOrders.SearchName = searchName;
         LoadOrderHistory(optionOrders);
     }
@@ -393,12 +405,18 @@
     function selectDateOrder() {
         searchDateOrder = document.getElementById('select-dateOrder-input').value;
         resetSearchOrder();
+        document.querySelector('input[name="nameOrderId"]').value = "";
+        document.querySelector('input[name="sNameOrder"]').value = "";
+        document.querySelector('input[name="sConsigneeName"]').value = "";
         optionOrders.SearchDate = searchDateOrder;
         LoadOrderHistory(optionOrders);
     }
     function searchConsigneeNameOrder() {
         searchConsigneeName = document.getElementById('search-consgineeName-input').value;
         resetSearchOrder();
+        document.querySelector('input[name="nameOrderId"]').value = "";
+        document.querySelector('input[name="sNameOrder"]').value = "";
+        document.getElementById('select-dateOrder-input').value = "";
         optionOrders.SearchConsigneeName = searchConsigneeName;
         LoadOrderHistory(optionOrders);
     }

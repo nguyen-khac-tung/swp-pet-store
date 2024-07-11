@@ -25,5 +25,7 @@
 
         public string SearchConsigneeName { get; set; }
 
+        public string SortConsigneeName { get; set; }
+
     }
 }

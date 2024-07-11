@@ -2,6 +2,7 @@
     Layout = null;
     double totalAmount = 0;
     int index = 0;
+    double totalMoney = 0;
 }
 
 @using PetStoreProject.ViewModels;
@@ -10,9 +11,12 @@
 <style>
     #form_info_order, #money_order {
         border: 1px solid;
+        border-color: #dee2e6;
         margin-bottom: 10px;
     }
-
+    .padding_10px {
+        padding: 10px!important;
+    }
     .border_radi {
         border-radius: 10px;
     }
@@ -45,7 +49,7 @@
 <!-- Modal Body -->
 <div class="modal-body">
     <form id="order-detail-body">
-        <div class="row border_radi" id="form_info_order">
+        <div class="row border_radi padding_10px" id="form_info_order">
             <div class="form-group col-xl-6">
                 <h6 class="text-decoration-underline">Thông tin đặt hàng</h6>
                 <div class="row">
@@ -168,6 +172,7 @@
                                     <td class="text-center"><p class="float_r margin_auto">@amount.ToString("#,###") VND</p></td>
                                 </tr>
                             }
+                            totalMoney = totalAmount;
                             index++;
                         }
                         <input type="hidden" value="@index" id="product_index" />
@@ -189,30 +194,31 @@
         }
     </div>
 
-    <div class="row border_radi margin_0px" id="money_order">
+    <div class="row border_radi margin_0px padding_10px" id="money_order">
         <div class="row">
             <div class="form-group col-xl-8">
                 <p>Tổng tiền:</p>
             </div>
-            <div class="form-group col-xl-4 text-right">@totalAmount.ToString("#,###")đ</div>
+            <div class="form-group col-xl-4 text-right">@totalAmount.ToString("#,###")VND</div>
         </div>
         <div class="row">
             <div class="form-group col-xl-8">
-                <p>Khuyến mại:</p>
+                <p class="margin_0px">Mã giảm giá:</p>
             </div>
-            <div class="form-group col-xl-4 text-right">@Model.TotalAmount.ToString("#,###")đ</div>
-        </div>
-        <div class="row">
-            <div class="form-group col-xl-8">
-                <p>Giảm giá:</p>
-            </div>
-            <div class="form-group col-xl-4 text-right">@Model.TotalAmount.ToString("#,###")đ</div>
+            @if (ViewBag.priceDiscount != null)
+            {
+                totalMoney = totalAmount - ViewBag.priceDiscount;
+                <div class="form-group col-xl-4 text-right">- @ViewBag.priceDiscount.ToString("#,###")VND</div>
+            }else
+            {
+                <div class="form-group col-xl-4 text-right">- 0VND</div>
+            }
         </div>
         <div class="row">
             <div class="form-group col-xl-8">
                 <strong>Thành tiền:</strong>
             </div>
-            <div class="form-group col-xl-4 text-right"><strong>@Model.TotalAmount.ToString("#,###")đ</strong></div>
+            <div class="form-group col-xl-4 text-right"><strong>@totalMoney.ToString("#,###")VND</strong></div>
         </div>
     </div>
 </div>

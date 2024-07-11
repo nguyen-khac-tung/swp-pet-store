@@ -252,6 +252,13 @@ namespace PetStoreProject.Repositories.Discount
             var reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
             return (float)reduce;
         }
+
+        public void DeleteDiscount(int id)
+        {
+            var discount = _context.Discounts.Find(id);
+            discount.Status = false;
+            _context.SaveChanges();
+        }
     }
 
 }

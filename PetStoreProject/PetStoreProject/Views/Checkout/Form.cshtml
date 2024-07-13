@@ -200,7 +200,7 @@
                                                             <i class="bx bxs-star-half text-warning"></i>
                                                         </p>
                                                         <p class="text-muted mb-0 mt-1">@price.ToString("#,###") VND x @itemCart.Quantity</p>
-                                                        @if (itemCart.Promotion != null)
+                                                        @if (itemCart.Promotion != null && itemCart.Promotion.Value != null)
                                                         {
                                                             <del class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</del>
                                                         }
@@ -226,7 +226,7 @@
                                                             <i class="bx bxs-star-half text-warning"></i>
                                                         </p>
                                                         <p class="text-muted mb-0 mt-1">@price.ToString("#,###") VND x @itemCart.Quantity</p>
-                                                        @if (itemCart.Promotion != null)
+                                                        @if (itemCart.Promotion != null && itemCart.Promotion.Value != null)
                                                         {
                                                             <del class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</del>
                                                         }
@@ -434,7 +434,7 @@
                                                     <label class="card-radio-label" for="paymentMethod">
                                                         <input type="radio" name="pay-method" id="paymentMethod" value="VNPay" class="card-radio-input" checked>
                                                         <span class="card-radio py-3 text-center text-truncate">
-                                                            <img src="~/img/zalopay.jpg" />
+                                                            <img src="~/img/vnpay.png" />
                                                             VNpay
                                                         </span>
                                                     </label>

@@ -78,7 +78,14 @@ namespace PetStoreProject.Controllers
 
             foreach (var item in selectedProductCheckout)
             {
-                var priceItem = item.Price * (1 - (double)item.Promotion.Value / 100);
+                var priceItem = 0.0;
+                if(item.Promotion != null && item.Promotion.Value != null)
+                {
+                    priceItem = item.Price * (1 - (double)item.Promotion.Value / 100);
+                }else
+                {
+                    priceItem = item.Price;
+                }
                 total_amount += priceItem * item.Quantity;
             }
 

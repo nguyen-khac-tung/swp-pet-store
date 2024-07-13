@@ -207,7 +207,10 @@
                                 <div class="single-template-product">
                                     <!-- Product Image Start -->
                                     <div class="pro-img">
-
+                                        @if (dogFood.Promotion != null && dogFood.Promotion.Value != null)
+                                        {
+                                            <span class="sticker-sale">-@dogFood.Promotion.Value%</span>
+                                        }
                                         <a href="/product/detail/@dogFood.ProductId">
                                             <img class="primary-img" src="@dogFood.ImageUrl" alt="single-product">
                                         </a>
@@ -228,10 +231,19 @@
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @dogFood.Price;
+                                                    float amount = dogFood.Price;
+
+                                                    if (dogFood.Promotion != null && dogFood.Promotion.Value != null)
+                                                    {
+                                                        float amountAfterDiscount = amount * (1 - (float)dogFood.Promotion.Value / 100);
+                                                        <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
+                                                        <del class="discount_price">@amount.ToString("#,###")VND</del>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="regular-price">@amount.ToString("#,###")VND</span>
+                                                    }
                                                 }
-                                                <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
-                                                @* <del class="discount_price">$75.50</del> *@
                                             </div>
 
                                         </div>
@@ -267,7 +279,10 @@
                                 <div class="single-template-product">
                                     <!-- Product Image Start -->
                                     <div class="pro-img">
-
+                                        @if (catFood.Promotion != null && catFood.Promotion.Value != null)
+                                        {
+                                            <span class="sticker-sale">-@catFood.Promotion.Value%</span>
+                                        }
                                         <a href="/product/detail/@catFood.ProductId">
                                             <img class="primary-img" src="@catFood.ImageUrl" alt="single-product">
                                         </a>
@@ -288,10 +303,19 @@
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @catFood.Price;
+                                                    float amount = catFood.Price;
+
+                                                    if (catFood.Promotion != null && catFood.Promotion.Value != null)
+                                                    {
+                                                        float amountAfterDiscount = amount * (1 - (float)catFood.Promotion.Value / 100);
+                                                        <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
+                                                        <del class="discount_price">@amount.ToString("#,###")VND</del>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="regular-price">@amount.ToString("#,###")VND</span>
+                                                    }
                                                 }
-                                                <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
-                                                @* <del class="discount_price">$75.50</del> *@
                                             </div>
 
                                         </div>
@@ -417,7 +441,10 @@
                                 <div class="single-template-product">
                                     <!-- Product Image Start -->
                                     <div class="pro-img">
-
+                                        @if (dogAccessory.Promotion != null && dogAccessory.Promotion.Value != null)
+                                        {
+                                            <span class="sticker-sale">-@dogAccessory.Promotion.Value%</span>
+                                        }
                                         <a href="/product/detail/@dogAccessory.ProductId">
                                             <img class="primary-img" src="@dogAccessory.ImageUrl" alt="single-product">
                                         </a>
@@ -438,10 +465,19 @@
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @dogAccessory.Price;
+                                                    float amount = dogAccessory.Price;
+
+                                                    if (dogAccessory.Promotion != null && dogAccessory.Promotion.Value != null)
+                                                    {
+                                                        float amountAfterDiscount = amount * (1 - (float)dogAccessory.Promotion.Value / 100);
+                                                        <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
+                                                        <del class="discount_price">@amount.ToString("#,###")VND</del>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="regular-price">@amount.ToString("#,###")VND</span>
+                                                    }
                                                 }
-                                                <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
-                                                @* <del class="discount_price">$75.50</del> *@
                                             </div>
 
                                         </div>
@@ -477,7 +513,10 @@
                                 <div class="single-template-product">
                                     <!-- Product Image Start -->
                                     <div class="pro-img">
-
+                                        @if (catAccessory.Promotion != null && catAccessory.Promotion.Value != null)
+                                        {
+                                            <span class="sticker-sale">-@catAccessory.Promotion.Value%</span>
+                                        }
                                         <a href="/product/detail/@catAccessory.ProductId">
                                             <img class="primary-img" src="@catAccessory.ImageUrl" alt="single-product">
                                         </a>
@@ -498,10 +537,19 @@
 
                                             <div class="grid_price">
                                                 @{
-                                                    var price = @catAccessory.Price;
+                                                    float amount = catAccessory.Price;
+
+                                                    if (catAccessory.Promotion != null && catAccessory.Promotion.Value != null)
+                                                    {
+                                                        float amountAfterDiscount = amount * (1 - (float)catAccessory.Promotion.Value / 100);
+                                                        <span class="regular-price">@amountAfterDiscount.ToString("#,###")VND</span>
+                                                        <del class="discount_price">@amount.ToString("#,###")VND</del>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="regular-price">@amount.ToString("#,###")VND</span>
+                                                    }
                                                 }
-                                                <span class="regular-price">@price.ToString("#,###", CultureInfo.GetCultureInfo("en-US")) VND</span>
-                                                @* <del class="discount_price">$75.50</del> *@
                                             </div>
 
                                         </div>

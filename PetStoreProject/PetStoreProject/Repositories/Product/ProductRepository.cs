@@ -500,7 +500,8 @@ namespace PetStoreProject.Repositories.Product
                             select new HomeProductViewModel
                             {
                                 ProductId = p.ProductId,
-                                ProductName = p.Name
+                                ProductName = p.Name,
+                                BrandId = p.BrandId
                             }).ToList();
             }
             else
@@ -512,8 +513,14 @@ namespace PetStoreProject.Repositories.Product
                             select new HomeProductViewModel
                             {
                                 ProductId = p.ProductId,
-                                ProductName = p.Name
+                                ProductName = p.Name,
+                                BrandId = p.BrandId
                             }).ToList();
+
+            }
+            foreach (var product in products)
+            {
+                product.Promotion = GetPromotionForProduct(product.BrandId, productCateId ?? 0);
             }
             return products;
         }

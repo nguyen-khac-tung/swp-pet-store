@@ -801,6 +801,13 @@ namespace PetStoreProject.Repositories.Service
             return listService.Count;
         }
 
+        //public float GetTotalServiceSale()
+        //{
+        //    var totalAmount = from os in _context.OrderServices
+        //                      where os.Status == "Đã thanh toán"
+        //                      select os.Price
+        //}
+
         private bool IsBase64String(string imageData)
         {
             if (string.IsNullOrWhiteSpace(imageData) || imageData.Contains("cloudinary"))

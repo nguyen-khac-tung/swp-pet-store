@@ -92,7 +92,7 @@
     }
 
     .input_radio:checked {
-        background-color: #0054ff !important;
+        background-color: #000 !important;
     }
 
     .btn_submit {
@@ -102,7 +102,7 @@
         background: none;
         padding: 10px;
         font-size: 15px;
-        border-radius: 5px;
+        border-radius: 10px;
     }
 
         .btn_submit:hover {
@@ -112,7 +112,7 @@
             background: var(--Main);
             padding: 10px;
             font-size: 15px;
-            border-radius: 5px;
+            border-radius: 10px;
     }
 
     .btn_profile {
@@ -215,6 +215,9 @@
                     </div>
                     <div class="row content_form_style" id="content_profile">
                         <div class="col-md-12" id="form_content">
+                            <div id="form_profile">
+
+                            
                             <form id="updateProfileAccount">
                                 <div class="form-group row padding_t_b">
                                     <label class="col-sm-4 col-form-label label_style " asp-for="FullName"><strong>Họ và Tên: </strong></label>
@@ -278,6 +281,8 @@
                                     <button class="btn btn-secondary btn_submit" type="submit">Cập nhật thông tin</button>
                                 </div>
                             </form>
+                            </div>
+                            <div id="form_changePass"></div>
                         </div>
                         <div class="btn_click_change">
                             <button type="button" id="btn_profileInf" class="btn btn-secondary btn_profile active btn_active_style " onclick="profileInfo()">Thông tin tài khoản</button>
@@ -291,17 +296,14 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-@* <script src="~/areas/js/profile-user.js"></script> *@
 <script>
-    var contentForm = $('#form_content').html();
-
     $(document).ready(function () {
         console.log('Binding form submit event');
         $('#updateProfileAccount').on('submit', function (event) {
-            event.preventDefault(); // Ngăn chặn việc submit form
+            event.preventDefault(); // Prevent the form from submitting normally
             var formUpdateProfile = $(this).serialize();
 
-            // Gửi dữ liệu form bằng AJAX
+            // Send form data via AJAX
             $.ajax({
                 type: 'POST',
                 url: 'ProfileAccount',
@@ -317,19 +319,21 @@
                         alert(response.message);
                         // Handle success
                         $('#user_name_style').text(response.updatedData.fullName);
-                        $('input[name="FullName"]').val(response.updatedData.fullName);
-                        $('input[name="Email"]').val(response.updatedData.email);
-                        $('input[name="Phone"]').val(response.updatedData.phone);
-                        $('input[name="Address"]').val(response.updatedData.address);
-                        $('#user_name').text(response.updatedData.fullName)
-                        $('#dob').val(response.updatedData.doB); // Update date input
+
+                        // Update input values and placeholders
+                        $('input[name="FullName"]').val(response.updatedData.fullName).attr('placeholder', response.updatedData.fullName);
+                        $('input[name="Email"]').val(response.updatedData.email).attr('placeholder', response.updatedData.email);
+                        $('input[name="Phone"]').val(response.updatedData.phone).attr('placeholder', response.updatedData.phone);
+                        $('input[name="Address"]').val(response.updatedData.address).attr('placeholder', response.updatedData.address);
+                        $('#user_name').text(response.updatedData.fullName);
+                        $('#dob').val(response.updatedData.doB).attr('placeholder', response.updatedData.doB); // Update date input
+
                         // Update gender radio buttons
                         if (response.updatedData.gender) {
                             $('input[name="Gender"][value="true"]').prop('checked', true);
                         } else {
                             $('input[name="Gender"][value="false"]').prop('checked', true);
                         }
-                        
                     }
                 },
                 error: function (xhr, status, error) {
@@ -338,18 +342,16 @@
                 }
             });
         });
-
-
     });
 
     function profileInfo() {
         console.log("Click Profile");
-        $('#form_content').empty();
         var btn_profile = $('#btn_profileInf');
         var btn_changePass = $('#btn_changePass');
         btn_changePass.removeClass('active');
         btn_profile.addClass('active');
-        $('#form_content').html(contentForm); // Nội dung trước đó
+        $('#form_changePass').hide();
+        $('#form_profile').show();
     }
 
     // Hàm changePassword()
@@ -362,8 +364,9 @@
             url: 'ChangePassword',
             type: 'get',
             success: function (response) {
-                $('#form_content').empty();
-                $('#form_content').html(response);
+                $('#form_profile').hide();
+                $('#form_changePass').html(response);
+                $('#form_changePass').show();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", xhr.responseText, status, error);
@@ -389,7 +392,8 @@
                 data: $(this).serialize(), // Serialize the form data
                 success: function (response) {
                     // Handle success (e.g., show a success message)
-                    $('#form_content').html(response);
+
+                    $('#form_changePass').html(response);
                     if (response.success) {
                         alert(response.message);
                         changePassword();

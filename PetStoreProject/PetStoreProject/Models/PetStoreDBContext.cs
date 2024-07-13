@@ -71,6 +71,9 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<WorkingTime> WorkingTimes { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("name=PetStoreDBContext");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -138,7 +141,6 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.Property(e => e.DiscountId).ValueGeneratedNever();
             entity.Property(e => e.Code).IsFixedLength();
-            entity.Property(e => e.CreatedAt).IsFixedLength();
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Discounts).HasConstraintName("FK_Discount_Admin");
 

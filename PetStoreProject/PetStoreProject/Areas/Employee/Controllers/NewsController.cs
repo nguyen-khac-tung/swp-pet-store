@@ -4,7 +4,7 @@ using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.News;
 using PetStoreProject.ViewModels;
-using System.Collections.Generic;
+using X.PagedList;
 
 namespace PetStoreProject.Areas.Employee.Controllers
 {
@@ -80,10 +80,18 @@ namespace PetStoreProject.Areas.Employee.Controllers
             ViewBag.listTag = _dbContext.TagNews.ToList();
             return View(model);
 		}
-		public IActionResult ListNews()
+		public IActionResult ListNews(int? page, int? pageSize)
 		{
+			if (page == null)
+			{
+				page = 1;
+			}
+			if (pageSize == null)
+			{
+				pageSize = 10;
+			}
 			var listNews = _newsRepository.GetListNewsForEmployee();
-			return View(listNews);
+			return View(listNews.ToPagedList((int)page, (int)pageSize));
 		}
 		public IActionResult CreateNews()
 		{

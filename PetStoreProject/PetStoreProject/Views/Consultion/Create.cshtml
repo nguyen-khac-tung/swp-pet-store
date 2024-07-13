@@ -1,0 +1,98 @@
+﻿@using PetStoreProject.ViewModels
+@model PetStoreProject.ViewModels.ConsultionCreateRequestViewModel;
+@{
+    ViewData["Title"] = "Tư Vấn";
+    var result = ViewData["Result"];
+}
+    <!-- Regester Page Start Here -->
+<input type="hidden" value="@result" id="result">
+    <div class="register-area adp_top adp_bottom">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 col-md-4 col-12">
+                    <div class="area-details">
+                        <ul>
+                            <li class="single-quick-contact">
+                                <h5>Số điện thoại liên lạc</h5>
+                                <p>
+                                    <a href="tel:+0987456321">039 848 6547</a>
+                                </p>
+                            </li>
+                            <li class="single-quick-contact">
+                                <h5>Email liên lạc</h5>
+                                <p>
+                                    <a href="mailto:animartpetshop@gmail.com">animartpetshop@gmail.com</a>
+                                </p>
+                            </li>
+                            <li class="single-quick-contact">
+                                <h5>Địa chỉ liên lạc</h5>
+                                <p>Khu Giáo dục và Đào tạo, Khu Công Nghệ Cao Hòa Lạc, Km29 Đại lộ Thăng Long, Thạch Hoà, Thạch Thất, Hà Nội</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 col-md-8 col-12">
+                    <div class="contact_wrapper clearfix">
+                        <div class="small-title">
+                            <h3>Hộp thoại tư vấn</h3>
+                            <br>
+                        </div>
+                        <form asp-controller="Consultion" asp-action="Create" method="post">
+                            <div class="form-group row mt-3">
+                                <label asp-for="CustomerName" class="col-lg-3 col-md-3 col-form-label">Họ và Tên<em>*</em></label>
+                                <div class="col-lg-9 col-md-9">
+                                <input asp-for="CustomerName" class="form-control">
+                                <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <label asp-for="Email" class="col-lg-3 col-md-3 col-form-label">Email<em>*</em></label>
+                                <div class="col-lg-9 col-md-9">
+                                    <input asp-for="Email" class="form-control">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <label asp-for="Phone" class="col-lg-3 col-md-3 col-form-label">Số điện thoại<em>*</em></label>
+                                <div class="col-lg-9 col-md-9">
+                                    <input asp-for="Phone" class="form-control">
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <label asp-for="Title" class="col-lg-3 col-md-3 col-form-label">Tiêu đề<em>*</em></label>
+                                <div class="col-lg-9 col-md-9">
+                                    <input asp-for="Title" class="form-control">
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <label asp-for="Content" class="col-lg-3 col-md-3 col-form-label">Nội dung<em>*</em></label>
+                                <div class="col-lg-9 col-md-9">
+                                    <input asp-for="Content" class="form-control">
+                                    <span asp-validation-for="Content" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row register-box justify-content-center text-center mt-5">
+                                <button type="submit" class="login-btn col-sm-10 rounded-1">Gửi</button>
+                            </div>
+                        </form>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section ScriptOptional{
+        <script>
+            var result = $('#result').val().trim()
+            console.log(result)
+            if(result != ''){
+                alert('Tạo yêu cầu thành công')
+            }
+        </script>
+    }
+    

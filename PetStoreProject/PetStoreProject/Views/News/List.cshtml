@@ -1,5 +1,7 @@
-﻿@model IEnumerable<PetStoreProject.ViewModels.NewsViewModel>
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList
 
+@model IPagedList<PetStoreProject.ViewModels.NewsViewModel>;
 @{
 	ViewData["Title"] = "News Detail";
 }
@@ -51,12 +53,47 @@
 			margin-top: auto;
 		}
 
+		.pagination-blog {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px; 
+
+		.pagination {
+			display: flex;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			justify-content: center;
+		}
+
+			.pagination li {
+				margin: 0 5px;
+			}
+
+			.pagination a, .pagination span {
+				color: #007bff;
+				text-decoration: none;
+				border: 1px solid #dee2e6;
+				padding: 8px 12px;
+				border-radius: 4px;
+				transition: background-color 0.3s;
+			}
+
+				.pagination a:hover {
+					background-color: #e9ecef;
+				}
+
+			.pagination .active span {
+				background-color: #007bff;
+				color: white;
+				border-color: #007bff;
+			}
+
     </style>
 </head>
 <body>
 	<div class="blog-area adp_top adp_bottom">
 		<div class="container">
-			<!-- Section Title End -->
 			<div class="row justify-content-center">
 				<div class="col-xl-12 col-lg-10">
 					<div class="row">
@@ -87,23 +124,15 @@
 								</div>
 							</div>
 						}
-						
-
 					</div>
 				</div>
 			</div>
-			<ul class="pagination-blog">
-				<li class="disabled"><a href="#"><i class="icofont-long-arrow-left"></i></a></li>
-				<li class="active"><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#"><i class="icofont-long-arrow-right"></i></a></li>
-			</ul>
+			<div class="pagination-blog">
+				@Html.PagedListPager(Model, page => Url.Action("List", new { page, pagesize = 10 }))
+			</div>
+			
 		</div>
-		<!-- Container End -->
 	</div>
-    
 </body>
 </html>
 

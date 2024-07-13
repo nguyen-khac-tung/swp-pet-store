@@ -239,21 +239,22 @@ function quickView(productId) {
         success: function (response) {
             console.log(response)
             $('#quick_name').html(response.name);
+            let price = response.productOption[0].price
             if (response.promotion.value != null) {
-                $('#quick_price_discount').html(response.productOption[0].price.toLocaleString('en-US') + ' VND');
-                let price = response.productOption[0].price*(1- response.promotion.value / 100);
-                $('#quick_price').html(price);
+                $('#quick_price_discount').html(price.toLocaleString('en-US') + ' VND');
+                price = response.productOption[0].price * (1 - response.promotion.value / 100);
+                $('#quick_price').html(price.toLocaleString('en-US'));
                 discount = response.promotion.value;
                 console.log(price)
             }
             else {
-                $('#quick_price').html(response.productOption[0].price.toLocaleString('en-US'));
+                $('#quick_price').html(price.toLocaleString('en-US'));
                 $('#quick_price_discount').html('');
                 discount = 0;
             }
             
             $('#quick_image').empty();
-            $('#quick_amount').html(response.productOption[0].price.toLocaleString('en-US'));
+            $('#quick_amount').html(price.toLocaleString('en-US'));
             $('#quick_add_to_cart').attr('data-product-option-id', response.productOption[0].id)
 
             let imgDiv = $('<div>', {

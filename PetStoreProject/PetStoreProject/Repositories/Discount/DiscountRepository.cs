@@ -1,6 +1,7 @@
 ﻿
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
+using X.PagedList;
 
 namespace PetStoreProject.Repositories.Discount
 {
@@ -91,7 +92,7 @@ namespace PetStoreProject.Repositories.Discount
             return discount;
         }
 
-        public List<DiscountViewModel> GetDiscounts()
+        public IPagedList<DiscountViewModel> GetDiscounts(int page, int pageSize)
         {
             var discounts = (from d in _context.Discounts
                              join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
@@ -151,7 +152,7 @@ namespace PetStoreProject.Repositories.Discount
                     }
                 }
             }
-            return discounts;
+            return discounts.ToPagedList(page, pageSize);
         }
 
         public List<DiscountViewModel> GetDiscounts(double total_amount, string email)

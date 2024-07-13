@@ -32,11 +32,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return Json(result);
         }
 
-        public IActionResult List()
+        public IActionResult List(int? page, int? pageSize)
         {
-            var discount = _discount.GetDiscounts();
-            ViewData["discounts"] = discount;
-            return View();
+            page = page == null ? 1 : page;
+            pageSize = pageSize == null ? 10 : pageSize;
+            var discount = _discount.GetDiscounts((int)page, (int)pageSize);
+            return View(discount);
         }
 
         public IActionResult Edit(int id)

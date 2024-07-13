@@ -1,5 +1,5 @@
 ﻿@using PetStoreProject.ViewModels
-@model PetStoreProject.ViewModels.ConsultionCreateRequestViewModel;
+@model PetStoreProject.ViewModels.ConsultationCreateRequestViewModel;
 @{
     ViewData["Title"] = "Tư Vấn";
     var result = ViewData["Result"];
@@ -39,7 +39,7 @@
                             <h3>Hộp thoại tư vấn</h3>
                             <br>
                         </div>
-                        <form asp-controller="Consultion" asp-action="Create" method="post">
+                        <form asp-controller="Consultation" asp-action="Create" method="post">
                             <div class="form-group row mt-3">
                                 <label asp-for="CustomerName" class="col-lg-3 col-md-3 col-form-label">Họ và Tên<em>*</em></label>
                                 <div class="col-lg-9 col-md-9">

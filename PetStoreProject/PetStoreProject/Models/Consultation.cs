@@ -24,11 +24,16 @@ public partial class Consultation
     public string Content { get; set; } = null!;
 
     public DateOnly Date { get; set; }
-    public string PhoneNumber { get; set; } = null!;
 
     public bool Status { get; set; }
 
     public int? EmployeeId { get; set; }
+
+    [StringLength(50)]
+    public string PhoneNumber { get; set; } = null!;
+
+    [StringLength(250)]
+    public string? Response { get; set; }
 
     [ForeignKey("EmployeeId")]
     [InverseProperty("Consultations")]

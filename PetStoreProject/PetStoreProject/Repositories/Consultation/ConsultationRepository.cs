@@ -2,21 +2,22 @@
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
+using X.PagedList;
 
 namespace PetStoreProject.Repositories.Consultion
 {
-    public class ConsultionRepository : IConsultionRepository
+    public class ConsultationRepository : IConsultationRepository
     {
         private readonly PetStoreDBContext _dbContext;
         private readonly EmailService _emailService;
 
-        public ConsultionRepository(PetStoreDBContext dbContext, EmailService emailService)
+        public ConsultationRepository(PetStoreDBContext dbContext, EmailService emailService)
         {
             _dbContext = dbContext;
             _emailService = emailService;
         }
 
-        public int CreateConsultion(ConsultionCreateRequestViewModel consultion)
+        public int CreateConsultation(ConsultationCreateRequestViewModel consultion)
         {
             var newConsultation = new Consultation
             {
@@ -33,14 +34,14 @@ namespace PetStoreProject.Repositories.Consultion
             return newConsultation.ConsultationId;
         }
 
-        public ConsultionViewForAdmin GetDetail(int id)
+        public ConsultationViewForAdmin GetDetail(int id)
         {
             var consultion = _dbContext.Consultations.Find(id);
             if (consultion == null)
             {
                 return null;
             }
-            return new ConsultionViewForAdmin
+            return new ConsultationViewForAdmin
             {
                 Id = consultion.ConsultationId,
                 Name = consultion.Name,
@@ -49,25 +50,27 @@ namespace PetStoreProject.Repositories.Consultion
                 Title = consultion.Title,
                 Date = consultion.Date,
                 Status = consultion.Status,
-                Content = consultion.Content
+                Content = consultion.Content,
+                Response = consultion.Response
             };
         }
 
-        public List<ConsultionViewForAdmin> GetListConsultion()
+        public IPagedList<ConsultationViewForAdmin> GetListConsultation(int? page, int? pageSize)
         {
             var listConsultation = (from c in _dbContext.Consultations
-                                    select new ConsultionViewForAdmin
+                                    select new ConsultationViewForAdmin
                                     {
                                         Id = c.ConsultationId,
-                                        Name = c.Name,  // Giả sử Name không bao giờ là NULL
-                                        Email = c.Email ?? "No email provided",  // Nếu Email là NULL, sử dụng giá trị mặc định
-                                        Phone = c.PhoneNumber ?? "No phone number",  // Tương tự như trên
-                                        Title = c.Title ?? "No title",  // Tương tự như trên
-                                        Date = c.Date,  // Giả sử Date không bao giờ là NULL
+                                        Name = c.Name,
+                                        Email = c.Email ?? "No email provided",
+                                        Phone = c.PhoneNumber ?? "No phone number",
+                                        Title = c.Title ?? "No title",
+                                        Date = c.Date,
                                         Status = c.Status
                                     }).ToList();
-
-            return listConsultation;
+            page = page == null ? 1 : page;
+            pageSize = pageSize == null ? 10 : pageSize;
+            return listConsultation.ToPagedList((int)page, (int)pageSize);
         }
 
         public void Reply(int id, string message)
@@ -77,6 +80,7 @@ namespace PetStoreProject.Repositories.Consultion
             var subject = "Trả lời yêu cầu";
             var body = consultation.Content + ": " + message;
             consultation.Status = true;
+            consultation.Response = message;
             _dbContext.SaveChanges();
             _emailService.SendEmail(email, subject, body);
         }

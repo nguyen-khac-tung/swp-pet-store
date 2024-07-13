@@ -1,8 +1,10 @@
 ﻿@using PetStoreProject.Areas.Admin.ViewModels
-@model IEnumerable<PetStoreProject.Areas.Admin.ViewModels.ConsultionViewForAdmin>
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+@model IPagedList<PetStoreProject.Areas.Admin.ViewModels.ConsultationViewForAdmin>
 @{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    var listConsultion = (List<ConsultionViewForAdmin>)ViewData["consultion"];
 }
 
 @section HeadOptional {
@@ -57,6 +59,62 @@
                 line-height: 25px;
             }
 
+        .wg-table.table-all-category ul.table-title li{
+            width: 0;
+        }
+
+        .wg-table.table-all-category .product-item > .flex > div {
+            width: 0;
+        }
+
+        .wg-table .table-title {
+            justify-content: normal;
+        }
+
+        .wg-table.table-all-category > * {
+            min-width: 1180px;
+        }
+
+        .pagination-blog {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            justify-content: center;
+        }
+
+            .pagination li {
+                margin: 0 5px;
+            }
+
+            .pagination a, .pagination span {
+                color: #007bff;
+                text-decoration: none;
+                border: 1px solid #dee2e6;
+                padding: 8px 12px;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+            }
+
+                .pagination a:hover {
+                    background-color: #e9ecef;
+                }
+
+            .pagination .active span {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+
+        .header-menu-list > li, .cart-box > ul > li {
+            padding: 0;
+        }
     </style>
 }
 <!--List Category-->
@@ -69,54 +127,57 @@
         <!-- all-category -->
         <div class="wg-box">
             <div class="wg-table table-all-category">
-                <ul class="table-title flex gap20 mb-14 header-menu-list">
-                    <li style="width: 280px">
+                <ul class="table-title flex gap20 mb-14 header-menu-list" style="width: 100%">
+                    <li style="width: 200px">
                         <a class="body-title" onclick="sortProductCateName()">Tên khách hàng<i class="bi bi-chevron-expand"></i></a>
                     </li>
-                    <li>
-                        <a class="body-title" onclick="sortQuantity()">Số điện thoại<i class="bi bi-chevron-expand"></i></a>
+                    <li style="width: 130px">
+                        <a class="body-title" style="width: 130px">Số điện thoại</a>
                     </li>
-                    <li>
-                        <a class="body-title" onclick="sortQuantitySold()">Email khách hàng<i class="bi bi-chevron-expand"></i></a>
+                    <li style="width: 200px">
+                        <a style="width: 200px" class="body-title">Email khách hàng</a>
                     </li>
-                    <li>
-                        <a class="body-title" onclick="sortQuantitySold()">Tiêu đề<i class="bi bi-chevron-expand"></i></a>
+                    <li style="width: 100px">
+                        <a class="body-title">Tiêu đề</a>
                     </li>
-                    <li>
-                        <a class="body-title" onclick="sortQuantitySold()">Ngày gửi<i class="bi bi-chevron-expand"></i></a>
+                    <li style="width: 150px">
+                        <a class="body-title">Ngày gửi</a>
                     </li>
-                    <li>
+                    <li style="width: 150px">
                         <a class="drop-icon " href="#">Trạng thái</a>
                         <ul class="common_ddown dropdown_style" id="status_list_customer">
-                            <li><a href="#" onclick="orderStatus('Status')">- Tất cả</a></li>
-                            <li><a href="#" onclick="orderStatus('block-available')">- Đã trả lời</a></li>
-                            <li><a href="#" onclick="orderStatus('block-not-available')">- Chưa trả lời</a></li>
+                            <li style="width:100%"><a href="#" onclick="orderStatus('status')">- Tất cả</a></li>
+                            <li style="width:100%"><a href="#" onclick="orderStatus('block-available')">- Đã trả lời</a></li>
+                            <li style="width:100%"><a href="#" onclick="orderStatus('block-not-available')">- Chưa trả lời</a></li>
                         </ul>
                     </li>
                     <li>
                         <div class="body-title">Hành động</div>
                     </li>
                 </ul>
-                <ul class="flex flex-column scrollable-brand-list" id="list-consultation">
-                    @foreach (var item in listConsultion)
+                <ul class="flex flex-column" id="list-consultation">
+                    @foreach (var item in Model)
                     {
                         <li class="product-item gap14 consultation-@item.Id">
                             <input type="hidden" value="@item.Id" class="productCategoryId">
                             <input type="hidden" value="@item.Id" class="categoryId">
-                            <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="productCateName" style="width: 280px">
+                            <div class="flex items-center gap20 flex-grow">
+                                <div class="productCateName" style="width: 200px">
                                     @item.Name
                                 </div>
-                                <div class="body-text totalProduct">@item.Phone</div>
-                                <div class="body-text quantitySold">@item.Email</div>
-                                <div class="body-text quantitySold">@item.Title</div>
-                                <div class="body-text quantitySold">@item.Date</div>
-                                <div class="body-text status @(item.Status ? "block-available" : "block-not-available") isDelete" value="@(item.Status ? 1 : 0)">
+                                <div class="body-text totalProduct" style="width: 130px">@item.Phone</div>
+                                <div class="body-text quantitySold" style="width: 200px">@item.Email</div>
+                                <div class="body-text quantitySold" style="width: 100px">@item.Title</div>
+                                <div class="body-text quantitySold" style="width: 150px">@item.Date</div>
+                                <div style="width: 150px" class="body-text status @(item.Status ? "block-available" : "block-not-available") isDelete" value="@(item.Status ? 1 : 0)">
                                     @(item.Status ? "Đã trả lời" : "Chưa trả lời")
                                 </div>
                                 <div class="list-icon-function">
-                                    <div class="item edit" onclick="responseConsultation(this, @item.Id)">
+                                    <div class="item edit @(item.Status ? "hidden" : "" )" onclick="responseConsultation(this, @item.Id)">
                                         <i class="icon-edit-3"></i>
+                                    </div>
+                                    <div class="item eye @(item.Status ? "" : "hidden" )" onclick="viewDetailConsultation(@item.Id)">
+                                        <i class="icon-eye"></i>
                                     </div>
                                 </div>
                             </div>
@@ -130,6 +191,9 @@
             </div>
         </div>
         <!-- /all-category -->
+        <div class="pagination-blog">
+            @Html.PagedListPager(Model, page => Url.Action("list", new { page, pagesize = 10 }))
+        </div>
 
     </div>
     <!-- /main-content-wrap -->
@@ -163,7 +227,7 @@
                         </fieldset>
                         <fieldset class="name">
                             <label class="body-title mb-10">Trả lời<span class="tf-color-1">*</span></label>
-                            <input type="text" class="mb-10" placeholder="Nhập câu trả lời" id="messagge">
+                            <input type="text" class="mb-10" placeholder="Nhập câu trả lời" id="message">
                             <span class="text-danger" id="error-message"></span>
                         </fieldset>
                     </div>
@@ -182,7 +246,7 @@
         function responseConsultation(tag, consultationId){
             $('#staticBackdrop').modal('show')
             $.ajax({
-                url: "/admin/consultion/detail",
+                url: "/admin/consultation/detail",
                 type: "POST",
                 data: {consultionId : consultationId},
                 success: function (response) {
@@ -197,14 +261,14 @@
         }
 
         function reply(){
-            var message = $('#messagge').val().trim();
+            var message = $('#message').val().trim();
             if(message == ''){
                 $('#error-message').text('Câu trả lời không được để trống.')
             }
             else{
                 var consultationId = $('#consultationId').val();
             $.ajax({
-                url: "/admin/consultion/reply",
+                url: "/admin/consultation/reply",
                 type: "POST",
                 data: {consultionId : consultationId, messagge : message},
                 success: function (response) {
@@ -215,11 +279,76 @@
                     li.find('.status').addClass('block-available')
                     li.find('.status').removeClass('block-not-available')
                     li.find('.edit').addClass('hidden')
+                    li.find('.eye').removeClass('hidden')
+                    $('#message').val('')
+                    $('#message').attr('readonly', false);
+                    alert('Đã trả lời.')
                 }
             })
             }
         }
 
+        function viewDetailConsultation(consultationId){
+            $('#staticBackdrop').modal('show')
+            $.ajax({
+                url: "/admin/consultation/detail",
+                type: "POST",
+                data: { consultionId: consultationId },
+                success: function (response) {
+                    $('#staticBackdropLabel').text(response.title);
+                    $('#name').val(response.name)
+                    $('#phone').val(response.phone)
+                    $('#content').val(response.content)
+                    $('#consultationId').val(response.id)
+                    if (response.response == null){
+                        $('#message').val('')
+                    }
+                    else{
+                        $('#message').val(response.response)
+                    }
+                    $('#message').attr('readonly', true);
+                }
+            })
+        }
+        let productCateName = true;
+
+        function orderStatus(str) {
+            var list = $('#list-consultation').find('li');
+            var flag = false;
+
+            list.each(function () {
+                if ($(this).find('.isDelete').hasClass(str)) {
+                    flag = true;
+                    $(this).removeClass('hidden');
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+
+            if (!flag) {
+                $('.empty-order-history').removeClass('hidden');
+            } else {
+                $('.empty-order-history').addClass('hidden');
+            }
+        }
+
+        function sortProductCateName() {
+            var list = $('#list-consultation').find('li')
+            console.log(productCateName)
+            list.sort(function (a, b) {
+                var nameA = $(a).find('.productCateName').text().trim();
+                var nameB = $(b).find('.productCateName').text().trim();
+                if (productCateName) {
+                    return nameA.localeCompare(nameB, 'vi');
+                }
+                else {
+                    return nameB.localeCompare(nameA, 'vi');
+                }
+
+            })
+            productCateName = !(productCateName);
+            $('#list-consultation').empty().append(list);
+        }
 
     </script>
 }

@@ -1,6 +1,6 @@
 ﻿namespace PetStoreProject.Areas.Admin.ViewModels
 {
-    public class ConsultionViewForAdmin
+    public class ConsultationViewForAdmin
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -10,5 +10,6 @@
         public string Title { get; set; }
         public string Content { get; set; }
         public bool Status { get; set; }
+        public string? Response { get; set; }
     }
 }

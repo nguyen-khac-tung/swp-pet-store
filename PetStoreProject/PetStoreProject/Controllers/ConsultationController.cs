@@ -5,12 +5,12 @@ using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Controllers
 {
-    public class ConsultionController : Controller
+    public class ConsultationController : Controller
     {
-        private readonly IConsultionRepository _consultionRepository;
+        private readonly IConsultationRepository _consultionRepository;
         private readonly PetStoreDBContext _context;
 
-        public ConsultionController(IConsultionRepository consultionRepository, PetStoreDBContext context)
+        public ConsultationController(IConsultationRepository consultionRepository, PetStoreDBContext context)
         {
             _consultionRepository = consultionRepository;
             _context = context;
@@ -23,11 +23,11 @@ namespace PetStoreProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ConsultionCreateRequestViewModel consultion)
+        public IActionResult Create(ConsultationCreateRequestViewModel consultion)
         {
             if (ModelState.IsValid)
             {
-                var consultionId = _consultionRepository.CreateConsultion(consultion);
+                var consultionId = _consultionRepository.CreateConsultation(consultion);
                 ViewData["Result"] = "Success";
             }
             return View();

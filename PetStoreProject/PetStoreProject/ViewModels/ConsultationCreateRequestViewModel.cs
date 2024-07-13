@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PetStoreProject.ViewModels
 {
-    public class ConsultionCreateRequestViewModel
+    public class ConsultationCreateRequestViewModel
     {
         public int ConsultionId { get; set; }
 

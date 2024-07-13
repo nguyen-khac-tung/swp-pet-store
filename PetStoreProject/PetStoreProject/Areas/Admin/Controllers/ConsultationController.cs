@@ -5,21 +5,20 @@ using PetStoreProject.Repositories.Consultion;
 namespace PetStoreProject.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class ConsultionController : Controller
+    public class ConsultationController : Controller
     {
-        private readonly IConsultionRepository _consultion;
+        private readonly IConsultationRepository _consultion;
         private readonly PetStoreDBContext _context;
-        public ConsultionController(IConsultionRepository consultion, PetStoreDBContext context)
+        public ConsultationController(IConsultationRepository consultion, PetStoreDBContext context)
         {
             _consultion = consultion;
             _context = context;
         }
         [HttpGet]
-        public IActionResult List()
+        public IActionResult List(int? page, int? pageSize)
         {
-            var consultions = _consultion.GetListConsultion();
-            ViewData["consultion"] = consultions;
-            return View();
+            var consultations = _consultion.GetListConsultation(page, pageSize);
+            return View(consultations);
         }
 
         [HttpPost]

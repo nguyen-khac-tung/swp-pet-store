@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace PetStoreProject.ViewModels
 {
-    public class ConsultionViewModels
+    public class ConsultationViewModels
     {
         public int ConsultionId { get; set; }
         public string CustomerName { get; set; }

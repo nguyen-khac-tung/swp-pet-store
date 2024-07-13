@@ -112,7 +112,7 @@ builder.Services.AddTransient<IEmployeeRepository, EmployeeReporistory>();
 
 builder.Services.AddTransient<IOrderItemRepository, OrderItemRepository>();
 
-builder.Services.AddTransient<IConsultionRepository, ConsultionRepository>();
+builder.Services.AddTransient<IConsultationRepository, ConsultationRepository>();
 
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
         builder.Configuration.GetSection("Cloudinary:CloudName").Value,

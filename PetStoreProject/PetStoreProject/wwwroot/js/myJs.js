@@ -32,6 +32,7 @@ function getCartBoxItems() {
         type: "POST",
         url: "/cart/GetCartBoxItems",
         success: function (response) {
+            console.log(response)
             $('#list_item').empty();
             $('#total_item').html(response.length)
             let total_price = 0;
@@ -41,8 +42,7 @@ function getCartBoxItems() {
             else {
                 console.log(response)
                 for (const element of response) {
-
-                    if (element.promotion.vailue != null) {
+                    if (element.promotion.value != null) {
                         element.price = element.price * (1 - element.promotion.value/100)
                     }
                     let divSingleCart = $('<div>', {

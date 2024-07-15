@@ -66,7 +66,7 @@ namespace PetStoreProject.Controllers
                 {
                     var userName = _account.GetUserName(acc.Email, "Employee");
                     HttpContext.Session.SetString("userName", userName);
-                    return RedirectToAction("Index", "Home", new { area = "Employee" });
+                    return RedirectToAction("ListOrderService", "Service", new { area = "Employee" });
                 }
                 else
                 {
@@ -186,7 +186,7 @@ namespace PetStoreProject.Controllers
                 {
                     var userName = _account.GetUserName(ResetPasswordVM.Email, "Employee");
                     HttpContext.Session.SetString("userName", userName);
-                    return RedirectToAction("Index", "Home", new { area = "Employee" });
+                    return RedirectToAction("ListOrderService", "Service", new { area = "Employee" });
                 }
                 else
                 {
@@ -244,7 +244,7 @@ namespace PetStoreProject.Controllers
                     {
                         var userName = _account.GetUserName(email, "Employee");
                         HttpContext.Session.SetString("userName", userName);
-                        return RedirectToAction("Index", "Home", new { area = "Employee" });
+                        return RedirectToAction("ListOrderService", "Service", new { area = "Employee" });
                     }
                     else
                     {

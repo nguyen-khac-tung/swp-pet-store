@@ -1,7 +1,8 @@
-﻿(function ($) {
+﻿let tfLineChart;
+(function ($) {
 
-    var tfLineChart = (function () {
-
+    tfLineChart = (function () {
+        var chart;
         var chartBar = function (days, dataProduct, dataService) {
 
             var options = {
@@ -25,12 +26,21 @@
                 legend: {
                     show: false,
                 },
-                colors: ['#8D79F6', '#2377FC'],
+                colors: ['#2377FC', '#8D79F6'],
                 stroke: {
                     curve: 'smooth'
                 },
                 yaxis: {
-                    show: false,
+                    //show: false,
+                    labels: {
+                        style: {
+                            colors: '#95989D',
+                            fontSize: '13px'
+                        },
+                        formatter: function (value) {
+                            return value.toLocaleString('en-US') + ' đ';
+                        }
+                    }
                 },
                 xaxis: {
                     labels: {
@@ -44,16 +54,21 @@
                     x: {
                         format: 'dd/mm/yy'
                     },
+                    y: {
+                        formatter: function (value) {
+                            return value.toLocaleString('en-US') + 'đ';
+                        }
+                    }
                 },
             };
 
-            chart = new ApexCharts(
-                document.querySelector("#line-chart-22"),
-                options
-            );
-            if ($("#line-chart-22").length > 0) {
+            if (chart) {
+                chart.updateOptions(options);
+            } else {
+                chart = new ApexCharts(document.querySelector("#line-chart-22"), options);
                 chart.render();
             }
+
         };
 
         /* Function ============ */
@@ -70,11 +85,13 @@
     //jQuery(document).ready(function () { });
 
     jQuery(window).on("load", function () {
-        var currentMonth = $("#month").val();
-        var currentYear = $("#year").val();
-        var data = getDaysInMonth(currentMonth, currentYear);
-        tfLineChart.load(data.days, data.dataProduct, data.dataService);
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth() + 1;
+        var currentYear = currentDate.getFullYear();
+        getData(currentMonth, currentYear);
     });
 
     jQuery(window).on("resize", function () { });
+
 })(jQuery);
+

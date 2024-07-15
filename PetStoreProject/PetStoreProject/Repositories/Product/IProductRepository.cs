@@ -41,5 +41,7 @@ namespace PetStoreProject.Repositories.Product
         public List<ProductDetailViewModel> GetProductDetail(List<int> cateId, int productCateId);
 
         public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate);
+
+        public List<float> GetProductSaleOfMonth(int month, int year);
     }
 }

@@ -33,63 +33,53 @@
                     </div>
                 </div>
 
-                <div class="col-lg-9 col-md-8 col-12">
-                    <div class="contact_wrapper clearfix">
-                        <div class="small-title">
-                            <h3>Hộp thoại tư vấn</h3>
-                            <br>
-                        </div>
-                        <form asp-controller="Consultation" asp-action="Create" method="post">
-                        <div class="form-group row mt-3">
-                            <div class="col-lg-12 col-md-12">
-                                <label asp-for="CustomerName" class="col-form-label">Họ và Tên<em>*</em></label>
-                                <input asp-for="CustomerName" class="form-control">
-                                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            <div class="col-lg-9 col-md-8 col-12">
+                <div class="contact_wrapper clearfix">
+                    <div class="small-title">
+                        <h3>Hộp thoại tư vấn</h3>
+                    </div>
+                    <form class="contact-form" asp-controller="Consultation" asp-action="create"  method="post">
+                        <div class="address-wrapper row">
+                            <div class="col-md-12">
+                                <div class="address-fname">
+                                    <input class="form-control" type="text" placeholder="Họ và tên" asp-for="CustomerName">
+                                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="address-wrapper row mt-3">
                             <div class="col-md-6">
                                 <div class="address-email">
-                                    <label asp-for="Email" class="col-form-label">Email<em>*</em></label>
-                                    <input asp-for="Email" class="form-control">
+                                    <input class="form-control" type="email" placeholder="Email" asp-for="Email">
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="address-web">
-                                    <label asp-for="Phone" class="col-form-label">Số điện thoại</label>
-                                    <input asp-for="Phone" class="form-control">
+                                    <input class="form-control" type="text" placeholder="Số điện thoại" asp-for="Phone">
                                     <span asp-validation-for="Phone" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="address-wrapper row mt-3">
                             <div class="col-md-12">
                                 <div class="address-subject">
-                                    <label asp-for="Title" class="col-form-label">Tiêu đề<em>*</em></label>
-                                    <input asp-for="Title" class="form-control">
+                                    <input class="form-control" type="text" placeholder="Tiêu đề" asp-for="Title">
                                     <span asp-validation-for="Title" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="address-wrapper row mt-3">
                             <div class="col-md-12">
                                 <div class="address-textarea">
-                                    <label asp-for="Content" class="col-form-label">Nội dung tư vấn<em>*</em></label>
-                                    <input asp-for="Content" class="form-control tall-input">
+                                    <textarea name="message" class="form-control" placeholder="Nội dung yêu cầu" asp-for="Content"></textarea>
                                     <span asp-validation-for="Content" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="footer-content mail-content clearfix mt-5">
+                        <div class="footer-content mail-content clearfix">
                             <div class="send-email float-md-right">
                                 <button type="submit" class="login-btn">Gửi</button>
                             </div>
                         </div>
+                        <p class="form-message"></p>
                     </form>
-                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

@@ -75,23 +75,30 @@ namespace PetStoreProject.Controllers
             }
 
             var total_amount = 0.0;
-
-            foreach (var item in selectedProductCheckout)
+            if(selectedProductCheckout != null)
             {
-                var priceItem = 0.0;
-                if(item.Promotion != null && item.Promotion.Value != null)
+                foreach (var item in selectedProductCheckout)
                 {
-                    priceItem = item.Price * (1 - (double)item.Promotion.Value / 100);
-                }else
-                {
-                    priceItem = item.Price;
+                    var priceItem = 0.0;
+                    if (item.Promotion != null && item.Promotion.Value != null)
+                    {
+                        priceItem = item.Price * (1 - (double)item.Promotion.Value / 100);
+                    }
+                    else
+                    {
+                        priceItem = item.Price;
+                    }
+                    total_amount += priceItem * item.Quantity;
                 }
-                total_amount += priceItem * item.Quantity;
-            }
 
-            var discounts = _discount.GetDiscounts(total_amount, email);
-            ViewData["Discounts"] = discounts;
-            return View(selectedProductCheckout);
+                var discounts = _discount.GetDiscounts(total_amount, email);
+                ViewData["Discounts"] = discounts;
+                return View(selectedProductCheckout);
+            }else
+            {
+                return View(null);
+            }
+            
         }
 
         [HttpPost]
@@ -103,13 +110,28 @@ namespace PetStoreProject.Controllers
             checkout.OrderId = long.Parse(orderId);
             Response.Cookies.Append("CheckoutInfo", Newtonsoft.Json.JsonConvert.SerializeObject(checkout));
 
-            return Json(new
+            if(checkout.PaymentMethod.Equals("VNPay"))
             {
-                UrlTransfer = "CreatePayment",
-                OrderId = orderId,
-                Amount = amount,
-            });
+                return Json(new
+                {
+                    UrlTransfer = "CreatePayment",
+                    OrderId = orderId,
+                    Amount = amount,
+                });
+            }else
+            {
+                return Json(new
+                {
+                    UrlTransfer = "ProcessCashOnDelivery",
+                    OrderId = orderId,
+                    Amount = amount,
+                });
+            }
+
         }
+
+        
+
 
         public IActionResult CreatePayment(string orderId, int amount)
         {
@@ -319,7 +341,7 @@ namespace PetStoreProject.Controllers
                 
             }
             var discountId = checkoutInfo.DiscountId;
-            if (discountId != null)
+            if (discountId != null && discountId != 0)
             {
                 var discount = _context.Discounts.Where(d => d.DiscountId == discountId).FirstOrDefault();
                 discount.Used += 1;

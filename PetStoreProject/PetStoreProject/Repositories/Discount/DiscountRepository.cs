@@ -227,7 +227,7 @@ namespace PetStoreProject.Repositories.Discount
                 {
                     discounts.Remove(item);
                 }
-                else if (item.Used >= item.Quantity)
+                else if (item.Used >= item.MaxUse)
                 {
                     item.Status = false;
                     item.StatusString = "Đã hết lượt sử dụng";

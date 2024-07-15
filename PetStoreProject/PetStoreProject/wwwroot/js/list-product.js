@@ -190,7 +190,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html += "<div class='single-template-product'>";
                     html += "<!-- Product Image Start -->";
                     html += "<div class='pro-img'>";
-                    if (items[index].promotion != null) {
+                    if (items[index].promotion != null && items[index].promotion.promotionId != 0) {
                         html += "<span class='sticker-sale'>-" + items[index].promotion.value + "%</span>";
                     }
                     html += "<a href='/product/detail/" + items[index].productId + "'>";
@@ -231,7 +231,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         const amount = items[index].productOption[0].price;
                         const formattedAmount = formatVND(amount);
-                        if (items[index].promotion != null) {
+                        if (items[index].promotion != null && items[index].promotion.promotionId != 0) {
                             const amountAfterDiscount = amount * (1 - items[index].promotion.value / 100);
                             html += "<span class='regular-price'>" + formatVND(amountAfterDiscount) + " VND</span>";
                             html += "<del class='discount_price'>" + formatVND(amount) + "VND</del>";
@@ -258,7 +258,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html1 += "<div class='single-template-product'>";
                     html1 += "<!-- Product Image Start -->";
                     html1 += "<div class='pro-img'>";
-                    if (items[index].promotion != null) {
+                    if (items[index].promotion != null && items[index].promotion.promotionId != 0) {
                         html1 += "<span class='sticker-sale'>-" + items[index].promotion.value + "%</span>";
                     }
                     html1 += "<a href='/product/detail/" + items[index].productId + "'>";
@@ -297,7 +297,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         const amount = items[index].productOption[0].price;
                         const formattedAmount = formatVND(amount);
-                        if (items[index].promotion != null) {
+                        if (items[index].promotion != null && items[index].promotion.promotionId != 0) {
                             const amountAfterDiscount = amount * (1 - items[index].promotion.value / 100);
                             html1 += "<span class='regular-price'>" + formatVND(amountAfterDiscount) + " VND</span>";
                             html1 += "<del class='discount_price'>" + formatVND(amount) + "VND</del>";

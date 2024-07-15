@@ -30,7 +30,8 @@
         }
 
     .card-header:first-child {
-        border-radius: 0.35rem 0.35rem 0 0;
+        border-top-left-radius: 9px;
+        border-top-right-radius: 9px;
     }
 
     .card-header {
@@ -186,23 +187,12 @@
         display:block;
     }
 
-/*     .scroll-hozirotal::-webkit-scrollbar-track {
-        background: #f1f1f1; 
-    } */
-
-    /* Thiết lập màu của thanh cuộn */
-/*     .scroll-hozirotal::-webkit-scrollbar-thumb {
-        background-color: #888; 
-        border-radius: 4px; 
-    } */
-
-        /* Thiết lập hành vi khi di chuột vào thanh cuộn */
-/*         .scroll-hozirotal::-webkit-scrollbar-thumb:hover {
-            background-color: #555; 
-        } */
-
     .display_inline {
         display: inline;
+    }
+
+    .card_body_style {
+        padding: 13px;
     }
 </style>
 <div class="main-content-inner main-content-style">
@@ -236,10 +226,10 @@
                     </div>
                     <div id="main-content" class="col-xl-8">
                         <div class="card mb-4 card-style">
-                            <div class="card-header">
+                            <div class="card-header ">
                                 <h3>Thông tin tài khoản</h3>
                             </div>
-                            <div class="card-body">
+                        <div class="card-body card_body_style">
                                 <div class="row">
                                     <div class="col-md-12 content-profile">
                                         <form>
@@ -338,7 +328,7 @@
         $('#btn_order').addClass('option-btn-active');
         $('#main-content').empty();
         resetOptionOrder();
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
         domLoaded();
     }
 
@@ -391,7 +381,7 @@
     function nextPageOrder(pageIndex, pageSize) {
         optionOrders.PageIndex = pageIndex;
         optionOrders.PageSize = pageSize;
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function cycleSortOrder(currentOrder) {
@@ -414,7 +404,7 @@
         resetOptionOrder()
         optionOrders.SortOrderId = sortOrderId;
         saveSortingParams();
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function sortByDate() {
@@ -422,7 +412,7 @@
         resetOptionOrder()
         optionOrders.SortDate = sortDate;
         saveSortingParams();
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function sortByTotalOrderItems() {
@@ -430,7 +420,7 @@
         resetOptionOrder()
         optionOrders.SortTotalItems = sortTotalItems;
         saveSortingParams();
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function sortByName() {
@@ -438,7 +428,7 @@
         resetOptionOrder()
         optionOrders.SortName = sortName;
         saveSortingParams();
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function sortByPrice() {
@@ -446,7 +436,7 @@
         resetOptionOrder()
         optionOrders.SortPrice = sortPrice;
         saveSortingParams();
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function search() {
@@ -454,21 +444,21 @@
         console.log('search' + searchOrderId);
         resetSearchOrder();
         optionOrders.SearchOrderId = searchOrderId;
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function searchNameOrder() {
         searchName = document.getElementById('search-nameOrder-input').value;
         resetSearchOrder();
         optionOrders.SearchName = searchName;
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function selectDateOrder() {
         searchDateOrder = document.getElementById('select-dateOrder-input').value;
         resetSearchOrder();
         optionOrders.SearchDate = searchDateOrder;
-        orderHistoryLoad(optionOrders);
+        LoadOrderHistory(optionOrders);
     }
 
     function domLoaded() {

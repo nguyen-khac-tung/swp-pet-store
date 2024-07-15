@@ -39,6 +39,10 @@ function selectedProductCheckout() {
     if (selectedProduct.length == 0) {
         alert("Bạn cần phải chọn 1 sản phẩm trong giỏ hàng để thanh toán!");
     } else {
+        if (selectedProduct.length >= 10) {
+            alert("Bạn không thể mua số lượng sản phẩm lớn hơn 10 sản phẩm!");
+            return;
+        }
         $.ajax({
             url: '/Checkout/Form',
             type: 'POST', // Use POST method

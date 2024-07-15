@@ -16,6 +16,10 @@ namespace PetStoreProject.Repositories.OrderItem
         }
         public void AddOrderItem(Models.OrderItem orderItem)
         {
+            if(orderItem.PromotionId == 0)
+            {
+                orderItem.PromotionId = null;
+            }
             _context.OrderItems.Add(orderItem);
             _context.SaveChanges();
         }

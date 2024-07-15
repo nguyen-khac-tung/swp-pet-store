@@ -136,6 +136,10 @@ namespace PetStoreProject.Repositories.Order
 
         public void AddOrder(Models.Order order)
         {
+            if(order.DiscountId == 0)
+            {
+                order.DiscountId = null;
+            }
             _context.Orders.Add(order);
             _context.SaveChanges();
         }

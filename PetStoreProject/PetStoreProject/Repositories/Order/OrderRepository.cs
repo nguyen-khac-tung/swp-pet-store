@@ -139,5 +139,12 @@ namespace PetStoreProject.Repositories.Order
             _context.Orders.Add(order);
             _context.SaveChanges();
         }
+
+        public float GetTotalProductSale()
+        {
+            var totalAmount = (from o in _context.Orders
+                               select o.TotalAmount).Sum();
+            return totalAmount;
+        }
     }
 }

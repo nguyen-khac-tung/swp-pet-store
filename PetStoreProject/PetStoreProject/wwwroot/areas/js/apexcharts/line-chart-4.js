@@ -29,16 +29,17 @@
               dashArray: 0,
             },
             tooltip: {
-              fixed: { enabled: !1 },
-              x: { show: !1 },
-              y: {
-                title: {
-                  formatter: function (e) {
-                    return "";
-                  },
-                },
-              },
-              marker: { show: !1 },
+              //fixed: { enabled: !1 },
+              //x: { show: !1 },
+              //y: {
+              //  title: {
+              //    formatter: function (e) {
+              //      return "";
+              //    },
+              //  },
+              //},
+                //marker: { show: !1 },
+                enabled: false
             },
             states: {
               hover: {

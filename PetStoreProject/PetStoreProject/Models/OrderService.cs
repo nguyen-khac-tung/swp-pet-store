@@ -29,6 +29,8 @@ public partial class OrderService
 
     public int ServiceOptionId { get; set; }
 
+    public float? Price { get; set; }
+
     [StringLength(250)]
     public string? Message { get; set; }
 

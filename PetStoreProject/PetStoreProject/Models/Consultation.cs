@@ -18,6 +18,10 @@ public partial class Consultation
     [StringLength(150)]
     public string Email { get; set; } = null!;
 
+    [StringLength(50)]
+    public string PhoneNumber { get; set; }
+
+    [Required]
     [StringLength(150)]
     public string Title { get; set; } = null!;
 
@@ -28,9 +32,6 @@ public partial class Consultation
     public bool Status { get; set; }
 
     public int? EmployeeId { get; set; }
-
-    [StringLength(50)]
-    public string PhoneNumber { get; set; } = null!;
 
     [StringLength(250)]
     public string? Response { get; set; }

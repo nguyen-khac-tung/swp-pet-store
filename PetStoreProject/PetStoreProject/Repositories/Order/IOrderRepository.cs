@@ -10,5 +10,7 @@ namespace PetStoreProject.Repositories.Order
         public int GetCountOrder(OrderModel orderCondition);
 
         public void AddOrder(Models.Order order);
+
+        public float GetTotalProductSale();
     }
 }

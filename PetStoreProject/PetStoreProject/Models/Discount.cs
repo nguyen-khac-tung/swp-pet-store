@@ -43,6 +43,7 @@ public partial class Discount
     [StringLength(25)]
     public string? CreatedAt { get; set; }
 
+
     public bool? Status { get; set; }
 
     [ForeignKey("CreatedBy")]

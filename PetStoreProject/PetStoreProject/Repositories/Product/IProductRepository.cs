@@ -39,5 +39,7 @@ namespace PetStoreProject.Repositories.Product
         public void DeleteProduct(int productId);
 
         public List<ProductDetailViewModel> GetProductDetail(List<int> cateId, int productCateId);
+
+        public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate);
     }
 }

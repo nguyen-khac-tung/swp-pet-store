@@ -388,10 +388,20 @@ namespace PetStoreProject.Repositories.Service
                                           ServiceName = s.Name,
                                           PetType = so.PetType,
                                           Weight = so.Weight,
-                                          Price = so.Price.ToString("#,###") + " VND",
                                           Message = os.Message,
                                           Status = os.Status,
                                       }).FirstOrDefault();
+
+            if(orderServiceDetail.Status == "Chưa xác nhận")
+            {
+                orderServiceDetail.Price = _context.ServiceOptions.FirstOrDefault(
+                    s => s.ServiceOptionId == orderServiceDetail.ServiceOptionId)?.Price.ToString("#,###") + " VND";
+            }
+            else
+            {
+                orderServiceDetail.Price = _context.OrderServices.FirstOrDefault(
+                    o => o.OrderServiceId == orderServiceDetail.OrderServiceId)?.Price?.ToString("#,###") + " VND";
+            }
 
             var employeeId = _context.OrderServices.Where(os => os.OrderServiceId == orderServiceId).FirstOrDefault()?.EmployeeId;
             if (employeeId != null)
@@ -418,6 +428,11 @@ namespace PetStoreProject.Repositories.Service
 
             order.ServiceOptionId = orderService.ServiceOptionId;
 
+            if(orderService.Status == "Đã xác nhận")
+            {
+                order.Price = _context.ServiceOptions.FirstOrDefault(s => s.ServiceOptionId == orderService.ServiceOptionId)?.Price;
+            }
+
             order.Message = orderService.Message;
 
             _context.SaveChanges();
@@ -440,6 +455,8 @@ namespace PetStoreProject.Repositories.Service
             var orderService = (from os in _context.OrderServices
                                 where os.OrderServiceId == orderServiceId
                                 select os).FirstOrDefault();
+            orderService.Price = _context.ServiceOptions.FirstOrDefault(s => s.ServiceOptionId == orderService.ServiceOptionId)?.Price;
+
             orderService.Status = status;
 
             if (employeeId != 0)
@@ -801,12 +818,53 @@ namespace PetStoreProject.Repositories.Service
             return listService.Count;
         }
 
-        //public float GetTotalServiceSale()
-        //{
-        //    var totalAmount = from os in _context.OrderServices
-        //                      where os.Status == "Đã thanh toán"
-        //                      select os.Price
-        //}
+        public float GetTotalServiceSale()
+        {
+            var totalAmount = (from os in _context.OrderServices
+                               where os.Status == "Đã thanh toán"
+                               select os.Price).Sum();
+            return totalAmount ?? 0;
+        }
+
+        public List<ServiceTableViewModel> GetTopSellingService(string startDate, string endDate)
+        {
+            DateOnly? dateStart = null;
+            if (DateTime.TryParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                dateStart = DateOnly.FromDateTime(parsedDate);
+            }
+
+            DateOnly? dateEnd = null;
+            if (DateTime.TryParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDateEnd))
+            {
+                dateEnd = DateOnly.FromDateTime(parsedDateEnd);
+            }
+
+            var listService = (from os in _context.OrderServices
+                                    join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
+                                    join s in _context.Services on so.ServiceId equals s.ServiceId
+                                    where (dateStart == null || dateStart <= os.OrderDate)
+                                    && (dateEnd == null || os.OrderDate <= dateEnd)
+                                    && os.Status == "Đã thanh toán"
+                                    group os by so.ServiceId into g
+                                    select new ServiceTableViewModel
+                                    {
+                                        ServiceId = g.Key,
+                                        UsedQuantity = g.Count(),
+                                        TotalSale = g.Sum(s => s.Price) ?? 0
+                                    }).OrderByDescending(s => s.TotalSale).ToList();
+
+            foreach (var item in listService)
+            {
+                var service = _context.Services.FirstOrDefault(s => s.ServiceId == item.ServiceId);
+                item.Name = service.Name;
+                item.Type = service.Type;
+                item.ImageUrl = _context.Images.Where(i => i.ServiceId == item.ServiceId).FirstOrDefault()?.ImageUrl;
+            }
+
+            return listService;
+        }
+
 
         private bool IsBase64String(string imageData)
         {

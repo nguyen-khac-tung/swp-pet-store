@@ -74,5 +74,9 @@ namespace PetStoreProject.Repositories.Service
             int pageIndex, int pageSize);
 
         public int GetTotalCountListServicesByConditions(ServiceFilterViewModel serviceFilterVM);
+
+        public float GetTotalServiceSale();
+
+        public List<ServiceTableViewModel> GetTopSellingService(string startDate, string endDate);
     }
 }

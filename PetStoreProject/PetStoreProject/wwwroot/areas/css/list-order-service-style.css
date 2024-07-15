@@ -114,7 +114,7 @@
     transform: scaleY(0);
     -webkit-transform-origin: 0 0 0;
     transform-origin: 0 0 0;
-    width: 350px;
+    width: 360px;
     visibility: hidden;
     z-index: 9999;
     -webkit-transition: 0.5s;

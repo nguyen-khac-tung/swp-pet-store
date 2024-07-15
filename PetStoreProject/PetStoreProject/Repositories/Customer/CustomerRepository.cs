@@ -59,5 +59,20 @@ namespace PetStoreProject.Repositories.Customers
 
             _context.SaveChanges();
         }
+
+        public int GetTotalNumberCustomer()
+        {
+            var numberCustomer = _context.Customers.Count();
+
+            var phoneOfGuestOrderProduct = (from o in _context.Orders
+                                           where o.CustomerId == null
+                                           select o.Phone).ToList();
+            var phoneOfGuestOrderService = (from o in _context.OrderServices
+                                            where o.CustomerId == null
+                                            select o.Phone).ToList();
+            var numberGuest = phoneOfGuestOrderService.Union(phoneOfGuestOrderProduct).Distinct().Count();
+
+            return numberCustomer + numberGuest;
+        }
     }
 }

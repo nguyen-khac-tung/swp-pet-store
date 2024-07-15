@@ -1039,6 +1039,54 @@ namespace PetStoreProject.Repositories.Product
             _context.SaveChangesAsync();
         }
 
+
+        public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate)
+        {
+            DateTime? dateStart = string.IsNullOrEmpty(startDate) ? null : DateTime.Parse(startDate); 
+            DateTime? dateEnd = string.IsNullOrEmpty(endDate) ? null : DateTime.Parse(endDate); 
+
+            var listSoldAndPrice = (from o in _context.Orders
+                                    join oi in _context.OrderItems on o.OrderId equals oi.OrderId
+                                    join po in _context.ProductOptions on oi.ProductOptionId equals po.ProductOptionId
+                                    join p in _context.Products on po.ProductId equals p.ProductId
+                                    where (dateStart == null || dateStart <= o.OrderDate)
+                                    && (dateEnd == null || o.OrderDate <= dateEnd)
+                                    group oi by po.ProductId into g
+                                    select new ProductViewForAdmin
+                                    {
+                                        Id = g.Key,
+                                        SoldQuantity = g.Sum(oi => oi.Quantity),
+                                        TotalSale = g.Sum(oi => oi.Quantity * oi.Price),
+                                    }).OrderByDescending(p => p.TotalSale).Take(10).ToList();
+
+            var list = (from l in listSoldAndPrice 
+                        join p in _context.Products on l.Id equals p.ProductId
+                        join b in _context.Brands on p.BrandId equals b.BrandId
+                        join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
+                        join c in _context.Categories on pc.CategoryId equals c.CategoryId
+                        select new ProductViewForAdmin
+                        {
+                            Id = l.Id,
+                            Name = p.Name,
+                            Brand = b.Name,
+                            Category = new CategoryViewModel
+                            {
+                                Name = c.Name,
+                            },
+                            SoldQuantity = l.SoldQuantity,
+                            TotalSale = l.TotalSale,
+                        }).ToList();
+
+            foreach (var item in list)
+            {
+                item.ImgUrl = (from po in _context.ProductOptions
+                               join i in _context.Images on po.ImageId equals i.ImageId
+                               where po.ProductId == item.Id
+                               select i.ImageUrl).First();
+            }
+
+            return list;
+        }
     }
 }
 

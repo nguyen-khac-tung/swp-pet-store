@@ -10,5 +10,7 @@ namespace PetStoreProject.Repositories.Customers
         public Customer? GetCustomer(string email);
 
         public void UpdateProfile(CustomerViewModel customer);
+
+        public int GetTotalNumberCustomer();
     }
 }

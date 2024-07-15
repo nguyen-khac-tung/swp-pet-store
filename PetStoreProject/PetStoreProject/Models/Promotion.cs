@@ -15,6 +15,7 @@ public partial class Promotion
     public int? Value { get; set; }
 
     [StringLength(25)]
+
     public string? StartDate { get; set; }
 
     [StringLength(25)]
@@ -27,6 +28,7 @@ public partial class Promotion
     public int? ProductCateId { get; set; }
 
     [StringLength(25)]
+
     public string? CreatedAt { get; set; }
 
     [StringLength(250)]

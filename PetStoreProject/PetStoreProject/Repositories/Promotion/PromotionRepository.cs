@@ -1,5 +1,6 @@
 ﻿using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
+using X.PagedList;
 
 namespace PetStoreProject.Repositories.Promotion
 {
@@ -70,7 +71,7 @@ namespace PetStoreProject.Repositories.Promotion
         }
 
 
-        public List<PromotionViewModel> GetPromotions()
+        public IPagedList<PromotionViewModel> GetPromotions(int page, int pageSize)
         {
             var promotion = _context.Promotions.ToList();
             var promotionViewModel = new List<PromotionViewModel>();
@@ -115,7 +116,7 @@ namespace PetStoreProject.Repositories.Promotion
                 }
                 promotionViewModel.Add(p);
             }
-            return promotionViewModel;
+            return promotionViewModel.ToPagedList(page, pageSize);
         }
 
         public void UpdatePromotion(PromotionCreateRequest promotion)

@@ -276,7 +276,7 @@ function chooseDiscount() {
 
 function useDiscount() {
     $('#staticBackdrop').modal('hide')
-    let moneyToCheckout = $('#moneyToCheckout').val()
+    let moneyToCheckout = $('#cost').text().replace(/,/g, '');
     console.log(moneyToCheckout, reduce)
     moneyToCheckout = parseFloat(moneyToCheckout) - reduce;
     $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")

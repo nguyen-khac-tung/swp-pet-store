@@ -36,11 +36,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
             return Json("OK");
         }
 
-        public IActionResult List()
+        public IActionResult List(int? page, int? pageSize)
         {
-            var promotions = _promotion.GetPromotions();
-            ViewData["Promotions"] = promotions;
-            return View();
+            page = page == null ? 1 : page;
+            pageSize = pageSize == null ? 10 : pageSize;
+            var promotions = _promotion.GetPromotions((int)page, (int)pageSize);
+            return View(promotions);
         }
 
         [HttpGet]

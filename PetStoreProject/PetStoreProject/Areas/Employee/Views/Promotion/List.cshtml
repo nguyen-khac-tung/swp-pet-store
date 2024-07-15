@@ -32,28 +32,28 @@
             justify-content: center;
         }
 
-        .pagination li {
-            margin: 0 5px;
-        }
+            .pagination li {
+                margin: 0 5px;
+            }
 
-        .pagination a, .pagination span {
-            color: #007bff;
-            text-decoration: none;
-            border: 1px solid #dee2e6;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
+            .pagination a, .pagination span {
+                color: #007bff;
+                text-decoration: none;
+                border: 1px solid #dee2e6;
+                padding: 8px 12px;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+            }
 
-        .pagination a:hover {
-            background-color: #e9ecef;
-        }
+                .pagination a:hover {
+                    background-color: #e9ecef;
+                }
 
-        .pagination .active span {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
+            .pagination .active span {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
 
     </style>
 }
@@ -65,16 +65,7 @@
         </div>
         <!-- form-add-product -->
         <div class="wg-box">
-            <div class="col-xl-12 col-lg-12 d-none d-lg-block">
-                <nav>
-                    <ul class="header-menu-list text-center" style="display: flex; justify-content: space-between; align-items:center; height: 50px">
-                        <li>
-                            <a class="tf-button style-1 w208" href="Create"><i class="icon-plus"></i>Thêm mới</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            @if(Model != null)
+            @if (Model != null)
             {
                 <div class="wg-table table-all-category" style="width: 100%">
                     <ul class="table-title flex gap20 mb-14" style="width: 100%">
@@ -123,12 +114,7 @@
                                     <div class="body-text" style="width: 200px">@item.CreatedAt</div>
                                     <div class="body-text status @(item.Status == true ? "block-available" : "block-not-available")" style="width: 130px">@item.StatusString</div>
                                     <div class="body-text list-icon-function" style="width: 40px; cursor: pointer">
-                                        <div class="item edit">
-                                            <a href="/admin/promotion/edit?id=@item.Id"><i class="icon-edit-3"></i></a>
-                                        </div>
-                                        <div class="item" onclick="deletePromotion(this, @item.Id, '@item.Name.Trim()')">
-                                            <i class="icon-trash-2 @(!item.Status == false ? "" : "hide")"></i>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                             </li>
@@ -147,30 +133,7 @@
                     <h6>Trống</h6>
                 </div>
             }
-            
+
         </div>
     </div>
 </div>
-@section ScriptOptional {
-
-    <script>
-        function deletePromotion(tag, id, name) {
-            if (confirm(`Bạn có chắc chắn muốn xóa chương trình khuyến mại '${name}' không?`)) {
-                $.ajax({
-                    url: "/admin/promotion/delete",
-                    type: "POST",
-                    data: {
-                        id: id
-                    },
-                    success: function (response) {
-                        $(tag).remove();
-                        var promotion = $('.promotion-' + id);
-                        promotion.find('.status').text('Đã kết thúc')
-                        promotion.find('.status').addClass('block-not-available')
-                        promotion.find('.status').removeClass('block-available')
-                    }
-                });
-            }
-        }
-    </script>
-}

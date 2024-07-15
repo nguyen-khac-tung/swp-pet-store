@@ -1,4 +1,5 @@
 ﻿using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
@@ -78,7 +79,7 @@ namespace PetStoreProject.Repositories.Consultion
             var consultation = _dbContext.Consultations.Find(id);
             var email = consultation.Email;
             var subject = "Trả lời yêu cầu";
-            var body = consultation.Content + ": " + message;
+            var body = "Nội dung tư vấn: " + consultation.Content + "<br><br>Trả lời:" + message;
             consultation.Status = true;
             consultation.Response = message;
             _dbContext.SaveChanges();

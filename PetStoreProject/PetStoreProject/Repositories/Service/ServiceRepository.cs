@@ -392,7 +392,7 @@ namespace PetStoreProject.Repositories.Service
                                           Status = os.Status,
                                       }).FirstOrDefault();
 
-            if(orderServiceDetail.Status == "Chưa xác nhận")
+            if (orderServiceDetail.Status == "Chưa xác nhận")
             {
                 orderServiceDetail.Price = _context.ServiceOptions.FirstOrDefault(
                     s => s.ServiceOptionId == orderServiceDetail.ServiceOptionId)?.Price.ToString("#,###") + " VND";
@@ -428,7 +428,7 @@ namespace PetStoreProject.Repositories.Service
 
             order.ServiceOptionId = orderService.ServiceOptionId;
 
-            if(orderService.Status == "Đã xác nhận")
+            if (orderService.Status == "Đã xác nhận")
             {
                 order.Price = _context.ServiceOptions.FirstOrDefault(s => s.ServiceOptionId == orderService.ServiceOptionId)?.Price;
             }
@@ -581,9 +581,9 @@ namespace PetStoreProject.Repositories.Service
 
         public async Task UpdateServiceOptions(ServiceAdditionViewModel serviceAddition)
         {
-            foreach(var option in serviceAddition.ServiceOptions)
+            foreach (var option in serviceAddition.ServiceOptions)
             {
-                if(option.ServiceOptionId != 0)
+                if (option.ServiceOptionId != 0)
                 {
                     var oldOption = await _context.ServiceOptions.FindAsync(option.ServiceOptionId);
                     oldOption.PetType = option.PetType;
@@ -841,18 +841,18 @@ namespace PetStoreProject.Repositories.Service
             }
 
             var listService = (from os in _context.OrderServices
-                                    join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
-                                    join s in _context.Services on so.ServiceId equals s.ServiceId
-                                    where (dateStart == null || dateStart <= os.OrderDate)
-                                    && (dateEnd == null || os.OrderDate <= dateEnd)
-                                    && os.Status == "Đã thanh toán"
-                                    group os by so.ServiceId into g
-                                    select new ServiceTableViewModel
-                                    {
-                                        ServiceId = g.Key,
-                                        UsedQuantity = g.Count(),
-                                        TotalSale = g.Sum(s => s.Price) ?? 0
-                                    }).OrderByDescending(s => s.TotalSale).ToList();
+                               join so in _context.ServiceOptions on os.ServiceOptionId equals so.ServiceOptionId
+                               join s in _context.Services on so.ServiceId equals s.ServiceId
+                               where (dateStart == null || dateStart <= os.OrderDate)
+                               && (dateEnd == null || os.OrderDate <= dateEnd)
+                               && os.Status == "Đã thanh toán"
+                               group os by so.ServiceId into g
+                               select new ServiceTableViewModel
+                               {
+                                   ServiceId = g.Key,
+                                   UsedQuantity = g.Count(),
+                                   TotalSale = g.Sum(s => s.Price) ?? 0
+                               }).OrderByDescending(s => s.TotalSale).ToList();
 
             foreach (var item in listService)
             {
@@ -865,6 +865,23 @@ namespace PetStoreProject.Repositories.Service
             return listService;
         }
 
+        public List<float> GetServiceSaleOfMonth(int month, int year)
+        {
+            List<float> dataService = new List<float>();
+
+            var orders = (from o in _context.OrderServices
+                          where o.OrderDate.Month == month && o.OrderDate.Year == year && o.Status == "Đã thanh toán"
+                          select o).ToList();
+
+            var numberOfDay = DateTime.DaysInMonth(year, month);
+
+            for (int i = 1; i <= numberOfDay; i++)
+            {
+                dataService.Add(orders.Where(o => o.OrderDate.Day == i).FirstOrDefault()?.Price ?? 0);
+            }
+
+            return dataService;
+        }
 
         private bool IsBase64String(string imageData)
         {

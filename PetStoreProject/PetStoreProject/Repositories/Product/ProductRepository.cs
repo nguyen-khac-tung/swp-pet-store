@@ -7,6 +7,7 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.ViewModels;
+using System.Web.Helpers;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -1042,8 +1043,8 @@ namespace PetStoreProject.Repositories.Product
 
         public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate)
         {
-            DateTime? dateStart = string.IsNullOrEmpty(startDate) ? null : DateTime.Parse(startDate); 
-            DateTime? dateEnd = string.IsNullOrEmpty(endDate) ? null : DateTime.Parse(endDate); 
+            DateTime? dateStart = string.IsNullOrEmpty(startDate) ? null : DateTime.Parse(startDate);
+            DateTime? dateEnd = string.IsNullOrEmpty(endDate) ? null : DateTime.Parse(endDate);
 
             var listSoldAndPrice = (from o in _context.Orders
                                     join oi in _context.OrderItems on o.OrderId equals oi.OrderId
@@ -1059,7 +1060,7 @@ namespace PetStoreProject.Repositories.Product
                                         TotalSale = g.Sum(oi => oi.Quantity * oi.Price),
                                     }).OrderByDescending(p => p.TotalSale).Take(10).ToList();
 
-            var list = (from l in listSoldAndPrice 
+            var list = (from l in listSoldAndPrice
                         join p in _context.Products on l.Id equals p.ProductId
                         join b in _context.Brands on p.BrandId equals b.BrandId
                         join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
@@ -1086,6 +1087,24 @@ namespace PetStoreProject.Repositories.Product
             }
 
             return list;
+        }
+
+        public List<float> GetProductSaleOfMonth(int month, int year)
+        {
+            List<float> dataProduct = new List<float>();
+
+            var orders = (from o in _context.Orders
+                          where o.OrderDate.Month == month && o.OrderDate.Year == year
+                          select o).ToList();
+
+            var numberOfDay = DateTime.DaysInMonth(year, month);
+
+            for (int i = 1; i <= numberOfDay; i++)
+            {
+                dataProduct.Add(orders.Where(o => o.OrderDate.Day == i).FirstOrDefault()?.TotalAmount ?? 0);
+            }
+
+            return dataProduct;
         }
     }
 }

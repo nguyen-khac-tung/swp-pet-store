@@ -55,5 +55,19 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var services = _service.GetTopSellingService(startDate, endDate);
             return services;
         }
+
+        [HttpPost]
+        public Object StatisticsSaleOfMonth(int month, int year)
+        {
+            var dataProduct = _product.GetProductSaleOfMonth(month, year);
+            var dataService = _service.GetServiceSaleOfMonth(month, year);
+            return Json(new
+            {
+                DataProduct = dataProduct,
+                TotalProductOfMonth = dataProduct.Sum(d => d),
+                DataService = dataService,
+                TotalServiceOfMonth = dataService.Sum(d => d),
+            });
+        }
     }
 }

@@ -78,5 +78,7 @@ namespace PetStoreProject.Repositories.Service
         public float GetTotalServiceSale();
 
         public List<ServiceTableViewModel> GetTopSellingService(string startDate, string endDate);
+
+        public List<float> GetServiceSaleOfMonth(int month, int year);
     }
 }

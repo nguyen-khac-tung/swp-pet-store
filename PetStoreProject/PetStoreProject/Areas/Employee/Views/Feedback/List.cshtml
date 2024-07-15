@@ -43,23 +43,6 @@
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
                 <h3>Tất cả phản hồi</h3>
-                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                    <li>
-                        <a href="index.html"><div class="text-tiny">Dashboard</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <a href="#"><div class="text-tiny">Phản hồi</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <div class="text-tiny">Danh sách phản hồi</div>
-                    </li>
-                </ul>
             </div>
         @if(Model != null)
         {
@@ -70,7 +53,7 @@
                     <div class="wg-filter flex-grow">
                         <form id="feedbackForm" class="form-search" asp-action="list" asp-controller="feedback" method="post">
                             <div class="show">
-                                <div class="text-tiny">Trạng thái</div>
+                                <div class="text-tiny" style="width:75px; font-size:13px;">Trạng thái</div>
                                 <div class="select">
                                     <select id="statusSelect" style="width:100px; text-align: center" name="status">
                                         @if (ViewBag.Status == 1)
@@ -104,10 +87,7 @@
                         </form>
                     </div>
 
-
-
-
-                    <a class="tf-button style-1 w208" href=""><i class="icon-refresh-cw"></i>Refresh</a>
+                    <a class="tf-button style-1 w208" href=""><i class="icon-refresh-cw"></i>Làm mới trang</a>
                 </div>
 
                 <div class="wg-table table-all-attribute" id="feedbackContainer">

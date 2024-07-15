@@ -194,6 +194,27 @@
     .card_body_style {
         padding: 13px;
     }
+
+    .min_height {
+        min-height:330px;
+    }
+
+    .card_footer, #btn_service {
+        border-bottom-left-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+    }
+
+        .empty-order-history {
+            text-align: center;
+            margin-top: 32px!important;
+            color: #555;
+        }
+
+            .empty-order-history i {
+                font-size: 48px;
+                margin-bottom: 20px;
+                color: #aaa;
+            }
 </style>
 <div class="main-content-inner main-content-style">
     <!-- main-content-wrap -->
@@ -217,7 +238,7 @@
                                 <!-- Profile picture upload button-->
                                 @* <button class="btn btn-primary" type="button">Upload new image</button> *@
                             </div>
-                            <div class="card-footer cart-select">
+                            <div class="card-footer cart-select card_footer">
                                 <button type="button" id="btn_info" class="btn btn-primary btn-lg btn-block profile-option-btn option-btn-active" onclick="customerInfo()">Thông Tin Tài Khoản</button>
                                 <button type="button" id="btn_order" class="btn btn-primary btn-lg btn-block profile-option-btn" onclick="orderHistory(@Model.UserId)">Lịch Sử Đơn Hàng</button>
                                 <button type="button" id="btn_service" class="btn btn-primary btn-lg btn-block profile-option-btn" onclick="serviceHistory(@Model.UserId)">Lịch Sử Dịch Vụ</button>

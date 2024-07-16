@@ -539,24 +539,48 @@
                     @foreach(var item in discounts)
                     {
                         <div class="discount-card @(item.Status == false ? "out-of-stock" : "")">
-                            <div>
-                                <div class="header">
-                                    <img src="~/img/coupon.png" />
-                                    <span class="title">@(item.DiscountType.Id != 2 ? "Giảm " + (int)item.Value + "% Giảm tối đa " + item.MaxValue?.ToString("#,###") + " VND" : "Giảm" + item.Value?.ToString("#,###") + " VND")</span>
-                                </div>
-                                <div class="content">
-                                    <div class="description">Đơn Tối Thiểu @(((decimal)item.MinPurchase).ToString("#,###.###")) VND</div>
-                                </div>
-                                <div class="flex items-center justify-between gap10">
-                                    <div class="progress-level-bar w-full">
-                                        <span data-progress="@item.Used" data-max="@item.Quantity" class="">
-                                        </span>
+                            <div style="width: 89%">
+                                @if(item.DiscountType.Id == 3)
+                                {
+                                    <div class="header">
+                                        <img src="~/img/coupon.png" />
+                                        <span class="title">Giảm @((int)item.Value)% Giảm tối đa @item.MaxValue?.ToString("#,###") VND</span>
                                     </div>
-                                </div>
-                                <div class="text-tiny">Đã dùng @((int)(((decimal)item.Used / item.Quantity) * 100))%, HSD: @item.EndDate.ToString()</div>
-                                <div class="footer">
-                                    <div class="warning">@item.StatusString</div>
-                                </div>
+                                    <div class="content">
+                                        <div class="description">Đơn Tối Thiểu @(((decimal)item.MinPurchase).ToString("#,###.###")) VND</div>
+                                    </div>
+                                    <div class="flex items-center justify-between gap10">
+                                        <div class="progress-level-bar w-full">
+                                            <span data-progress="@item.Used" data-max="@item.Used" class="">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-tiny">Đã dùng @((int)item.Used) lượt , HSD: Không thời hạn</div>
+                                    <div class="footer">
+                                        <div class="warning">@item.StatusString</div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="header">
+                                        <img src="~/img/coupon.png" />
+                                        <span class="title">@(item.DiscountType.Id != 2 ? "Giảm " + (int)item.Value + "% Giảm tối đa " + item.MaxValue?.ToString("#,###") + " VND" : "Giảm " + item.Value?.ToString("#,###") + " VND")</span>
+                                    </div>
+                                    <div class="content">
+                                        <div class="description">Đơn Tối Thiểu @(((decimal)item.MinPurchase).ToString("#,###.###")) VND</div>
+                                    </div>
+                                    <div class="flex items-center justify-between gap10">
+                                        <div class="progress-level-bar w-full">
+                                            <span data-progress="@item.Used" data-max="@item.Quantity" class="">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-tiny">Đã dùng @((int)(((decimal)item.Used / item.Quantity) * 100))%, HSD: @item.EndDate.ToString()</div>
+                                    <div class="footer">
+                                        <div class="warning">@item.StatusString</div>
+                                    </div>
+                                }
+
                             </div>
                             <div>
                                 <input type="radio" name="discount" value="@item.Id" onclick="chooseDiscount.call(this)"></input>

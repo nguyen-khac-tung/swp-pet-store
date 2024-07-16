@@ -84,9 +84,14 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
             var totalAmount = 0.0;
 
-            foreach(var item in listItemOrder)
+            foreach (var item in listItemOrder)
             {
-                var price = item.Price * (1 - (float)item.Promotion.Value / 100);
+                var price = item.Price * item.Quantity;
+                if (item.Promotion != null)
+                {
+                    price = price * (1 - (float)item.Promotion.Value / 100);
+                }
+
                 totalAmount += price;
             }
             if (order.DiscountId.HasValue)

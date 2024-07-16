@@ -1,6 +1,4 @@
-﻿using Azure.Identity;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Areas.Admin.ViewModels;
@@ -14,7 +12,6 @@ using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
-using System.Globalization;
 using System.Security.Claims;
 
 namespace PetStoreProject.Controllers
@@ -540,7 +537,12 @@ namespace PetStoreProject.Controllers
 
             foreach (var item in listItemOrder)
             {
-                var price = item.Price * (1 - (float)item.Promotion.Value / 100);
+                var price = item.Price * item.Quantity;
+                if (item.Promotion != null)
+                {
+                    price = price * (1 - (float)item.Promotion.Value / 100);
+
+                }
                 totalAmount += price;
             }
             if (order.DiscountId.HasValue)

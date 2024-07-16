@@ -7,7 +7,6 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.ViewModels;
-using System.Web.Helpers;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -1044,7 +1043,7 @@ namespace PetStoreProject.Repositories.Product
         public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate)
         {
             DateTime? dateStart = string.IsNullOrEmpty(startDate) ? null : DateTime.Parse(startDate);
-            DateTime? dateEnd = string.IsNullOrEmpty(endDate) ? null : DateTime.Parse(endDate);
+            DateTime? dateEnd = string.IsNullOrEmpty(endDate) ? null : DateTime.Parse(endDate).AddDays(1);
 
             var listSoldAndPrice = (from o in _context.Orders
                                     join oi in _context.OrderItems on o.OrderId equals oi.OrderId

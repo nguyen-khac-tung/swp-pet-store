@@ -73,7 +73,7 @@ namespace PetStoreProject.Repositories.Promotion
 
         public IPagedList<PromotionViewModel> GetPromotions(int page, int pageSize)
         {
-            var promotion = _context.Promotions.ToList();
+            var promotion = _context.Promotions.OrderByDescending(p => p.PromotionId).ToList();
             var promotionViewModel = new List<PromotionViewModel>();
             foreach (var item in promotion)
             {

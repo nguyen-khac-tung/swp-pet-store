@@ -1,5 +1,4 @@
-﻿
-using PetStoreProject.Areas.Admin.ViewModels;
+﻿using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
 using X.PagedList;
 
@@ -61,7 +60,14 @@ namespace PetStoreProject.Repositories.Discount
             var d = _context.Discounts.Find(discount.DiscountId);
             d.Status = false;
             _context.Discounts.Update(d);
-            return Create(discount);
+            var id = _context.Discounts.Max(d => d.DiscountId) + 1;
+            discount.DiscountId = id;
+            discount.CreatedAt = DateTime.Now.ToString();
+            discount.Status = true;
+            discount.Used = 0;
+            _context.Discounts.Add(discount);
+            _context.SaveChanges();
+            return discount.Code;
         }
 
         public DiscountViewModel GetDiscount(int id)
@@ -96,6 +102,7 @@ namespace PetStoreProject.Repositories.Discount
         {
             var discounts = (from d in _context.Discounts
                              join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
+                             orderby d.DiscountId descending
                              select new DiscountViewModel
                              {
                                  Id = d.DiscountId,
@@ -116,6 +123,7 @@ namespace PetStoreProject.Repositories.Discount
                                  Used = d.Used,
                                  Status = d.Status
                              }).ToList();
+
             var now = DateOnly.FromDateTime(DateTime.Now);
             foreach (var item in discounts)
             {
@@ -158,76 +166,63 @@ namespace PetStoreProject.Repositories.Discount
         public List<DiscountViewModel> GetDiscounts(double total_amount, string email)
         {
             var now = DateOnly.FromDateTime(DateTime.Now);
-            var discounts = new List<DiscountViewModel>();
-            bool isFirstOrder = true;
-
-            if (email == null)
-            {
-                discounts = (from d in _context.Discounts
-                             join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
-                             where d.EndDate >= now && d.Status == true && d.StartDate <= now && dt.DiscountTypeId != 3
-                             select new DiscountViewModel
-                             {
-                                 Id = d.DiscountId,
-                                 Code = d.Code,
-                                 StartDate = d.StartDate,
-                                 EndDate = d.EndDate,
-                                 CreatedAt = d.CreatedAt,
-                                 DiscountType = new DiscountTypeViewModel
+            var discountsQuery = from d in _context.Discounts
+                                 join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
+                                 where d.EndDate >= now && d.Status == true && d.StartDate <= now
+                                 select new DiscountViewModel
                                  {
-                                     Id = dt.DiscountTypeId,
-                                     Name = dt.DiscountName
-                                 },
-                                 Value = d.Value,
-                                 MaxValue = d.MaxValue,
-                                 MinPurchase = d.MinPurchase,
-                                 Quantity = d.Quantity,
-                                 MaxUse = d.MaxUse,
-                                 Used = d.Used,
-                                 Status = d.Status
-                             }).ToList();
+                                     Id = d.DiscountId,
+                                     Code = d.Code,
+                                     StartDate = d.StartDate,
+                                     EndDate = d.EndDate,
+                                     CreatedAt = d.CreatedAt,
+                                     DiscountType = new DiscountTypeViewModel
+                                     {
+                                         Id = dt.DiscountTypeId,
+                                         Name = dt.DiscountName
+                                     },
+                                     Value = d.Value,
+                                     MaxValue = d.MaxValue,
+                                     MinPurchase = d.MinPurchase,
+                                     Quantity = d.Quantity,
+                                     MaxUse = d.MaxUse,
+                                     Used = d.Used,
+                                     Status = d.Status
+                                 };
+
+            bool isFirstOrder = true;
+            if (string.IsNullOrEmpty(email))
+            {
+                discountsQuery = discountsQuery.Where(d => d.DiscountType.Id != 3);
                 isFirstOrder = false;
             }
             else
             {
-                discounts = (from d in _context.Discounts
-                             join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
-                             where d.EndDate >= now && d.Status == true && d.StartDate <= now
-                             select new DiscountViewModel
-                             {
-                                 Id = d.DiscountId,
-                                 Code = d.Code,
-                                 StartDate = d.StartDate,
-                                 EndDate = d.EndDate,
-                                 CreatedAt = d.CreatedAt,
-                                 DiscountType = new DiscountTypeViewModel
-                                 {
-                                     Id = dt.DiscountTypeId,
-                                     Name = dt.DiscountName
-                                 },
-                                 Value = d.Value,
-                                 MaxValue = d.MaxValue,
-                                 MinPurchase = d.MinPurchase,
-                                 Quantity = d.Quantity,
-                                 MaxUse = d.MaxUse,
-                                 Used = d.Used,
-                                 Status = d.Status
-                             }).ToList();
-                var customerId = _context.Customers.Where(c => c.Email == email).FirstOrDefault().CustomerId;
-                var order = _context.Orders.Where(o => o.CustomerId == customerId).FirstOrDefault();
-                if (order != null)
+                var customer = _context.Customers.FirstOrDefault(c => c.Email == email);
+                if (customer != null)
                 {
-                    isFirstOrder = false;
+                    isFirstOrder = !_context.Orders.Any(o => o.CustomerId == customer.CustomerId);
                 }
             }
 
+            var discounts = discountsQuery.ToList();
             foreach (var item in discounts)
             {
+                var number_used = (from o in _context.Orders
+                                   join d in _context.Discounts on o.DiscountId equals d.DiscountId
+                                   where d.Code == item.Code
+                                   select o).Count();
                 if (item.DiscountType.Id == 3 && !isFirstOrder)
                 {
-                    discounts.Remove(item);
+                    item.Status = false;
+                    item.StatusString = "Chỉ áp dụng cho đơn hàng đầu tiên";
                 }
-                else if (item.Used >= item.MaxUse)
+                else if (number_used >= item.MaxUse)
+                {
+                    item.Status = false;
+                    item.StatusString = "Lượt sử dụng mã giảm giá của bạn đã hết";
+                }
+                else if (item.Used >= item.Quantity)
                 {
                     item.Status = false;
                     item.StatusString = "Đã hết lượt sử dụng";
@@ -240,17 +235,33 @@ namespace PetStoreProject.Repositories.Discount
                 else
                 {
                     item.Status = true;
-                    item.Reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
+                    if (item.DiscountType.Id == 2)
+                    {
+                        item.Reduce = item.Value;
+                    }
+                    else
+                    {
+                        item.Reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
+                    }
                     item.Title = "-" + ((decimal)item.Reduce).ToString("#,###") + " VND";
                 }
             }
             return discounts;
         }
 
+
         public float GetDiscountPrice(double total_amount, int discountId)
         {
             var item = _context.Discounts.Find(discountId);
-            var reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
+            decimal? reduce = 0;
+            if (item.DiscountTypeId == 2)
+            {
+                reduce = item.Value;
+            }
+            else
+            {
+                reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
+            }
             return (float)reduce;
         }
 

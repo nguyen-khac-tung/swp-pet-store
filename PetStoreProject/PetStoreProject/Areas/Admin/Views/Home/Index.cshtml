@@ -271,7 +271,7 @@
                                         <a href="product-list.html" class="body-title-2">@product.Name</a>
                                     </div>
                                     <div class="body-text" style="width: 70px;">@product.SoldQuantity</div>
-                                    <div class="body-text">@product.TotalSale?.ToString("#,###")đ</div>
+                                    <div class="body-text">@product.TotalSale?.ToString("#,###") VND</div>
                                     <div class="body-text" style="width: 120px;">@product.Brand</div>
                                     <div class="body-text" style="width: 120px;">@product.Category.Name</div>
                                 </div>
@@ -329,7 +329,7 @@
                                         <a href="product-list.html" class="body-text">@service.Name</a>
                                     </div>
                                     <div class="body-text">@service.UsedQuantity</div>
-                                    <div class="body-text" style="width: 150px;">@service.TotalSale.ToString("#,###")đ</div>
+                                    <div class="body-text" style="width: 150px;">@service.TotalSale.ToString("#,###") VND</div>
                                     <div class="body-text" style="width: 120px;">@service.Type</div>
                                 </div>
                             </li>
@@ -431,7 +431,7 @@
                 isValid = true;
                 console.log("oke");
             }
-            if (startDate && endDate && startDate < endDate) {
+            if (startDate && endDate && startDate <= endDate) {
                 isValid = true;
                 console.log("oke");
             }
@@ -453,7 +453,7 @@
                                                     <a href="product-list.html" class="body-title-2">${product.name}</a>
                                                 </div>
                                                 <div class="body-text" style="width: 70px;">${product.soldQuantity}</div>
-                                                <div class="body-text">${product.totalSale.toLocaleString('en-US')}đ</div>
+                                                <div class="body-text">${product.totalSale.toLocaleString('en-US')} VND</div>
                                                 <div class="body-text" style="width: 120px;">${product.brand}</div>
                                                 <div class="body-text" style="width: 120px;">${product.category.name}</div>
                                             </div>
@@ -486,7 +486,7 @@
                 isValid = true;
                 console.log("oke");
             }
-            if (startDate && endDate && startDate < endDate) {
+            if (startDate && endDate && startDate <= endDate) {
                 isValid = true;
                 console.log("oke");
             }
@@ -508,7 +508,7 @@
                                                                 <a href="product-list.html" class="body-text">${service.name}</a>
                                                             </div>
                                                             <div class="body-text">${service.usedQuantity}</div>
-                                                            <div class="body-text" style="width: 150px;">${service.totalSale.toLocaleString('en-US')}đ</div>
+                                                            <div class="body-text" style="width: 150px;">${service.totalSale.toLocaleString('en-US')} VND</div>
                                                             <div class="body-text" style = "width: 120px;">${service.type}</div>
                                                         </div>
                                                     </li>

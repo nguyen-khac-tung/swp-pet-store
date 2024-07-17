@@ -98,8 +98,6 @@
         $('#end-date').val(formatDate('@promotion.EndDate'))
         function formatDate(str) {
             var s = str.split(' ');
-            console.log(s);
-
             var dateParts = s[0].split('/');
             var year = dateParts[2];
             var month = dateParts[1].padStart(2, '0'); // Đảm bảo tháng có 2 chữ số
@@ -118,13 +116,9 @@
             hour = hour.toString().padStart(2, '0'); // Đảm bảo giờ có 2 chữ số
 
             var formattedDate = `${year}-${day}-${month}T${hour}:${minute}`;
-            console.log(formattedDate);
-
             return formattedDate;
         }
         
-        console.log(@promotion.Brand.BrandId, @promotion.ProductCategory.ProductCateId)
-
         $('#brand').find('option').each(function () {
             if ($(this).attr('value') == @promotion.Brand.BrandId) {
                 $(this).attr('selected', true)
@@ -153,17 +147,6 @@
                 search.addClass('hide');
                 icon.parent().parent().find('option').each(function () {
                     $(this).removeClass('hide')
-                });
-            }
-        });
-        tinymce.init({
-            selector: '#description',
-            plugins: 'lists checklist',
-            toolbar: 'bold italic underline | align | checklist numlist bullist | removeformat',
-            menubar: false,
-            setup: function (editor) {
-                editor.on('input', function () {
-                    description = editor.getContent();
                 });
             }
         });
@@ -228,12 +211,10 @@
             if (endDate < startDate) {
                 document.getElementById('end-date').value = startDate;
             }
-            console.log(startDate, endDate);
         }
 
         function addPromotion() {
             var decimalRegex = /^-?\d+(\.\d+)?$/;
-            var regex = /^[a-zA-Z0-9\/ ]+$/;
             var numberRegex = /^[0-9]+$/;
             var isValid = true
             var name = $('#name').val().trim()
@@ -242,12 +223,9 @@
             var endDate = $('#end-date').val()
             var brand = $('#brand').val()
             var productCategory = $('#product-category').val()
+            console.log(name)
             if (name == '') {
                 $('#error-name').text('Tên không được để trống')
-                isValid = false
-            }
-            else if (!regex.test(name)) {
-                $('#error-name').text('Tên không được chứa ký tự đặc biệt')
                 isValid = false
             }
             else {

@@ -111,18 +111,6 @@
                 });
             }
         });
-        tinymce.init({
-            selector: '#description',
-            plugins: 'lists checklist',
-            toolbar: 'bold italic underline | align | checklist numlist bullist | removeformat',
-            menubar: false,
-            setup: function (editor) {
-                editor.on('input', function () {
-                    description = editor.getContent();
-                });
-            }
-        });
-
         document.getElementById('brandFilter').addEventListener('input', function () {
             let filter = this.value.toLowerCase();
             let dropdown = document.getElementById('list-brand');
@@ -183,12 +171,10 @@
             if (endDate < startDate) {
                 document.getElementById('end-date').value = startDate;
             }
-            console.log(startDate, endDate);
         }
 
         function addPromotion(){
             var decimalRegex = /^-?\d+(\.\d+)?$/;
-            const regex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯăạảấầẩẫậắằẳẵặẹẻẽềềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ0123456789\s]+$/;
             var numberRegex = /^[0-9]+$/;
             var isValid = true
             var name = $('#name').val().trim()
@@ -197,12 +183,9 @@
             var endDate = $('#end-date').val()
             var brand = $('#brand').val()
             var productCategory = $('#product-category').val()
+            console.log(name)
             if(name == ''){
                 $('#error-name').text('Tên không được để trống')
-                isValid = false
-            }
-            else if(!regex.test(name)){
-                $('#error-name').text('Tên không được chứa ký tự đặc biệt')
                 isValid = false
             }
             else{

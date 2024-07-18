@@ -36,10 +36,10 @@
             reader.readAsDataURL(event.target.files[0]);
         }
         function validateForm() {
-            const title = document.getElementById('title').value;
-            const summary = document.getElementById('summary').value;
-            const thumbnail = document.getElementById('thumbnail').files.length;
-            const content = tinymce.get('editor').getContent();
+            var title = document.getElementById("title").value;
+            var summary = document.getElementById("summary").value;
+            var thumbnail = document.getElementById("thumbnail").files.length;
+            var content = document.getElementById("editor").value;
 
             if (title.trim() === "") {
                 alert("Tiêu đề không được bỏ trống.");
@@ -73,6 +73,7 @@
 
             return true;
         }
+
     </script>
     <style>
         form#newsForm {
@@ -164,7 +165,6 @@
                         <label for="summary">Tóm tắt:</label>
                         <input type="text" id="summary" name="Summary" />
                     </div>
-
                     <div class="form-group">
                         <label for="tag">Tag:</label>
                         <select name="tag" id="tag">
@@ -174,10 +174,9 @@
                             }
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="thumbnail">Thumbnail:</label>
-                        <input type="file" style="border: none;" sid="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
+                        <input type="file" style="border: none;" id="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
                     </div>
                     <div class="img-container">
                         <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />

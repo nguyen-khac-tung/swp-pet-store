@@ -101,9 +101,9 @@
 						{
 							<div class="col-lg-3 col-md-3">
 								<div class="single-animart-blog">
-									<div class="blog-img">
+									<div class="blog-img" style="height: 250px;">
 										<a href="/News/Detail?newsId=@news.NewsId">
-											<img  src="@news.url_thumnail" alt="blog-img">
+											<img src="@news.url_thumnail" alt="blog-img">
 										</a>
 										<div class="publish-meta-date">
 											<span>@news.DateOnly</span>
@@ -128,9 +128,8 @@
 				</div>
 			</div>
 			<div class="pagination-blog">
-				@Html.PagedListPager(Model, page => Url.Action("List", new { page, pagesize = 10 }))
+				@Html.PagedListPager(Model, page => Url.Action("List", new { page, pagesize = 12 }))
 			</div>
-			
 		</div>
 	</div>
 </body>

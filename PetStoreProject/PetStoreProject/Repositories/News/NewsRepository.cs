@@ -53,11 +53,13 @@ namespace PetStoreProject.Repositories.News
         {
             var news = (from img in _dbContext.Images
                         join n in _dbContext.News on img.NewsId equals n.NewsId
-                        where n.NewsId == id && n.IsDelete == false   
+                        join t in _dbContext.TagNews on n.TagId equals t.TagId
+                        where n.NewsId == id
                         select new NewsViewModel
                         {
                             tagId = (int)n.TagId,
                             Description = n.Summary,
+                            tagName = t.TagName,
                             url_thumnail = img.ImageUrl,
                             NewsId = id,
                             Title = n.Title,

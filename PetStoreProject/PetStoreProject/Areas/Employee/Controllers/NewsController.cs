@@ -22,6 +22,11 @@ namespace PetStoreProject.Areas.Employee.Controllers
 			_cloudinaryService = cloudinaryService;
 		}
 
+
+		public ActionResult Index()
+		{
+			return View();
+		}
 		public IActionResult UpdateStatusNews(int newsId)
 		{
 			bool updateSuccessful = _newsRepository.UpdateNewsStatus(newsId);
@@ -88,7 +93,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
 			}
 			if (pageSize == null)
 			{
-				pageSize = 10;
+				pageSize = 12;
 			}
 			var listNews = _newsRepository.GetListNewsForEmployee();
 			return View(listNews.ToPagedList((int)page, (int)pageSize));

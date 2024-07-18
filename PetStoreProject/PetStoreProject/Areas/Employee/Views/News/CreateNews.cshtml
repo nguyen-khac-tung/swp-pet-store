@@ -7,10 +7,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TinyMCE Example</title>
+    <script src="https://cdn.tiny.cloud/1/uiwhzjziqcvy2k00ba4501fd7kxlegjb34byjaglp1cy70qh/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
             selector: 'textarea',
             height: 1000,
+            branding: false,
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
             tinycomments_mode: 'embedded',
@@ -85,7 +87,6 @@
 
                 form#newsForm .form-group label {
                     font-size: 24px;
-                    font-weight: bold;
                     margin-right: 10px;
                     width: 150px;
                 }
@@ -129,42 +130,71 @@
     </style>
 </head>
 <body>
-    <h3 style="text-align:center; margin: 20px">Tạo bài viết mới</h3>
-    <form id="newsForm" method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data" onsubmit="return validateForm()">
-        <div class="form-group">
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="Title" />
-        </div>
-        <div class="form-group">
-            <label for="summary">Summary:</label>
-            <input type="text" id="summary" name="Summary" />
-        </div>
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>Tạo tin tức mới</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="index.html"><div class="text-tiny">Bảng điều khiển</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#"><div class="text-tiny">Tin tức</div></a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">Tạo tin tức mới</div>
+                    </li>
+                </ul>
+            </div>
+            <!-- new-attribute -->
+            <div class="wg-box">
+                <form id="newsForm" method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data" onsubmit="return validateForm()">
+                    <div class="form-group">
+                        <label for="title">Tiêu đề:</label>
+                        <input type="text" id="title" name="Title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="summary">Tóm tắt:</label>
+                        <input type="text" id="summary" name="Summary" />
+                    </div>
 
-        <div class="form-group">
-            <label for="tag">Tag:</label>
-            <select name="tag" id="tag">
-                @foreach(var tag in Model)
-                {
-                    <option value="@tag.TagId">@tag.TagName</option>
-                }
-            </select>
-        </div>
+                    <div class="form-group">
+                        <label for="tag">Tag:</label>
+                        <select name="tag" id="tag">
+                            @foreach (var tag in Model)
+                            {
+                                <option value="@tag.TagId">@tag.TagName</option>
+                            }
+                        </select>
+                    </div>
 
-        <div class="form-group">
-            <label for="thumbnail">Thumbnail:</label>
-            <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
+                    <div class="form-group">
+                        <label for="thumbnail">Thumbnail:</label>
+                        <input type="file" style="border: none;" sid="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
+                    </div>
+                    <div class="img-container">
+                        <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+                    </div>
+                    <div class="form-group">
+                        <label for="editor">Nội Dung:</label>
+                        <textarea id="editor" name="content"></textarea>
+                    </div>
+                    <div class="submit-container">
+                        <button type="submit" class="btn btn-primary btn-lg">Lưu</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /new-category -->
         </div>
-        <div class="img-container">
-            <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
-        </div>
-        <div class="form-group">
-            <label for="editor">Content:</label>
-            <textarea id="editor" name="content"></textarea>
-        </div>
-        <div class="submit-container">
-            <button type="submit" class="btn btn-primary btn-lg">Save</button>
-        </div>
-    </form>
-
+        <!-- /main-content-wrap -->
+    </div>
+    <!-- /main-content-wrap -->
 </body>
 </html>

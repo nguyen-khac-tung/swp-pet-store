@@ -46,10 +46,63 @@
                             </ul>
                         </div>
                         <p class="card-text">@Html.Raw(Model.Content)</p>
+                        <p><b>Tag:</b> @Model.tagName </p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="thumnail-desc" style="margin-bottom: 30px">
+        <div class="container">
+            <div class="thumb-desc-inner">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ul class="main-thumb-desc nav tabs-area" role="tablist">
+                            <li><a class="active" data-bs-toggle="tab" href="#review">Bình luận</a></li>
+                        </ul>
+                        <!-- Product Thumbnail Tab Content Start -->
+                        <div class="tab-content thumb-content">
+                            <div id="review" class="tab-pane fade show active">
+                                <!-- Reviews Start -->
+                                <div class="review">
+                                    <div class="group-title">
+                                        <h2>Để Lại Bình Luận</h2>
+                                    </div>
+
+                                    <div class="review-field">
+                                        <form autocomplete="off" action="#">
+                                            <div class="form-group">
+                                                <label class="req" for="sure-name">Tên</label>
+                                                <input type="text" class="form-control" id="sure-name" required="required">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="req" for="subject">Số điện thoại</label>
+                                                <input type="text" class="form-control" id="subject" required="required">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="req" for="subject">Email</label>
+                                                <input type="email" class="form-control" id="subject">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="req" for="comments">Phản hồi của bạn </label>
+                                                <textarea class="form-control" rows="5" id="comments" required="required"></textarea>
+                                            </div>
+                                            <button type="submit" class="customer-btn">Gửi</button>
+                                        </form>
+                                    </div>
+                                    <!-- Reviews Field Start -->
+                                </div>
+                                <!-- Reviews End -->
+                            </div>
+                        </div>
+                        <!-- Product Thumbnail Tab Content End -->
+                    </div>
+                </div>
+                <!-- Row End -->
+            </div>
+        </div>
+        <!-- Container End -->
     </div>
 </body>
 </html>

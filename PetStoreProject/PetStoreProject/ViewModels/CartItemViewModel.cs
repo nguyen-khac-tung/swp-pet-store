@@ -15,5 +15,6 @@ namespace PetStoreProject.ViewModels
 		public string ImgUrl { get; set; }
 		public bool? isDeleted { get; set; }
 		public Promotion? Promotion { get; set; }
+		public int QuantityInStock { get; set; }
 	}
 }

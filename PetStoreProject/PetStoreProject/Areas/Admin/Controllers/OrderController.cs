@@ -34,6 +34,15 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
 
+            foreach(var order in listOrderHistory)
+            {
+                if (order.DiscountId.HasValue)
+                {
+                    var priceReduce = _discount.GetDiscountPrice(order.TotalAmount, order.DiscountId.Value);
+                    order.TotalAmount = order.TotalAmount - priceReduce;
+                }
+            }
+
             var totalOrder = _order.GetCountOrder(orderCondition);
 
             var totalPage = (int)Math.Ceiling((double)totalOrder / (double)10);

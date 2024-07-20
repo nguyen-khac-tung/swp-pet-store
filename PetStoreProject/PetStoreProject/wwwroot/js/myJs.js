@@ -32,7 +32,6 @@ function getCartBoxItems() {
         type: "POST",
         url: "/cart/GetCartBoxItems",
         success: function (response) {
-            console.log(response)
             $('#list_item').empty();
             $('#total_item').html(response.length)
             let total_price = 0;
@@ -40,7 +39,6 @@ function getCartBoxItems() {
                 $('#list_item').html('<h5>Không có sản phẩm nào trong giỏ hàng</h5>')
             }
             else {
-                console.log(response)
                 for (const element of response) {
                     if (element.promotion.value != null) {
                         element.price = element.price * (1 - element.promotion.value/100)
@@ -187,7 +185,6 @@ function updateCartItem(oldId, cartItem) {
             option += "( " + cartItem.size.name + " )";
         }
     }
-    console.log(cartItem)
     // Find the row by ProductOptionId
     let row = $('#' + oldId);
     // Update the product name and link
@@ -201,9 +198,15 @@ function updateCartItem(oldId, cartItem) {
 
     if (cartItem.promotion.value != null) {
         price = price * (1 - (parseFloat(cartItem.promotion.value) / 100));
-        console.log('price_discount', price)
     }
-    console.log('price_discount', price)
+    console.log("cartItem", cartItem);
+
+    console.log("quantityInstock", cartItem.quantityInStock);
+    console.log("quantity", cartItem.quantity);
+
+    console.log("abc");
+
+
     // Update the product price
     row.find('.product-price .amount').text(price.toLocaleString('en-US') + ' VND');
     if (cartItem.promotion.value != null) {
@@ -222,7 +225,23 @@ function updateCartItem(oldId, cartItem) {
 
     // Update the delete button
     row.find('a[title="Xóa sản phẩm"]').attr('onclick', `deleteCartItem(${cartItem.productOptionId})`);
+
+    if (oldId != cartItem.productOptionId) {
+        row.find('intput[type="checkbox"]').addClass('checkbox_' + cartItem.productOptionId).removeClass('checkbox_' + oldId);
+    }
+
+    if (cartItem.quantityInStock < cartItem.quantity) {
+
+        row.find('.checkbox_' + cartItem.productOptionId).attr('disabled', true);
+    } else {
+        row.find('.checkbox_' + oldId).attr('disabled', false);
+    }
+
+    row.find('.productOptionSelected').val(cartItem.productOptionId);
+
     row.attr('id', cartItem.productOptionId)
+
+
 }
 
 function quickView(productId) {
@@ -237,7 +256,6 @@ function quickView(productId) {
         url: "http://localhost:5206/Product/quickPreview",
         data: { productId: productId },
         success: function (response) {
-            console.log(response)
             $('#quick_name').html(response.name);
             let price = response.productOption[0].price
             if (response.promotion.value != null) {
@@ -245,7 +263,6 @@ function quickView(productId) {
                 price = response.productOption[0].price * (1 - response.promotion.value / 100);
                 $('#quick_price').html(price.toLocaleString('en-US'));
                 discount = response.promotion.value;
-                console.log(price)
             }
             else {
                 $('#quick_price').html(price.toLocaleString('en-US'));
@@ -632,7 +649,6 @@ function fetchProducts(pageSize, pageNumber, categoryId, productCateId, key) {
 
             generateIsInStock();
             
-            console.log(response)
         },
         error: function (xhr, status, error) {
             console.error('Error fetching products:', error);

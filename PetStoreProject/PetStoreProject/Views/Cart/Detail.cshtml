@@ -67,8 +67,14 @@
                                             }
 
                                             var totalPrice = price * item.Quantity;
-                                            <tr id="@item.ProductOptionId" class="item">
-                                                <td style="width: 60px"><input type="checkbox" name="checkbox" class="checkboxItem checkbox_style" id="checkbox_@i" onchange="amountCart()" /></td>
+                                            <tr id="@item.ProductOptionId" class="item" >
+                                                @if(item.QuantityInStock < item.Quantity) 
+                                                {
+                                                    <td style="width: 60px;"><input type="checkbox" name="checkbox" class="checkboxItem checkbox_style checkbox_@item.ProductOptionId" id="checkbox_@i" onchange="amountCart()" disabled/></td>
+                                                }else
+                                                {
+                                                    <td style="width: 60px"><input type="checkbox" name="checkbox" class="checkboxItem checkbox_style checkbox_@item.ProductOptionId" id="checkbox_@i" onchange="amountCart()" /></td>
+                                                }
                                                 <td class="product-thumbnail">
                                                     <a href="#"><img src="@item.ImgUrl" id="product_img_@i" alt="cart-image" /></a>
                                                 </td>
@@ -96,7 +102,7 @@
                                                     </a>
                                                     <a style="cursor:pointer" onclick="confirmDelete(@item.ProductOptionId, '@item.Name.Trim()')" title="Xóa sản phẩm"><i class="icofont-delete-alt" style="font-size: 18px; margin-left: 10px"></i></a>
                                                 </td>
-                                                <input type="hidden" value="@item.ProductOptionId" id="product_productOption_@i"/>
+                                                <input type="hidden" value="@item.ProductOptionId" class="productOptionSelected" id="product_productOption_@i"/>
                                                 <input type="hidden" value="@item.ProductId" id="product_id_@i"/>
                                             </tr>
                                             i++;
@@ -283,6 +289,7 @@
     function callQuickEdit(productOptionId, productId) {
         quickEditCartItem(productOptionId, productId);
         $('#quick_add_to_cart').html('Lưu thay đổi');
+
     }
 
 </script>

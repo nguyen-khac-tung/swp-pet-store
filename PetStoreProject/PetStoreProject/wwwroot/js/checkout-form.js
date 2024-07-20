@@ -134,7 +134,6 @@ function ProcessPay() {
     var checkConsigneePhone = checkPhone(consigneePhone, "consigneePhone");
     if (checkConsigneePhone == 0) return;
 
-
     var consigneeProvince = checkSelect("consigneeProvince", "Tỉnh/Thành phố");
     if (consigneeProvince == 0) return;
     var selectConsigneeProvince = $('#consigneeProvince option:selected').text();
@@ -156,7 +155,6 @@ function ProcessPay() {
     var moneyToCheckout = $('#order_value').val();
 
     var paymentMethod = $('#paymentMethod').val();
-    
 
     console.log(orderName + ' ' + orderPhone + ' ' + consigneeName + ' ' + consigneePhone +
         ' ' + selectConsigneeProvince + ' ' + selectConsigneeDistrict + ' ' + selectConsigneeWard +

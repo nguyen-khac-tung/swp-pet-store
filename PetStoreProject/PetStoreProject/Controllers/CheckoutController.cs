@@ -110,6 +110,17 @@ namespace PetStoreProject.Controllers
             checkout.OrderId = long.Parse(orderId);
             Response.Cookies.Append("CheckoutInfo", Newtonsoft.Json.JsonConvert.SerializeObject(checkout));
 
+            var priceReduce = 0;
+            var discountId = checkout.DiscountId;
+            if(discountId != null && discountId != 0)
+            {
+                priceReduce = (int)_discount.GetDiscountPrice(checkout.TotalAmount, (int)discountId);
+                if(priceReduce > 0)
+                {
+                    amount -= priceReduce;
+                }
+            }
+
             if(checkout.PaymentMethod.Equals("VNPay"))
             {
                 return Json(new
@@ -243,11 +254,14 @@ namespace PetStoreProject.Controllers
                 ConsigneePhone = checkoutInfo.ConsigneePhone,
                 PaymetMethod = checkoutInfo.PaymentMethod,
                 ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", "
-                                + checkoutInfo.ConsigneeWard + ", " + checkoutInfo.ConsigneeAddressDetail,
+                                + checkoutInfo.ConsigneeWard,
                 DiscountId = checkoutInfo.DiscountId,
             };
 
-
+            if(checkoutInfo.ConsigneeAddressDetail != null)
+            {
+                order.ShipAddress += ", " + checkoutInfo.ConsigneeAddressDetail;
+            }
 
             //Xóa phần tử trong database || cookie
             var email = HttpContext.Session.GetString("userEmail");
@@ -273,6 +287,7 @@ namespace PetStoreProject.Controllers
                         Price = item.Price,
                         PromotionId = item.PromotionId,
                     };
+
                     _orderItem.AddOrderItem(orderItem);
                 }
 

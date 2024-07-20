@@ -302,9 +302,12 @@ namespace PetStoreProject.CartController
                 cookiesId = JsonConvert.DeserializeObject<List<int>>(list_cookie);
                 foreach (var itemId in cookiesId)
                 {
+
                     if (Request.Cookies.TryGetValue($"Item_{itemId}", out string cookieItem))
                     {
+                        var quantityOfStock = _productOption.QuantityOfProductOption(itemId);
                         var item = JsonConvert.DeserializeObject<CartItemViewModel>(cookieItem);
+                        item.QuantityInStock = quantityOfStock;
                         item.Promotion = _cart.GetItemPromotion(itemId);
                         cartItems.Add(item);
                     }
@@ -420,6 +423,19 @@ namespace PetStoreProject.CartController
             Response.Cookies.Append($"Item_{newProductOptionId}", JsonConvert.SerializeObject(new_item), cookieOptions);
             Response.Cookies.Append($"Item_{oldProductOptionId}", "old", cookieOptionDelete);
             return Json(new_item);
+        }
+
+        public ActionResult CheckOutOfStock(int productOptionId, int quantity)
+        {
+            var quantityInStock = _productOption.QuantityOfProductOption(productOptionId);
+            if (quantity > quantityInStock)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json(false);
+            }
         }
     }
 }

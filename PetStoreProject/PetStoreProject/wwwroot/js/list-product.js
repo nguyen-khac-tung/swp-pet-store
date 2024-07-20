@@ -225,7 +225,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html += "<!-- Product Content Start -->";
                     html += "<div class='product_content_wrap'>";
                     html += "<div class='product_content'>";
-                    html += "<h4><a style='height: 40px;  href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
+                    html += "<h4><a style='height: 40px;'  href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
                     html += "<div class='grid_price'>";
 
                     if (items[index].productOption && items[index].productOption.length > 0) {
@@ -289,7 +289,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
                     html1 += "<!-- Product Content Start -->";
                     html1 += "<div class='product_content_wrap'>";
                     html1 += "<div class='product_content'>";
-                    html1 += "<h4><a href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
+                    html1 += "<h4 style='height: 33px;'><a href='/product/detail/" + items[index].productId + "'>" + items[index].name + "</a></h4>";
                     html1 += "<div class='scrollable-description'>";
                     html1 += "<p class='list_des' " + items[index].description + "</p>";
                     html1 += "</div>";

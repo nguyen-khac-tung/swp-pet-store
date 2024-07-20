@@ -158,12 +158,6 @@
                         </div>
                     </div>
                 </div>
-                @* <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">Giỏ hàng trống!</h4>
-            <p>Giỏ hàng của bạn đang trống, hãy chọn sản phẩm để mua sắm.</p>
-            <hr>
-            <p class="mb-0">Nhấn vào <a href="/home/index" style="text-decoration:underline">đây</a> để quay lại trang chủ.</p>
-            </div> *@
             }
 
         </div>
@@ -228,11 +222,6 @@
                                         <del class="discount_price" id="quick_price_discount"></del>
                                     </div>
 
-                                    @* 										<!--Detail-->
-                                    <div class="pro-desc-details">
-                                    Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
-                                    </div> *@
-
                                     <!--Option-->
                                     <div class="thubnail-desc" id="quick_option">
 
@@ -245,15 +234,16 @@
                                         </div>
                                     </div>
 
-                                    <div>Trong kho: <span id="quick_quantityInStock"></span> sản phẩm</div>
+                                    <div style="margin-top: 10px; font-size: 15px;">Trong kho: <span id="quick_quantityInStock"></span> sản phẩm</div>
 
-                                    <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+                                    <div class="details_action_wraper" style="margin-top:10px; font-size:15px; display:flex; align-items:center">
                                         Số lượng:
                                         <form action="#" onclick="quick_total_price()" style="border-radius: 10px">
                                             <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
                                         </form>
                                     </div>
-                                    <div>
+
+                                    <div style="margin-top: 10px; font-size: 16px;">
                                         Tổng số tiền: <span id="quick_amount"></span>
                                         <span>VND</span>
                                     </div>

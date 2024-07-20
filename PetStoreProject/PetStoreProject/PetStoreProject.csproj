@@ -25,7 +25,6 @@
   <ItemGroup>
     <None Include="Areas\Employee\Views\News\EditNews.cshtml" />
     <None Include="Areas\Employee\Views\News\ListNews.cshtml" />
-    <None Include="efpt.config.json.user" />
     <None Include="Views\News\Detail.cshtml" />
     <None Include="Views\News\Index.cshtml" />
     <None Include="Views\News\List.cshtml" />

@@ -249,6 +249,12 @@ namespace PetStoreProject.Repositories.Discount
             return discounts;
         }
 
+        public void DeleteDiscount(int id)
+        {
+            var discount = _context.Discounts.Find(id);
+            discount.Status = false;
+            _context.SaveChanges();
+        }
 
         public float GetDiscountPrice(double total_amount, int discountId)
         {
@@ -263,13 +269,6 @@ namespace PetStoreProject.Repositories.Discount
                 reduce = item.Value / 100 * (decimal)total_amount > item.MaxValue ? item.MaxValue : item.Value / 100 * (decimal)total_amount;
             }
             return (float)reduce;
-        }
-
-        public void DeleteDiscount(int id)
-        {
-            var discount = _context.Discounts.Find(id);
-            discount.Status = false;
-            _context.SaveChanges();
         }
     }
 

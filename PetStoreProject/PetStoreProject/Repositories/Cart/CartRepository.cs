@@ -38,7 +38,8 @@ namespace PetStoreProject.Repositories.Cart
                                 ImgUrl = i.ImageUrl,
                                 Quantity = quantity,
                                 ProductId = p.ProductId,
-                                isDeleted = p.IsDelete
+                                isDeleted = p.IsDelete,
+                                QuantityInStock = po.Quantity ?? 0
                             }).FirstOrDefault();
             return cartItem;
         }
@@ -69,7 +70,8 @@ namespace PetStoreProject.Repositories.Cart
                                     },
                                     Price = po.Price,
                                     Quantity = ca.Quantity,
-                                    ImgUrl = i.ImageUrl
+                                    ImgUrl = i.ImageUrl,
+                                    QuantityInStock = po.Quantity ?? 0
                                 };
             return listCartItems.ToList<CartItemViewModel>();
         }
@@ -166,7 +168,8 @@ namespace PetStoreProject.Repositories.Cart
                                },
                                Price = po.Price,
                                Quantity = c.Quantity,
-                               ImgUrl = i.ImageUrl
+                               ImgUrl = i.ImageUrl,
+                               QuantityInStock = po.Quantity ?? 0
                            };
 
             return cartItem.FirstOrDefault();

@@ -497,7 +497,14 @@ namespace PetStoreProject.Controllers
             orderCondition.UserId = customer.CustomerId;
 
             var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
-
+            foreach (var order in listOrderHistory)
+            {
+                if (order.DiscountId != null && order.DiscountId != 0)
+                {
+                    var priceReduce = _discount.GetDiscountPrice(order.TotalAmount, order.DiscountId.Value);
+                    order.TotalAmount = order.TotalAmount - priceReduce;
+                }
+            }
             return View(listOrderHistory);
         }
 

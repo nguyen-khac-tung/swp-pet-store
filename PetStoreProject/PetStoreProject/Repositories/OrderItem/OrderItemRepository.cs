@@ -1,6 +1,7 @@
 ﻿
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Product;
+using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.OrderItem
@@ -9,16 +10,27 @@ namespace PetStoreProject.Repositories.OrderItem
     {
         private readonly PetStoreDBContext _context;
         private readonly IProductRepository _product;
-        public OrderItemRepository(PetStoreDBContext context, IProductRepository product)
+        private readonly IProductOptionRepository _productOption;
+        public OrderItemRepository(PetStoreDBContext context, IProductRepository product, IProductOptionRepository productOption)
         {
             _context = context;
             _product = product;
+            _productOption = productOption;
         }
         public void AddOrderItem(Models.OrderItem orderItem)
         {
             if(orderItem.PromotionId == 0)
             {
                 orderItem.PromotionId = null;
+            }
+            var quantity = _productOption.QuantityOfProductOption(orderItem.ProductOptionId);
+            if (quantity < orderItem.Quantity)
+            {
+                throw new Exception("Not enough quantity");
+            }else
+            {
+                var quantityAfter = quantity - orderItem.Quantity;
+                _productOption.UpdateProductOption(orderItem.ProductOptionId, quantityAfter);
             }
             _context.OrderItems.Add(orderItem);
             _context.SaveChanges();

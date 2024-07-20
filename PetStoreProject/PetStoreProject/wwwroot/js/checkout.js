@@ -9,12 +9,13 @@
     this.PromotionId = PromotionId;
 }
 
-function selectedProductCheckout() {
+async function selectedProductCheckout() {
     var selectedProduct = [];
     var totalCheckboxId = $('#totalCheckboxId').val();
+
     for (var i = 0; i < totalCheckboxId; i++) {
         var checkbox = $('#checkbox_' + i);
-        if (checkbox.prop('checked')) {
+        if (checkbox.prop('checked') && !checkbox.prop('disabled')) {
             var productName = $('#product_name_' + i).val();
             var imgUrl = $('#product_img_' + i).attr('src');
             var productOption = $('#product_option_' + i).val();
@@ -23,6 +24,14 @@ function selectedProductCheckout() {
             var productOptionId = $('#product_productOption_' + i).val();
             var productId = $('#product_id_' + i).val();
             var promotionId = $('#product_promotionId_' + i).val();
+
+            var outOfStock = await checkOutOfStock(productOptionId, productQuantity);
+            if (outOfStock) {
+                alert("Lựa chọn của sản phẩm này đã hết hàng!");
+                window.location.reload();
+                return;
+            }
+
             var cart = new ItemsCheckoutViewModel(
                 productName,
                 productOption,
@@ -36,11 +45,12 @@ function selectedProductCheckout() {
             selectedProduct.push(cart);
         }
     }
+
     if (selectedProduct.length == 0) {
-        alert("Bạn cần phải chọn 1 sản phẩm trong giỏ hàng để thanh toán!");
+        alert("Bạn cần chọn ít nhất 1 sản phẩm trong giỏ hàng để tiến hành thanh toán!");
     } else {
         if (selectedProduct.length >= 10) {
-            alert("Bạn không thể mua số lượng sản phẩm lớn hơn 10 sản phẩm!");
+            alert("Bạn không thể mua lớn hơn 10 sản phẩm!");
             return;
         }
         $.ajax({
@@ -49,8 +59,6 @@ function selectedProductCheckout() {
             contentType: 'application/json', // Specify the content type
             data: JSON.stringify(selectedProduct), // Convert data to JSON string
             success: function (response) {
-                //console.log(response);
-                /*$('body').html(response);*/
                 window.location.href = "/checkout/Form";
             },
             error: function (xhr, status, error) {
@@ -59,6 +67,22 @@ function selectedProductCheckout() {
         });
     }
 }
+
+async function checkOutOfStock(productOptionId, quantity) {
+    try {
+        let response = await $.ajax({
+            url: '/cart/CheckOutOfStock',
+            type: 'POST',
+            data: { productOptionId: productOptionId, quantity: quantity }
+        });
+        return response; // Return true if out of stock, false otherwise
+    } catch (error) {
+        console.log(error);
+        return true; // Treat as out of stock on error
+    }
+}
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
     var checkboxAll = document.getElementById('checkbox_all');
@@ -69,13 +93,15 @@ document.addEventListener("DOMContentLoaded", function () {
         for (var i = 0; i < totalCheckboxId; i++) {
             var checkboxItem = document.getElementById('checkbox_' + i);
             if (checkboxItem) {
-                checkboxItem.checked = checkboxAll.checked;
+                if (!checkboxItem.disabled) {
+                    checkboxItem.checked = checkboxAll.checked;
+                }
             }
         }
         amountCart();
     });
 
     checkboxItems.forEach(item => item.addEventListener("change", function () {
-        checkboxAll.checked = Array.from(checkboxItems).every(checkbox => checkbox.checked);
+        checkboxAll.checked = Array.from(checkboxItems).every(checkbox => checkbox.checked && !checkbox.disabled);
     }));
 });

@@ -330,11 +330,12 @@ function quickView(productId) {
             }
 
             let isStill = false;
-            let attributeId, sizeId;
+            let attributeId, sizeId, quantityInStock;
             for (const element of response.productOption) {
                 if (!element.isSoldOut) { // status is boolean
                     attributeId = element.attribute.attributeId;
                     sizeId = element.size.sizeId;
+                    quantityInStock = element.quantity;
                     isStill = true
                     break;
                 }
@@ -365,6 +366,8 @@ function quickView(productId) {
                 if (list_attribute.length > 0 || list_size.length > 0) {
                     quickUpdatePriceAndImage(sizeId, attributeId, response.productOption)
                 }
+
+                $('#quick_quantityInStock').text(quantityInStock)
             }
             else {
                 let divSoldOut = $('<div>', {
@@ -465,6 +468,7 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
     for (const element of productOptions_json) {
         if (element['attribute']['attributeId'] == attribute_id && element['size']['sizeId'] == size_id) {
             quick_price = element.price;
+            var quantityInStock = element.quantity;
             if (discount != 0) {
                 document.getElementById('quick_price_discount').innerText = quick_price.toLocaleString('en-US') + ' VND';
                 quick_price = quick_price * (1 - discount / 100)
@@ -473,6 +477,7 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
             else {
                 document.getElementById('quick_price').innerText = quick_price.toLocaleString('en-US');
             }
+            $('#quick_quantityInStock').text(quantityInStock)
             quick_img_url = element.img_url;
             $('#quick_add_to_cart').attr('data-product-option-id', element.id)
             break;
@@ -510,6 +515,7 @@ function showNotification(message, color) {
 }
 
 function generateProductList(products) {
+    console.log(products)
     let productList = $('#product-list');
     productList.empty();
     let index = 0;
@@ -525,16 +531,16 @@ function generateProductList(products) {
                             </div>
                             <div class="body-text product-id">#${product.id}</div>
                             <div class="body-text"><span class="price">${product.price.toLocaleString()}</span> VND</div>
-                            <div class="body-text" class="soldQuantity">${product.soldQuantity}</div>
+                            <div class="body-text soldQuantity">${product.soldQuantity}</div>
                             <div class="body-text">${product.category.name}</div>
                             <div class="body-text">${product.productCategory.name}</div>
                             <div>
-                                <div class=" isSoldOut ${product.isSoldOut ? 'block-not-available' : 'block-available'}">
-                                    ${product.isSoldOut ? 'Hết hàng' : 'Còn hàng'}
+                                <div style="width: 100%" class=" isSoldOut ${product.isSoldOut ? 'block-not-available' : 'block-available'}">
+                                    ${product.isSoldOut ? 'Hết hàng' : product.quantity}
                                 </div>
                             </div>
                             <div>
-                                <div class="isDelete ${product.isDelete ? 'block-not-available' : 'block-available'}">
+                                <div style="width: 100%" class="isDelete ${product.isDelete ? 'block-not-available' : 'block-available'}">
                                     ${product.isDelete ? 'Ngừng bán' : 'Còn bán'}
                                 </div>
                             </div>
@@ -762,6 +768,7 @@ function generateProductCategory(productCategories, pageSize, pageNumber, catego
         let href = $('<a>', {
             href: '#',
             class: (productCateId == productCategory.id ? 'choose' : ''),
+            style: 'width: 250px',
             onclick: `chooseProductCategory(${productCategory.id}, ${pageSize}, ${pageNumber}, ${categoryId}, '${key}')`
         }).text('- ' + productCategory.name);
         li.append(href);
@@ -830,8 +837,8 @@ function generateIsInStock() {
     }).text('- Tất cả');
     li.append(href);
     in_stock.append(li);
-    let isSoldOutList = [false, true];
-    let isSoldOutName = ['Còn hàng', 'Hết hàng'];
+    let isSoldOutList = [true, false];
+    let isSoldOutName = ['Tăng dần', 'Giảm dần'];
     isSoldOutList.forEach(function (inSoldOut) {
         li = $('<li>');
         href = $('<a>', {

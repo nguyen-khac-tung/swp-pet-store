@@ -241,6 +241,7 @@
 							</div>
 						}
 					</div>
+					<div>Trong kho: <span id="quantityInStock"></span> sản phẩm</div>
 					<div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
 						Số lượng:
 						<form action="#" onclick="total_price()" style="border-radius: 10px">
@@ -510,9 +511,10 @@
 
 	<script>
 		var product = @Html.Raw(product_json);
-		var attributeId, sizeId, price, img_url;
+		var attributeId, sizeId, price, img_url, quantityInStock;
 		var productOptions = @Html.Raw(productOptions);
 		var isStill = false;
+		console.log(product)
 		function formatDate(str) {
 			var s = str.split(' ');
 			console.log(s);
@@ -546,6 +548,7 @@
 				sizeId = productOptions[index].size.SizeId;
 				price = productOptions[index].price;
 				img_url = productOptions[index].img_url;
+				quantityInStock = productOptions[index].quantity;
 				isStill = true
 				break;
 			}
@@ -651,7 +654,6 @@
 
 		function updatePriceAndImage() {
 			var productOptions_json = @Html.Raw(productOptions);
-			console.log(product, "Update")
 			for (var id = 0; id <= productOptions_json.length; id++) {
 				if (productOptions_json[id]['attribute']['AttributeId'] == attributeId && productOptions_json[id].size.SizeId == sizeId) {
 					price = productOptions_json[id].price
@@ -664,6 +666,8 @@
 					if (productOptions_json[id].IsSoldOut) {
 						$('#add_to_cart').addClass('out-of-stock');
 					}
+					quantityInStock = productOptions_json[id].Quantity
+					document.getElementById('quantityInStock').innerText = quantityInStock
 					break
 				}
 			}

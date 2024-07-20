@@ -95,7 +95,8 @@ namespace PetStoreProject.Repositories.Product
                                           AttributeId = a.AttributeId,
                                           Name = a.Name
                                       },
-                                      IsSoldOut = po.IsSoldOut
+                                      IsSoldOut = po.IsSoldOut || (int)po.Quantity == 0,
+                                      Quantity = (int)po.Quantity
                                   }).ToList();
 
             var attributes = productOptions.Select(a => a.attribute)
@@ -623,7 +624,8 @@ namespace PetStoreProject.Repositories.Product
                                             po.ProductId,
                                             po.Price,
                                             po.IsSoldOut,
-                                            ImageUrl = i.ImageUrl
+                                            ImageUrl = i.ImageUrl,
+                                            po.Quantity
                                         }).ToListAsync();
 
             var soldQuantities = await (from po in _context.ProductOptions
@@ -649,6 +651,15 @@ namespace PetStoreProject.Repositories.Product
 
                 var soldQuantity = soldQuantities.Find(sq => sq.ProductId == product.Id)?.SoldQuantity ?? 0;
                 product.SoldQuantity = soldQuantity;
+                var quantity = productOptions.Where(po => po.ProductId == product.Id).Sum(po => (int)po.Quantity);
+                if (quantity == 0)
+                {
+                    product.IsSoldOut = true;
+                }
+                else
+                {
+                    product.Quantity = quantity;
+                }
             }
 
             // Apply pagination
@@ -784,7 +795,8 @@ namespace PetStoreProject.Repositories.Product
                         Price = option.Price,
                         ImageId = imageId,
                         IsSoldOut = false,
-                        IsDelete = false
+                        IsDelete = false,
+                        Quantity = option.Quantity
                     };
 
                     await _context.ProductOptions.AddAsync(productOption);
@@ -825,8 +837,9 @@ namespace PetStoreProject.Repositories.Product
                                           AttributeId = a.AttributeId,
                                           Name = a.Name
                                       },
-                                      IsSoldOut = po.IsSoldOut,
-                                      IsDelete = po.IsDelete
+                                      IsSoldOut = po.Quantity == 0 || po.IsSoldOut,
+                                      IsDelete = po.IsDelete,
+                                      Quantity = (int)po.Quantity
                                   }).ToList();
 
             foreach (var item in productOptions)
@@ -1002,8 +1015,9 @@ namespace PetStoreProject.Repositories.Product
                         AttributeId = attributeId,
                         Price = option.Price,
                         ImageId = imageId,
-                        IsSoldOut = option.IsSoldOut,
-                        IsDelete = option.IsDelete
+                        IsSoldOut = option.IsSoldOut || option.Quantity == 0,
+                        IsDelete = option.IsDelete,
+                        Quantity = option.Quantity
                     };
 
                     await _context.ProductOptions.AddAsync(productOption);
@@ -1020,15 +1034,14 @@ namespace PetStoreProject.Repositories.Product
                         productOption.IsDelete = x;
                         productOption.IsSoldOut = option.IsSoldOut;
                         productOption.Price = option.Price;
+                        productOption.Quantity = option.Quantity;
                         _context.Update(productOption);
                     }
-
                 }
 
             }
             await _context.SaveChangesAsync();
             return productUpdateRequest.ProductId.ToString();
-
         }
 
         public void DeleteProduct(int productId)
@@ -1038,7 +1051,6 @@ namespace PetStoreProject.Repositories.Product
             _context.Products.Update(product);
             _context.SaveChangesAsync();
         }
-
 
         public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate)
         {

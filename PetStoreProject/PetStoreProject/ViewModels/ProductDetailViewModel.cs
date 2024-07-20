@@ -19,5 +19,6 @@ namespace PetStoreProject.ViewModels
 		public bool? IsDeleted { get; set; }
 		public Promotion? Promotion { get; set; }
 		public Promotion? PromotionUpcoming { get; set; }
+		public int Quantity { get; set; }
 	}
 }

@@ -174,6 +174,7 @@
                                         <div class="theme_size clearfix" id="list-size">
                                             
                                         </div>
+                                        <div>Trong kho: <span id="quantity"></span> sản phẩm</div>
                                         <div class="block-warning w-full" id="error-status">
                                             <i class="icon-alert-octagon"></i>
                                             <div class="body-title-2" id="status"></div>
@@ -233,7 +234,7 @@
                                                                     <div class="body-text" style="width: 20%">@((po.Size.SizeId == 1) ? "Trống" : po.Size.Name)</div>
                                                                     <div class="body-text" style="width: 15%">@po.Price.ToString("#,###") VND</div>
                                                                     <div style="width: 15%" class="body-text">@po.SoldQuantity đã bán</div>
-                                                                    <div style="width: 15%" class="body-text @((po.IsSoldOut == true) ? "block-not-available" : "block-available")">@((po.IsSoldOut == true) ? "Hết hàng" : "Còn hàng")</div>
+                                                                    <div style="width: 15%" class="body-text @((po.IsSoldOut == true) ? "block-not-available" : "block-available")">@((po.IsSoldOut == true) ? "Hết hàng" : po.Quantity)</div>
                                                                     <div style="width: 15%" class="body-text @((po.IsDelete == true) ? "block-not-available" : "block-available")">@((po.IsDelete == true) ? "Ngừng bán" : "Còn bán")</div>
                                                                 </div>
                                                             </div>
@@ -280,7 +281,6 @@
         sizeId = productOptions[0].Size.SizeId
         attributeId = productOptions[0].Attribute.AttributeId
 
-        updatePriceAndImage()
         if (attributeId != 1) {
             if(sizeId != 1){
                 generateSizes(productOptions, attributeId)
@@ -397,8 +397,11 @@
             updatePriceAndImage();
         }
 
+        setTimeout(updatePriceAndImage, 100)
+
         function updatePriceAndImage() {
             var productOptions_json = @Html.Raw(productOptions);
+            console.log(productOptions_json)
             for (var id = 0; id <= productOptions_json.length; id++) {
                 if (productOptions_json[id]['Attribute']['AttributeId'] == attributeId && productOptions_json[id].Size.SizeId == sizeId) {
                     price = productOptions_json[id].Price
@@ -407,13 +410,10 @@
                         $('#status').text('Mặt hàng này đã ngừng bán')
                         $('#error-status').removeClass('hide')
                     }
-                    else if (productOptions_json[id].IsSoldOut) {
-                        $('#status').text('Tùy chọn sản phẩm này đã hết hàng')
-                        $('#error-status').removeClass('hide')
-                    }
                     else {
                         $('#status').text('')
                         $('#error-status').addClass('hide')
+                        $('#quantity').text(productOptions_json[id].Quantity)
                     }
                     break
                 }

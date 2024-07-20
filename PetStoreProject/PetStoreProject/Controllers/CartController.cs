@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Customers;
+using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.CartController
@@ -12,12 +13,14 @@ namespace PetStoreProject.CartController
         private readonly ICartRepository _cart;
         private readonly ICustomerRepository _customer;
         private readonly IAccountRepository _account;
+        private readonly IProductOptionRepository _productOption;
 
-        public CartController(ICartRepository cart, ICustomerRepository customer, IAccountRepository account)
+        public CartController(ICartRepository cart, ICustomerRepository customer, IAccountRepository account, IProductOptionRepository productOption)
         {
             _cart = cart;
             _customer = customer;
             _account = account;
+            _productOption = productOption;
         }
 
         public string CheckUserRole()
@@ -60,20 +63,29 @@ namespace PetStoreProject.CartController
         [HttpPost]
         public ActionResult AddToCart(int productOptionId, int quantity)
         {
-            var userRole = CheckUserRole();
-            if (userRole == "Customer")
+            var quantityInStock = _productOption.QuantityOfProductOption(productOptionId);
+
+            if (quantity > quantityInStock)
             {
-                var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.GetCustomerId(customerEmail);
-                return AddCartItemOfCustomer(productOptionId, quantity, customerID);
-            }
-            else if (userRole == "Guest")
-            {
-                return AddCartItemOfGuest(productOptionId, quantity);
+                return Json(new { message = "Số lượng sản phẩm trong kho không đủ!!!" });
             }
             else
             {
-                return Json(new { message = "Tài khoản của bạn không thể sử dụng chức năng này!!!" });
+                var userRole = CheckUserRole();
+                if (userRole == "Customer")
+                {
+                    var customerEmail = HttpContext.Session.GetString("userEmail");
+                    var customerID = _customer.GetCustomerId(customerEmail);
+                    return AddCartItemOfCustomer(productOptionId, quantity, customerID);
+                }
+                else if (userRole == "Guest")
+                {
+                    return AddCartItemOfGuest(productOptionId, quantity);
+                }
+                else
+                {
+                    return Json(new { message = "Tài khoản của bạn không thể sử dụng chức năng này!!!" });
+                }
             }
         }
 
@@ -120,20 +132,29 @@ namespace PetStoreProject.CartController
         [HttpPut]
         public ActionResult Edit(int oldProductOptionId, int newProductOptionId, int quantity)
         {
-            var userRole = CheckUserRole();
-            if (userRole == "Customer")
+            var quantityInStock = _productOption.QuantityOfProductOption(newProductOptionId);
+
+            if (quantity > quantityInStock)
             {
-                var customerEmail = HttpContext.Session.GetString("userEmail");
-                var customerID = _customer.GetCustomerId(customerEmail);
-                return EditCartOfCustomer(oldProductOptionId, newProductOptionId, quantity, customerID);
-            }
-            else if (userRole == "Guest")
-            {
-                return EditCartOfGuest(oldProductOptionId, newProductOptionId, quantity);
+                return Json(new { message = "Số lượng sản phẩm trong kho không đủ!!!" });
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer" } });
+                var userRole = CheckUserRole();
+                if (userRole == "Customer")
+                {
+                    var customerEmail = HttpContext.Session.GetString("userEmail");
+                    var customerID = _customer.GetCustomerId(customerEmail);
+                    return EditCartOfCustomer(oldProductOptionId, newProductOptionId, quantity, customerID);
+                }
+                else if (userRole == "Guest")
+                {
+                    return EditCartOfGuest(oldProductOptionId, newProductOptionId, quantity);
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Account", new { allowedRoles = new string[] { "Customer" } });
+                }
             }
         }
 

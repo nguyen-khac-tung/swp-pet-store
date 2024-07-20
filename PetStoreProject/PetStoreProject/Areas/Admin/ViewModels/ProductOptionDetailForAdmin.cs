@@ -11,5 +11,6 @@ namespace PetStoreProject.Areas.Admin.ViewModels
         public bool IsSoldOut { get; set; }
         public bool? IsDelete { get; set; }
         public int SoldQuantity { get; set; }
+        public int Quantity { get; set; }
     }
 }

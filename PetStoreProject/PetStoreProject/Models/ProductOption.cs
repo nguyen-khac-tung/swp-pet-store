@@ -26,6 +26,8 @@ public partial class ProductOption
 
     public bool? IsDelete { get; set; }
 
+    public int? Quantity { get; set; }
+
     [ForeignKey("AttributeId")]
     [InverseProperty("ProductOptions")]
     public virtual Attribute? Attribute { get; set; }

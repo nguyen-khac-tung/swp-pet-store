@@ -57,7 +57,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var products = listProductForAdmin.products;
             var totalProduct = listProductForAdmin.totalProducts;
 
-            var totalPageNumber = totalProduct / pageSize + 1;
+            var totalPageNumber = Math.Ceiling((decimal)totalProduct / pageSize);
 
             return Json(new
             {

@@ -209,16 +209,26 @@
                             </div>
                         </div>
                     </fieldset>
-                    
-                    <fieldset class="name">
-                        <label class="body-title mb-10">Giá sản phẩm<span class="tf-color-1">*</span></label>
-                        <div class="select mb10 flex gap22" style="align-items:center">
-                            <input type="text" id="price" min="1000" style="max-width: 82%" placeholder="Nhập giá sản phẩm">
-                            <div style="flex: 1;text-align: center">VND</div>
-                        </div>
+                    <div class="gap22 cols">
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Giá sản phẩm<span class="tf-color-1">*</span></label>
+                            <div class="select mb10 flex gap10" style="align-items:center">
+                                <input type="text" id="price" min="1000" style="max-width: 82%" placeholder="Nhập giá sản phẩm">
+                                <div style="flex: 1;text-align: center">VND</div>
+                            </div>
 
-                        <span id="error-price" class="text-danger"></span>
-                    </fieldset>
+                            <span id="error-price" class="text-danger"></span>
+                        </fieldset>
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Số lượng<span class="tf-color-1">*</span></label>
+                            <div class="select mb10 flex gap22" style="align-items:center">
+                                <input type="text" id="quantity" min="1000" placeholder="Nhập số lượng sản phẩm">
+                            </div>
+
+                            <span id="error-quantity" class="text-danger"></span>
+                        </fieldset>
+                    </div>
+                    
                 </div>
                 <div style="max-height: 155px; overflow-x: auto">
                     <ul class="flex flex-column" id="list-product-option">
@@ -233,9 +243,7 @@
                 </div>
             </div>
         </form>
-        <!-- /form-add-product -->
     </div>
-    <!-- /main-content-wrap -->
 </div>
 @section ScriptOptional {
     <script>
@@ -476,6 +484,8 @@
 
             var price = $('#price').val()
 
+            var quantity = $('#quantity').val()
+
             if(name == ''){
                 isValid = false
                 $('#error-name').text('Tên sản phẩm không được để trống');
@@ -530,6 +540,27 @@
                     isValid = false
                 }
             }
+
+            if(quantity == ''){
+                isValid = false
+                $('#error-quantity').text('Số lượng sản phẩm không được để trống');
+            }
+            else{
+                if (regex.test(quantity)) {
+                    var q = parseInt(quantity);
+                    if (q < 1) {
+                        $('#error-quantity').text('Số lượng sản phẩm không được nhỏ hơn 1');
+                        isValid = false
+                    }
+                    else {
+                        $('#error-quantity').text('')
+                    }
+                }
+                else {
+                    $('#error-quantity').text("Số lượng sản phẩm phải là một số");
+                    isValid = false
+                }
+            }
             return isValid
         }
 
@@ -550,16 +581,19 @@
 
                 var price = $('#price').val().trim()
 
+                var quantity = $('#quantity').val().trim()
+
                 var newOption = `
-                                        <li style="padding: 5px; position: relative" id="product-option-id_new">
+                                        <li style="padding: 5px; position: relative; min-width: 800px;" id="product-option-id_new">
                                             <span class="delete-button"><i class="icon-delete"></i></span>
                                             <div class="gap15" style="align-items: center; width: 100%; display: flex">
                                                 <div class="choose-image" style="width: 7%">
                                                     <img value='new' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
                                                 </div>
                                                 <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Loại: <span class="tf-color">${attributeName}</span></div>
-                                                <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
-                                                <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
+                                                <div style="width: 36%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
+                                                <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> vnd</div>
+                                                <div style="width: 25%" class="text-tiny quantityData" value=${quantity}>Số lượng: <span class="tf-color">${quantity}</span></div>
                                             </div>
                                         </li>
                                         `
@@ -635,6 +669,7 @@
                         alert('Không thể thêm. Tùy chọn sản phẩm đã có kích thước khác.')
                         return false;
                     }
+
                 })
             }
             else{
@@ -715,11 +750,14 @@
 
                         var Price = op.find('.priceData').attr('value');
 
+                        var quantity = op.find('.quantityData').attr('value')
+
                         var option = {
                             Image: Image,
                             Size: Size,
                             Attribute: Attribute,
-                            Price: parseFloat(Price)
+                            Price: parseFloat(Price),
+                            Quantity : quantity
                         };
                         options.push(option);
                     });

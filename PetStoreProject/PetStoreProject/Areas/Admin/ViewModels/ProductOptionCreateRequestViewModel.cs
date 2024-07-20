@@ -6,5 +6,6 @@
         public Models.Size Size { get; set; }
         public Models.Attribute Attribute { get; set; }
         public float Price { get; set; }
+        public int Quantity { get; set; }
     }
 }

@@ -207,14 +207,13 @@
         function ChooseSortSoldQuantity(sortSoldQuantity) {
             var $productList = $('#product-list');
             var $products = $productList.find('li');
-
             if (sortSoldQuantity) {
                 $products.sort(function (a, b) {
                     return parseFloat($(a).find('.soldQuantity').text()) - parseFloat($(b).find('.soldQuantity').text());
                 });
             } else {
                 $products.sort(function (a, b) {
-                    return parseFloat($(b).find('.prsoldQuantityice').text()) - parseFloat($(a).find('.soldQuantity').text());
+                    return parseFloat($(b).find('.soldQuantity').text()) - parseFloat($(a).find('.soldQuantity').text());
                 });
             }
 
@@ -227,9 +226,47 @@
         var isSoldOut = null;
         var isDelete = null;
 
-        function ChooseIsInStock(tag, is_Sold_Out) {
-            isSoldOut = is_Sold_Out;
-            filter(tag)
+        function ChooseIsInStock(tag, isSoldOut) {
+            $(tag).parent().parent().find('a').each(function () {
+                $(this).removeClass('choose');
+            });
+            $(tag).addClass('choose')
+            console.log(isSoldOut)
+            var $productList = $('#product-list');
+            var $products = $productList.find('li');
+            if (isSoldOut) {
+                $products.sort(function (a, b) {
+                    
+                    if ($(b).find('.isSoldOut').text().trim() == "Hết hàng") {
+                        console.log(1)
+                        return 1;
+                    }
+                    else if ($(a).find('.isSoldOut').text().trim() == "Hết hàng") {
+                        return -1;
+                    }
+                    console.log(parseFloat($(a).find('.isSoldOut').text().trim()) - parseFloat($(b).find('.isSoldOut').text().trim()))
+                    return parseFloat($(a).find('.isSoldOut').text().trim()) - parseFloat($(b).find('.isSoldOut').text().trim());
+                });
+            } else {
+                $products.sort(function (a, b) {
+                    if ($(a).find('.isSoldOut').text().trim() == "Hết hàng") {
+                        console.log(1)
+                        return 1;
+                    }
+                    else if ($(b).find('.isSoldOut').text().trim() == "Hết hàng") {
+                        return -1;
+                    }
+                    console.log(parseFloat($(b).find('.isSoldOut').text().trim()) - parseFloat($(a).find('.isSoldOut').text().trim()))
+                    return parseFloat($(b).find('.isSoldOut').text().trim()) - parseFloat($(a).find('.isSoldOut').text().trim());
+                });
+            }
+
+            console.log("Add")
+
+            $productList.html('');  // Clear the product list
+            $products.each(function () {
+                $productList.append($(this));  // Append each product back to the list
+            });
         }
 
         function ChooseIsDelete(tag, is_Delete){

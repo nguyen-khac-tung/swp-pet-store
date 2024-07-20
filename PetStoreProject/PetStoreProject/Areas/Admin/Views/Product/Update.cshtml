@@ -237,15 +237,25 @@
                             </div>
                         </div>
                     </fieldset>
-                    <fieldset class="name">
-                        <label class="body-title mb-10">Giá sản phẩm</label>
-                        <div class="select mb10 flex gap22" style="align-items:center">
-                            <input type="text" id="price" min="1000" placeholder="Nhập giá sản phẩm">
-                            <span>VND</span>
-                        </div>
+                    <div class="gap22 cols">
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Giá sản phẩm<span class="tf-color-1">*</span></label>
+                            <div class="select mb10 flex gap10" style="align-items:center">
+                                <input type="text" id="price" min="1000" style="max-width: 82%" placeholder="Nhập giá sản phẩm">
+                                <div style="flex: 1;text-align: center">VND</div>
+                            </div>
 
-                        <span id="error-price" class="text-danger"></span>
-                    </fieldset>
+                            <span id="error-price" class="text-danger"></span>
+                        </fieldset>
+                        <fieldset class="name">
+                            <label class="body-title mb-10">Số lượng<span class="tf-color-1">*</span></label>
+                            <div class="select mb10 flex gap22" style="align-items:center">
+                                <input type="text" id="quantity" min="1000" placeholder="Nhập số lượng sản phẩm">
+                            </div>
+
+                            <span id="error-quantity" class="text-danger"></span>
+                        </fieldset>
+                    </div>
                 </div>
                 <div class="flex gap22 hidden" id="status">
                     
@@ -283,13 +293,14 @@
                             <div class="image">
                                 <img style="border-radius: 0px" src="@po.Image.ImageUrl" alt="" value="@po.Image.ImageId">
                             </div>
-                            <div class="flex-grow flex justify-between gap20">
+                            <div class="flex-grow flex justify-between gap20" style="align-items: center">
                                 <div class="body-text attribute" style="width: 20%" value="@po.Attribute.AttributeId">@((po.Attribute.AttributeId == 1) ? "Trống" : po.Attribute.Name)</div>
                                 <div class="body-text size" style="width: 20%" value="@po.Size.SizeId">@((po.Size.SizeId == 1) ? "Trống" : po.Size.Name)</div>
                                 <div class="body-text price" style="width: 15%" value="@po.Price">@po.Price.ToString("#,###") VND</div>
                                 <div style="width: 15%" class="body-text soldQuantity">@po.SoldQuantity đã bán</div>
                                 <div style="width: 15%" class="body-text isSoldOut @((po.IsSoldOut == true) ? "block-not-available" : "block-available")" value="@((po.IsSoldOut == true) ? "1" : "0")"> @((po.IsSoldOut == true) ? "Hết hàng" : "Còn hàng")</div>
                                 <div style="width: 15%" class="body-text isDelete @((po.IsDelete == true) ? "block-not-available" : "block-available")" value="@((po.IsDelete == true) ? "1" : "0")"> @((po.IsDelete == true) ? "Ngừng bán" : "Còn bán")</div>
+                                <div class="body-text quantity" style="width: 15%; background-color: #f6f8fbcc; border: none" value="@po.Quantity">@po.Quantity còn hàng</div>
                                 <div onclick="edit(@po.Id)">
                                     <div class="item edit">
                                         <i class="icon-edit-3"></i>
@@ -534,6 +545,7 @@
         previewImage.empty();
         uploadImage.removeClass('hidden');
         $('#price').val('');
+        $('#quantity').val('');
         $('#list-size option').each(function () {
             this.selected = false;
         });
@@ -565,6 +577,8 @@
 
             var price = parseFloat($('#price').val().trim());
 
+            var quantity = $('#quantity').val().trim();
+
             var isSoldOut = $('input[name="isSoldOutProductOption"]:checked').val().trim();
             var isDelete = $('input[name="isDeleteProductOption"]:checked').val();
 
@@ -582,6 +596,7 @@
             data.find('.price').attr('value', price);
             data.find('.price').text(price.toLocaleString('en-US') + ' VND');
 
+            data.find('.quantity').attr('value', quantity);
 
             data.find('.isSoldOut').attr('value', isSoldOut);
             data.find('.isSoldOut').text((isSoldOut == 1) ? 'Hết hàng' : 'Còn hàng');
@@ -747,18 +762,21 @@
 
             var price = $('#price').val().trim()
 
+            var quantity = $('#quantity').val().trim()
+
             var newOption = `
-                                <li style="padding: 5px; position: relative" id="product-option-id_new">
-                                    <span class="delete-button"><i class="icon-delete"></i></span>
-                                    <div class="gap15" style="align-items: center; width: 100%; display: flex">
-                                        <div class="choose-image" style="width: 7%">
-                                            <img value='${imageId}' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
-                                        </div>
-                                        <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Loại: <span class="tf-color">${attributeName}</span></div>
-                                        <div style="width: 34%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
-                                        <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> đ</div>
-                                    </div>
-                                </li>
+                                        <li style="padding: 5px; position: relative; min-width: 800px;" id="product-option-id_new">
+                                            <span class="delete-button"><i class="icon-delete"></i></span>
+                                            <div class="gap15" style="align-items: center; width: 100%; display: flex">
+                                                <div class="choose-image" style="width: 7%">
+                                                <img value='${imageId}' class="imageData" style="width: 50px; height: 50px" src="${image}" alt="">
+                                                </div>
+                                                <div style="width: 34%" class="text-tiny attributeData" value=${attributeId}>Loại: <span class="tf-color">${attributeName}</span></div>
+                                                <div style="width: 36%" class="text-tiny sizeData" value=${sizeId}>Kích thước: <span class="tf-color">${sizeName}</span></div>
+                                                <div style="width: 25%" class="text-tiny priceData" value=${price}>Giá: <span class="tf-color">${price}</span> vnd</div>
+                                                <div style="width: 25%" class="text-tiny quantityData" value=${quantity}>Số lượng: <span class="tf-color">${quantity}</span></div>
+                                            </div>
+                                        </li>
                                 `
             listProductOptions.append(newOption);
             addImageToList(image);
@@ -833,6 +851,9 @@
         })
 
         document.getElementById("price").value = divData.find('.price').attr('value')
+
+        document.getElementById("quantity").value = divData.find('.quantity').attr('value')
+
         var isSoldOut = divData.find('.isSoldOut').attr('value')
         var isDelete = divData.find('.isDelete').attr('value')
             
@@ -854,7 +875,7 @@
             `;
 
             var isDeleteProductOption =
-                `<fieldset>
+            `<fieldset>
                 <label class="body-title mb-10">Tình trạng</label>
                 <div class="select mb-10 flex gap22 radio-buttons justify-content-around">
                     <div class="item">
@@ -987,6 +1008,29 @@
 
         var price = $('#price').val()
 
+        var quantity = $('#quantity').val()
+
+        if (quantity == '') {
+            isValid = false
+            $('#error-quantity').text('Số lượng sản phẩm không được để trống');
+        }
+        else {
+            if (regex.test(quantity)) {
+                var q = parseInt(quantity);
+                if (q < 1) {
+                    $('#error-quantity').text('Số lượng sản phẩm không được nhỏ hơn 1');
+                    isValid = false
+                }
+                else {
+                    $('#error-quantity').text('')
+                }
+            }
+            else {
+                $('#error-quantity').text("Số lượng sản phẩm phải là một số");
+                isValid = false
+            }
+        }
+
         if (name == '') {
             isValid = false
             $('#error-name').text('Tên sản phẩm không được để trống');
@@ -1103,6 +1147,8 @@
 
                     var Price = op.find('.priceData').attr('value');
 
+                    var Quantity = op.find('.quantityData').attr('value');
+
                     var option = {
                         Id: 0,
                         Attribute: Attribute,
@@ -1110,7 +1156,8 @@
                         Image: Image,
                         Price: parseFloat(Price),
                         IsDelete: false,
-                        IsSoldOut: false
+                        IsSoldOut: false,
+                        Quantity: parseInt(Quantity)
                     };
                     options.push(option);
                 });
@@ -1132,6 +1179,8 @@
                 var AttributeId = op.find('.attribute').attr('value');
 
                 var Price = op.find('.price').attr('value');
+
+                var Quantity = op.find('.quantity').attr('value');
 
                 var Image = {
                     ImageId: ImageId == 'new' ? 0 : parseInt(ImageId),
@@ -1157,7 +1206,8 @@
                     Image: Image,
                     Price: parseFloat(Price),
                     IsDelete: isDelete == '1' ? true : false,
-                    IsSoldOut: isSoldOut == '1' ? true : false
+                    IsSoldOut: isSoldOut == '1' ? true : false,
+                    Quantity: Quantity
                 };
                 options.push(option);
             });

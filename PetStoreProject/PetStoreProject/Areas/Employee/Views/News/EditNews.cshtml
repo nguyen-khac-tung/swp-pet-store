@@ -134,18 +134,17 @@
             <!-- new-attribute -->
             <div class="wg-box">
                 <form id="newsForm" method="post" action="/Employee/news/UpdateNews" enctype="multipart/form-data" onsubmit="return validateForm()">
-                    <div class="form-group">
-                        <label for="title">Tiêu đề:</label>
-                        <input type="text" id="title" name="Title" value="@Model.Title" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="summary">Tóm tắt:</label>
-                        <input type="text" id="summary" name="Summary" value="@Model.Description" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tag">Tag:</label>
+                    <input type="hidden" name="newsId" value="@Model.NewsId" />
+                    <fieldset class="title">
+                        <div class="body-title mb-10">Tiêu đề<span class="tf-color-1">*</span></div>
+                        <input class="mb-10" id="title" type="text" name="title" placeholder="Nhập tiêu đề" value="@Model.Title">
+                    </fieldset>
+                    <fieldset class="summary">
+                        <div class="body-title mb-10">Tóm tắt <span class="tf-color-1">*</span></div>
+                        <input class="mb-10" id="summary" type="text" name="Summary" placeholder="Nhập tóm tắt" value="@Model.Description">
+                    </fieldset>
+                    <fieldset class="tag">
+                        <div class="body-title mb-10">Tag <span class="tf-color-1">*</span></div>
                         <select name="tag" id="tag">
                             @foreach (var tag in ViewBag.listTag as List<TagNews>)
                             {
@@ -156,21 +155,21 @@
                                 <option value="@tag.TagId">@tag.TagName</option>
                             }
                         </select>
-                    </div>
-                    <input type="hidden" name="newsId" value="@Model.NewsId" />
-                    <div class="form-group">
-                        <label for="thumbnail">Thumbnail:</label>
+                    </fieldset>
+                    <fieldset>
+                        <div class="body-title mb-10">Thumbnail <span class="tf-color-1">*</span></div>
                         <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" value="@Model.url_thumnail" onchange="previewThumbnail(event)" />
-                    </div>
-                    <div class="img-container">
-                        <img id="thumbnailPreview" class="thumbnail-preview" src="@Model.url_thumnail" alt="Thumbnail Preview" style=" width: 250px; height: 250px;" />
-                    </div>
-                    <div class="form-group">
-                        <label for="editor">Nội dung:</label>
+                        <div class="img-container">
+                            <img id="thumbnailPreview" class="thumbnail-preview" src="@Model.url_thumnail" alt="Thumbnail Preview" style=" width: 250px; height: 250px;" />
+                        </div>
+                    </fieldset>
+                    <fieldset class="content">
+                        <div class="body-title mb-10">Nội Dung <span class="tf-color-1">*</span></div>
                         <textarea id="editor" name="content">@Model.Content</textarea>
-                    </div>
-                    <div class="submit-container">
-                        <button type="submit" class="btn btn-primary btn-lg">Lưu</button>
+                    </fieldset>
+                    <div class="bot" style="margin-top: 10px;">
+                        <div></div>
+                        <button class="tf-button w208" type="submit">Lưu</button>
                     </div>
                 </form>
 

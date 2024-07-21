@@ -4,6 +4,7 @@ using PetStoreProject.Repositories.Product;
 using PetStoreProject.ViewModels;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Service;
+using PetStoreProject.Repositories.News;
 
 namespace PetStoreProject.Controllers
 {
@@ -13,13 +14,15 @@ namespace PetStoreProject.Controllers
 		private readonly IProductRepository _product;
 		private readonly ICustomerRepository _customer;
         private readonly IServiceRepository _service;
+        private readonly INewsRepository _news;
 
-        public HomeController(PetStoreDBContext dbContext, IProductRepository product, ICustomerRepository customer, IServiceRepository service)
+        public HomeController(PetStoreDBContext dbContext, IProductRepository product, ICustomerRepository customer, IServiceRepository service, INewsRepository news)
 		{
 			_context = dbContext;
 			_product = product;
 			_customer = customer;
             _service = service;
+            _news = news;
 		}
 
 		public int GetCustomerId()
@@ -68,6 +71,7 @@ namespace PetStoreProject.Controllers
             var catFoods = _product.GetProductsOfHome(4, 20);
             var dogAccessories = _product.GetProductsOfHome(2, null);
             var catAccessories = _product.GetProductsOfHome(6, null);
+
             var homeVM = new HomeViewModel
             {
                 NumberOfDogFoods = _product.GetNumberOfDogFoods(),
@@ -78,7 +82,8 @@ namespace PetStoreProject.Controllers
                 CatFoodsDisplayed = GetListItemToDisplayed(catFoods),
                 DogAccessoriesDisplayed = GetListItemToDisplayed(dogAccessories),
                 CatAccessoriesDisplayed = GetListItemToDisplayed(catAccessories),
-                ServicesDisplayed = _service.GetListServices()
+                ServicesDisplayed = _service.GetListServices(),
+                NewsDisplayed = _news.GetListNewsForHomePage()
             };
             return View(homeVM);
         }

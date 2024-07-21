@@ -659,109 +659,48 @@
     <div class="container">
         <!-- Section Title Start Here -->
         <div class="section-title">
-            <span># Blogs </span>
-            <h2>Blog Mới Nhất</h2>
+            <span># Tin Tức </span>
+            <h2>Tin Tức Mới Nhất</h2>
         </div>
         <!-- Section Title End Here -->
         <!-- Section Title End -->
         <div class="row">
             <!-- Single Blog Start -->
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="single-animart-blog">
-                    <div class="blog-img">
-                        <a href="blog-details.html">
-                            <img src="/img/blog/blog_1.jpg" alt="blog-img">
-                        </a>
-                        <div class="publish-meta-date">
-                            <span>20 December, 2022</span>
+            @foreach(var news in Model.NewsDisplayed)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <!-- Single Blog Start -->
+                    <div class="single-animart-blog" style="display: flex; flex-direction: column; justify-content: space-between; height: 90%; border: 1px solid #ddd; padding: 15px; box-sizing: border-box;">
+                        <div class="blog-img">
+                            <a href="/News/Detail?newsId=@news.NewsId">
+                                <img src="@news.url_thumnail" alt="blog-img">
+                            </a>
+                            <div class="publish-meta-date">
+                                <span>@news.DateOnly</span>
+                            </div>
+                        </div>
+
+                        <div class="grid-blog-content" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <h4 class="blog-title">
+                                <a href="/News/Detail?newsId=@news.NewsId">@news.Title</a>
+                            </h4>
+
+                            <ul class="blog-post-meta" style="flex-shrink: 0;">
+                                <li>By: <a href="#">animart</a></li>
+                            </ul>
+
+                            <p style="flex-grow: 1;">
+                                @news.Description
+                            </p>
+                            <div class="blog-btn" style="display: flex; justify-content: center; margin-top: auto;">
+                                <a href="/News/Detail?newsId=@news.NewsId">Đọc thêm</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="grid-blog-content">
-                        <h4>
-                            <a href="blog-details.html">Blog grid style  item title here</a>
-                        </h4>
-
-                        <ul class="blog-post-meta">
-                            <li>By: <a href="#">animart</a></li>
-                            <li><a href="#"> 12 comments </a></li>
-                        </ul>
-
-                        <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industrys pets_tab dummy text ever since ...
-                        </p>
-                        <div class="blog-btn">
-                            <a href="blog-details.html">Continue Reading . . .</a>
-                        </div>
-                    </div>
+                    <!-- Single Blog End -->
                 </div>
-            </div>
-            <!-- Single Blog End -->
-            <!-- Single Blog Start -->
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="single-animart-blog">
-                    <div class="blog-img">
-                        <a href="blog-details.html">
-                            <img src="/img/blog/blog_2.jpg" alt="blog-img">
-                        </a>
-                        <div class="publish-meta-date">
-                            <span>20 December, 2022</span>
-                        </div>
-                    </div>
-                    <div class="grid-blog-content">
-                        <h4>
-                            <a href="blog-details.html">Blog grid style  item title here</a>
-                        </h4>
-
-                        <ul class="blog-post-meta">
-                            <li>By: <a href="#">animart</a></li>
-                            <li><a href="#"> 12 comments </a></li>
-                        </ul>
-
-                        <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industrys pets_tab dummy text ever since ...
-                        </p>
-                        <div class="blog-btn">
-                            <a href="blog-details.html">Continue Reading . . .</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Single Blog End -->
-            <!-- Single Blog Start -->
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="single-animart-blog">
-                    <div class="blog-img">
-                        <a href="blog-details.html">
-                            <img src="/img/blog/blog_3.jpg" alt="blog-img">
-                        </a>
-                        <div class="publish-meta-date">
-                            <span>20 December, 2022</span>
-                        </div>
-                    </div>
-                    <div class="grid-blog-content">
-                        <h4>
-                            <a href="blog-details.html">Blog grid style  item title here</a>
-                        </h4>
-
-                        <ul class="blog-post-meta">
-                            <li>By: <a href="#">animart</a></li>
-                            <li><a href="#"> 12 comments </a></li>
-                        </ul>
-
-                        <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industrys pets_tab dummy text ever since ...
-                        </p>
-                        <div class="blog-btn">
-                            <a href="blog-details.html">Continue Reading . . .</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Single Blog End -->
-
+            }
+            
         </div>
     </div>
 </div>

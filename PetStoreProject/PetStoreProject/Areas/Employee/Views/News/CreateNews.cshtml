@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<PetStoreProject.Models.TagNews>
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,6 +10,8 @@
     <script>
         tinymce.init({
             selector: 'textarea',
+            language: 'vi',
+            language_url: 'https://cdn.tiny.cloud/1/8hmoehtsho9qzx2uls4bfsd2haevw9a5nwhp03mpsx4zn0vj/tinymce/tinymce/7/langs/vi.js',
             height: 1000,
             branding: false,
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
@@ -24,6 +25,16 @@
             ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
             images_upload_url: '/Employee/News/UploadImage',
             automatic_uploads: true
+        });
+
+        tinymce.addI18n('vi', {
+            "File": "Tệp",
+            "View": "Xem",
+            "Tools": "Công cụ",
+            "Format": "Định dạng",
+            "Format": "Định dạng",
+            "Paragraph": "Đoạn văn",
+            "System Font": "Kiểu chữ",
         });
 
         function previewThumbnail(event) {
@@ -88,29 +99,12 @@
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
                 <h3>Tạo tin tức mới</h3>
-                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                    <li>
-                        <a href="index.html"><div class="text-tiny">Bảng điều khiển</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <a href="#"><div class="text-tiny">Tin tức</div></a>
-                    </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <div class="text-tiny">Tạo tin tức mới</div>
-                    </li>
-                </ul>
             </div>
             <!-- new-attribute -->
             <div class="wg-box">
                 <form id="newsForm" method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <fieldset class="title">
-                        <div class="body-title mb-10">Tiêu đề<span class="tf-color-1">*</span></div>
+                        <div class="body-title mb-10">Tiêu đề <span class="tf-color-1">*</span></div>
                         <input class="mb-10" id="title" type="text" name="title" placeholder="Nhập tiêu đề">
                     </fieldset>
                     <fieldset class="summary">
@@ -118,7 +112,7 @@
                         <input class="mb-10" id="summary" type="text" name="Summary" placeholder="Nhập tóm tắt">
                     </fieldset>
                     <fieldset class="tag">
-                        <div class="body-title mb-10">Tag <span class="tf-color-1">*</span></div>
+                        <div class="body-title mb-10">Thẻ <span class="tf-color-1">*</span></div>
                         <select class="mb-10" id="tag" name="tag" tabindex="0" aria-required="true" required>
                             @foreach (var tag in Model)
                             {

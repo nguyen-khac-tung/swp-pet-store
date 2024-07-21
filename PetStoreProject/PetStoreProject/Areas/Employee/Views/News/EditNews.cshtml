@@ -11,6 +11,8 @@
         tinymce.init({
             selector: 'textarea',
             branding: false,
+            language: 'vi',
+            language_url: 'https://cdn.tiny.cloud/1/8hmoehtsho9qzx2uls4bfsd2haevw9a5nwhp03mpsx4zn0vj/tinymce/tinymce/7/langs/vi.js',
             height: 1000,
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
@@ -23,6 +25,16 @@
             ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
             images_upload_url: '/Employee/News/UploadImage',
             automatic_uploads: true
+        });
+
+        tinymce.addI18n('vi', {
+            "File": "Tệp",
+            "View": "Xem",
+            "Tools": "Công cụ",
+            "Format": "Định dạng",
+            "Format": "Định dạng",
+            "Paragraph": "Đoạn văn",
+            "System Font": "Kiểu chữ",
         });
 
         function previewThumbnail(event) {
@@ -136,7 +148,7 @@
                 <form id="newsForm" method="post" action="/Employee/news/UpdateNews" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <input type="hidden" name="newsId" value="@Model.NewsId" />
                     <fieldset class="title">
-                        <div class="body-title mb-10">Tiêu đề<span class="tf-color-1">*</span></div>
+                        <div class="body-title mb-10">Tiêu đề <span class="tf-color-1">*</span></div>
                         <input class="mb-10" id="title" type="text" name="title" placeholder="Nhập tiêu đề" value="@Model.Title">
                     </fieldset>
                     <fieldset class="summary">
@@ -144,8 +156,8 @@
                         <input class="mb-10" id="summary" type="text" name="Summary" placeholder="Nhập tóm tắt" value="@Model.Description">
                     </fieldset>
                     <fieldset class="tag">
-                        <div class="body-title mb-10">Tag <span class="tf-color-1">*</span></div>
-                        <select name="tag" id="tag">
+                        <div class="body-title mb-10">Thẻ <span class="tf-color-1">*</span></div>
+                        <select class="mb-10" name="tag" id="tag">
                             @foreach (var tag in ViewBag.listTag as List<TagNews>)
                             {
                                 @if (tag.TagId == Model.tagId)

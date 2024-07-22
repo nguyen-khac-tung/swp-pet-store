@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\News\.cshtml" />
     <Content Remove="wwwroot\areas\js\profile-user.js" />
     <Content Remove="wwwroot\js\checkout-form.js" />
     <Content Remove="wwwroot\js\checkout.js" />
@@ -26,7 +27,6 @@
     <None Include="Areas\Employee\Views\News\EditNews.cshtml" />
     <None Include="Areas\Employee\Views\News\ListNews.cshtml" />
     <None Include="Views\News\Detail.cshtml" />
-    <None Include="Views\News\Index.cshtml" />
     <None Include="Views\WishList\Detail.cshtml" />
     <None Include="wwwroot\areas\icon\fonts\icomoon93d9.svg" />
     <None Include="wwwroot\areas\js\apexcharts\apexcharts.js" />

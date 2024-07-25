@@ -7,6 +7,7 @@ using PetStoreProject.Repositories.Brand;
 using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.ViewModels;
+using X.PagedList;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -209,13 +210,13 @@ namespace PetStoreProject.Repositories.Product
             return "http://res.cloudinary.com/dvofidghe/image/upload/w_800,h_950/" + img_id;
         }
 
-        public List<Models.Product> GetProductsByCategoriesAndProductCateId(List<int> categoriesIds, int productCateId)
+        public async Task<List<Models.Product>> GetProductsByCategoriesAndProductCateId(List<int> categoriesIds, int productCateId)
         {
 
-            List<Models.Product> products = (from p in _context.Products
+            List<Models.Product> products = await (from p in _context.Products
                                              join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
                                              where categoriesIds.Contains(pc.CategoryId)
-                                             select p).ToList();
+                                             select p).ToListAsync();
             if (productCateId != 0)
             {
                 products = products.Where(p => p.ProductCateId == productCateId).ToList();
@@ -225,7 +226,7 @@ namespace PetStoreProject.Repositories.Product
 
         public List<ProductOptionViewModel> GetProductOptionsByProductId(int productId)
         {
-            var productOptions = (from po in _context.ProductOptions
+            var productOptions =  (from po in _context.ProductOptions
                                   join i in _context.Images on po.ImageId equals i.ImageId
                                   join a in _context.Attributes on po.AttributeId equals a.AttributeId
                                   join s in _context.Sizes on po.SizeId equals s.SizeId
@@ -301,19 +302,20 @@ namespace PetStoreProject.Repositories.Product
             return sizes;
         }
 
-        public List<ProductDetailViewModel> GetProductDetail(List<int> cateId, int productCateId)
+        public async Task<List<ProductDetailViewModel>> GetProductDetail(List<int> cateId, int productCateId)
         {
-            var products = GetProductsByCategoriesAndProductCateId(cateId, productCateId);
+            var products = await GetProductsByCategoriesAndProductCateId(cateId, productCateId);
 
             var promotionDefault = _context.Promotions
                 .Where(pro => pro.BrandId == 0 && pro.ProductCateId == 0 && pro.Status == true)
                 .OrderByDescending(pro => pro.Value)
                 .FirstOrDefault();
 
-            var productDetails = products.Select(p =>
+            var productDetails = products.Select( p =>
             {
                 var brand = GetBrandByProductId(p.ProductId);
                 var promotion = GetPromotionForProduct(brand.BrandId, p.ProductCateId);
+                var productOption = GetProductOptionsByProductId(p.ProductId);
 
                 return new ProductDetailViewModel
                 {
@@ -321,7 +323,7 @@ namespace PetStoreProject.Repositories.Product
                     Name = p.Name,
                     Brand = brand.Name,
                     Description = p.Description,
-                    productOption = GetProductOptionsByProductId(p.ProductId),
+                    productOption = productOption,
                     Promotion = promotion,
                 };
             }).ToList();

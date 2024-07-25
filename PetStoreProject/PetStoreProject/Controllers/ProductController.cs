@@ -120,7 +120,7 @@ namespace PetStoreProject.Controllers
 		}
 
 		[HttpGet("/Product/{CategoryId}/{productCateId?}")]
-		public ActionResult ListProduct(string CategoryId, int? productCateId, int? pageSize, int? page)
+		public async Task<ActionResult> ListProduct(string CategoryId, int? productCateId, int? pageSize, int? page)
 		{
 			List<int> categoryIds = null;
 			string url = "";
@@ -151,7 +151,7 @@ namespace PetStoreProject.Controllers
 					categoryIds = [2];
 					break;
 			}
-			var productDetails = _product.GetProductDetail(categoryIds, productCateId ?? 0); // thay doi
+			var productDetails = await _product.GetProductDetail(categoryIds, productCateId ?? 0); // thay doi
 			var totalItems = productDetails.Count();
 			var pageIndex = page ?? 1;
 			var _pageSize = pageSize ?? 21;
@@ -180,7 +180,7 @@ namespace PetStoreProject.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult ListProduct(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
+		public async Task<ActionResult> ListProduct(string url, int? pageSize, int? page, List<string>? selectedBrands, string? selectedSort, int priceMin,
 			int priceMax, List<string>? selectedColors, List<string>? selectedSizes, List<string>? selectedStatus, List<string>? selectedPromotion)
 		{
 			List<int> cateId = new List<int>();
@@ -212,16 +212,16 @@ namespace PetStoreProject.Controllers
 			{
 				productCateId = int.Parse(urlSplit[3]);
 			}
-			List<ProductDetailViewModel> productDetails = null;
+			List<ProductDetailViewModel> productDetails = await _product.GetProductDetail(cateId, productCateId);
 
 			//Filter brand
 			if (!selectedBrands.IsNullOrEmpty())
-				productDetails = _product.GetProductDetail(cateId, productCateId)
+				productDetails = productDetails
 					.Where(p => selectedBrands
 					.Contains(p.Brand) && (p.productOption[0].price >= priceMin && p.productOption[0].price <= priceMax))
 					.ToList();
 			else
-				productDetails = _product.GetProductDetail(cateId, productCateId)
+				productDetails = productDetails
 					.Where(p => p.productOption[0].price >= priceMin && p.productOption[0].price <= priceMax)
 					.ToList();
 

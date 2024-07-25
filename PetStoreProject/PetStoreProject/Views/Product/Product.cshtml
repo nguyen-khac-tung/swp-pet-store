@@ -63,7 +63,7 @@
 
 
     .price-input .separator {
-        width: 130px;
+        width: 30px;
         display: flex;
         font-size: 19px;
         align-items: center;
@@ -199,13 +199,13 @@
                         <h3 class="sidebar-title">Giá</h3>
                         <div class="price-input">
                             <div class="field">
-                                <input type="number" readonly class="input-min" value="@ViewBag.priceMin">
-                                <span>đ</span>
+                                <input type="text" readonly class="input-min" value="@ViewBag.priceMin.ToString("#,###")">
+                                <span>VND</span>
                             </div>
                             <div class="separator">-</div>
                             <div class="field">
-                                <input type="number" readonly class="input-max" value="@ViewBag.priceMax">
-                                <span>đ</span>
+                                <input type="text" readonly class="input-max" value="@ViewBag.priceMax.ToString("#,###")">
+                                <span>VND</span>
                             </div>
                         </div>
                         <div class="slider">
@@ -678,11 +678,7 @@
             });
         });
     });
-    function selectedSort() {
-        selectSort = document.getElementById("selected_sort").value;
-        console.log("selected_sort: change" + selectSort);
-        loadData(url, pageSize, pageIndex, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus);
-    }
+
 
 </script>
 

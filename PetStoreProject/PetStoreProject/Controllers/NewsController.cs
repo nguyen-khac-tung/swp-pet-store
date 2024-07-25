@@ -16,10 +16,6 @@ namespace PetStoreProject.Controllers
             _dbContext = petStoreDBContext;
             _newsRepository = newsRepository;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
 		public IActionResult Detail(int newsId)
 		{

@@ -28,6 +28,21 @@ namespace PetStoreProject.Repositories.News
                             }).OrderByDescending(n => n.DateOnly).ToList();
             return listNews;
         }
+        public List<NewsViewModel> GetListNewsForHomePage()
+        {
+            var listNews = (from img in _dbContext.Images
+                            join n in _dbContext.News on img.NewsId equals n.NewsId
+                            where n.IsDelete == false
+                            select new NewsViewModel
+                            {
+                                url_thumnail = img.ImageUrl,
+                                NewsId = n.NewsId,
+                                Title = n.Title,
+                                Description = n.Summary,
+                                DateOnly = n.DatePosted,
+                            }).OrderByDescending(n => n.DateOnly).Take(3).ToList();
+            return listNews;
+        }
 
         public List<NewsViewModel> GetListNewsForEmployee()
         {

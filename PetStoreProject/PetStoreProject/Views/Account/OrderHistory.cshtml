@@ -13,7 +13,7 @@
             <div class="table-order-history">
                 <table class="table align-middle">
                     <thead>
-                    <th class="ps-4">Mã dịch vụ</th>
+                    @* <th class="ps-4">Mã dịch vụ</th> *@
                     <th>Người nhận</th>
                     <th>SĐT nhận</th>
                     <th>Ngày đặt</th>
@@ -26,7 +26,7 @@
                         @foreach (var orderHistory in Model)
                         {
                             <tr id="order-item-@orderHistory.OrderId" data-order='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(orderHistory))'>
-                                <td class="ps-4">#@orderHistory.OrderId</td>
+                                @* <td class="ps-4">#@orderHistory.OrderId</td> *@
                                 <td>@orderHistory.ConsigneeName</td>
                                 <td>@orderHistory.ConsigneePhone</td>
                                 <td class="orderdate-cell">@orderHistory.OrderDate</td>

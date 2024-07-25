@@ -13,7 +13,7 @@ namespace PetStoreProject.Repositories.FeedBack
         {
             _dbContext = dbContext;
         }
-        public List<FeedBackViewModels> GetListFeedBack(int page)
+        public List<FeedBackViewModels> GetListFeedBack()
         {
             var list = (from fb in _dbContext.Feedbacks
                         join p in _dbContext.Products on fb.ProductId equals p.ProductId into gj1
@@ -32,8 +32,7 @@ namespace PetStoreProject.Repositories.FeedBack
                             CreatedDate = fb.DateCreated,
                             Status = fb.Status,
                             ContentResponse = subResp != null ? subResp.Content : null
-                        }).OrderByDescending(x => x.CreatedDate).Skip((page - 1) * 10)
-                           .Take(10).ToList();
+                        }).OrderByDescending(x => x.CreatedDate).ToList();
             return list;
         }
 

@@ -17,7 +17,8 @@ const priceMinInit = priceInput[0].value;
 const priceMaxInit = priceInput[1].value;
 var rangeInputMin = rangeInput[0].value;
 var rangeInputMax = rangeInput[1].value;
-
+const rangeInputMaxInit = rangeInput[1].value;
+const rangeInputMinInit = rangeInput[0].value;
 
 window.addEventListener('load', function() {
     // Your code here
@@ -38,8 +39,8 @@ rangeInput.forEach(input => {
                 rangeInputMax = rangeInput[1].value;
             }
         } else {
-            priceInput[0].value = minVal;
-            priceInput[1].value = maxVal;
+            priceInput[0].value = formatVND(minVal);
+            priceInput[1].value = formatVND(maxVal);
             rangeInputMin = rangeInput[0].value;
             rangeInputMax = rangeInput[1].value;
             range.style.left = ((minVal / rangeInput[0].max) * 100) + "%";
@@ -47,6 +48,10 @@ rangeInput.forEach(input => {
         }
     });
 });
+
+function format(amount) {
+    return amount.toLocaleString('en-US', { minimumFractionDigits: 0 });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("filter_button").addEventListener('click', function () {
@@ -106,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 
-        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
+        loadData(url, pageSize, 1, selectedBrands, selectSort, rangeInput[0].value, rangeInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {
@@ -130,12 +135,14 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedStatus = [];
         selectedBrands = [];
         // Reset price inputs
-        priceInput[0].value = priceMinInit;
-        priceInput[1].value = priceMaxInit;
+        priceInput[0].value = formatVND(priceMinInit);
+        priceInput[1].value = formatVND(priceMaxInit);
+
+        console.log(rangeInputMax);
 
         // Update range inputs
-        rangeInput[0].value = priceMinInit;
-        rangeInput[1].value = priceMaxInit;
+        rangeInput[0].value = rangeInputMinInit;
+        rangeInput[1].value = rangeInputMaxInit;
 
         // Update slider progress
         range.style.left = "0%";
@@ -147,12 +154,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         console.log("Filters cleared");
-        loadData(url, pageSize, 1, [], selectSort, priceMinInit, priceMaxInit, [], [], [], []);
+        loadData(url, pageSize, 1, [], selectSort, rangeInputMinInit, rangeInputMaxInit, [], [], [], []);
     });
 
 });
 
-function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin, priceInputMax, selectedColors, selectedSizes, selectedStatus, selectedPromotion) {
+function loadData(url, pageSize, page, selectedBrands, selectSort, rangeInputMin, rangeInputMax, selectedColors, selectedSizes, selectedStatus, selectedPromotion) {
     $('#data-grid-view').empty();
     $('#list-view').empty();
     $.ajax({
@@ -161,7 +168,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, priceInputMin
         data: {
             url: url,
             pageSize: pageSize, page: page, selectedBrands: selectedBrands, selectedSort: selectSort,
-            priceMin: priceInputMin, priceMax: priceInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes,
+            priceMin: rangeInputMin, priceMax: rangeInputMax, selectedColors: selectedColors, selectedSizes: selectedSizes,
             selectedStatus: selectedStatus, selectedPromotion: selectedPromotion
         },
         success: function (response) {
@@ -389,15 +396,15 @@ function paging(currentPage, numberPage, pageSize) {
 function nextPage(page, pageSize) {
     console.log("Nextpage:");
 
-    loadData(url, pageSize, page, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
+    loadData(url, pageSize, page, selectedBrands, selectSort, rangeInput[0].value, rangeInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
 }
 function changePageSize() {
     console.log("changePageSize:");
-    console.log("PriceM: " + priceInput[0].value);
-    console.log("PriceMax: " + priceInput[1].value);
+    console.log("PriceM: " + rangeInput[0].value);
+    console.log("PriceMax: " + rangeInput[1].value);
     pageSize = parseInt(document.getElementById("pageSizeSelect").value);
     console.log(pageSize);
-    loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
+    loadData(url, pageSize, 1, selectedBrands, selectSort, rangeInput[0].value, rangeInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
 }
 
 function formatVND(amount) {
@@ -461,4 +468,10 @@ function ToggleFavorite(productId, element) {
             }
         }
     });
+}
+
+function selectedSort() {
+    selectSort = document.getElementById("selected_sort").value;
+    console.log("selected_sort: change" + selectSort);
+    loadData(url, pageSize, pageIndex, selectedBrands, selectSort, rangeInputMin, rangeInputMax, selectedColors, selectedSizes, selectedStatus);
 }

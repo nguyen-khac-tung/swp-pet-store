@@ -1,16 +1,17 @@
 ﻿@model IEnumerable<PetStoreProject.Models.TagNews>
 
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TinyMCE Example</title>
-    <script src="https://cdn.tiny.cloud/1/uiwhzjziqcvy2k00ba4501fd7kxlegjb34byjaglp1cy70qh/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/8hmoehtsho9qzx2uls4bfsd2haevw9a5nwhp03mpsx4zn0vj/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
             selector: 'textarea',
+            language: 'vi',
+            language_url: 'https://cdn.tiny.cloud/1/8hmoehtsho9qzx2uls4bfsd2haevw9a5nwhp03mpsx4zn0vj/tinymce/tinymce/7/langs/vi.js',
             height: 1000,
             branding: false,
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
@@ -24,6 +25,16 @@
             ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
             images_upload_url: '/Employee/News/UploadImage',
             automatic_uploads: true
+        });
+
+        tinymce.addI18n('vi', {
+            "File": "Tệp",
+            "View": "Xem",
+            "Tools": "Công cụ",
+            "Format": "Định dạng",
+            "Format": "Định dạng",
+            "Paragraph": "Đoạn văn",
+            "System Font": "Kiểu chữ",
         });
 
         function previewThumbnail(event) {
@@ -70,64 +81,16 @@
                 alert("Nội dung không được bỏ trống.");
                 return false;
             }
-
             return true;
         }
-
     </script>
     <style>
-        form#newsForm {
-            width: 100%;
-        }
-
-            form#newsForm .form-group {
-                display: flex;
-                align-items: center;
-                margin: 20px;
-            }
-
-                form#newsForm .form-group label {
-                    font-size: 24px;
-                    margin-right: 10px;
-                    width: 150px;
-                }
-
-                form#newsForm .form-group input,
-                form#newsForm .form-group select {
-                    font-size: 20px;
-                    padding: 10px;
-                    width: calc(100% - 160px);
-                    box-sizing: border-box;
-                    background-color: white;
-                    border: 1px solid #ccc;
-                }
-
-                    form#newsForm .form-group input[type="file"] {
-                        width: auto;
-                    }
-
         .img-container {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 10px;
         }
-
-                    form#newsForm .form-group .img-container img {
-                        display: block;
-                        width: 250px;
-                        height: 250px;
-                    }
-
-            form#newsForm .submit-container {
-                text-align: center;
-                margin-bottom: 30px;
-            }
-
-            form#newsForm .btn {
-                font-size: 20px;
-            }
-
     </style>
 </head>
 <body>
@@ -140,36 +103,37 @@
             <!-- new-attribute -->
             <div class="wg-box">
                 <form id="newsForm" method="post" action="/Employee/news/SaveContent" enctype="multipart/form-data" onsubmit="return validateForm()">
-                    <div class="form-group">
-                        <label for="title">Tiêu đề:</label>
-                        <input type="text" id="title" name="Title" />
-                    </div>
-                    <div class="form-group">
-                        <label for="summary">Tóm tắt:</label>
-                        <input type="text" id="summary" name="Summary" />
-                    </div>
-                    <div class="form-group">
-                        <label for="tag">Tag:</label>
-                        <select name="tag" id="tag">
+                    <fieldset class="title">
+                        <div class="body-title mb-10">Tiêu đề <span class="tf-color-1">*</span></div>
+                        <input class="mb-10" id="title" type="text" name="title" placeholder="Nhập tiêu đề">
+                    </fieldset>
+                    <fieldset class="summary">
+                        <div class="body-title mb-10">Tóm tắt <span class="tf-color-1">*</span></div>
+                        <input class="mb-10" id="summary" type="text" name="Summary" placeholder="Nhập tóm tắt">
+                    </fieldset>
+                    <fieldset class="tag">
+                        <div class="body-title mb-10">Thẻ <span class="tf-color-1">*</span></div>
+                        <select class="mb-10" id="tag" name="tag" tabindex="0" aria-required="true" required>
                             @foreach (var tag in Model)
                             {
                                 <option value="@tag.TagId">@tag.TagName</option>
                             }
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="thumbnail">Thumbnail:</label>
-                        <input type="file" style="border: none;" id="thumbnail" accept="image/*" name="Thumbnail" onchange="previewThumbnail(event)" />
-                    </div>
-                    <div class="img-container">
-                        <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
-                    </div>
-                    <div class="form-group">
-                        <label for="editor">Nội Dung:</label>
-                        <textarea id="editor" name="content"></textarea>
-                    </div>
-                    <div class="submit-container">
-                        <button type="submit" class="btn btn-primary btn-lg">Lưu</button>
+                    </fieldset>
+                    <fieldset>
+                        <div class="body-title mb-10">Thumbnail <span class="tf-color-1">*</span></div>
+                        <input class="mb-10" type="file" id="thumbnail" name="Thumbnail" style="border: none;" accept="image/*" onchange="previewThumbnail(event)" tabindex="0">
+                        <div class="img-container">
+                            <img id="thumbnailPreview" class="thumbnail-preview" src="#" alt="Thumbnail Preview" style="display: none; width: 250px; height: 250px;" />
+                        </div>
+                    </fieldset>
+                    <fieldset class="content">
+                        <div class="body-title mb-10">Nội Dung <span class="tf-color-1">*</span></div>
+                        <textarea class="mb-10" id="editor" name="content" placeholder="Nhập nội dung" tabindex="0"></textarea>
+                    </fieldset>
+                    <div class="bot" style="margin-top: 10px;">
+                        <div></div>
+                        <button class="tf-button w208" type="submit">Lưu</button>
                     </div>
                 </form>
             </div>

@@ -5484,7 +5484,7 @@ p.checkout-coupon input[type="submit"] {
         }
 
 .product-stock-status span {
-    color: #00adf6;
+/*    color: #00adf6;*/
     font-weight: 500;
 }
 

@@ -31,13 +31,14 @@
                 <p style="font-size:17px;">Bạn có chắc muốn xóa tài khoản nhân viên <strong id="nameAccountDelete"></strong>?</p>
                 <br />
                 <input type="hidden" id="accountId" />
+                <div id="error-mess"></div>
                 <div class="input-group">
                     <input type="password" class="flex-grow" id="passwordAdmin" placeholder="Vui lòng nhập mật khẩu để xác nhận" required />
                     <div class="btn show-btn" onclick="showPassword()">
                         <i class="bi bi-eye eye_style" id="eye-icon"></i>
                     </div>
                 </div>
-                <div id="error-mess"></div>
+
             </div>
             <div class="modal-footer" style="margin-bottom:10px">
                 <button type="button" class="btn btn-danger" id="confirmDelete" style="font-size:15px; border-radius:5px;">Có, xóa tài khoản</button>

@@ -158,7 +158,7 @@
                     </form>
                     <form class="form-search form_search_style" onsubmit="return false;">
                         <fieldset>
-                            <input id="search-time-input" type="number" placeholder="Thời gian đặt" class="input_search_style" name="sTimeOrderDate" tabindex="2" value="@ViewBag.SearchTime" aria-required="true" required="">
+                            <input id="search-time-input" type="number" placeholder="Thời gian đặt" class="input_search_style" name="sTimeOrderDate" tabindex="2" min="0" max="24" value="@ViewBag.SearchTime" aria-required="true" required="">
                         </fieldset>
                         <div class="button-submit button_submit_style">
                             <button onclick="searchTimeOrderService()"><i class="icon-search"></i></button>
@@ -233,12 +233,12 @@
                                         @if (service.employee != null)
                                         {
                                             <text>
-                                                #@service.employee.EmployeeId
+                                                @service.employee.FullName
                                             </text>
                                         }
                                         else
                                         {
-                                            <text><span class="block-not-available">Trống</span></text>
+                                            <text><span style="width: 100%" class="block-not-available">Trống</span></text>
                                         }
                                     </div>
                                     <div class="body-text totalAmount">@string.Format("{0:N0} VND", @service.Price)</div>
@@ -276,7 +276,7 @@
                                 {
                                     @if ((int)ViewBag.pageIndex > 1)
                                     {
-                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(@(ViewBag.pageIndex - 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang trước</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageService(@(ViewBag.pageIndex - 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang trước</a></li>
                                     }
 
                                     var startPage = Math.Max(1, (int)ViewBag.pageIndex - 2);
@@ -284,7 +284,7 @@
 
                                     @if (startPage > 1)
                                     {
-                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(1, @(ViewBag.pageSize))" href="javascript:void(0);">1</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageService(1, @(ViewBag.pageSize))" href="javascript:void(0);">1</a></li>
                                         if (startPage > 2)
                                         {
                                             <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
@@ -298,7 +298,7 @@
                                         }
                                         else
                                         {
-                                            <li class="page-item"><a class="page-link" onclick="nextPageOrder(@i, @(ViewBag.pageSize))" href="javascript:void(0);">@i</a></li>
+                                            <li class="page-item"><a class="page-link" onclick="nextPageService(@i, @(ViewBag.pageSize))" href="javascript:void(0);">@i</a></li>
                                         }
                                     }
                                     @if ((int)ViewBag.numberPage >= endPage + 1)
@@ -309,12 +309,12 @@
                                             <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
                                         }
 
-                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(@(ViewBag.numberPage), @(ViewBag.pageSize))" href="javascript:void(0);">@(ViewBag.numberPage)</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageService(@(ViewBag.numberPage), @(ViewBag.pageSize))" href="javascript:void(0);">@(ViewBag.numberPage)</a></li>
                                     }
                                     @if ((int)ViewBag.pageIndex != (int)ViewBag.numberPage)
                                     {
 
-                                        <li class="page-item"><a class="page-link" onclick="nextPageOrder(@(ViewBag.pageIndex + 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang sau</a></li>
+                                        <li class="page-item"><a class="page-link" onclick="nextPageService(@(ViewBag.pageIndex + 1), @(ViewBag.pageSize))" href="javascript:void(0);">Trang sau</a></li>
                                     }
                                 }
                             </ul>

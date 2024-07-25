@@ -24,7 +24,7 @@ namespace PetStoreProject.Repositories.Accounts
         public Account GetAccount(string email, string password)
         {
             var account = (from acc in _context.Accounts
-                           where acc.Email == email
+                           where acc.Email == email && acc.IsDelete == false
                            select acc).FirstOrDefault();
             if (account == null)
             {

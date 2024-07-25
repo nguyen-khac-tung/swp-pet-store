@@ -167,14 +167,7 @@
                                     @* <div class="body-text status text_center"></div> *@
                                     <div class="body-text totalOrderItems text_center">@order.totalOrderItems</div>
                                     <div class="body-text paymentMethod text_center">
-                                        @if (order.PaymentMethod == "Thẻ")
-                                        {
-                                            <i class="bi bi-credit-card-2-front-fill" style="font-size:20px"></i>
-                                        }
-                                        else if (order.PaymentMethod.Contains("Tiền"))
-                                        {
-                                            <i class="bi bi-cash" style="font-size:20px"></i>
-                                        }
+                                        @order.PaymentMethod
                                     </div>
                                     <div class="body-text totalAmount">@order.TotalAmount VND</div>
 

@@ -215,7 +215,7 @@ namespace PetStoreProject.Repositories.Product
 
 			List<Models.Product> products = await (from p in _context.Products
 												   join pc in _context.ProductCategories on p.ProductCateId equals pc.ProductCateId
-												   where categoriesIds.Contains(pc.CategoryId)
+												   where categoriesIds.Contains(pc.CategoryId) && p.IsDelete == false
 												   select p).ToListAsync();
 			if (productCateId != 0)
 			{

@@ -165,7 +165,7 @@
 }
 
 #passwordAdmin {
-    margin-top: 10px;
+
     font-size: 15px;
     border: none;
     width: 100%;
@@ -190,7 +190,7 @@
 .eye_style {
     font-size: 18px;
     position: relative;
-    top: 16px;
+    top: 10px;
     left: 377px;
     z-index: 1;
 }

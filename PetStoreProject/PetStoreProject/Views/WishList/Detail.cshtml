@@ -35,12 +35,12 @@
 											<a href="/product/detail/@wVM.ProductId"><img src="@wVM.img_url" alt="cart-image" /></a>
 										</td>
 										<td class="product-name"><a href="/product/detail/@wVM.ProductId">@wVM.ProductName</a></td>
-										<td class="product-price"><span class="amount">@wVM.price.ToString("N0") VND</span></td>
+                                        <td class="product-price"><span class="amount regular-price">@wVM.price.ToString("N0") VND</span></td>
 										<td class="product-stock-status"><span>@wVM.Brand</span></td>
                                         <td class="product-add-to-cart"><a class="grid_cart details_cart link " href="#" data-bs-toggle="modal" data-bs-target="#myModal" title="Add to Cart" onclick="quickView(@wVM.ProductId)">Thêm Vào Giỏ Hàng</a></td>
 										<td class="product-remove">
 											<a onclick="confirmDelete(@wVM.ProductId)">
-												<i class="icofont-delete-alt" aria-hidden="true"></i>
+												<i class="icofont-delete-alt" style="cursor:pointer" aria-hidden="true"></i>
 											</a>
 										</td>
 									</tr>

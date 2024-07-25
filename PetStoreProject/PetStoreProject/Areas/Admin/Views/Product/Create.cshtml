@@ -484,7 +484,7 @@
 
             var price = $('#price').val()
 
-            var quantity = $('#quantity').val()
+            var quantity = $('#quantity').val().trim();
 
             if(name == ''){
                 isValid = false
@@ -750,7 +750,7 @@
 
                         var Price = op.find('.priceData').attr('value');
 
-                        var quantity = op.find('.quantityData').attr('value')
+                        var quantity = op.find('.quantityData').attr('value').trim();
 
                         var option = {
                             Image: Image,

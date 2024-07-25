@@ -50,27 +50,41 @@ namespace PetStoreProject.Repositories.Checkout
                     };
 
                     if (checkoutInfo.ConsigneeAddressDetail != null) order.ShipAddress += ", " + checkoutInfo.ConsigneeAddressDetail;
-                    
+
 
                     if (customerId.HasValue) order.CustomerId = customerId;
-                   
 
-                    if(checkoutInfo.OrderEmail != null || email != null) order.Email = email;
-                    
+
+                    if (checkoutInfo.OrderEmail != null)
+                    {
+                        order.Email = checkoutInfo.OrderEmail;
+                    }else if(email != null)
+                    {
+                        order.Email = email;
+                    }
+
                     _order.AddOrder(order);
 
                     foreach (var item in checkoutInfo.OrderItems)
                     {
                         var productOptionId = item.ProductOptionId;
-                        
+
                         var quantityInStock = _productOption.QuantityOfProductOption(productOptionId);
-                        var productId = _context.ProductOptions.Where(p => p.ProductOptionId == productOptionId).FirstOrDefault().ProductId;
-                        var product = _context.Products.Where(p => p.ProductId == productId).FirstOrDefault();
-                        if(quantityInStock < item.Quantity)
+                        if (quantityInStock - item.Quantity == 0)
                         {
+                            _productOption.UpdateIsSoldOut(productOptionId, true);
+                        }
+
+                        if (quantityInStock < item.Quantity)
+                        {
+
+                            var productId = _context.ProductOptions.Where(p => p.ProductOptionId == productOptionId).FirstOrDefault().ProductId;
+                            var product = _context.Products.Where(p => p.ProductId == productId).FirstOrDefault();
+
                             await transaction.RollbackAsync();
                             return "Sản phẩm " + product.Name + " với lựa chọn của quý khách không đủ số lượng trong kho!";
-                        }else
+                        }
+                        else
                         {
                             Models.OrderItem orderItem = new Models.OrderItem()
                             {

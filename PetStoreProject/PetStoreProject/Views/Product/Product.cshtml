@@ -343,7 +343,7 @@
                                                             bool IsSoldOut = true;
                                                             foreach (var po in product.productOption)
                                                             {
-                                                                if (po.IsSoldOut == false)
+                                                                if (po.IsSoldOut == false || po.Quantity != 0)
                                                                 {
                                                                     IsSoldOut = false;
                                                                     break;
@@ -451,7 +451,7 @@
                                                     bool IsSoldOut = true;
                                                     foreach (var po in product.productOption)
                                                     {
-                                                        if (po.IsSoldOut == false)
+                                                        if (po.IsSoldOut == false || po.Quantity != 0)
                                                         {
                                                             IsSoldOut = false;
                                                             break;

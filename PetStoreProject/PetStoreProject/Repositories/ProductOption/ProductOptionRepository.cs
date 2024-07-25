@@ -58,6 +58,20 @@ namespace PetStoreProject.Repositories.ProductOption
             }
 
         }
+
+        public void UpdateIsSoldOut(int productOptionId, bool isSoldOut)
+        {
+            try
+            {
+                var productOption = _context.ProductOptions.Where(p => p.ProductOptionId == productOptionId).FirstOrDefault();
+                productOption.IsSoldOut = isSoldOut;
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                
+            }
+        }
     }
 
 }

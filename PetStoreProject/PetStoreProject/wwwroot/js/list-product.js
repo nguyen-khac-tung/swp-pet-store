@@ -205,7 +205,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, rangeInputMin
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         var isSoldOutAll = true;
                         for (var i = 0; i < items[index].productOption.length; i++) {
-                            if (items[index].productOption[i].isSoldOut == false) {
+                            if (items[index].productOption[i].isSoldOut == false || items[index].productOption[i].quantity != 0) {
                                 isSoldOutAll = false;
                                 break;
                             }
@@ -272,7 +272,7 @@ function loadData(url, pageSize, page, selectedBrands, selectSort, rangeInputMin
                     if (items[index].productOption && items[index].productOption.length > 0) {
                         var isSoldOutAll = true;
                         for (var i = 0; i < items[index].productOption.length; i++) {
-                            if (items[index].productOption[i].isSoldOut == false) {
+                            if (items[index].productOption[i].isSoldOut == false || items[index].productOption[i].quantity != 0) {
                                 isSoldOutAll = false;
                                 break;
                             }

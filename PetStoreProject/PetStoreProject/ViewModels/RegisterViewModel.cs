@@ -25,6 +25,6 @@ namespace PetStoreProject.ViewModels
         [DataType(DataType.Password)]
         public string? Password { get; set; } 
 
-        public string Address { get; set; }
+        //public string Address { get; set; }
     }
 }

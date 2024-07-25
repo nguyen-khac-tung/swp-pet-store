@@ -550,7 +550,6 @@
 			}
 
 		}
-		updatePriceAndImage(); // Uncomment this line if you have a function to update price and image
 		checkOutOfStock()
 		if (isStill) {
 			console.log('Con hang')
@@ -669,13 +668,13 @@
 			}
 			document.getElementById('large_image').setAttribute('src', img_url)
 			document.getElementById('large_image').setAttribute('data-zoom-image', img_url)
-			// document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
+			//document.getElementsByClassName('zoomWindow')[0].style.backgroundImage = `url(${img_url})`;
 			document.getElementById('price').innerText = price.toLocaleString('en-US')
 			total_price()
 			checkOutOfStock()
 		}
 
-		setTimeout(total_price, 100);
+		setTimeout(total_price, 300);
 
 		function total_price() {
 			var price = parseFloat(document.getElementById('price').innerText.replace(/,/g, ''));

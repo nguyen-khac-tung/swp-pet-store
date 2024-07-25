@@ -384,6 +384,8 @@ function quickView(productId) {
                     quickUpdatePriceAndImage(sizeId, attributeId, response.productOption)
                 }
 
+                console.log(quantityInStock)
+
                 $('#quick_quantityInStock').text(quantityInStock)
             }
             else {
@@ -485,7 +487,7 @@ function quickUpdatePriceAndImage(size_id, attribute_id, productOptions_json) {
     for (const element of productOptions_json) {
         if (element['attribute']['attributeId'] == attribute_id && element['size']['sizeId'] == size_id) {
             quick_price = element.price;
-            var quantityInStock = element.quantity;
+            let quantityInStock = element.quantity;
             if (discount != 0) {
                 document.getElementById('quick_price_discount').innerText = quick_price.toLocaleString('en-US') + ' VND';
                 quick_price = quick_price * (1 - discount / 100)

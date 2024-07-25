@@ -189,7 +189,7 @@
 					<!--Price-->
 					<div class="pro-thumb-price mt-20">
 						<span class="regular-price" id="price">
-							
+							0
 						</span>
 						<span class="regular-price">VND</span>
 						
@@ -236,7 +236,7 @@
 						}
 					</div>
 
-					<div style="margin-top: 10px; font-size: 15px;">Trong kho: <span id="quantityInStock"></span> sản phẩm</div>
+					<div style="margin-top: 10px; font-size: 15px;">Trong kho: <span id="quantityInStock">0</span> sản phẩm</div>
 					
 					<div class="details_action_wraper" style="margin-top:20px; display:flex;font-size: 15px; align-items:center">
 						Số lượng:
@@ -681,8 +681,10 @@
 			var quantity = document.getElementById('quantity').value
 			console.log(price, quantity)
 			var amount = price * quantity
-			document.getElementById("amount").innerText = amount.toLocaleString('en-US')
-			$('#amount').text(amount.toLocaleString('en-US'))
+			console.log(amount)
+			if (!isNaN(amount)){
+				$('#amount').text(amount.toLocaleString('en-US'))
+			}
 		}
 
 	</script>

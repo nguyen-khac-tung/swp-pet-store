@@ -552,7 +552,6 @@
 		}
 		checkOutOfStock()
 		if (isStill) {
-			console.log('Con hang')
 			var list_size = document.getElementById('size').querySelectorAll('li');
 			var list_attribute = document.getElementById('attribute').querySelectorAll('li');
 
@@ -581,7 +580,18 @@
 			$('#add_to_cart').addClass('out-of-stock');
 			$('#add_to_cart').html('Đã bán hết')
 			$('#quantity').attr('readonly', true)
-			checkOutOfStock();
+			var list_size = $('#size li')
+			var list_attribute = $('#attribute li')
+			if (list_size.length > 0) {
+				list_size.each(function () {
+					$(this).addClass('out-of-stock')
+				})
+            }
+            if (list_attribute.length > 0) {
+				list_attribute.each(function () {
+					$(this).addClass('out-of-stock')
+				})
+            }
 		}
 
 		function checkOutOfStock() {
@@ -589,6 +599,8 @@
 			var list_attribute = document.getElementById('attribute').querySelectorAll('li');
 			if (list_size.length > 0 && list_attribute.length > 0) {
 				for (var index = 0; index < productOptions.length; index++) {
+			console.log('Con hang')
+					console.log(productOptions[index].size.SizeId, productOptions[index].attribute.AttributeId)
 					if (productOptions[index].IsSoldOut) {
 						if (productOptions[index].attribute.AttributeId == attributeId) {
 							$('#size_' + productOptions[index].size.SizeId).addClass('out-of-stock')

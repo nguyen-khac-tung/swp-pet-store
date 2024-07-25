@@ -38,8 +38,8 @@ rangeInput.forEach(input => {
                 rangeInputMax = rangeInput[1].value;
             }
         } else {
-            priceInput[0].value = minVal;
-            priceInput[1].value = maxVal;
+            priceInput[0].value = formatVND(minVal);
+            priceInput[1].value = formatVND(maxVal);
             rangeInputMin = rangeInput[0].value;
             rangeInputMax = rangeInput[1].value;
             range.style.left = ((minVal / rangeInput[0].max) * 100) + "%";
@@ -47,6 +47,10 @@ rangeInput.forEach(input => {
         }
     });
 });
+
+function format(amount) {
+    return amount.toLocaleString('en-US', { minimumFractionDigits: 0 });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("filter_button").addEventListener('click', function () {
@@ -106,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 
-        loadData(url, pageSize, 1, selectedBrands, selectSort, priceInput[0].value, priceInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
+        loadData(url, pageSize, 1, selectedBrands, selectSort, rangeInput[0].value, rangeInput[1].value, selectedColors, selectedSizes, selectedStatus, selectedPromotion);
     });
 
     document.querySelector("#clear_button").addEventListener('click', function () {

@@ -1,4 +1,4 @@
-﻿using PetStoreProject.Areas.Admin.ViewModels;
+﻿using AdminVM = PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
@@ -25,22 +25,22 @@ namespace PetStoreProject.Repositories.Product
         public List<HomeProductViewModel> GetProductsOfHome(int cateId, int? productCateId);
         public HomeProductViewModel GetImageAndPriceOfHomeProduct(HomeProductViewModel product);
 
-        public Task<ListProductForAdmin> productViewForAdmins(int pageNumber, int pageSize, int? categoryId,
+        public Task<AdminVM.ListProductForAdmin> productViewForAdmins(int pageNumber, int pageSize, int? categoryId,
             int? productCateId, string? key);
 
-        public int GetTotalProducts(List<ProductViewForAdmin> products);
+        public int GetTotalProducts(List<AdminVM.ProductViewForAdmin> products);
 
-        public Task<string> CreateProduct(ProductCreateRequestViewModel productCreateRequest);
+        public Task<string> CreateProduct(AdminVM.ProductCreateRequestViewModel productCreateRequest);
 
-        public ProductDetailForAdmin GetProductDetailForAdmin(int productId);
+        public AdminVM.ProductDetailForAdmin GetProductDetailForAdmin(int productId);
 
-        public Task<string> UpdateProduct(ProductDetailForAdmin productUpdateRequest);
+        public Task<string> UpdateProduct(AdminVM.ProductDetailForAdmin productUpdateRequest);
 
         public void DeleteProduct(int productId);
 
-        public List<ProductDetailViewModel> GetProductDetail(List<int> cateId, int productCateId);
+        public Task<List<ProductDetailViewModel>> GetProductDetail(List<int> cateId, int productCateId);
 
-        public List<ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate);
+        public List<AdminVM.ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate);
 
         public List<float> GetProductSaleOfMonth(int month, int year);
     }

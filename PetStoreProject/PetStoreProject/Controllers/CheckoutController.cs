@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Cart;
+using PetStoreProject.Repositories.Checkout;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.Order;
@@ -20,9 +21,10 @@ namespace PetStoreProject.Controllers
         private readonly IOrderItemRepository _orderItem;
         private readonly IDiscountRepository _discount;
         private readonly PetStoreDBContext _context;
+        private readonly ICheckoutRepository _checkout;
 
         public CheckoutController(ICustomerRepository customer, IConfiguration configuration,
-            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context)
+            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context, ICheckoutRepository checkout)
         {
             _customer = customer;
             _configuration = configuration;
@@ -31,6 +33,7 @@ namespace PetStoreProject.Controllers
             _orderItem = orderItem;
             _discount = discount;
             _context = context;
+            _checkout = checkout;
         }
 
         [HttpPost]
@@ -75,7 +78,7 @@ namespace PetStoreProject.Controllers
             }
 
             var total_amount = 0.0;
-            if(selectedProductCheckout != null)
+            if (selectedProductCheckout != null)
             {
                 foreach (var item in selectedProductCheckout)
                 {
@@ -94,11 +97,12 @@ namespace PetStoreProject.Controllers
                 var discounts = _discount.GetDiscounts(total_amount, email);
                 ViewData["Discounts"] = discounts;
                 return View(selectedProductCheckout);
-            }else
+            }
+            else
             {
                 return View(null);
             }
-            
+
         }
 
         [HttpPost]
@@ -112,37 +116,21 @@ namespace PetStoreProject.Controllers
 
             var priceReduce = 0;
             var discountId = checkout.DiscountId;
-            if(discountId != null && discountId != 0)
+            if (discountId != null && discountId != 0)
             {
                 priceReduce = (int)_discount.GetDiscountPrice(checkout.TotalAmount, (int)discountId);
-                if(priceReduce > 0)
+                if (priceReduce > 0)
                 {
                     amount -= priceReduce;
                 }
             }
-
-            if(checkout.PaymentMethod.Equals("VNPay"))
+            return Json(new
             {
-                return Json(new
-                {
-                    UrlTransfer = "CreatePayment",
-                    OrderId = orderId,
-                    Amount = amount,
-                });
-            }else
-            {
-                return Json(new
-                {
-                    UrlTransfer = "ProcessCashOnDelivery",
-                    OrderId = orderId,
-                    Amount = amount,
-                });
-            }
-
+                UrlTransfer = "CreatePayment",
+                OrderId = orderId,
+                Amount = amount,
+            });
         }
-
-        
-
 
         public IActionResult CreatePayment(string orderId, int amount)
         {
@@ -215,7 +203,7 @@ namespace PetStoreProject.Controllers
             };
         }
 
-        public IActionResult PaymentCallBack()
+        public async Task<IActionResult> PaymentCallBack()
         {
             var response = PaymentExcute(Request.Query);
 
@@ -241,54 +229,22 @@ namespace PetStoreProject.Controllers
                 checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
             }
 
-            Order order = new Order()
-            {
-                OrderId = checkoutInfo.OrderId,
-                FullName = checkoutInfo.OrderName,
-                CustomerId = null,
-                Email = null,
-                Phone = checkoutInfo.OrderPhone,
-                TotalAmount = checkoutInfo.TotalAmount,
-                OrderDate = DateTime.Now,
-                ConsigneeFullName = checkoutInfo.ConsigneeName,
-                ConsigneePhone = checkoutInfo.ConsigneePhone,
-                PaymetMethod = checkoutInfo.PaymentMethod,
-                ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", "
-                                + checkoutInfo.ConsigneeWard,
-                DiscountId = checkoutInfo.DiscountId,
-            };
-
-            if(checkoutInfo.ConsigneeAddressDetail != null)
-            {
-                order.ShipAddress += ", " + checkoutInfo.ConsigneeAddressDetail;
-            }
-
             //Xóa phần tử trong database || cookie
             var email = HttpContext.Session.GetString("userEmail");
             var customerID = _customer.GetCustomerId(email);
 
             List<int> productOptionId = new List<int>();
             productOptionId = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(CheckoutCookie);
+
             if (email != null)
             {
-                //Thêm order
-                order.CustomerId = customerID;
-                order.Email = email;
-
-                _order.AddOrder(order);
-
-                foreach (var item in checkoutInfo.OrderItems)
+                //Thêm order, orderItem
+                var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, customerID, email);
+                if(!resultCheckout.Equals("Thanh toán thành công"))
                 {
-                    OrderItem orderItem = new OrderItem()
-                    {
-                        OrderId = checkoutInfo.OrderId,
-                        ProductOptionId = item.ProductOptionId,
-                        Quantity = item.Quantity,
-                        Price = item.Price,
-                        PromotionId = item.PromotionId,
-                    };
-
-                    _orderItem.AddOrderItem(orderItem);
+                    TempData["Status"] = $"Thanh toán thất bại";
+                    TempData["Message"] = resultCheckout;
+                    return RedirectToAction("NotificationPayment");
                 }
 
                 //Xóa cart
@@ -303,22 +259,13 @@ namespace PetStoreProject.Controllers
             }
             else
             {
-                //Them order
-                order.Email = checkoutInfo.OrderEmail;
-
-                _order.AddOrder(order);
-
-                foreach (var item in checkoutInfo.OrderItems)
+                //Thêm order, orderItem
+                var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, null, null);
+                if (!resultCheckout.Equals("Thanh toán thành công"))
                 {
-                    OrderItem orderItem = new OrderItem()
-                    {
-                        OrderId = checkoutInfo.OrderId,
-                        ProductOptionId = item.ProductOptionId,
-                        Quantity = item.Quantity,
-                        Price = item.Price,
-                        PromotionId = item.PromotionId,
-                    };
-                    _orderItem.AddOrderItem(orderItem);
+                    TempData["Status"] = $"Thanh toán thất bại";
+                    TempData["Message"] = resultCheckout;
+                    return RedirectToAction("NotificationPayment");
                 }
 
                 //Xoa cart
@@ -353,7 +300,7 @@ namespace PetStoreProject.Controllers
                     }
 
                 }
-                
+
             }
             var discountId = checkoutInfo.DiscountId;
             if (discountId != null && discountId != 0)

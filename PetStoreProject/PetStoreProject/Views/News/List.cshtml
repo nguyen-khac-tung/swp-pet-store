@@ -95,13 +95,13 @@
 	<div class="blog-area adp_top adp_bottom">
 		<div class="container">
 			<div class="row justify-content-center">
-				<div class="col-xl-12 col-lg-10">
+				<div class="col-xl-12 col-lg-10 mb-0">
 					<div class="row">
 						@foreach (var news in Model)
 						{
-							<div class="col-lg-3 col-md-3">
-								<div class="single-animart-blog">
-									<div class="blog-img" style="height: 250px;">
+							<div class="col-lg-4 col-md-6 mb-0">
+								<div class="single-animart-blog" style="display: flex; flex-direction: column; justify-content: space-between; height: 90%; border: 1px solid #ddd; padding: 15px; box-sizing: border-box;">
+									<div class="blog-img">
 										<a href="/News/Detail?newsId=@news.NewsId">
 											<img src="@news.url_thumnail" alt="blog-img">
 										</a>
@@ -109,15 +109,15 @@
 											<span>@news.DateOnly</span>
 										</div>
 									</div>
-									<div class="grid-blog-content">
+									<div class="grid-blog-content" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
 										<h4>
 											<a href="/News/Detail?newsId=@news.NewsId">@news.Title</a>
 										</h4>
-										<ul class="blog-post-meta">
+										<ul class="blog-post-meta" style="flex-shrink: 0;">
 											<li>Người Đăng: Animart</li>
 										</ul>
-										<p>@news.Description</p>
-										<div class="blog-btn">
+										<p style="flex-grow: 1;">@news.Description</p>
+										<div class="blog-btn" style="display: flex; justify-content: center; margin-top: auto;">
 											<a href="/News/Detail?newsId=@news.NewsId">Đọc thêm</a>
 										</div>
 									</div>

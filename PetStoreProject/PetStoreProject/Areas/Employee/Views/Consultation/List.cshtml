@@ -152,7 +152,7 @@
                         </ul>
                     </li>
                     <li>
-                        <div class="body-title">Hành động</div>
+                        <div class="body-title">Thao tác</div>
                     </li>
                 </ul>
                 <ul class="flex flex-column" id="list-consultation">
@@ -202,12 +202,12 @@
 <!-- Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title mb-10" id="staticBackdropLabel">Yêu cầu từ khách hàng</h5>
+        <div class="modal-content" style="border-radius:12px">
+            <div class="modal-header mb-20 pt-5 px-5">
+                <h5 class="modal-title" id="staticBackdropLabel">Yêu cầu từ khách hàng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pb-4">
                 <div class="form-add-product">
                     <div class="wg-box" style="gap: 0px">
                         <input type="hidden" id="consultationId"></input>
@@ -227,15 +227,17 @@
                         </fieldset>
                         <fieldset class="name">
                             <label class="body-title mb-10">Trả lời<span class="tf-color-1">*</span></label>
-                            <input type="text" class="mb-10" placeholder="Nhập câu trả lời" id="message">
+                            <textarea type="text" class="mb-10" placeholder="Nhập câu trả lời" id="message" style="height:100px"></textarea>
                             <span class="text-danger" id="error-message"></span>
                         </fieldset>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
-                <button type="button" class="btn btn-primary" onclick="reply()">Gửi</button>
+            <div class="modal-footer pt-3 pb-4 px-5 border-0">
+                <button style="padding: 5px 15px; font-size: 14px;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Thoát
+                </button>
+                <button style="padding: 5px 15px; font-size: 14px;" type="button" class="btn btn-primary" onclick="reply()">Gửi</button>
             </div>
         </div>
     </div>

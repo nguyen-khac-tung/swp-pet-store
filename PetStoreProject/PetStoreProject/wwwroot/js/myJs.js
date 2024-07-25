@@ -392,11 +392,23 @@ function quickView(productId) {
                 let divSoldOut = $('<div>', {
                     class: 'overlay'
                 }).text('Hết hàng')
+                console.log("Het hang")
                 imgDiv.append(divSoldOut);
                 imgElement.addClass('out-of-stock');
                 $('#quick_add_to_cart').addClass('out-of-stock');
                 $('#quick_add_to_cart').html('Đã bán hết');
-                quickCheckOutOfStock(sizeId, attributeId, response.productOption);
+                let list_size = $('#quick_size li')
+                let list_attribute = $('#quick_attribute li')
+                if (list_size.length > 0) {
+                    list_size.each(function () {
+                        $(this).addClass('out-of-stock')
+                    })
+                }
+                if (list_attribute.length > 0) {
+                    list_attribute.each(function () {
+                        $(this).addClass('out-of-stock')
+                    })
+                }
                 $('#quick_quantity').attr('readonly', true);
             }
             document.getElementById('quick_quantity').value = 1

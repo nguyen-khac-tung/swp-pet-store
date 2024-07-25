@@ -4,6 +4,9 @@
 	ViewData["Title"] = "Danh Sách Yêu Thích";
 }
 
+
+<link href="~/css/search.css" rel="stylesheet" />
+
 <!-- Wish List Start -->
 @if(Model.Count != 0)
 {
@@ -112,11 +115,6 @@
                                             <span class="regular-price">VND</span>
                                         </div>
 
-                                        @* 										<!--Detail-->
-                                    <div class="pro-desc-details">
-                                    Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud ullamco. Enim ad minim venialo quis nostrud ullamco.
-                                    </div> *@
-
                                         <!--Option-->
                                         <div class="thubnail-desc" id="quick_option">
 
@@ -129,13 +127,15 @@
                                             </div>
                                         </div>
 
-                                        <div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+                                        <div style="margin-top: 10px; font-size: 15px;">Trong kho: <span id="quick_quantityInStock"></span> sản phẩm</div>
+
+                                        <div class="details_action_wraper" style="margin-top: 10px; font-size: 15px; display:flex; align-items:center">
                                             Số lượng:
                                             <form action="#" onclick="quick_total_price()" style="border-radius: 10px">
                                                 <input class="quantity" type="number" min="1" max="10" value="1" id="quick_quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
                                             </form>
                                         </div>
-                                        <div>
+                                        <div style="margin-top: 10px; font-size: 16px;">
                                             Tổng số tiền: <span id="quick_amount"></span>
                                             <span>VND</span>
                                         </div>
@@ -162,11 +162,10 @@
         </div>
     </div>
 	<!-- Wish List End -->
-	@Html.Partial("_QuickView")
 	<script>
 		function confirmDelete(productId) {
 			console.log("Confirm delete for product ID:", productId);
-			var confirmation = confirm("Bạn có chắc chắn muốn xóa sản phẩm không?");
+			var confirmation = confirm("Bạn có chắc chắn muốn xóa khỏi danh sách yêu thích không?");
 			if (confirmation) {
 				deleteProduct(productId);
 			}
@@ -181,8 +180,11 @@
 } else
 {
     <div class="container-wishlist">
-        <h1>Bạn hiện chưa có sản phẩm yêu thích nào</h1>
-        <img src="~/img/cart-empty-img.8b677cb3.png" alt="Empty Cart Image">
+        <img src="~/img/order-service-empty.png" style="margin:-40px; width:377px; height:auto" />
+        <div class="message-box">
+            <h1 class="mt-0 mb-3">Bạn hiện chưa có sản phẩm yêu thích nào</h1>
+            <a asp-action="Index" asp-controller="Home" class="btn">Quay lại trang chủ</a>
+        </div>
     </div>
 
     <style>

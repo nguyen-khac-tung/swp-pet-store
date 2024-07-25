@@ -4659,7 +4659,7 @@ ul.promotion-list {
 }
 
     .group-title h2 {
-        font-size: 18px;
+        font-size: 24px;
     }
 
 .rating_wrap {
@@ -6129,7 +6129,6 @@ label em {
 .contact-form input {
     font-size: 14px;
     height: 46px;
-    margin-bottom: 20px;
     max-width: 100%;
     border: 1px solid #ebebeb;
     background: #ebebeb;

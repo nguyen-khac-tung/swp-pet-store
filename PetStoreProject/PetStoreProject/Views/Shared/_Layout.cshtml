@@ -248,8 +248,8 @@
                                     <!-- Home Version Dropdown End -->
                                 </li>
                                 <li><a asp-action="list" asp-controller="news">Tin tức</a></li>
-                                <li><a href="about.html">Giới Thiệu</a></li>
-                                <li><a href="/Consultation/Create">Tư vấn</a></li>
+                                <li><a asp-action="Index" asp-controller="AboutUs">Giới Thiệu</a></li>
+                                <li><a asp-action="Create" asp-controller="Consultation">Tư vấn</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -553,36 +553,6 @@
                     </div>
                     <!-- Footer Middle End -->
                 </div>
-                <!-- Footer Bottom Start -->
-                <div class="footer-bottom ">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-md-4">
-                                <div class="footer-copyright ">
-                                    <p>Copyright @@ <a href="#">Animart </a> All Rights Reserved</p>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="footer-bottom-right text-center">
-                                    <ul class="footer-social-icon ">
-                                        <li><a href="#"><i class="icofont-facebook"></i></a></li>
-                                        <li><a href="#"><i class="icofont-brand-youtube"></i></a></li>
-                                        <li><a href="#"><i class="icofont-google-plus"></i></a></li>
-                                        <li><a href="#"><i class="icofont-linkedin"></i></a></li>
-                                        <li><a href="#"><i class="icofont-twitter"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="support_pay text-end">
-                                    <a href="#"><img src="~/img/icons/payments.png" alt="Payments"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Footer Bottom End -->
             </div>
         </footer>
         <!-- Footer Area End Here -->

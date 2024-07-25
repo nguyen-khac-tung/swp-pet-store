@@ -265,53 +265,6 @@
                         <button class="btn btn-light" id="clear_button">Xóa bộ lọc</button>
                     </div>
                     <!-- Product Color End -->
-                    <!-- Popular Product Start -->
-                    @* <div class="polular_products single_sidebar">
-                    <div class="product-widget-chunk-wrapper">
-                    <h3 class="sidebar-title">Sản phẩm phổ biến</h3>
-
-                    <!--=======  widget product list wrapper  =======-->
-                    <div class="small-list-wrapper">
-
-                    <!--=======  single widget product  =======-->
-                    <div class="small-list-product">
-                    <div class="small-list-inner">
-                    <div class="small-list-img">
-                    <a href="single-product.html">
-                    <img src="img/products/p1.jpg" class="img-fluid" alt="">
-                    </a>
-                    </div>
-                    <div class="small-list-content">
-                    <h3 class="small-list-title"> <a href="single-product.html">Small Product Title Here</a></h3>
-                    <p class="small-list-price">
-                    <span class="regular-price">$150.00</span>
-                    <span class="dis-price">$250.00</span>
-                    </p>
-
-                    <div class="product-rating">
-                    <i class="icofont-ui-rating"></i>
-                    <i class="icofont-ui-rating"></i>
-                    <i class="icofont-ui-rating"></i>
-                    <i class="icofont-ui-rate-blank"></i>
-                    <i class="icofont-ui-rate-blank"></i>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    <!--=======  End of single widget product  =======-->
-
-                    <!--=======  End of widget product list wrapper  =======-->
-                    </div>
-                    <!--=======  End of product widget chunk wrapper  =======-->
-                    </div>
-                    </div> *@
-                    <!-- Popular Product End -->
-                    <!-- sidebar bannaer start -->
-                    <div class="single-banner single_sidebar">
-                        <a href="#">
-                            <img src="~/img/banner/banner_6.png" alt="Banner Image">
-                        </a>
-                    </div>
                     <!-- sidebar bannaer end -->
 
                 </div>
@@ -423,7 +376,7 @@
                                                 <!-- Product Content Start -->
                                                 <div class="product_content_wrap">
                                                     <div class="product_content">
-                                                        <h4><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
+                                                        <h4 style="height: 40px"><a href="/product/detail/@product.ProductId">@product.Name</a></h4>
 
                                                         <div class="grid_price">
                                                             @if (product.productOption != null && product.productOption.Count > 0)
@@ -527,7 +480,7 @@
                                         <!-- Product Content Start -->
                                         <div class="product_content_wrap">
                                             <div class="product_content">
-                                                <h4><a href="product-details.html">@product.Name</a></h4>
+                                                <h4 style="height: 33px"><a href="product-details.html">@product.Name</a></h4>
                                                 <div class="scrollable-description">
                                                     <p class="list_des">@Html.Raw(product.Description)</p>
                                                 </div>

@@ -145,12 +145,6 @@
 
 							<img class="zoompro @isOutOfStock" id="large_image" src="@product.productOption[0].img_url" data-zoom-image="@product.productOption[0].img_url" alt="" />
 
-							@* <div class="product-video">
-							<a class="video-popup" href="https://www.youtube.com/watch?v=pTrC_McU62Q">
-							<i class="icofont-video-alt"></i>
-							Explore Video
-							</a>
-							</div> *@
 						</div>
 						@if(product.Promotion.Value != null)
 						{
@@ -241,15 +235,17 @@
 							</div>
 						}
 					</div>
-					<div>Trong kho: <span id="quantityInStock"></span> sản phẩm</div>
-					<div class="details_action_wraper" style="margin-top:10px; margin-bottom:10px; display:flex; align-items:center">
+
+					<div style="margin-top: 10px; font-size: 15px;">Trong kho: <span id="quantityInStock"></span> sản phẩm</div>
+					
+					<div class="details_action_wraper" style="margin-top:20px; display:flex;font-size: 15px; align-items:center">
 						Số lượng:
 						<form action="#" onclick="total_price()" style="border-radius: 10px">
 							<input class="quantity" type="number" min="1" max="10" value="1" id="quantity" style="width:60px;height:33px; margin-left:10px" oninput="validateQuantity(this)">
 						</form>
 					</div>
 
-					<div>
+					<div style="margin-top: 10px; font-size: 16px;">
 						Tổng số tiền: <span id="amount"></span>
 						<span>VND</span>
 					</div>
@@ -338,7 +334,7 @@
 										<textarea id="Content" name="Content" class="form-control" rows="5"></textarea>
 										<span id="ContentError" class="text-danger"></span>
 									</div>
-									<button type="submit" class="btn btn-primary" onclick="checkFormAndSubmit(event, @product.ProductId)">Gửi đánh giá</button>
+									<button type="submit" class="btn btn-primary mt-3" onclick="checkFormAndSubmit(event, @product.ProductId)">Gửi đánh giá</button>
 								</form>
 
 								<!-- Reviews Field Start -->

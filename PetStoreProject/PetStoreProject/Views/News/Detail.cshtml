@@ -1,7 +1,7 @@
 ﻿@model PetStoreProject.ViewModels.NewsViewModel
 
 @{
-    ViewData["Title"] = "News Detail";
+    ViewData["Title"] = "Tin Tức";
 }
 
 
@@ -30,7 +30,7 @@
                     <div class="blog-details">
                         <div class="single-animart-blog">
                             <div class="blog-img">
-                                <a href="blog-details.html">
+                                <a>
                                     <img class="full-img img-fluid" src="@Model.url_thumnail" alt="blog-details">
                                 </a>
                                 <div class="publish-meta-date">
@@ -42,67 +42,16 @@
                         <div class="text-top-side mt-4">
                             <h3 class="blog-dtl-header portfolio-header">@Model.Title</h3>
                             <ul class="meta-box meta-blog d-flex">
-                                <li><i class="fa fa-user" aria-hidden="true"></i>By: Animart</li>
+                                <li><i class="fa fa-user" aria-hidden="true"></i>Người Đăng: Animart</li>
                             </ul>
                         </div>
                         <p class="card-text">@Html.Raw(Model.Content)</p>
-                        <p><b>Tag:</b> @Model.tagName </p>
+                        <p><b>Thẻ:</b> @Model.tagName </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="thumnail-desc" style="margin-bottom: 30px">
-        <div class="container">
-            <div class="thumb-desc-inner">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <ul class="main-thumb-desc nav tabs-area" role="tablist">
-                            <li><a class="active" data-bs-toggle="tab" href="#review">Bình luận</a></li>
-                        </ul>
-                        <!-- Product Thumbnail Tab Content Start -->
-                        <div class="tab-content thumb-content">
-                            <div id="review" class="tab-pane fade show active">
-                                <!-- Reviews Start -->
-                                <div class="review">
-                                    <div class="group-title">
-                                        <h2>Để Lại Bình Luận</h2>
-                                    </div>
-
-                                    <div class="review-field">
-                                        <form autocomplete="off" action="#">
-                                            <div class="form-group">
-                                                <label class="req" for="sure-name">Tên</label>
-                                                <input type="text" class="form-control" id="sure-name" required="required">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="req" for="subject">Số điện thoại</label>
-                                                <input type="text" class="form-control" id="subject" required="required">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="req" for="subject">Email</label>
-                                                <input type="email" class="form-control" id="subject">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="req" for="comments">Phản hồi của bạn </label>
-                                                <textarea class="form-control" rows="5" id="comments" required="required"></textarea>
-                                            </div>
-                                            <button type="submit" class="customer-btn">Gửi</button>
-                                        </form>
-                                    </div>
-                                    <!-- Reviews Field Start -->
-                                </div>
-                                <!-- Reviews End -->
-                            </div>
-                        </div>
-                        <!-- Product Thumbnail Tab Content End -->
-                    </div>
-                </div>
-                <!-- Row End -->
-            </div>
-        </div>
-        <!-- Container End -->
-    </div>
 </body>
 </html>

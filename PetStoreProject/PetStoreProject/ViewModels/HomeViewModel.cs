@@ -12,5 +12,6 @@
         public List<HomeProductViewModel> DogAccessoriesDisplayed { get; set; }
         public List<HomeProductViewModel> CatAccessoriesDisplayed { get; set; }
         public List<ServiceViewModel> ServicesDisplayed { get; set; }
+        public List<NewsViewModel> NewsDisplayed { get; set; }
     }
 }

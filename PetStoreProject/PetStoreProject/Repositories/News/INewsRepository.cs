@@ -10,6 +10,7 @@ namespace PetStoreProject.Repositories.News
 
         public List<NewsViewModel> GetListNewsForEmployee();
 
+        public List<NewsViewModel> GetListNewsForHomePage();
         public bool UpdateNewsStatus(int newsId);
     }
 }

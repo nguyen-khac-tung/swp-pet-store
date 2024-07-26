@@ -210,7 +210,7 @@
             <div class="modal-body pb-4">
                 <div class="form-add-product">
                     <div class="wg-box" style="gap: 0px">
-                        <input type="hidden" id="consultationId"></input>
+                        <input type="hidden" id="consultationId" />
                         <div class="flex gap14">
                             <fieldset class="name">
                                 <label class="body-title mb-10">Tên khách hàng</label>
@@ -254,17 +254,19 @@
                 success: function (response) {
                     console.log(response)
                     $('#staticBackdropLabel').text(response.title);
-                    $('#name').val(response.name)
-                    $('#phone').val(response.phone)
-                    $('#content').val(response.content)
-                    $('#consultationId').val(response.id)
+                    $('#name').val(response.name);
+                    $('#phone').val(response.phone);
+                    $('#content').val(response.content);
+                    $('#consultationId').val(response.id);
+                    $('#message').val('');
+                    $('#message').attr('readonly', false);
                 }
             })
         }
 
         function reply(){
             var message = $('#message').val().trim();
-            if(message == ''){
+            if(message === ''){
                 $('#error-message').text('Câu trả lời không được để trống.')
             }
             else{
@@ -302,7 +304,7 @@
                     $('#phone').val(response.phone)
                     $('#content').val(response.content)
                     $('#consultationId').val(response.id)
-                    if (response.response == null){
+                    if (response.response === null){
                         $('#message').val('')
                     }
                     else{
@@ -312,6 +314,7 @@
                 }
             })
         }
+
         let productCateName = true;
 
         function orderStatus(str) {

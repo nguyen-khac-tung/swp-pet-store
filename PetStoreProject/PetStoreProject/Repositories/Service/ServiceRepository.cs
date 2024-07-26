@@ -852,7 +852,7 @@ namespace PetStoreProject.Repositories.Service
                                    ServiceId = g.Key,
                                    UsedQuantity = g.Count(),
                                    TotalSale = g.Sum(s => s.Price) ?? 0
-                               }).OrderByDescending(s => s.TotalSale).ToList();
+                               }).OrderByDescending(s => s.UsedQuantity).ToList();
 
             foreach (var item in listService)
             {

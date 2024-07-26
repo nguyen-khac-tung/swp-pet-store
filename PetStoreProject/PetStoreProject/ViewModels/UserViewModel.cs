@@ -1,5 +1,5 @@
 ﻿using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-using PetStoreProject.Validation;
+using PetStoreProject.Helpers;
 using System.ComponentModel.DataAnnotations;
 
 namespace PetStoreProject.ViewModels

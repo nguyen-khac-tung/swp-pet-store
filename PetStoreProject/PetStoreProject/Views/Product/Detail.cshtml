@@ -550,6 +550,7 @@
 			}
 
 		}
+		console.log(sizeId, attributeId)
 		checkOutOfStock()
 		if (isStill) {
 			var list_size = document.getElementById('size').querySelectorAll('li');
@@ -572,9 +573,7 @@
 					console.warn('Attribute element not found: attribute_' + attributeId);
 				}
 			}
-			if (list_attribute.length > 0 || list_size.length > 0) {
-				updatePriceAndImage()
-			}
+			updatePriceAndImage()
 		}
 		else {
 			$('#add_to_cart').addClass('out-of-stock');

@@ -63,7 +63,8 @@ namespace PetStoreProject.Repositories.Product
 							   Brand = b.Name,
 							   BrandId = b.BrandId,
 							   Description = p.Description,
-							   ProductCateId = pc.ProductCateId
+							   ProductCateId = pc.ProductCateId,
+							   ProductId = productId
 						   }).FirstOrDefault();
 			var images = (from po in _context.ProductOptions
 						  join i in _context.Images on po.ImageId equals i.ImageId

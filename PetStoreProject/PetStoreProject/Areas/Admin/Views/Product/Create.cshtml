@@ -368,10 +368,10 @@
             menubar: false,
             setup: function (editor) {
                 editor.on('change', function () {
-                    $("#Description").val(editor.getContent());
+                    description = editor.getContent();
                 });
                 editor.on('input', function () {
-                    $("#Description").val(editor.getContent());
+                    description = editor.getContent();
                 });
             }
         });

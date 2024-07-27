@@ -333,7 +333,7 @@
                 });
             }
         });
-    var regex = /^[0-9\W]+$/;
+    var regex = /^\d+$/;
     var numberRegex = /^-?\d+(\.\d+)?$/;
     var description = `@Html.Raw(product.Description)`
     var isUploadFile = true
@@ -1017,7 +1017,7 @@
         else {
             if (regex.test(quantity)) {
                 var q = parseInt(quantity);
-                if (q < 1) {
+                if (q < 0) {
                     $('#error-quantity').text('Số lượng sản phẩm không được nhỏ hơn 1');
                     isValid = false
                 }

@@ -1,3 +1,4 @@
+using Quartz;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
@@ -117,13 +118,27 @@ builder.Services.AddTransient<IConsultationRepository, ConsultationRepository>()
 
 builder.Services.AddTransient<ICheckoutRepository, CheckoutRepository>();
 
+builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
+
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
         builder.Configuration.GetSection("Cloudinary:CloudName").Value,
         builder.Configuration.GetSection("Cloudinary:ApiKey").Value,
         builder.Configuration.GetSection("Cloudinary:ApiSecret").Value
     )));
 
-builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+
+    var jobKey = new JobKey("OrderServiceJob");
+    q.AddJob<ServiceRepository>(opts => opts.WithIdentity(jobKey));
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("OrderServiceJob-trigger")
+        .WithSimpleSchedule(x => x.WithIntervalInSeconds(30).RepeatForever()));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddControllersWithViews();
 

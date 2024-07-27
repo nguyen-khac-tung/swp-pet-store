@@ -48,9 +48,21 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             ViewData["ListServiceId"] = _service.GetAllServiceId();
             ViewData["ServiceDetail"] = _service.GetServiceDetail(serviceId);
-            ViewData["FirstServiceOption"] = _service.GetFistServiceOption(serviceId);
+            ViewData["FirstServiceOption"] = _service.GetFistServiceOptionOfAdmin(serviceId);
             ViewData["ListServiceOption"] = _service.GetServiceOptions(serviceId);
             return View();
+        }
+
+        [HttpPost]
+        public ServiceOptionViewModel GetOptionViewModel(int serviceId, string petType)
+        {
+            return _service.GetFirstServiceAndListWeightOfPetTypeOfAdmin(serviceId, petType);
+        }
+
+        [HttpPost]
+        public ServiceOptionViewModel GetServiceOptionPrice(int serviceId, string petType, string weight)
+        {
+            return _service.GetNewServiceOptionBySelectWeight(serviceId, petType, weight);
         }
 
         [HttpGet]

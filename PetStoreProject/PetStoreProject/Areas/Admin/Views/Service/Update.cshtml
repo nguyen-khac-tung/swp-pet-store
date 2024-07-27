@@ -190,7 +190,7 @@
                                 <div style="width: 15%" class="body-text">@so.UsedQuantity đã thanh toán</div>
                                 <div style="width: 15%" class="body-text column-status @((so.IsDelete) ? "block-not-available" : "block-available")">@((so.IsDelete) ? "Ngừng kinh doanh" : "Còn kinh doanh")</div>
                                 <div style="width: 4%" class="body-text">
-                                    <a class="item edit cursor-pointer" onclick='updateServicOption(@Html.Raw(Json.Serialize(so)))'>
+                                    <a class="item edit cursor-pointer" onclick='updateServicOption(@so.ServiceOptionId)'>
                                         <i class="icon-edit-3"></i>
                                     </a>
                                 </div>
@@ -319,8 +319,6 @@
             }));
 
             service.serviceOptions = listUpdateServiceOption;
-            console.log("update: ", listUpdateServiceOption);
-            console.log("service: ", service.serviceOptions);
         }
 
         /* Service Options */
@@ -379,13 +377,14 @@
             service.serviceOptions = listUpdateServiceOption.concat(listAddServiceOption);
         }
 
-        function updateServicOption(option) {
-            console.log(option);
+        function updateServicOption(serviceOptionId) {
+            console.log(serviceOptionId);
+            let option = listUpdateServiceOption.find(op => op.serviceOptionId === serviceOptionId);
             $("#pet-type").val(option.petType);
             $("#pet-weight").val(option.weight);
             $("#price").val(option.price);
             $(".option-status").removeClass("hide");
-            if (option.isDelete) {
+            if (option.isDelete === 'true' || option.isDelete === true) {
                 $("#service-option-true").prop("checked", true);
             } else {
                 $("#service-option-false").prop("checked", true);

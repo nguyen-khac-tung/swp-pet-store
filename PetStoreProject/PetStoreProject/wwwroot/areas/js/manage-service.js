@@ -293,5 +293,20 @@ function validationOfService(actionBtn) {
     if (actionBtn === 'update') {
         service.serviceId = $("#serviceId").val();
         service.isDelete = $(".radio-buttons").find(".service-status:checked").val();
+
+        if (service.isDelete === 'false') {
+            let isAllOptionDeleted = true;
+            for (let option of service.serviceOptions) {
+                if (option.isDelete === false || option.isDelete === 'false') {
+                    isAllOptionDeleted = false;
+                    break;
+                }
+            }
+
+            if (isAllOptionDeleted === true) {
+                isValidService = false;
+                alert("Bạn đang chọn dịch vụ này còn kinh doanh. Do vậy, cần ít nhất một tùy chọn của dịch vụ này là còn kinh doanh");
+            }
+        }
     }
 }

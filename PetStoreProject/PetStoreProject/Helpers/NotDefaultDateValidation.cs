@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PetStoreProject.Validation
+namespace PetStoreProject.Helpers
 {
     public class NotDefaultDateValidation : ValidationAttribute
     {
@@ -8,7 +8,7 @@ namespace PetStoreProject.Validation
         {
             if (value is DateOnly date)
             {
-                return date != default(DateOnly);
+                return date != default;
             }
             return true;
         }

@@ -1072,7 +1072,7 @@ namespace PetStoreProject.Repositories.Product
 										Id = g.Key,
 										SoldQuantity = g.Sum(oi => oi.Quantity),
 										TotalSale = g.Sum(oi => oi.Quantity * oi.Price),
-									}).OrderByDescending(p => p.TotalSale).Take(10).ToList();
+									}).OrderByDescending(p => p.SoldQuantity).Take(10).ToList();
 
 			var list = (from l in listSoldAndPrice
 						join p in _context.Products on l.Id equals p.ProductId

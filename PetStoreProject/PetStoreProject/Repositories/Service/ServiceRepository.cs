@@ -6,12 +6,12 @@ using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
-using System.Buffers.Text;
+using Quartz;
 using System.Globalization;
 
 namespace PetStoreProject.Repositories.Service
 {
-    public class ServiceRepository : IServiceRepository
+    public class ServiceRepository : IServiceRepository, IJob
     {
         private readonly PetStoreDBContext _context;
         private readonly ICloudinaryService _cloudinary;
@@ -83,7 +83,7 @@ namespace PetStoreProject.Repositories.Service
         {
             var listPetType = (from s in _context.Services
                                join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
-                               where s.ServiceId == serviceId
+                               where s.ServiceId == serviceId && so.IsDelete == false
                                select so.PetType).Distinct().ToList();
 
             var petType = listPetType.FirstOrDefault();
@@ -96,6 +96,44 @@ namespace PetStoreProject.Repositories.Service
         }
 
         public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetType(int serviceId, string petType)
+        {
+            var firstServiceOption = (from so in _context.ServiceOptions
+                                      where so.ServiceId == serviceId && so.PetType == petType && so.IsDelete == false
+                                      select so).FirstOrDefault();
+            var listWeight = (from so in _context.ServiceOptions
+                              where so.ServiceId == serviceId && so.PetType == petType && so.IsDelete == false
+                              orderby so.ServiceOptionId ascending
+                              select so.Weight).ToList();
+            return new ServiceOptionViewModel
+            {
+                ServiceId = firstServiceOption.ServiceId,
+                ServiceOptionId = firstServiceOption.ServiceOptionId,
+                PetType = firstServiceOption.PetType,
+                Weight = firstServiceOption.Weight,
+                Price = firstServiceOption.Price,
+                IsDelete = firstServiceOption.IsDelete,
+                Weights = listWeight
+            };
+        }
+
+
+        public ServiceOptionViewModel GetFistServiceOptionOfAdmin(int serviceId)
+        {
+            var listPetType = (from s in _context.Services
+                               join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                               where s.ServiceId == serviceId
+                               select so.PetType).Distinct().ToList();
+
+            var petType = listPetType.FirstOrDefault();
+
+            var firstServiceOption = GetFirstServiceAndListWeightOfPetTypeOfAdmin(serviceId, petType);
+
+            firstServiceOption.PetTypes = listPetType;
+
+            return firstServiceOption;
+        }
+
+        public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetTypeOfAdmin(int serviceId, string petType)
         {
             var firstServiceOption = (from so in _context.ServiceOptions
                                       where so.ServiceId == serviceId && so.PetType == petType
@@ -852,7 +890,7 @@ namespace PetStoreProject.Repositories.Service
                                    ServiceId = g.Key,
                                    UsedQuantity = g.Count(),
                                    TotalSale = g.Sum(s => s.Price) ?? 0
-                               }).OrderByDescending(s => s.TotalSale).ToList();
+                               }).OrderByDescending(s => s.UsedQuantity).ToList();
 
             foreach (var item in listService)
             {
@@ -881,6 +919,23 @@ namespace PetStoreProject.Repositories.Service
             }
 
             return dataService;
+        }
+
+        public async Task Execute(IJobExecutionContext context)
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+            var orders = (from od in _context.OrderServices
+                          where od.OrderDate < today && (od.Status == "Đã xác nhận" || od.Status == "Chưa xác nhận")
+                          select od).ToList();
+
+            foreach (var order in orders)
+            {
+                order.Status = "Đã hủy";
+                order.IsDelete = true;
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         private bool IsBase64String(string imageData)

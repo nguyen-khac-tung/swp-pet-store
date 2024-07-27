@@ -18,7 +18,11 @@ namespace PetStoreProject.Repositories.Service
         public ServiceOptionViewModel GetFistServiceOption(int serviceId);
 
         public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetType(int serviceId, string petType);
-        
+
+        public ServiceOptionViewModel GetFistServiceOptionOfAdmin(int serviceId);
+
+        public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetTypeOfAdmin(int serviceId, string petType);
+
         public ServiceOptionViewModel GetNewServiceOptionBySelectWeight(int serviceId, string petType, string weight);
 
         public List<string> GetAllWeightOfPet();

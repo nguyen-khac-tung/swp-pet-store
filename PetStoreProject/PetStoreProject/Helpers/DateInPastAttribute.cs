@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PetStoreProject.Validation
+namespace PetStoreProject.Helpers
 {
     public class DateInPastAttribute : ValidationAttribute
     {

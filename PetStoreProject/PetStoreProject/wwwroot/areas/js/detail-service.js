@@ -21,7 +21,7 @@ function pet_type_selected(serviceId, petType) {
 
     $.ajax({
         type: "POST",
-        url: "/Service/GetOptionViewModel",
+        url: "/Admin/Service/GetOptionViewModel",
         data: { serviceId: serviceId, petType: petType },
         success: function (response) {
             $('#price').text(response.price.toLocaleString('en-US'));
@@ -68,7 +68,7 @@ function weight_selected(serviceId, petType, weight) {
 
     $.ajax({
         type: "POST",
-        url: "/Service/GetServiceOptionPrice",
+        url: "/Admin/Service/GetServiceOptionPrice",
         data: { serviceId: serviceId, petType: petType, weight: weight },
         success: function (response) {
             let status = `<div class="block-warning w-full mt-5">

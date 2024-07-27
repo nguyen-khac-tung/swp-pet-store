@@ -75,11 +75,11 @@
                                     <ul class="common_ddown megamenu mega_style_2">
                                         <!-- Single Column Start -->
                                         <li>
-                                            <ul>
+                                            <ul id="DogFood">
                                                 <li class="menu-tile">
                                                     <a href="/Product/DogFood"><strong>Thức Ăn Cho Chó</strong></a>
                                                 </li>
-                                                <li>
+                                                @* <li>
                                                     <a href="/Product/DogFood/14">Thức Ăn Hạt</a>
                                                 </li>
                                                 <li>
@@ -105,17 +105,17 @@
                                                 </li>
                                                 <li>
                                                     <a href="/Product/DogFood/16">Súp Thưởng</a>
-                                                </li>
+                                                </li> *@
                                             </ul>
                                         </li>
                                         <!-- Single Column End -->
                                         <!-- Single Column Start -->
-                                        <li>
+                                        <li id="DogAccessory">
                                             <ul>
                                                 <li class="menu-tile">
                                                     <a href="/Product/DogAccessory"><strong>Phụ Kiện Cho Chó</strong></a>
                                                 </li>
-                                                <li>
+                                                @* <li>
                                                     <a href="/Product/DogAccessory/7">Vòng Cổ & Dây Dắt</a>
                                                 </li>
                                                 <li>
@@ -141,17 +141,17 @@
                                                 </li>
                                                 <li>
                                                     <a href="/Product/DogAccessory/3">Đồ Dùng Vận Chyển</a>
-                                                </li>
+                                                </li> *@
                                             </ul>
                                         </li>
                                         <!-- Single Column End -->
                                         <!-- Single Column Start -->
                                         <li>
-                                            <ul>
+                                            <ul id="CatFood">
                                                 <li class="menu-tile">
                                                     <a href="/Product/CatFood"><strong>Thức Ăn Cho Mèo</strong></a>
                                                 </li>
-                                                <li>
+                                                @* <li>
                                                     <a href="/Product/CatFood/22">Thức Ăn Hạt</a>
                                                 </li>
                                                 <li>
@@ -171,17 +171,17 @@
                                                 </li>
                                                 <li>
                                                     <a href="/Product/CatFood/21">Gel Dinh Dưỡng</a>
-                                                </li>
+                                                </li> *@
                                             </ul>
                                         </li>
                                         <!-- Single Column End -->
                                         <!-- Single Column Start -->
                                         <li>
-                                            <ul>
+                                            <ul id="CatAccessory">
                                                 <li class="menu-tile">
                                                     <a href="/Product/CatAccessory"><strong>Phụ Kiện Cho Mèo</strong></a>
                                                 </li>
-                                                <li>
+                                                @* <li>
                                                     <a href="/Product/CatAccessory/7">Vòng Cổ & Dây Dắt</a>
                                                 </li>
                                                 <li>
@@ -210,11 +210,10 @@
                                                 </li>
                                                 <li>
                                                     <a href="/Product/CatAccessory/3">Đồ Dùng Vận Chyển</a>
-                                                </li>
+                                                </li> *@
                                             </ul>
                                         </li>
                                         <!-- Single Column End -->
-                                        <!--<li class="mega_img"><a href="#"><img src="~/img/banner/mega_menu.png" alt="mega_menu"></a></li>-->
 
                                     </ul>
                                     <!-- Mega-Menu End -->
@@ -222,8 +221,8 @@
                                 <li>
                                     <a class="drop-icon" asp-controller="Service" asp-action="List">Dịch Vụ</a>
                                     <!-- Home Version Dropdown Start -->
-                                    <ul class="common_ddown">
-                                        <li>
+                                    <ul class="common_ddown" id="serviceMenu" style="max-height: 280px; width: 350px; overflow:auto">
+                                        @* <li>
                                             <a href="/service/detail/1">Tắm massage chó mèo</a>
                                         </li>
                                         <li>
@@ -232,9 +231,9 @@
                                         <li>
                                             <a href="/service/detail/3">Cắt tỉa lông chó mèo</a>
                                         </li>
-                                        @* <li>
+                                        <li>
                                             <a href="/service/detail/4">Cắt tỉa và vệ sinh chó mèo</a>
-                                        </li> *@
+                                        </li>
                                         <li>
                                             <a href="/service/detail/5">Cắt tỉa và tắm massage chó mèo</a>
                                         </li>
@@ -243,7 +242,7 @@
                                         </li>
                                         <li>
                                             <a href="/service/detail/7">Cắt tỉa, vệ sinh và tắm massage</a>
-                                        </li>
+                                        </li> *@
                                     </ul>
                                     <!-- Home Version Dropdown End -->
                                 </li>
@@ -580,24 +579,6 @@
     <script src="~/js/main.js"></script>
     <script src="~/js/myjs.js"></script>
     @RenderSection("ScriptOptional", required: false)
+
 </body>
-<script>
-    $(document).ready(function () {
-        $('#myForm').submit(function (e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
-            $.ajax({
-                url: '@Url.Action("Create", "Consultion")',
-                type: 'POST',
-                data: formData,
-                success: function (data) {
-                    $('#resultMessage').html("Form đã được gửi thành công!");
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    $('#resultMessage').html("Có lỗi xảy ra, không thể gửi form.");
-                }
-            });
-        });
-    });
-</script>
 </html>

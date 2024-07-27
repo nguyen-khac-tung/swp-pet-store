@@ -5,6 +5,7 @@ using PetStoreProject.ViewModels;
 using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.Repositories.News;
+using PetStoreProject.Repositories.Category;
 
 namespace PetStoreProject.Controllers
 {
@@ -15,15 +16,18 @@ namespace PetStoreProject.Controllers
 		private readonly ICustomerRepository _customer;
         private readonly IServiceRepository _service;
         private readonly INewsRepository _news;
+        private readonly ICategoryRepository _category;
 
-        public HomeController(PetStoreDBContext dbContext, IProductRepository product, ICustomerRepository customer, IServiceRepository service, INewsRepository news)
+        public HomeController(PetStoreDBContext dbContext, IProductRepository product, ICustomerRepository customer, IServiceRepository service, INewsRepository news, ICategoryRepository category)
 		{
 			_context = dbContext;
 			_product = product;
 			_customer = customer;
             _service = service;
             _news = news;
-		}
+            _category = category;
+
+        }
 
 		public int GetCustomerId()
 		{
@@ -86,6 +90,21 @@ namespace PetStoreProject.Controllers
                 NewsDisplayed = _news.GetListNewsForHomePage()
             };
             return View(homeVM);
+        }
+
+        [HttpPost]
+        public Object GetCategoryMenu()
+        {
+            var categories = _category.GetAllCategory();
+
+            return Json(new
+            {
+                dogFoodCategory = categories["DogFood"],
+                dogAccessoryCategory = categories["DogAccessory"],
+                catFoodCategory = categories["CatFood"],
+                catAccessoryCategory = categories["CatAccessory"],
+                services = _service.GetListServices()
+            });
         }
     }
 }

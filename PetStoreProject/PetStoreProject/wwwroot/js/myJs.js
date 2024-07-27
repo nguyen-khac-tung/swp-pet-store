@@ -1,9 +1,52 @@
 ﻿window.onload = function () {
     getCartBoxItems();
     amountCart();
+    loadMenu();
 };
 
 let discount = 0;
+
+function loadMenu() {
+    $.ajax({
+        type: "POST",
+        url: "/Home/GetCategoryMenu",
+        success: function (response) {
+            let dogFoodContent = '';
+            response.dogFoodCategory.forEach(function (cate) {
+                dogFoodContent += `<li><a href="/Product/DogFood/${cate.productCateId}">${cate.name}</a></li>`;
+            });
+
+            let dogAccessoryContent = '';
+            response.dogAccessoryCategory.forEach(function (cate) {
+                dogAccessoryContent += `<li><a href="/Product/DogAccessory/${cate.productCateId}">${cate.name}</a></li>`;
+            });
+
+            let catFoodContent = '';
+            response.catFoodCategory.forEach(function (cate) {
+                catFoodContent += `<li><a href="/Product/CatFood/${cate.productCateId}">${cate.name}</a></li>`;
+            });
+
+            let catAccessoryContent = '';
+            response.catAccessoryCategory.forEach(function (cate) {
+                catAccessoryContent += `<li><a href="/Product/CatAccessory/${cate.productCateId}">${cate.name}</a></li>`;
+            });
+
+            let serviceContent = '';
+            response.services.forEach(function (service) {
+                serviceContent += `<li><a href="/service/detail/${service.serviceId}">${service.name}</a></li>`;
+            });
+
+            $("#DogFood").append(dogFoodContent);
+            $("#DogAccessory").append(dogAccessoryContent);
+            $("#CatFood").append(catFoodContent);
+            $("#CatAccessory").append(catAccessoryContent);
+            $("#serviceMenu").append(serviceContent);
+        },
+        error: function (xhr, status, error) {
+            console.error('The request failed!', status, error);
+        }
+    });
+}
 
 function addToCart(productOptionId, quantity) {
     $.ajax({

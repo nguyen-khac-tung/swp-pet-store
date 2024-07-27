@@ -181,7 +181,7 @@
                             <form asp-area="Employee" asp-action="Submit" asp-controller="Feedback" method="post">
                                 <input type="hidden" name="FeedBackId" value="@fb.FeedBackId" />
                                 <div>
-                                    <label for="response-@fb.FeedBackId">Your Response:</label>
+                                    <label for="response-@fb.FeedBackId">Câu trả lời:</label>
                                     <textarea id="response-@fb.FeedBackId" name="response" rows="2" cols="50">@fb.ContentResponse</textarea>
                                     <span id="ContentError-@fb.FeedBackId" class="text-danger"></span>
                                 </div>

@@ -108,14 +108,14 @@
                     <li>
                         <a class="body-title" onclick="sortQuantitySold()">Số lượng đã bán<i class="bi bi-chevron-expand"></i></a>
                     </li>
-                    <li>
+@*                     <li>
                         <a class="drop-icon " href="#">Trạng thái</a>
                         <ul class="common_ddown dropdown_style" id="status_list_customer">
                             <li><a href="#" onclick="orderStatus('isDelete')">- Tất cả</a></li>
                             <li><a href="#" onclick="orderStatus('block-available')">- Còn bán</a></li>
                             <li><a href="#" onclick="orderStatus('block-not-available')">- Ngừng bán</a></li>
                         </ul>
-                    </li>
+                    </li> *@
                     <li>
                         <div class="body-title">Tùy chỉnh</div>
                     </li>
@@ -127,20 +127,20 @@
                             <input type="hidden" value="@category.Id" class="productCategoryId">
                             <input type="hidden" value="@category.CategoryId" class="categoryId">
                             <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="productCateName" style="width: 280px">
+                                <div class="productCateName" id="productCateName_@category.Id" style="width: 280px">
                                     @category.ProductCateName
                                 </div>
                                 <div class="body-text cateName">@category.CategoryName</div>
                                 <div class="body-text totalProduct">@category.TotalProducts</div>
                                 <div class="body-text quantitySold">@category.QuantitySoldProduct</div>
-                                <div class="body-text isDelete @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete" value="@(category.IsDelete == true ? 1 : 0)">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div>
+                                @* <div class="body-text isDelete @(category.IsDelete == true ? "block-not-available" : "block-available") isDelete" value="@(category.IsDelete == true ? 1 : 0)">@(category.IsDelete == true ? "Ngừng bán" : "Còn bán")</div> *@
                                 <div class="list-icon-function">
                                     <div class="item edit" onclick="updateProductCategory(this, @category.Id)">
                                         <i class="icon-edit-3"></i>
                                     </div>
-                                    <div class="item tras @((category.IsDelete== true) ? "hide" : "")" onclick="deleteProductCategory(this, @category.Id)">
+@*                                     <div class="item tras @((category.IsDelete== true) ? "hide" : "")" onclick="deleteProductCategory(this, @category.Id)">
                                         <i class="icon-trash-2"></i>
-                                    </div>
+                                    </div> *@
                                 </div>
                             </div>
                         </li>
@@ -226,7 +226,7 @@
                     <div class="wg-box">
                         <fieldset class="name">
                             <label class="body-title mb-10">Tên danh mục sản phẩm<span class="tf-color-1">*</span></label>
-                            <input type="text" class="mb-10" placeholder="Nhập tên danh mục sản phẩm" id="name">
+                            <input type="text" class="mb-10 addProductCateName" placeholder="Nhập tên danh mục sản phẩm" id="name">
                             <span id="error-name" class="text-danger"></span>
                         </fieldset>
                         <fieldset>
@@ -268,7 +268,7 @@
                     <div class="wg-box">
                         <fieldset class="name">
                             <label class="body-title mb-10">Tên danh mục sản phẩm mới<span class="tf-color-1">*</span></label>
-                            <input type="text" class="mb-10" placeholder="Nhập tên danh mục sản phẩm" id="productCategoryName">
+                            <input type="text" class="mb-10" placeholder="" id="productCategoryName">
                             <input type="hidden" id="productCateId">
                         </fieldset>
                         <fieldset>
@@ -281,7 +281,7 @@
                             </select>
                             <input type="hidden" id="cateId">
                         </fieldset>
-                        <fieldset>
+                        @* <fieldset>
                             <label class="body-title mb-10">Tình trạng</label>
                             <div class="select mb-10 flex gap22 radio-buttons justify-content-around" id="list-size">
                                 <div class="item">
@@ -293,7 +293,7 @@
                                     <label class="" for="isDelete_true"><span class="body-title-2">Ngừng bán</span></label>
                                 </div>
                             </div>
-                        </fieldset>
+                        </fieldset> *@
                     </div>
                 </div>
             </div>
@@ -521,8 +521,9 @@
         function isExistsProductCategory(name, id) {
             var isExists = false;
             var categories = $('#list-category li')
+            console.log("categories: " + categories);
             categories.each(function () {
-                if ($(this).find('.name').text().toLowerCase().trim() == name.toLowerCase().trim()
+                if ($(this).find('.productCateName').text().toLowerCase().trim() == name.toLowerCase().trim()
                     && id != $(this).find('.productCategoryId').val()) {
                     isExists = true;
                     return false
@@ -533,6 +534,7 @@
         }
 
         function createProductCategory() {
+            $('.addProductCateName').val();
             var ProductCategoryName = $('#name').val().trim()
             var categoryId = $('#categoryId').val()
             var categoryName = $('#categoryId option:selected').text()
@@ -549,20 +551,16 @@
                         success: function (res) {
                             var li = `<li class="product-item gap14">
                                                                                     <div class="flex items-center justify-between gap20 flex-grow product-category-${res.productCateId}">
-                                                                                        <div class="name" style="width: 350px">
+                                                                                        <div class="name" style="width: 280px">
                                                                                                     ${ProductCategoryName}
                                                                                         </div>
                                                                                         <div class="body-text cateName">${categoryName}</div>
 
                                                                                         <div class="body-text">0</div>
                                                                                         <div class="body-text">0</div>
-                                                                                        <div class="body-text block-available isDelete">Còn bán</div>
                                                                                         <div class="list-icon-function">
                                                                                             <div class="item edit" onclick="updateProductCategory(this)">
                                                                                                 <i class="icon-edit-3"></i>
-                                                                                            </div>
-                                                                                            <div class="item tras" onclick="deleteProductCategory(this)">
-                                                                                                <i class="icon-trash-2"></i>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -610,9 +608,14 @@
         }
 
         function updateProductCategory(cateTag, productCateId) {
+            var pCateName = $('#productCateName_' + productCateId).text().trim();
+
             $('#updateProductCategory').modal('show')
             $('#productCategoryName').val($(cateTag).parent().parent().find('.name').text().trim())
             $('#productCateId').val(productCateId)
+
+            $('#productCategoryName').val(pCateName);
+            $('#productCategoryName').attr('placeholder',pCateName);
             var cateId = $('.product-category-' + productCateId).find('.categoryId').val()
             $('#updateProductCategory .categoryId option').each(function () {
                 if ($(this).val() == cateId) {
@@ -631,6 +634,9 @@
 
         function saveProductCateGory() {
             let name = $('#productCategoryName').val().trim()
+            if(name == "") {
+                alert("Tên danh mục sản phẩm không được để trống!");
+            }
             let id = $('#productCateId').val()
             let isDelete = $('input[name="isDelete"]:checked').val() == '1' ? true : false
             let cateId = $('#updateProductCategory .categoryId').val()
@@ -666,6 +672,9 @@
                             }
 
                             tag.find('.cateName').text(cateName)
+                            console.log("id: + Name: " + id + name);
+                            $('#productCateName_' + id).text(name);
+
 
                         },
                         error: function (res) {

@@ -597,11 +597,12 @@
             data.find('.price').text(price.toLocaleString('en-US') + ' VND');
 
             data.find('.quantity').attr('value', quantity);
+            data.find('.quantity').text(quantity + ' còn hàng')
 
             data.find('.isSoldOut').attr('value', isSoldOut);
-            data.find('.isSoldOut').text((isSoldOut == 1) ? 'Hết hàng' : 'Còn hàng');
+            data.find('.isSoldOut').text((isSoldOut == 1 || quantity == 0) ? 'Hết hàng' : 'Còn hàng');
 
-            if(isSoldOut == '1') {
+            if(isSoldOut == '1' || quantity == 0) {
                 data.find('.isSoldOut').addClass('block-not-available')
                 data.find('.isSoldOut').removeClass('block-available')
             } else {
@@ -859,7 +860,7 @@
             
             var isSoldOutProductOption =
                 `
-            <fieldset>
+                    <fieldset style="display:none">
                 <label class="body-title mb-10">Hàng trong kho</label>
                 <div class="select mb-10 flex gap22 radio-buttons justify-content-around">
                     <div class="item">
@@ -889,10 +890,15 @@
                 </div>
             </fieldset>`;
 
+            var fieldset = `<fieldset>
+                        
+                    </fieldset>`;
+
         $('#status').removeClass('hidden')
         $('#status').empty()
         $('#status').append(isSoldOutProductOption)
         $('#status').append(isDeleteProductOption)
+        $('#status').append(fieldset)
         $('#change').removeClass('hidden')
         $('#new').addClass('hidden')
         $('#change').find('button').eq(0).val(productOptionId);

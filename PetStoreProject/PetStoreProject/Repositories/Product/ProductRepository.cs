@@ -932,16 +932,8 @@ namespace PetStoreProject.Repositories.Product
 
 			var product = await _context.FindAsync<Models.Product>(productUpdateRequest.ProductId);
 
-			if (product != null)
-			{
-				product.Name = productUpdateRequest.Name;
-				product.BrandId = brandId;
-				product.Description = productUpdateRequest.Description;
-				product.ProductCateId = productCateId;
-				product.IsDelete = productUpdateRequest.IsDeleted;
-				_context.Products.Update(product);
-			}
-
+			var isStill = false;
+			
 			HashSet<string> string_size = new HashSet<string>();
 			HashSet<string> string_image = new HashSet<string>();
 			HashSet<string> string_attribute = new HashSet<string>();
@@ -954,6 +946,11 @@ namespace PetStoreProject.Repositories.Product
 			var options = productUpdateRequest.ProductOptions;
 			foreach (var option in options)
 			{
+				if(option.IsDelete == false)
+				{
+					isStill = true;
+				}
+
 				var sizeId = option.Size.SizeId;
 
 				if (string_size.Add(option.Size.Name))
@@ -1043,7 +1040,27 @@ namespace PetStoreProject.Repositories.Product
 				}
 
 			}
-			await _context.SaveChangesAsync();
+
+            if (product != null)
+            {
+				if(isStill == false || productUpdateRequest.IsDeleted == true)
+				{
+					product.IsDelete = true;
+				}
+				else
+				{
+					product.IsDelete= false;
+				}
+
+                product.Name = productUpdateRequest.Name;
+                product.BrandId = brandId;
+                product.Description = productUpdateRequest.Description;
+                product.ProductCateId = productCateId;
+                _context.Products.Update(product);
+            }
+
+
+            await _context.SaveChangesAsync();
 			return productUpdateRequest.ProductId.ToString();
 		}
 

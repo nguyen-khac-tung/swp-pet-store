@@ -232,10 +232,7 @@ namespace PetStoreProject.CartController
 
             var cookieOptions = new CookieOptions
             {
-                Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
-                                                   //HttpOnly = true, // Cookie chỉ được sử dụng trong HTTP(S) requests
-                                                   //Secure = true, // Cookie chỉ được gửi qua HTTPS
-                                                   //SameSite = SameSiteMode.Strict // Chỉ gửi cookie trong cùng site
+                Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie   
             };
 
             if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))

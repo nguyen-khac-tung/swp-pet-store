@@ -9,5 +9,6 @@ namespace PetStoreProject.Repositories.Brand
         public int CreateBrand(string BrandName);
         public string UpdateBrand(int brandId, string brandName);
 
+        public int DeleteBrand(int brandId);
     }
 }

@@ -940,7 +940,7 @@ namespace PetStoreProject.Repositories.Service
 
         private bool IsBase64String(string imageData)
         {
-            if (string.IsNullOrWhiteSpace(imageData) || imageData.Contains("cloudinary"))
+            if (imageData.Contains("cloudinary"))
             {
                 return false;
             }

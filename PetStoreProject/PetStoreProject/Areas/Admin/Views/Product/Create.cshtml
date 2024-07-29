@@ -782,13 +782,13 @@
                             } else {
                                 // Handle error - display a message or log the error
                                 console.error("Error: " + response.result);
-                                alert("Failed to create product: " + response.result);
+                                alert("Đã xảy ra lỗi: "+response.result);
                             }
                         },
                         error: function (xhr, status, error) {
                             // Handle AJAX error
                             console.error("AJAX error: " + error);
-                            alert("An error occurred while creating the product: " + error);
+                            alert("Đã xảy ra lỗi: "+error);
                         }
                     });
 

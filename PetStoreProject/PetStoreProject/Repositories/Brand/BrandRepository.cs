@@ -18,11 +18,24 @@ namespace PetStoreProject.Repositories.Brand
             var brand = new Models.Brand
             {
                 Name = BrandName,
+                IsDelete = false
             };
 
             _context.Brands.Add(brand);
             _context.SaveChanges();
             return brand.BrandId;
+        }
+
+        public int DeleteBrand(int brandId)
+        {
+            var brand = _context.Brands.Find(brandId);
+            if (brand != null)
+            {
+                brand.IsDelete = true;
+                _context.SaveChanges();
+                return 1;
+            }
+            return 0;
         }
 
         public List<BrandViewModel> GetBrands()
@@ -50,6 +63,7 @@ namespace PetStoreProject.Repositories.Brand
                                    from subpo in pop.DefaultIfEmpty()
                                    join od in _context.OrderItems on subpo.ProductOptionId equals od.ProductOptionId into odo
                                    from subod in odo.DefaultIfEmpty()
+                                   where b.IsDelete == false
                                    group new { b, subp, subod } by new { b.BrandId, b.Name } into g
                                    select new
                                    {
@@ -65,7 +79,7 @@ namespace PetStoreProject.Repositories.Brand
                 Name = x.Name,
                 Quantity = x.Quantity,
                 QuantityOfSold = x.QuantityOfSold
-            }).ToList();
+            }).OrderBy(b => b.Name).ToList();
 
             return brands;
         }

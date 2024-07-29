@@ -27,5 +27,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
             var result = _brandRepository.UpdateBrand(brandId, brandName);
             return Json(new { result = result });
         }
+
+        [HttpDelete]
+        public JsonResult Delete(int brandId)
+        {
+            var result = _brandRepository.DeleteBrand(brandId);
+            return Json(new { result = result });
+        }
     }
 }

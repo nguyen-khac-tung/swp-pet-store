@@ -8,6 +8,8 @@ using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
+using PetStoreProject.Repositories.Product;
+using PetStoreProject.Repositories.ProductOption;
 using PetStoreProject.ViewModels;
 
 namespace PetStoreProject.Controllers
@@ -22,9 +24,11 @@ namespace PetStoreProject.Controllers
         private readonly IDiscountRepository _discount;
         private readonly PetStoreDBContext _context;
         private readonly ICheckoutRepository _checkout;
+        private readonly IProductRepository _product;
+        private readonly IProductOptionRepository _productOption;
 
         public CheckoutController(ICustomerRepository customer, IConfiguration configuration,
-            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context, ICheckoutRepository checkout)
+            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context, ICheckoutRepository checkout, IProductRepository product, IProductOptionRepository productOption)
         {
             _customer = customer;
             _configuration = configuration;
@@ -34,6 +38,8 @@ namespace PetStoreProject.Controllers
             _discount = discount;
             _context = context;
             _checkout = checkout;
+            _product = product;
+            _productOption = productOption;
         }
 
         [HttpPost]
@@ -124,6 +130,21 @@ namespace PetStoreProject.Controllers
                     amount -= priceReduce;
                 }
             }
+            foreach (var itemCart in checkout.OrderItems)
+            {
+                var quantityInStock = _productOption.QuantityOfProductOption(itemCart.ProductOptionId);
+                if (quantityInStock < itemCart.Quantity)
+                {
+                    var product = _product.GetDetail(itemCart.ProductOptionId);
+                    TempData["Status"] = "Thanh toán thất bại";
+                    TempData["Message"] = $"Sản phẩm {product.Name} trong kho hiện tại không đủ.";
+                    return Json(new
+                    {
+                        UrlTransfer = "NotificationPayment",
+                    });
+                }
+            }
+
             return Json(new
             {
                 UrlTransfer = "CreatePayment",

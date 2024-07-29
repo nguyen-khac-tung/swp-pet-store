@@ -1,66 +1,66 @@
 ﻿var numberViewProduct = 2;
 
-fetch('https://vapi.vnappmob.com/api/province/')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        let provinces = data.results;
-        provinces.map(value => document.getElementById('consigneeProvince').innerHTML += '<option value="' + value.province_id + '">' + value.province_name + '</option>');
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
+//fetch('https://vapi.vnappmob.com/api/province/')
+//    .then(response => {
+//        if (!response.ok) {
+//            throw new Error('Network response was not ok');
+//        }
+//        return response.json();
+//    })
+//    .then(data => {
+//        let provinces = data.results;
+//        provinces.map(value => document.getElementById('consigneeProvince').innerHTML += '<option value="' + value.province_id + '">' + value.province_name + '</option>');
+//    })
+//    .catch(error => {
+//        console.error('There was a problem with the fetch operation:', error);
+//    });
 
-function getProvinces(event) {
-    let province_id = event.target.value;
-    fetchDistricts(province_id);
-}
+//function getProvinces(event) {
+//    let province_id = event.target.value;
+//    fetchDistricts(province_id);
+//}
 
-function fetchDistricts(province_id) {
-    fetch('https://vapi.vnappmob.com/api/province/district/' + province_id)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            let districts = data.results;
-            document.getElementById('consigneeDistrict').innerHTML = '<option value="0">- Quận/Huyện/Thị xã -</option>';
-            document.getElementById('consigneeWard').innerHTML = '<option value="0">- Xã/Phường/Thị trấn -</option>';
-            districts.map(value => document.getElementById('consigneeDistrict').innerHTML += '<option value="' + value.district_id + '">' + value.district_name + '</option>');
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
-}
+//function fetchDistricts(province_id) {
+//    fetch('https://vapi.vnappmob.com/api/province/district/' + province_id)
+//        .then(response => {
+//            if (!response.ok) {
+//                throw new Error('Network response was not ok');
+//            }
+//            return response.json();
+//        })
+//        .then(data => {
+//            let districts = data.results;
+//            document.getElementById('consigneeDistrict').innerHTML = '<option value="0">- Quận/Huyện/Thị xã -</option>';
+//            document.getElementById('consigneeWard').innerHTML = '<option value="0">- Xã/Phường/Thị trấn -</option>';
+//            districts.map(value => document.getElementById('consigneeDistrict').innerHTML += '<option value="' + value.district_id + '">' + value.district_name + '</option>');
+//        })
+//        .catch(error => {
+//            console.error('There was a problem with the fetch operation:', error);
+//        });
+//}
 
-function getDistricts(event) {
-    let district_id = event.target.value;
-    fetchWards(district_id);
-}
+//function getDistricts(event) {
+//    let district_id = event.target.value;
+//    fetchWards(district_id);
+//}
 
-function fetchWards(district_id) {
-    fetch('https://vapi.vnappmob.com/api/province/ward/' + district_id)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            let districts = data.results;
-            document.getElementById('consigneeWard').innerHTML = '<option value="0">- Xã/Phường/Thị trấn -</option>';
-            districts.map(value => document.getElementById('consigneeWard').innerHTML += '<option value="' + value.ward_id + '">' + value.ward_name + '</option>');
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
-}
+//function fetchWards(district_id) {
+//    fetch('https://vapi.vnappmob.com/api/province/ward/' + district_id)
+//        .then(response => {
+//            if (!response.ok) {
+//                throw new Error('Network response was not ok');
+//            }
+//            return response.json();
+//        })
+//        .then(data => {
+//            let districts = data.results;
+//            document.getElementById('consigneeWard').innerHTML = '<option value="0">- Xã/Phường/Thị trấn -</option>';
+//            districts.map(value => document.getElementById('consigneeWard').innerHTML += '<option value="' + value.ward_id + '">' + value.ward_name + '</option>');
+//        })
+//        .catch(error => {
+//            console.error('There was a problem with the fetch operation:', error);
+//        });
+//}
 
 
 

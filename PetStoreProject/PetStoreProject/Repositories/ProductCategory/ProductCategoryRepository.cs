@@ -42,6 +42,7 @@ namespace PetStoreProject.Repositories.ProductCategory
         {
             var ProductsCategories = (from pc in _context.ProductCategories
                                       join c in _context.Categories on pc.CategoryId equals c.CategoryId
+                                      where pc.IsDelete == false
                                       select new ProductCategoryViewForAdmin()
                                       {
                                           Id = pc.ProductCateId,

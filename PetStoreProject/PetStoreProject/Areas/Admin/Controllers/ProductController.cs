@@ -92,6 +92,10 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             try
             {
+                if(product == null)
+                {
+                    throw new Exception();
+                }
                 var productCreateRequest = JsonConvert.DeserializeObject<ProductCreateRequestViewModel>(product);
 
                 var result = await _product.CreateProduct(productCreateRequest);
@@ -105,7 +109,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 return Json(new
                 {
-                    result = e.Message
+                    result = "Không thể lưu sản phẩm."
                 });
             }
         }

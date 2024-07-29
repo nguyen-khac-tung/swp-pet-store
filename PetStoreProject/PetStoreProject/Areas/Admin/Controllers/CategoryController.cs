@@ -15,6 +15,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             _category = category;
             _brand = brand;
         }
+
         [HttpGet]
         public IActionResult List()
         {
@@ -22,9 +23,6 @@ namespace PetStoreProject.Areas.Admin.Controllers
             ViewData["brands"] = brands;
             return View();
         }
-
-
-
     }
 }
 

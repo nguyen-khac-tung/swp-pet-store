@@ -108,7 +108,7 @@
                     <li>
                         <a class="body-title" onclick="sortQuantitySold()">Số lượng đã bán<i class="bi bi-chevron-expand"></i></a>
                     </li>
-@*                     <li>
+                    @* <li>
                         <a class="drop-icon " href="#">Trạng thái</a>
                         <ul class="common_ddown dropdown_style" id="status_list_customer">
                             <li><a href="#" onclick="orderStatus('isDelete')">- Tất cả</a></li>
@@ -561,24 +561,24 @@
                         data: { ProductCategoryName: ProductCategoryName, CategoryId: categoryId },
                         success: function (res) {
                             var li = `<li class="product-item gap14 product-category-${res.productCateId}">
-                                                                                                                    <div class="flex items-center justify-between gap20 flex-grow ">
-                                                                                                                        <div class="name" style="width: 280px">
-                                                                                                                                    ${ProductCategoryName}
-                                                                                                                        </div>
-                                                                                                                        <div class="body-text cateName">${categoryName}</div>
+                                        <div class="flex items-center justify-between gap20 flex-grow ">
+                                            <div class="name" style="width: 280px">
+                                                        ${ProductCategoryName}
+                                            </div>
+                                            <div class="body-text cateName">${categoryName}</div>
 
-                                                                                                                        <div class="body-text">0</div>
-                                                                                                                        <div class="body-text">0</div>
-                                                                                                                        <div class="list-icon-function">
-                                                                                                                            <div class="item edit" onclick="updateProductCategory(this)">
-                                                                                                                                <i class="icon-edit-3"></i>
-                                                                                                                            </div>
-                                                                                                                             <div class="item tras" onclick="deleteProductCategory(this, ${res.productCateId})">
-                                                                                                                                <i class="icon-trash-2"></i>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </li>`
+                                            <div class="body-text">0</div>
+                                            <div class="body-text">0</div>
+                                            <div class="list-icon-function">
+                                                <div class="item edit" onclick="updateProductCategory(this)">
+                                                    <i class="icon-edit-3"></i>
+                                                </div>
+                                                    <div class="item tras" onclick="deleteProductCategory(this, ${res.productCateId})">
+                                                    <i class="icon-trash-2"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>`
 
                             $('#list-category').append(li)
                             alert('Thêm danh mục thành công')
@@ -646,7 +646,7 @@
                 return;
             }
 
-            var isDelete = confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')
+            var isDelete = confirm('Bạn có chắc chắn muốn xóa thương hiệu này không?')
             if (isDelete) {
                 $.ajax({
                     url: "/Admin/Brand/Delete",
@@ -654,12 +654,7 @@
                     data: { brandId: brandId },
                     success: function (res) {
                         $('.brand-id-' + brandId).hide();
-                        // $(ProductCateTag).parent().parent().find('.isDelete').text('Ngừng bán')
-                        // $(ProductCateTag).parent().parent().find('.isDelete').addClass('block-not-available');
-                        // $(ProductCateTag).parent().parent().find('.isDelete').removeClass('block-available');
-                        // $(ProductCateTag).remove();
                         console.log(res.result)
-
                     },
                     error: function (res) {
                     }
@@ -736,8 +731,6 @@
                             tag.find('.cateName').text(cateName)
                             console.log("id: + Name: " + id + name);
                             $('#productCateName_' + id).text(name);
-
-
                         },
                         error: function (res) {
                             console.log(res)
@@ -789,7 +782,7 @@
             console.log("brandId: " + brandId);
             if (isValidString(BrandName) == "") {
                 if (isExistsBrand(BrandName)) {
-                    alert('Tên danh mục đã tồn tại')
+                    alert('Tên thương hiệu đã tồn tại.')
                 }
                 else if (brandId == '') {
                     $('#staticBackdrop').modal('hide')
@@ -799,35 +792,32 @@
                         data: { brandName: BrandName },
                         success: function (res) {
                             var li = `
-                                                                <li class="product-item gap14 brand-id-${res.brandId}">
-                                                    <input type="hidden" value="${res.brandId}" class="brandId">
+                                    <li class="product-item gap14 brand-id-${res.brandId}">
+                                    <input type="hidden" value="${res.brandId}" class="brandId">
                                     <div class="flex items-center justify-between gap20 flex-grow">
-                                                <div class="name" style="width: 300px">${BrandName}
+                                        <div class="name" style="width: 300px">${BrandName}
                                         </div>
-                                                <div class="body-text quantityx totalBrand_${brandId}" style="width: 150px">0</div>
-                                                        <div class="body-text quantitySold quantityBrandSold_${brandId}" style="width: 150px">0</div>
+                                        <div class="body-text quantityx totalBrand_${brandId}" style="width: 150px">0</div>
+                                        <div class="body-text quantitySold quantityBrandSold_${brandId}" style="width: 150px">0</div>
                                         <div class="list-icon-function">
-                                                                    <div class="item edit" onclick="updateBrand(${res.brandId})">
+                                        <div class="item edit" onclick="updateBrand(${res.brandId})">
                                                 <i class="icon-edit-3"></i>
                                             </div>
-                                                                    <div class="item tras" onclick="deleteBrand(this, ${res.brandId})">
+                                        <div class="item tras" onclick="deleteBrand(this, ${res.brandId})">
                                                 <i class="icon-trash-2"></i>
-                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                        </div>
+                                        </div>
+                                    </li>
                                             `
                             $('#list-brand').append(li)
-                            alert('Thêm danh mục thành công')
+                            alert('Thêm thương hiệu thành công')
                             modal.modal('hide')
                         },
                         error: function (res) {
                             alert(res)
                         }
-
-                    }
-                    )
-
+                    })
                 }
                 else {
                     $.ajax({
@@ -836,7 +826,7 @@
                         data: { brandName: BrandName, brandId: brandId },
                         success: function (res) {
                             modal.modal('hide')
-                            alert('Cập nhật tên thương hiệu thành công thành công')
+                            alert('Cập nhật tên thương hiệu thành công.')
                             var tag = $(`.brand-id-${brandId}`)
                             tag.find('.name').text(BrandName)
                         },
@@ -845,14 +835,10 @@
                         }
                     })
                 }
-
             }
             else {
                 $('#error-brand').text(error)
             }
         }
-
-        
-
     </script>
 }

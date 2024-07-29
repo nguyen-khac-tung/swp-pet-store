@@ -8,23 +8,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("Customer")]
-public partial class Customer
+[Table("Shipper")]
+public partial class Shipper
 {
     [Key]
-    public int CustomerId { get; set; }
+    public int ShipperId { get; set; }
 
     [Required]
     [StringLength(250)]
     public string FullName { get; set; }
 
-    public bool? Gender { get; set; }
+    public bool Gender { get; set; }
 
+    public DateOnly DoB { get; set; }
+
+    [Required]
     [StringLength(50)]
     public string Phone { get; set; }
 
-    public DateOnly? DoB { get; set; }
-
+    [Required]
     [StringLength(250)]
     public string Address { get; set; }
 
@@ -37,19 +39,9 @@ public partial class Customer
     public int AccountId { get; set; }
 
     [ForeignKey("AccountId")]
-    [InverseProperty("Customers")]
+    [InverseProperty("Shippers")]
     public virtual Account Account { get; set; }
 
-    [InverseProperty("Customer")]
-    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
-
-    [InverseProperty("Customer")]
-    public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();
-
-    [InverseProperty("Customer")]
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-
-    [ForeignKey("CustomerId")]
-    [InverseProperty("Customers")]
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    [InverseProperty("Shipper")]
+    public virtual ICollection<District> Districts { get; set; } = new List<District>();
 }

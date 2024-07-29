@@ -8,15 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Table("Size")]
-public partial class Size
+[Table("District")]
+public partial class District
 {
     [Key]
-    public int SizeId { get; set; }
+    public int DistrictId { get; set; }
 
+    [Required]
     [StringLength(50)]
     public string Name { get; set; }
 
-    [InverseProperty("Size")]
-    public virtual ICollection<ProductOption> ProductOptions { get; set; } = new List<ProductOption>();
+    public int ShipperId { get; set; }
+
+    [ForeignKey("ShipperId")]
+    [InverseProperty("Districts")]
+    public virtual Shipper Shipper { get; set; }
 }

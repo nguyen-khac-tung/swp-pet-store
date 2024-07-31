@@ -14,6 +14,8 @@ public partial class Feedback
     [Key]
     public int FeedbackId { get; set; }
 
+    public int? CustomerId { get; set; }
+
     public int? ProductId { get; set; }
 
     public int? ServiceId { get; set; }

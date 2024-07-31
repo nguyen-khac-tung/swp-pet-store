@@ -45,8 +45,6 @@ public partial class Order
     [StringLength(200)]
     public string ConsigneeFullName { get; set; }
 
-    public float ShippingFee { get; set; }
-
     public int? DiscountId { get; set; }
 
     [StringLength(50)]
@@ -57,8 +55,9 @@ public partial class Order
     [Column(TypeName = "datetime")]
     public DateTime? DeliveredTime { get; set; }
 
-    public int? ReturnId { get; set; }
+    public float? ShippingFee { get; set; }
 
+    public int? ReturnId { get; set; }
 
     [ForeignKey("CustomerId")]
     [InverseProperty("Orders")]

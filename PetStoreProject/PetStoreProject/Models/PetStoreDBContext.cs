@@ -32,6 +32,7 @@ public partial class PetStoreDBContext : DbContext
     public virtual DbSet<Discount> Discounts { get; set; }
 
     public virtual DbSet<DiscountType> DiscountTypes { get; set; }
+
     public virtual DbSet<District> Districts { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -148,15 +149,6 @@ public partial class PetStoreDBContext : DbContext
 
             entity.HasOne(d => d.DiscountType).WithMany(p => p.Discounts).HasConstraintName("FK_Discount_DiscountType");
         });
-        modelBuilder.Entity<District>(entity =>
-        {
-            entity.Property(e => e.DistrictId).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Shipper).WithMany(p => p.Districts)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_District_Shipper");
-        });
-
 
         modelBuilder.Entity<DiscountType>(entity =>
         {
@@ -345,10 +337,6 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Service).WithMany(p => p.ServiceOptions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ServiceOption_Service");
-        });
-        modelBuilder.Entity<ReturnRefund>(entity =>
-        {
-            entity.Property(e => e.ReturnId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Shipper>(entity =>

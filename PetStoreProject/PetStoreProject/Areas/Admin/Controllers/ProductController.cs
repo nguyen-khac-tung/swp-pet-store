@@ -92,7 +92,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             try
             {
-                if(product == null)
+                if (product == null)
                 {
                     throw new Exception();
                 }
@@ -208,7 +208,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
             {
                 return Json(new
                 {
-                    result = "CLGT" + e.Message
+                    result = e.Message
                 });
             }
         }

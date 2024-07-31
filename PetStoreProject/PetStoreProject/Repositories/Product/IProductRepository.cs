@@ -1,5 +1,5 @@
-﻿using AdminVM = PetStoreProject.Areas.Admin.ViewModels;
-using PetStoreProject.ViewModels;
+﻿using PetStoreProject.ViewModels;
+using AdminVM = PetStoreProject.Areas.Admin.ViewModels;
 
 namespace PetStoreProject.Repositories.Product
 {
@@ -7,7 +7,7 @@ namespace PetStoreProject.Repositories.Product
     {
         public List<FeedbackViewModels> GetListFeedBack(int productId);
         public ProductDetailViewModel GetDetail(int productId);
-        public List<RelatedProductViewModel> getRelatedProduct(int productId);
+        public List<RelatedProductViewModel> getRelatedProduct(int productId, int customerId);
         //public List<ProductDetailViewModel> GetProductDetailDoGet(List<int> cateId, int productCateId);
         //public List<ProductDetailViewModel> GetProductDetailDoPost(List<int> cateId, int productCateId);
         public List<PetStoreProject.Models.Brand> GetBrandsByCategoryIdsAndProductCateId(List<int> cateId, int productCateId);
@@ -38,7 +38,7 @@ namespace PetStoreProject.Repositories.Product
 
         public void DeleteProduct(int productId);
 
-        public Task<List<ProductDetailViewModel>> GetProductDetail(List<int> cateId, int productCateId);
+        public Task<List<ProductDetailViewModel>> GetProductDetail(List<int> cateId, int productCateId, int customerId);
 
         public List<AdminVM.ProductViewForAdmin> GetTopSellingProduct(string startDate, string endDate);
 

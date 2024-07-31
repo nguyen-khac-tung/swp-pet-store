@@ -3,7 +3,7 @@
     public class FeedbackViewModels
     {
         public string CustomerName { get; set; }
-        public int Rating { get; set; }
+        public double Rating { get; set; }
         public string Content { get; set; }
         public string? EmployeeName { get; set; }
         public string? ContentResponse { get; set; }

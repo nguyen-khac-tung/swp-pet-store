@@ -33,8 +33,6 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<DiscountType> DiscountTypes { get; set; }
 
-    public virtual DbSet<District> Districts { get; set; }
-
     public virtual DbSet<Employee> Employees { get; set; }
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
@@ -59,15 +57,11 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<ResponseFeedback> ResponseFeedbacks { get; set; }
 
-    public virtual DbSet<ReturnRefund> ReturnRefunds { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Service> Services { get; set; }
 
     public virtual DbSet<ServiceOption> ServiceOptions { get; set; }
-
-    public virtual DbSet<Shipper> Shippers { get; set; }
 
     public virtual DbSet<Size> Sizes { get; set; }
 
@@ -76,6 +70,9 @@ public partial class PetStoreDBContext : DbContext
     public virtual DbSet<TimeService> TimeServices { get; set; }
 
     public virtual DbSet<WorkingTime> WorkingTimes { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("name=PetStoreDBContext");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -156,15 +153,6 @@ public partial class PetStoreDBContext : DbContext
             entity.Property(e => e.DiscountName).IsFixedLength();
         });
 
-        modelBuilder.Entity<District>(entity =>
-        {
-            entity.Property(e => e.DistrictId).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Shipper).WithMany(p => p.Districts)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_District_Shipper");
-        });
-
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.Property(e => e.IsDelete).HasDefaultValue(false);
@@ -189,10 +177,6 @@ public partial class PetStoreDBContext : DbContext
             entity.Property(e => e.ImageUrl).IsFixedLength();
 
             entity.HasOne(d => d.News).WithMany(p => p.Images).HasConstraintName("FK_Image_News");
-
-            entity.HasOne(d => d.Order).WithMany(p => p.Images).HasConstraintName("FK_Image_Orders");
-
-            entity.HasOne(d => d.Return).WithMany(p => p.Images).HasConstraintName("FK_Image_ReturnRefund");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Images).HasConstraintName("FK_Image_Service");
         });

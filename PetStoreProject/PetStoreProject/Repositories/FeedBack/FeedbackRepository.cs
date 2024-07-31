@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PetStoreProject.Areas.Employee.ViewModels;
+﻿using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.ViewModels;
 

@@ -32,6 +32,8 @@ public partial class Customer
 
     public int AccountId { get; set; }
 
+    public int? LevelId { get; set; }
+
     [ForeignKey("AccountId")]
     [InverseProperty("Customers")]
     public virtual Account Account { get; set; } = null!;

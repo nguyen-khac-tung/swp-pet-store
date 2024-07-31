@@ -21,7 +21,9 @@ namespace PetStoreProject.Areas.Admin.Controllers
         public IActionResult Create()
         {
             var discountType = _discountType.GetDiscountTypes();
+            var loyalType = _discountType.GetRolaTypes();
             ViewData["discountType"] = discountType;
+            ViewData["loyalType"] = loyalType;
             return View();
         }
 
@@ -44,6 +46,8 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             var discount = _discount.GetDiscount(id);
             var discountType = _discountType.GetDiscountTypes();
+            var loyalType = _discountType.GetRolaTypes();
+            ViewData["loyalType"] = loyalType;
             ViewData["discountType"] = discountType;
             ViewData["discount"] = discount;
             return View();

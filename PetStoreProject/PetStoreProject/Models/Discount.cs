@@ -45,6 +45,8 @@ public partial class Discount
 
     public bool? Status { get; set; }
 
+    public int? LevelId { get; set; }
+
     [ForeignKey("CreatedBy")]
     [InverseProperty("Discounts")]
     public virtual Admin? CreatedByNavigation { get; set; }

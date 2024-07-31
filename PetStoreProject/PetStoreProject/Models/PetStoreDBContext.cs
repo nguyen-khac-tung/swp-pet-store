@@ -39,6 +39,8 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Image> Images { get; set; }
 
+    public virtual DbSet<LoyaltyLevel> LoyaltyLevels { get; set; }
+
     public virtual DbSet<News> News { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }

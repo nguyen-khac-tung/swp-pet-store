@@ -21,5 +21,10 @@ namespace PetStoreProject.Repositories.DiscountType
             }).ToList();
             return discountTypes;
         }
+
+        public List<LoyaltyLevel> GetRolaTypes()
+        {
+            return _context.LoyaltyLevels.ToList();
+        }
     }
 }

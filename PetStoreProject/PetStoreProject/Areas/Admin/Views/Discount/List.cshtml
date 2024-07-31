@@ -124,7 +124,7 @@
                                     <div class="body-text" style="width: 150px">@(item.DiscountType.Id != 2 ? (int)item.Value + "% tối đa " + item.MaxValue?.ToString("#,###") + " vnd" : item.Value?.ToString("#,###") + " vnd")</div>
                                     <div class="body-text" style="width: 180px">@(item.DiscountType.Id == 3 ? "Không giới hạn" : @item.StartDate.ToString() + '-' + @item.EndDate.ToString())</div>
                                     <div class="body-text" style="width: 150px">@item.MinPurchase?.ToString("#,###.###") vnd</div>
-                                    <div class="body-text" style="width: 80px">@(item.DiscountType.Id == 3 ? "Vô cùng" : @item.Quantity)</div>
+                                    <div class="body-text" style="width: 80px">@((item.DiscountType.Id == 3 || item.DiscountType.Id == 4) ? "Vô cùng" : @item.Quantity)</div>
                                     <div class="body-text" style="width: 70px">@item.MaxUse</div>
                                     <div class="body-text" style="width: 70px">@item.Used</div>
                                     <div class="body-text" style="width: 180px">@item.CreatedAt</div>

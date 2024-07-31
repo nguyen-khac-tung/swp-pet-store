@@ -47,7 +47,8 @@ namespace PetStoreProject.Repositories.Discount
                     Quantity = discount.Quantity,
                     MaxUse = discount.MaxUse,
                     Used = 0,
-                    Status = true
+                    Status = true,
+                    LevelId = discount.DiscountTypeId != 4 ? 0 : discount.LevelId
                 };
                 _context.Discounts.Add(dis);
                 _context.SaveChanges();
@@ -64,7 +65,7 @@ namespace PetStoreProject.Repositories.Discount
             discount.DiscountId = id;
             discount.CreatedAt = DateTime.Now.ToString();
             discount.Status = true;
-            discount.Used = 0;
+            discount.Used = d.Used;
             _context.Discounts.Add(discount);
             _context.SaveChanges();
             return discount.Code;
@@ -74,6 +75,7 @@ namespace PetStoreProject.Repositories.Discount
         {
             var discount = (from d in _context.Discounts
                             join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
+                            join l in _context.LoyaltyLevels on d.LevelId equals l.LevelId
                             where d.DiscountId == id
                             select new DiscountViewModel
                             {
@@ -93,7 +95,12 @@ namespace PetStoreProject.Repositories.Discount
                                 Quantity = d.Quantity,
                                 MaxUse = d.MaxUse,
                                 Used = d.Used,
-                                Description = d.Description
+                                Description = d.Description,
+                                Loyal = new LoyaltyLevel
+                                {
+                                    LevelId = (int)d.LevelId,
+                                    LevelName = l.LevelName,
+                                }
                             }).FirstOrDefault();
             return discount;
         }
@@ -127,38 +134,46 @@ namespace PetStoreProject.Repositories.Discount
             var now = DateOnly.FromDateTime(DateTime.Now);
             foreach (var item in discounts)
             {
-                if (item.DiscountType.Id == 3)
+                if (item.Status == true)
                 {
-                    item.Status = true;
-                    item.StatusString = "Đang diễn ra";
-                }
-                else if (item.StartDate <= now && now <= item.EndDate && item.Status == true)
-                {
-                    if (item.Quantity < item.Used)
-                    {
-                        item.Status = false;
-                        item.StatusString = "Hết lượt";
-                    }
-                    else
+                    if (item.DiscountType.Id == 3)
                     {
                         item.Status = true;
                         item.StatusString = "Đang diễn ra";
+                    }
+                    else if (item.StartDate <= now && now <= item.EndDate && item.Status == true)
+                    {
+                        if (item.Quantity < item.Used)
+                        {
+                            item.Status = false;
+                            item.StatusString = "Hết lượt";
+                        }
+                        else
+                        {
+                            item.Status = true;
+                            item.StatusString = "Đang diễn ra";
 
+                        }
+                    }
+                    else
+                    {
+                        if (item.StartDate > now)
+                        {
+                            item.Status = true;
+                            item.StatusString = "Chưa bắt đầu";
+                        }
+                        else
+                        {
+                            item.Status = false;
+                            item.StatusString = "Đã kết thúc";
+                        }
                     }
                 }
                 else
                 {
-                    if (item.StartDate > now)
-                    {
-                        item.Status = true;
-                        item.StatusString = "Chưa bắt đầu";
-                    }
-                    else
-                    {
-                        item.Status = false;
-                        item.StatusString = "Đã kết thúc";
-                    }
+                    item.StatusString = "Đã kết thúc";
                 }
+
             }
             return discounts.ToPagedList(page, pageSize);
         }

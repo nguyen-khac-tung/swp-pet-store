@@ -4,23 +4,28 @@ using PetStoreProject.Models;
 using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
+using PetStoreProject.Repositories.Shipper;
 using PetStoreProject.ViewModels;
+using System.Diagnostics.Eventing.Reader;
 
-namespace PetStoreProject.Areas.Admin.Controllers
+namespace PetStoreProject.Areas.Employee.Controllers
 {
-    [Area("Admin")]
+    [Area("Employee")]
     public class OrderController : Controller
     {
-
+        private readonly PetStoreDBContext _context;
         private readonly IOrderRepository _order;
         private readonly IDiscountRepository _discount;
         private readonly IOrderItemRepository _orderItem;
+        private readonly IShipperRepository _shipper;
 
-        public OrderController(IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem)
+        public OrderController(IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem, IShipperRepository shipper, PetStoreDBContext context)
         {
             _order = order;
             _discount = discount;
             _orderItem = orderItem;
+            _shipper = shipper;
+            _context = context;
         }
 
         [HttpGet]
@@ -59,9 +64,11 @@ namespace PetStoreProject.Areas.Admin.Controllers
             });
         }
 
-        [HttpPost]
-        public IActionResult Detail(OrderDetailViewModel order)
+        [HttpGet]
+        public IActionResult Detail(string orderId)
         {
+            long id = long.Parse(orderId);
+            var order = _order.GetOrderDetailById(id);
             if (order.DiscountId.HasValue)
             {
                 var discount = _discount.GetDiscount(order.DiscountId.Value);
@@ -112,10 +119,40 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 ViewBag.priceDiscount = priceDiscount;
             }
 
+            var shippers = _shipper.GetShippers();
+            ViewBag.shippers = shippers;
+
+            var district = order.ShipAddress.Split(",")[1].Trim();
+
+            var shipper = _shipper.GetShipperByDistricts(district);
+            ViewBag.shipper = shipper;
+
+            var districts = _context.Districts.ToList();
+            ViewBag.districts = districts;
+
+
             ViewBag.listItemOrder = listItemOrder;
             return View(checkoutDetail);
         }
+
+        [HttpPost]
+        public IActionResult Detail(string orderId, string status, int shipperId)
+        {
+            long id = long.Parse(orderId);
+            _order.UpdateStatusOrder(id, status, shipperId);
+            return Json(new { success = true });
+        }
+
+        [HttpGet]
+        public IActionResult DetailRefund(int returnId)
+        {
+            var returnRefund = _context.ReturnRefunds.Find(returnId);
+            var images = _context.Images.Where(i => i.ReturnId == returnId).ToList();
+            return Json(new
+            {
+                returnRefund = returnRefund,
+                images = images
+            });
+        }
     }
-
 }
-

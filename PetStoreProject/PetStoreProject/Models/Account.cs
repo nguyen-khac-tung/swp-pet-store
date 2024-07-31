@@ -34,10 +34,11 @@ public partial class Account
     [InverseProperty("Account")]
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
+    [InverseProperty("Account")]
+    public virtual ICollection<Shipper> Shippers { get; set; } = new List<Shipper>();
+
     [ForeignKey("RoleId")]
     [InverseProperty("Accounts")]
     public virtual Role Role { get; set; }
 
-    [InverseProperty("Account")]
-    public virtual ICollection<Shipper> Shippers { get; set; } = new List<Shipper>();
 }

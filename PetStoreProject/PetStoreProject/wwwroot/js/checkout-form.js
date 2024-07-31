@@ -76,7 +76,7 @@ function ItemOrders(OrderId, ProductOptionId, Quantity, Price, PromotionId) {
 }
 
 function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderEmail, ConsigneeName,
-    ConsigneePhone, ConsigneeProvince, ConsigneeDistrict, ConsigneeWard, ConsigneeAddressDetail, PaymentMethod, TotalAmount, DiscountId) {
+    ConsigneePhone, ConsigneeProvince, ConsigneeDistrict, ConsigneeWard, ConsigneeAddressDetail, PaymentMethod, TotalAmount, DiscountId, ShippingFee) {
     this.CheckoutId = 0;
     this.OrderItems = OrderItems;
     this.OrderName = OrderName;
@@ -91,6 +91,7 @@ function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderE
     this.PaymentMethod = PaymentMethod;
     this.TotalAmount = TotalAmount;
     this.DiscountId = DiscountId;
+    this.ShippingFee = ShippingFee;
 }
 
 function AddOrderItems() {
@@ -154,7 +155,9 @@ function ProcessPay() {
 
     var moneyToCheckout = $('#order_value').val();
 
-    var paymentMethod = $('#paymentMethod').val();
+    var paymentMethod = $('input[name="pay-method"]:checked').val();
+
+    var shippingFee = $('#moneyToShip').val();
 
     console.log(orderName + ' ' + orderPhone + ' ' + consigneeName + ' ' + consigneePhone +
         ' ' + selectConsigneeProvince + ' ' + selectConsigneeDistrict + ' ' + selectConsigneeWard +
@@ -176,7 +179,8 @@ function ProcessPay() {
         consigneeAddress,
         paymentMethod,
         moneyToCheckout,
-        discountId
+        discountId,
+        shippingFee
     );
 
     processInfoCheckout(checkoutViewModel);
@@ -275,8 +279,12 @@ function chooseDiscount() {
 function useDiscount() {
     $('#staticBackdrop').modal('hide')
     let moneyToCheckout = $('#cost').text().replace(/,/g, '');
-    console.log(moneyToCheckout, reduce)
-    moneyToCheckout = parseFloat(moneyToCheckout) - reduce;
+
+    let moneyShip = Number($("#moneyToShip").val());
+    console.log('use_discount:' + moneyShip);
+
+    moneyToCheckout = parseFloat(moneyToCheckout) - reduce + moneyShip;
+
     $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")
     $('#moneyToCheckout').val(moneyToCheckout)
     $('#save').text(title)

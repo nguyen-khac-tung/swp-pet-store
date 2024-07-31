@@ -5,13 +5,28 @@ namespace PetStoreProject.Repositories.Shipper
 {
     public class ShipperRepository : IShipperRepository
     {
-        public readonly PetStoreDBContext _context;
+        private readonly PetStoreDBContext _context;    
 
-        public ShipperRepository(PetStoreDBContext context)
+        public ShipperRepository(PetStoreDBContext dBContext)
         {
-            _context = context;
+            _context = dBContext;
         }
 
+        public Models.Shipper GetShipperByDistricts(string districtName)
+        {
+            var district = _context.Districts.FirstOrDefault(d => d.Name.Contains(districtName));
+            if(district == null)
+            {
+                return null;
+            }
+            return _context.Shippers.FirstOrDefault(s => s.ShipperId == district.ShipperId);
+        }
+
+        public List<Models.Shipper> GetShippers()
+        {
+            var shippers = _context.Shippers.ToList();
+            return shippers;
+        }
         public List<ShipperViewModel> GetTotalAccountShippers(ShipperFilterViewModel shipperFilerVM)
         {
             string? shipperName = string.IsNullOrEmpty(shipperFilerVM.Name) ? null : shipperFilerVM.Name;
@@ -78,11 +93,11 @@ namespace PetStoreProject.Repositories.Shipper
         {
             var shipper = _context.Shippers.FirstOrDefault(s => s.ShipperId == id);
             shipper.IsDelete = true;
-
             var accountShipper = _context.Accounts.FirstOrDefault(s => s.AccountId == shipper.AccountId);
             accountShipper.IsDelete = true;
 
             _context.SaveChanges();
         }
     }
+
 }

@@ -1,4 +1,4 @@
-﻿@using PetStoreProject.Areas.Admin.ViewModels
+@using PetStoreProject.Areas.Admin.ViewModels
 @using PetStoreProject.ViewModels
 @{
     ViewData["title"] = "Thêm sản phẩm";
@@ -379,13 +379,6 @@
         function previewImage(event) {
             isUploadFile = true;
             var files = event.target.files;
-            var file = files[0];
-            console.log(file.type)
-            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
-            if (!validImageTypes.includes(file.type)) {
-                alert('Vui lòng tải lên một tệp hình ảnh hợp lệ (JPEG, PNG, GIF, JPG).')
-                return false;
-            }
             var uploadImage = $('#upload-image');
             var previewImage = $('#preview-image');
             previewImage.empty();
@@ -790,12 +783,14 @@
                                 // Handle error - display a message or log the error
                                 console.error("Error: " + response.result);
                                 alert("Đã xảy ra lỗi: "+response.result);
+
                             }
                         },
                         error: function (xhr, status, error) {
                             // Handle AJAX error
                             console.error("AJAX error: " + error);
                             alert("Đã xảy ra lỗi: "+error);
+
                         }
                     });
 

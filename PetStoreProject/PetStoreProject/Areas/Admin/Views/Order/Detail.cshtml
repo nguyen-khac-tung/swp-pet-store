@@ -216,6 +216,20 @@
         </div>
         <div class="row">
             <div class="form-group col-xl-8">
+                <p class="margin_0px">Phí vận chuyển:</p>
+            </div>
+            @if (Model.ShippingFee != 0)
+            {
+                totalMoney = totalMoney + Model.ShippingFee;
+                <div class="form-group col-xl-4 text-right">+ @Model.ShippingFee.ToString("#,###")VND</div>
+            }
+            else
+            {
+                <div class="form-group col-xl-4 text-right">+ 0VND</div>
+            }
+        </div>
+        <div class="row">
+            <div class="form-group col-xl-8">
                 <strong>Thành tiền:</strong>
             </div>
             <div class="form-group col-xl-4 text-right"><strong>@totalMoney.ToString("#,###")VND</strong></div>

@@ -144,13 +144,118 @@ namespace PetStoreProject.Controllers
                     });
                 }
             }
+            if (checkout.PaymentMethod == "VNPay")
+            {
+                return Json(new
+                {
+                    UrlTransfer = "CreatePayment",
+                    OrderId = orderId,
+                    Amount = amount,
+                });
+            }
 
             return Json(new
             {
-                UrlTransfer = "CreatePayment",
-                OrderId = orderId,
-                Amount = amount,
+                UrlTransfer = "PaymentCOD",
             });
+        }
+
+        public async Task<IActionResult> PaymentCOD()
+        {
+            var CheckoutCookie = Request.Cookies["Checkout_Id"];
+            // Lưu đơn hàng vào database
+            var checkoutInfoCookie = Request.Cookies["CheckoutInfo"];
+            CheckoutViewModel checkoutInfo = new CheckoutViewModel();
+            if (checkoutInfoCookie != null)
+            {
+                checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
+                checkoutInfo.Status = "Chờ xác nhận";
+            }
+
+            //Xóa phần tử trong database || cookie
+            var email = HttpContext.Session.GetString("userEmail");
+            var customerID = _customer.GetCustomerId(email);
+
+            List<int> productOptionId = new List<int>();
+            productOptionId = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(CheckoutCookie);
+
+            if (email != null)
+            {
+                //Thêm order, orderItem
+                var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, customerID, email);
+                if (!resultCheckout.Equals("Thanh toán thành công"))
+                {
+                    TempData["Status"] = $"Thanh toán thất bại";
+                    TempData["Message"] = resultCheckout;
+                    return RedirectToAction("NotificationPayment");
+                }
+
+                //Xóa cart
+                var cartItems = _cart.GetListCartItemsVM(customerID);
+                foreach (var item in cartItems)
+                {
+                    if (productOptionId.Contains(item.ProductOptionId))
+                    {
+                        _cart.DeleteCartItem(item.ProductOptionId, customerID);
+                    }
+                }
+            }
+            else
+            {
+                //Thêm order, orderItem
+                var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, null, null);
+                if (!resultCheckout.Equals("Thanh toán thành công"))
+                {
+                    TempData["Status"] = $"Thanh toán thất bại";
+                    TempData["Message"] = resultCheckout;
+                    return RedirectToAction("NotificationPayment");
+                }
+
+                //Xoa cart
+                CookieOptions cookieOptions = new CookieOptions()
+                {
+                    Expires = DateTime.Now.AddDays(1), // Thời hạn tồn tại của cookie
+                };
+
+                if (Request.Cookies.TryGetValue("Items_id", out string list_cookie))
+                {
+                    var cookieIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(list_cookie);
+                    List<int> productOptionIdRemaining = new List<int>();
+                    foreach (var itemCookie in cookieIds)
+                    {
+                        if (productOptionId.Contains(itemCookie))
+                        {
+                            var item = Request.Cookies[$"Item_{itemCookie}"];
+                            if (item != null) Response.Cookies.Delete($"Item_{itemCookie}");
+                        }
+                        else
+                        {
+                            productOptionIdRemaining.Add(itemCookie);
+                        }
+                    }
+                    if (productOptionIdRemaining.Count > 0)
+                    {
+                        Response.Cookies.Append("Items_id", JsonConvert.SerializeObject(productOptionIdRemaining), cookieOptions);
+                    }
+                    else
+                    {
+                        Response.Cookies.Delete("Items_id");
+                    }
+                }
+            }
+            var discountId = checkoutInfo.DiscountId;
+            if (discountId != null && discountId != 0)
+            {
+                var discount = _context.Discounts.Where(d => d.DiscountId == discountId).FirstOrDefault();
+                discount.Used += 1;
+                _context.SaveChanges();
+            }
+            Response.Cookies.Delete("Checkout_Id");
+            Response.Cookies.Delete("CheckoutInfo");
+
+            TempData["Status"] = "Thanh toán thành công";
+            TempData["Message"] = $"Thanh toán khi nhận hàng thành công";
+            return RedirectToAction("NotificationPayment");
         }
 
         public IActionResult CreatePayment(string orderId, int amount)
@@ -248,7 +353,10 @@ namespace PetStoreProject.Controllers
             if (checkoutInfoCookie != null)
             {
                 checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
+                checkoutInfo.Status = "Chờ lấy hàng";
             }
+
+
 
             //Xóa phần tử trong database || cookie
             var email = HttpContext.Session.GetString("userEmail");
@@ -261,7 +369,7 @@ namespace PetStoreProject.Controllers
             {
                 //Thêm order, orderItem
                 var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, customerID, email);
-                if(!resultCheckout.Equals("Thanh toán thành công"))
+                if (!resultCheckout.Equals("Thanh toán thành công"))
                 {
                     TempData["Status"] = $"Thanh toán thất bại";
                     TempData["Message"] = resultCheckout;

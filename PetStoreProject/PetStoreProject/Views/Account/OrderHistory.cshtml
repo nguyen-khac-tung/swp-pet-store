@@ -15,25 +15,26 @@
                     <thead>
                     @* <th class="ps-4">Mã dịch vụ</th> *@
                     <th>Người nhận</th>
-                    <th>SĐT nhận</th>
                     <th>Ngày đặt</th>
                         @* <th>Địa chỉ</th> *@
                     <th>Sản phẩm</th>
+                    <th>Trạng thái</th>
                     <th>Tổng tiền</th>
                     <th>Thao tác</th>
                     </thead>
                     <tbody>
                         @foreach (var orderHistory in Model)
                         {
-                            <tr id="order-item-@orderHistory.OrderId" data-order='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(orderHistory))'>
+                            <tr id="order-item-@orderHistory.OrderId" >
                                 @* <td class="ps-4">#@orderHistory.OrderId</td> *@
                                 <td>@orderHistory.ConsigneeName</td>
-                                <td>@orderHistory.ConsigneePhone</td>
+                                @* <td>@orderHistory.ConsigneePhone</td> *@
                                 <td class="orderdate-cell">@orderHistory.OrderDate</td>
                                 @* <td>@orderHistory.ShipAddress</td> *@
                                 <td>@orderHistory.totalOrderItems</td>
+                                <td class="status-cell"><span id="status_@orderHistory.OrderId">@orderHistory.Status</span></td>
                                 <td>@orderHistory.TotalAmount.ToString("#,###") VND</td>
-                                <td><a class="btn btn-primary" onclick="OrderHistoryDetail(this.parentElement.parentElement)">Chi Tiết</a></td>
+                                <td><a class="btn btn-primary" onclick="OrderHistoryDetail('@orderHistory.OrderId')">Chi Tiết</a></td>
                             </tr>
                         }
                     </tbody>
@@ -59,15 +60,12 @@
 </div>
 
 <script>
-    function OrderHistoryDetail(element) {
-        let orderData = element.getAttribute('data-order');
-        let order = JSON.parse(orderData);
-
+    function OrderHistoryDetail(orderId) {
+        console.log("OrderDetailID: " + orderId)
         $.ajax({
             type: 'POST',
             url: '/Account/OrderHistoryDetail',
-            data: JSON.stringify(order),
-            contentType: 'application/json; charset=utf-8',
+            data: { orderId: orderId },
             success: function (response) {
                 $('#modal_content_detail').html(response);
                 $('#orderDetail').modal("show");

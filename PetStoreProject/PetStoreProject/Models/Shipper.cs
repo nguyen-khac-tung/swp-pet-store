@@ -44,4 +44,7 @@ public partial class Shipper
 
     [InverseProperty("Shipper")]
     public virtual ICollection<District> Districts { get; set; } = new List<District>();
+
+    [InverseProperty("Shipper")]
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

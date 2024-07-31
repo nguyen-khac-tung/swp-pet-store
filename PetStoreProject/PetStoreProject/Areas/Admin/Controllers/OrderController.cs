@@ -34,7 +34,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
         {
             var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
 
-            foreach(var order in listOrderHistory)
+            foreach (var order in listOrderHistory)
             {
                 if (order.DiscountId.HasValue)
                 {
@@ -85,7 +85,10 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 ConsigneeWard = "",
                 ConsigneeProvince = "",
                 ConsigneeDistrict = "",
-                OrderDate = order.OrderDate
+                OrderDate = order.OrderDate,
+                Status = order.Status,
+                DiscountId = order.DiscountId,
+                ShippingFee = order.ShippingFee
             };
 
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));

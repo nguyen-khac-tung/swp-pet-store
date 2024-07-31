@@ -32,7 +32,10 @@ namespace PetStoreProject.Repositories.Order
                               ConsigneeName = o.ConsigneeFullName,
                               ConsigneePhone = o.ConsigneePhone,
                               totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
-                              DiscountId = o.DiscountId
+                              DiscountId = o.DiscountId,
+                              Status = o.Status,
+                              ShippingFee = o.ShippingFee,
+                              ReturnId = o.ReturnId
                           }).ToList();
             }
             else
@@ -52,7 +55,10 @@ namespace PetStoreProject.Repositories.Order
                               ConsigneeName = o.ConsigneeFullName,
                               ConsigneePhone = o.ConsigneePhone,
                               totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
-                              DiscountId = o.DiscountId
+                              DiscountId = o.DiscountId,
+                              Status = o.Status,
+                              ShippingFee = o.ShippingFee,
+                              ReturnId = o.ReturnId
                           }).ToList();
             }
             return orders;
@@ -149,6 +155,64 @@ namespace PetStoreProject.Repositories.Order
             var totalAmount = (from o in _context.Orders
                                select o.TotalAmount).Sum();
             return totalAmount;
+        }
+
+        public OrderDetailViewModel? GetOrderDetailById(long orderId)
+        {
+            OrderDetailViewModel? order = _context.Orders
+                .Where(o => o.OrderId == orderId)
+                .Select(o => new OrderDetailViewModel
+                {
+                    CustomerId = o.CustomerId,
+                    Email = o.Email,
+                    FullName = o.FullName,
+                    Phone = o.Phone,
+                    ShipAddress = o.ShipAddress,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+                    PaymentMethod = o.PaymetMethod,
+                    OrderId = o.OrderId.ToString(),
+                    ConsigneeName = o.ConsigneeFullName,
+                    ConsigneePhone = o.ConsigneePhone,
+                    totalOrderItems = _context.OrderItems.Count(ot => ot.OrderId == o.OrderId),
+                    DiscountId = o.DiscountId,
+                    Status = o.Status,
+                    ShippingFee = o.ShippingFee,
+                    ReturnId = o.ReturnId
+                })
+                .FirstOrDefault();
+
+            return order;
+        }
+
+        public void UpdateStatusOrder(long orderId, string status, int shipper)
+        {
+            if (shipper != 0 && shipper != -1)
+            {
+                var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
+                order.Status = status;
+                order.ShipperId = shipper;
+                _context.SaveChanges();
+            }
+            else if(shipper == -1)
+            {
+                var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
+                order.Status = status;
+                _context.SaveChanges();
+            }else
+            {
+                var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
+                order.Status = status;
+                order.ShipperId = null;
+                _context.SaveChanges();
+            }
+        }
+
+        public void UpdateReturnOrder(long orderId, int returnId)
+        {
+            var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
+            order.ReturnId = returnId;
+            _context.SaveChanges();
         }
     }
 }

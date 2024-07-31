@@ -182,3 +182,41 @@
 #form_info_order {
     padding: 10px;
 }
+
+.block-orage {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    height: 24px;
+    padding: 2px 8px;
+    gap: 10px;
+    border-radius: 4px;
+    background: #c394796b;
+    color: #9e5b09 !important;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.block-green {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    height: 24px;
+    padding: 2px 8px;
+    gap: 10px;
+    border-radius: 4px;
+    background: #07960a8a;
+    color: #000000 !important;
+    font-size: 12px;
+    font-weight: 500;
+}

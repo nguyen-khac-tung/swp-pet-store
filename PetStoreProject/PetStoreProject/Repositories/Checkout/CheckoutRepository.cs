@@ -47,6 +47,8 @@ namespace PetStoreProject.Repositories.Checkout
                         ShipAddress = checkoutInfo.ConsigneeProvince + ", " + checkoutInfo.ConsigneeDistrict + ", "
                         + checkoutInfo.ConsigneeWard,
                         DiscountId = checkoutInfo.DiscountId,
+                        ShippingFee = checkoutInfo.ShippingFee,
+                        Status = checkoutInfo.Status
                     };
 
                     if (checkoutInfo.ConsigneeAddressDetail != null) order.ShipAddress += ", " + checkoutInfo.ConsigneeAddressDetail;

@@ -7,9 +7,12 @@ using PetStoreProject.Helpers;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Admin;
+using PetStoreProject.Repositories.District;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderService;
+using PetStoreProject.Repositories.Shipper;
 using PetStoreProject.ViewModels;
+using System.Drawing.Printing;
 
 namespace PetStoreProject.Areas.Admin.Controllers
 {
@@ -21,14 +24,18 @@ namespace PetStoreProject.Areas.Admin.Controllers
         private readonly IAdminRepository _admin;
         private readonly IOrderRepository _order;
         private readonly IOrderServiceRepository _orderService;
+        private readonly IShipperRepository _shipper;
+        private readonly IDistrictRepository _district;
 
-        public AccountController(IAccountRepository account, EmailService emailService, IAdminRepository admin, IOrderRepository order, IOrderServiceRepository orderService)
+        public AccountController(IAccountRepository account, EmailService emailService, IAdminRepository admin, IOrderRepository order, IOrderServiceRepository orderService, IShipperRepository shipper, IDistrictRepository district)
         {
             _account = account;
             _emailService = emailService;
             _admin = admin;
             _order = order;
             _orderService = orderService;
+            _shipper = shipper;
+            _district = district;
         }
 
         [HttpGet]
@@ -167,6 +174,49 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult ListShipper()
+        {
+            var shipperFilterVM = new ShipperFilterViewModel();
+            int pageIndex = 1;
+            int pageSize = 5;
+
+            ViewData["ListDistrict"] = _district.GetDistricts();
+            ViewData["ListShipper"] = _shipper.GetAccountShippers(shipperFilterVM, pageIndex, pageSize);
+            var totalShippers = _shipper.GetTotalAccountShippers(shipperFilterVM).Count;
+            ViewData["NumberOfPage"] = (int)Math.Ceiling((double)totalShippers / pageSize);
+            return View();
+        }
+
+        [HttpPost]
+        public Object ListShipper(ShipperFilterViewModel shipperFilterVM, int pageIndex, int pageSize)
+        {
+            var shippers = _shipper.GetAccountShippers(shipperFilterVM, pageIndex, pageSize);
+            var totalShippers = _shipper.GetTotalAccountShippers(shipperFilterVM).Count;
+            var numberPage = (int)Math.Ceiling((double)totalShippers / pageSize);
+            return Json(new
+            {
+                listShipper = shippers,
+                numberOfPage = numberPage,
+            });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteShipper(string password, int shipperId)
+        {
+            var emailAdmin = HttpContext.Session.GetString("userEmail");
+            Account accountAdmin = _account.GetAccount(emailAdmin, password);
+            if(accountAdmin == null)
+            {
+                return Json(new { message = "Fail" });
+            }
+            else
+            {
+                _shipper.DeleteShipperAccount(shipperId);
+                return Json(new { message = "Success" });
+            }
+        }
+
+        [HttpGet]
         public IActionResult CustomerDetail(int userId)
         {
             var account = _account.GetAccountCustomers(userId);
@@ -297,7 +347,7 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 return new JsonResult(new { isSuccess = true, message = "Cập nhật thành công", updatedData = admin });
             }
             else
-            {   
+            {
                 var modelStateErrors = ModelState
                                         .Where(ms => ms.Value.Errors.Any())
                                         .ToDictionary(

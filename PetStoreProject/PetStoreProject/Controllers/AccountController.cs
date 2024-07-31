@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Filters;
 using PetStoreProject.Helpers;
@@ -10,9 +11,11 @@ using PetStoreProject.Repositories.Customers;
 using PetStoreProject.Repositories.Discount;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
+using PetStoreProject.Repositories.ReturnRefund;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.ViewModels;
 using System.Security.Claims;
+
 
 namespace PetStoreProject.Controllers
 {
@@ -25,9 +28,12 @@ namespace PetStoreProject.Controllers
         private readonly IOrderRepository _order;
         private readonly IDiscountRepository _discount;
         private readonly IOrderItemRepository _orderItem;
+        private readonly ICloudinaryService _cloudinaryService;
+        private readonly IReturnRefundRepository _returnRefund;
 
         public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer,
-            IServiceRepository service, IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem)
+            IServiceRepository service, IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem,
+            ICloudinaryService cloudinaryService, IReturnRefundRepository returnRefund)
         {
             _account = accountRepo;
             _emailService = emailService;
@@ -36,6 +42,8 @@ namespace PetStoreProject.Controllers
             _order = order;
             _discount = discount;
             _orderItem = orderItem;
+            _cloudinaryService = cloudinaryService;
+            _returnRefund = returnRefund;
         }
 
         [HttpGet]
@@ -510,8 +518,10 @@ namespace PetStoreProject.Controllers
 
         [RoleAuthorize("Customer")]
         [HttpPost]
-        public IActionResult OrderHistoryDetail([FromBody] OrderDetailViewModel order)
+        public IActionResult OrderHistoryDetail(string orderId)
         {
+            long id = long.Parse(orderId);
+            var order = _order.GetOrderDetailById(id);
             if (order.DiscountId.HasValue)
             {
                 var discount = _discount.GetDiscount(order.DiscountId.Value);
@@ -535,7 +545,10 @@ namespace PetStoreProject.Controllers
                 ConsigneeWard = "",
                 ConsigneeProvince = "",
                 ConsigneeDistrict = "",
-                OrderDate = order.OrderDate
+                OrderDate = order.OrderDate,
+                ShippingFee = order.ShippingFee,
+                Status = order.Status,
+                ReturnId = order.ReturnId,
             };
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
 
@@ -561,6 +574,26 @@ namespace PetStoreProject.Controllers
             ViewBag.listItemOrder = listItemOrder;
 
             return View(checkoutDetail);
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpPost]
+        public IActionResult ReturnRefund(CreateReturnRefund returnRefund)
+        {
+            var email = HttpContext.Session.GetString("userEmail");
+            var customer = _customer.GetCustomer(email);
+
+            _returnRefund.CreateReturnRefund(returnRefund);
+
+            if(returnRefund.OrderId != 0)
+            {
+                var order = _order.GetOrderDetailById(returnRefund.OrderId);
+                var status = "Trả hàng";
+                _order.UpdateStatusOrder(returnRefund.OrderId, status, 0);
+                var returnLast = _returnRefund.GetReturnRefunds().Last();
+                _order.UpdateReturnOrder(returnRefund.OrderId, returnLast.ReturnId);
+            }
+            return Json(new { success = true});
         }
     }
 }

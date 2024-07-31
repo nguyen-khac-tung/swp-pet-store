@@ -149,7 +149,7 @@ activity-checkout .checkout-item:first-child {
     background-color: #fff;
     border: 2px solid #eff0f2;
     border-radius: .75rem;
-    padding: .5rem;
+    /*padding: .5rem;*/
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

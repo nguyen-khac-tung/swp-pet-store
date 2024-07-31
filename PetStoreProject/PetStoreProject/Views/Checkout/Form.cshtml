@@ -4,6 +4,7 @@
     double moneyToCheckout = 0;
     int index = 0;
     var discounts = ViewData["Discounts"] as List<DiscountViewModel>;
+    int shipMoney = 0;
 }
 
 @using PetStoreProject.Areas.Admin.ViewModels
@@ -11,7 +12,7 @@
 @model List<ItemsCheckoutViewModel>
 
 
-@section HeadOptional{
+@section HeadOptional {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="~/css/checkout_style.css" rel="stylesheet" />
     <style>
@@ -33,11 +34,13 @@
             font-size: 12px;
             font-weight: 500;
         }
+
         .out-of-stock {
             opacity: 0.3; /* Làm nhạt màu */
             cursor: not-allowed; /* Con trỏ hiển thị không được phép */
             pointer-events: none; /* Ngăn chặn sự kiện click */
         }
+
         .discount-card {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -90,7 +93,7 @@
             margin-top: 8px;
         }
 
-        .text-tiny{
+        .text-tiny {
             color: rgba(0,0,0,.54);
             font-size: 12px;
         }
@@ -130,10 +133,15 @@
             transition-duration: 2s;
             transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
         }
-        #title{
+
+        #title {
             color: red;
         }
 
+        .paymentMehtod_style{
+            display: flex;
+            align-items: center;
+        }
 
     </style>
 }
@@ -179,7 +187,7 @@
                                         {
                                             var price = itemCart.Price;
 
-                                            if(itemCart.Promotion.Value != null)
+                                            if (itemCart.Promotion.Value != null)
                                             {
                                                 price = price * (1 - (float)itemCart.Promotion.Value / 100);
                                             }
@@ -204,11 +212,11 @@
                                                         {
                                                             <del class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</del>
                                                         }
-                                                        <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index"/>
+                                                        <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index" />
                                                         <input type="hidden" value="@itemCart.Price" id="product_price_@index" />
                                                         <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index" />
                                                     </td>
-                                                    
+
                                                     <td><p class="float_r margin_auto">@amount.ToString("#,###")</p></td>
                                                 </tr>
                                             }
@@ -232,17 +240,17 @@
                                                             <del class="text-muted mb-0 mt-1">@itemCart.Price.ToString("#,###") VND x @itemCart.Quantity</del>
                                                         }
                                                         <input type="hidden" value="@itemCart.ProductOptionId" id="product_productOptionId_@index" />
-                                                        <input type="hidden" value="@itemCart.Price" id="product_price_@index"/>
-                                                        <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index"/>
+                                                        <input type="hidden" value="@itemCart.Price" id="product_price_@index" />
+                                                        <input type="hidden" value="@itemCart.Quantity" id="product_quantity_@index" />
                                                     </td>
                                                     <td style="text-align: center"><p class="float_r margin_auto">@amount.ToString("#,###") VND</p></td>
                                                 </tr>
                                             }
-                                            <input type="hidden" value="@itemCart.Promotion.PromotionId" id="product_promotionId_@index"/>
+                                            <input type="hidden" value="@itemCart.Promotion.PromotionId" id="product_promotionId_@index" />
                                             totalAmount += amount;
                                             index++;
                                         }
-                                        <input type="hidden" value="@index" id="product_index"/>
+                                        <input type="hidden" value="@index" id="product_index" />
                                         <input type="hidden" value="1" id="products_null" />
 
                                     </tbody>
@@ -318,10 +326,11 @@
                                                         <div class="col-lg-12">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="orderEmail">Email (Không bắt buộc)</label>
-                                                                @if(ViewBag.Customer != null && ViewBag.Customer.Email != null)
+                                                                @if (ViewBag.Customer != null && ViewBag.Customer.Email != null)
                                                                 {
                                                                     <input type="email" class="form-control" id="orderEmail" value="@ViewBag.Customer.Email" readonly placeholder="Nhập email (không bắt buộc)">
-                                                                }else
+                                                                }
+                                                                else
                                                                 {
                                                                     <input type="email" class="form-control" id="orderEmail" placeholder="Nhập email (không bắt buộc)">
                                                                 }
@@ -431,15 +440,33 @@
                                         <h5 class="font-size-14 mb-3">Phương thức thanh toán :</h5>
                                         <div class="row">
                                             <div class="col-lg-3 col-sm-6">
-                                                <div data-bs-toggle="collapse">
-                                                    <label class="card-radio-label" for="paymentMethod">
-                                                        <input type="radio" name="pay-method" id="paymentMethod" value="VNPay" class="card-radio-input" checked>
-                                                        <span class="card-radio py-3 text-center text-truncate">
-                                                            <img src="~/img/vnpay.png" />
-                                                            VNpay
+                                                <label class="card-radio-label" for="paymentMethod">
+                                                        <input type="radio" name="pay-method" id="paymentMethod" value="VNPay" class="card-radio-input">
+                                                        <span class="card-radio  text-center text-truncate" style="width: 90%; height:108px">
+                                                            <img src="~/img/vnpay.png" style="height: 110px" />
                                                         </span>
-                                                    </label>
-                                                </div>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-8 col-sm-6 paymentMehtod_style">
+                                                <label class="card-radio-label" for="paymentMethod">
+                                                    <span>Thanh toán bằng ví điện tử VNPay</span>
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                        <div class="row" id="COD_Tag">
+                                            <div class="col-lg-3 col-sm-6">
+                                                <label class="card-radio-label" for="COD">
+                                                    <input type="radio" name="pay-method" id="COD" value="COD" class="card-radio-input">
+                                                    <span class="card-radio  text-center text-truncate" id="COD" style="width: 90%; height: 105px">
+                                                        <img src="~/img/cod.jpg" style="height:110px" />
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="col-lg-8 col-sm-6 paymentMehtod_style">
+                                                <label class="card-radio-label" for="COD">
+                                                    <span>Thanh toán khi nhận hàng</span>
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
@@ -488,14 +515,14 @@
                                             <p class="float_r margin_auto" id="save">-0 VND</p>
                                         </td>
                                     </tr>
-                                    @*                                     <tr>
-                                    <td colspan="2">
-                                    <h5 class="font-size-14 m-0">Estimated Tax: </h5>
-                                    </td>
-                                    <td>
-                                    $ 18.20
-                                    </td>
-                                    </tr> *@
+                                    <tr>
+                                        <td colspan="2">
+                                            <h5 class="font-size-14 m-0" >Phí vận chuyển: </h5>
+                                        </td>
+                                        <td>
+                                            <p class="float_r margin_auto" id="shipMoney">+0 VND</p>
+                                        </td>
+                                    </tr>
 
                                     <tr class="bg-light">
                                         <td colspan="2">
@@ -503,8 +530,9 @@
                                         </td>
                                         <td>
                                             <p class="float_r margin_auto"><strong id="money">@moneyToCheckout.ToString("#,###") VND</strong></p>
-                                            <input type="hidden" value="@moneyToCheckout" id="moneyToCheckout"/>
-                                            <input type="hidden" value="@moneyToCheckout" id="order_value"/>
+                                            <input type="hidden" value="@moneyToCheckout" id="moneyToCheckout" />
+                                            <input type="hidden" value="@moneyToCheckout" id="order_value" />
+                                            <input type="hidden" value="@shipMoney" id="moneyToShip"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -530,17 +558,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @if(discounts == null)
+                @if (discounts == null)
                 {
                     <span>Không có mã giảm giá nào</span>
                 }
                 else
                 {
-                    @foreach(var item in discounts)
+                    @foreach (var item in discounts)
                     {
                         <div class="discount-card @(item.Status == false ? "out-of-stock" : "")">
                             <div style="width: 89%">
-                                @if(item.DiscountType.Id == 3)
+                                @if (item.DiscountType.Id == 3)
                                 {
                                     <div class="header">
                                         <img src="~/img/coupon.png" />
@@ -585,10 +613,10 @@
                             <div>
                                 <input type="radio" name="discount" value="@item.Id" onclick="chooseDiscount.call(this)"></input>
                                 <input type="hidden" name="title" value="@item.Title"></input>
-                                <input type="hidden" name="reduce" value= "@item.Reduce"></input>
+                                <input type="hidden" name="reduce" value="@item.Reduce"></input>
                             </div>
                         </div>
-                        
+
                     }
                 }
             </div>
@@ -599,7 +627,7 @@
                         <span id="title"></span>
                     </div>
                 </div>
-                
+
                 <div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-primary" onclick="useDiscount()">Áp dụng</button>
@@ -611,7 +639,7 @@
 
 <script src="~/js/checkout-form.js"></script>
 <script>
-    
+
 
     function AddViewProduct() {
         if ($('#selectViewProduct').text() === "Rút gọn") {
@@ -656,7 +684,7 @@
                     $("#consigneeProvince").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
                 });
                 $("#consigneeProvince").change(function (e) {
-                    var idtinh = $(this).val();
+                    let idtinh = $(this).val();
                     //Lấy quận huyện
                     $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
                         if (data_quan.error == 0) {
@@ -665,9 +693,23 @@
                             $.each(data_quan.data, function (key_quan, val_quan) {
                                 $("#consigneeDistrict").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
                             });
+
+                            let provice = $('#consigneeProvince option:selected').text();
+                            console.log("provice: " + provice);
+                            if (provice.includes("Hà Nội")) {
+                                $('#COD_Tag').show();
+                                $('#paymentMethod').prop('checked', false);
+                                $('#COD').prop('disabled', false);
+                            } else {
+                                $('#COD_Tag').hide();
+                                $('#paymentMethod').prop('checked', true);
+                                $('#COD').prop('disabled', true);
+                            }
+
                             //Lấy phường xã
                             $("#consigneeDistrict").change(function (e) {
-                                var idquan = $(this).val();
+                                
+                                let idquan = $(this).val();
                                 $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
                                     if (data_phuong.error == 0) {
                                         $("#consigneeWard").html('<option value="0">Phường Xã</option>');
@@ -676,6 +718,58 @@
                                         });
                                     }
                                 });
+
+                                let moneyToCheckout = $('#moneyToCheckout').val();
+                                let district = $('#consigneeDistrict option:selected').text();
+                                if (provice.includes('Hà Nội')) {
+                                    $('#COD_Tag').css('display', '');
+                                    if(!district.includes('Quận')) {
+                                        $('#COD_Tag').hide();
+                                        $('#paymentMethod').prop('checked', true);
+                                        $('#COD').prop('disabled', true);
+                                        let price = Number($('#order_value').val());
+                                        console.log(price);
+                                        if (price >= 0 && price <= 200000) {
+                                            $('#shipMoney').text('+20,000 VND');
+                                            $('#moneyToShip').val(20000);
+                                        } else if (price > 200000 && price < 1000000) {
+                                            $('#shipMoney').text('+30,000 VND');
+                                            $('#moneyToShip').val(30000);
+                                        } else {
+                                            $('#shipMoney').text('+0 VND');
+                                            $('#moneyToShip').val(0);
+                                        }
+
+                                    }else {
+                                        $('#COD_Tag').show();
+                                        $('#paymentMethod').prop('checked', false);
+                                        $('#COD').prop('disabled', false);
+                                    }
+
+
+                                }else {
+                                    $('#COD_Tag').hide();
+                                    $('#paymentMethod').prop('checked', true);
+                                    $('#COD').prop('disabled', true);
+                                    let price = Number($('#order_value').val());
+                                    console.log(price);
+                                    if (price >= 0 && price <= 200000) {
+                                        $('#shipMoney').text('+20,000 VND');
+                                        $('#moneyToShip').val(20000);
+                                    } else if (price > 200000 && price < 1000000) {
+                                        $('#shipMoney').text('+30,000 VND');
+                                        $('#moneyToShip').val(30000);
+                                    } else {
+                                        $('#shipMoney').text('+0 VND');
+                                        $('#moneyToShip').val(0);
+                                    }
+                                }
+                                let moneyShip = $('#moneyToShip').val();
+                                let totalMoney = Number(moneyToCheckout) + Number(moneyShip);
+                                $('#moneyToCheckout').val(totalMoney);
+                                const formatter = new Intl.NumberFormat('en-US'); 
+                                const formattedNumber = formatter.format(totalMoney);
+                                $('#money').text(formattedNumber + ' VND');
                             });
 
                         }

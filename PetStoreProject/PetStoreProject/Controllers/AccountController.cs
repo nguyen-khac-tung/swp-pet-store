@@ -578,6 +578,14 @@ namespace PetStoreProject.Controllers
 
         [RoleAuthorize("Customer")]
         [HttpPost]
+        public IActionResult UpdateStatusOrder(long orderId, string status)
+        {
+            _order.UpdateStatusOrder(orderId, status, 0);
+            return Json(new { success = true });
+        }
+
+        [RoleAuthorize("Customer")]
+        [HttpPost]
         public IActionResult ReturnRefund(CreateReturnRefund returnRefund)
         {
             var email = HttpContext.Session.GetString("userEmail");

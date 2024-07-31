@@ -15,8 +15,9 @@
                     <thead>
                     @* <th class="ps-4">Mã dịch vụ</th> *@
                     <th>Người nhận</th>
+                        <th>Thanh toán</th>
                     <th>Ngày đặt</th>
-                        @* <th>Địa chỉ</th> *@
+                        
                     <th>Sản phẩm</th>
                     <th>Trạng thái</th>
                     <th>Tổng tiền</th>
@@ -28,7 +29,7 @@
                             <tr id="order-item-@orderHistory.OrderId" >
                                 @* <td class="ps-4">#@orderHistory.OrderId</td> *@
                                 <td>@orderHistory.ConsigneeName</td>
-                                @* <td>@orderHistory.ConsigneePhone</td> *@
+                                <td>@orderHistory.PaymentMethod</td>
                                 <td class="orderdate-cell">@orderHistory.OrderDate</td>
                                 @* <td>@orderHistory.ShipAddress</td> *@
                                 <td>@orderHistory.totalOrderItems</td>

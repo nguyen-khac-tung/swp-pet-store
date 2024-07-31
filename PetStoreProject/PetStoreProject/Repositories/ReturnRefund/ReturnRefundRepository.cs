@@ -34,26 +34,11 @@ namespace PetStoreProject.Repositories.ReturnRefund
                     ReturnId = returnId,
                     ImageUrl = result.Url.ToString()
                 };
+
                 _context.Images.Add(image);
             }
         }
-        private bool IsBase64String(string imageData)
-        {
-            if (imageData.Contains("cloudinary"))
-            {
-                return false;
-            }
-            try
-            {
-                var base64Data = imageData.Split(',')[1];
-                Convert.FromBase64String(base64Data);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
+
 
         public void CreateReturnRefund(ViewModels.CreateReturnRefund returnRefund)
         {

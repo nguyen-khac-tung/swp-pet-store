@@ -50,6 +50,13 @@ public partial class Order
     [StringLength(50)]
     public string Status { get; set; }
 
+    public int? ShipperId { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DeliveredTime { get; set; }
+
+    public float? ShippingFee { get; set; }
+
     public int? ReturnId { get; set; }
 
     [ForeignKey("CustomerId")]
@@ -69,4 +76,8 @@ public partial class Order
     [ForeignKey("ReturnId")]
     [InverseProperty("Orders")]
     public virtual ReturnRefund Return { get; set; }
+
+    [ForeignKey("ShipperId")]
+    [InverseProperty("Orders")]
+    public virtual Shipper Shipper { get; set; }
 }

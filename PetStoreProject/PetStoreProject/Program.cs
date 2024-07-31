@@ -30,6 +30,8 @@ using PetStoreProject.Repositories.Promotion;
 using PetStoreProject.Repositories.Service;
 using PetStoreProject.Repositories.Size;
 using PetStoreProject.Repositories.WishList;
+using PetStoreProject.Repositories.Shipper;
+using PetStoreProject.Repositories.District;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -119,6 +121,10 @@ builder.Services.AddTransient<IConsultationRepository, ConsultationRepository>()
 builder.Services.AddTransient<ICheckoutRepository, CheckoutRepository>();
 
 builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
+
+builder.Services.AddTransient<IShipperRepository, ShipperRepository>();
+
+builder.Services.AddTransient<IDistrictRepository, DistrictRepository>();
 
 builder.Services.AddSingleton(new CloudinaryDotNet.Cloudinary(new CloudinaryDotNet.Account(
         builder.Configuration.GetSection("Cloudinary:CloudName").Value,

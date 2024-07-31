@@ -219,6 +219,8 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Discount).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Discount");
 
             entity.HasOne(d => d.Return).WithMany(p => p.Orders).HasConstraintName("FK_Orders_ReturnRefund");
+
+            entity.HasOne(d => d.Shipper).WithMany(p => p.Orders).HasConstraintName("FK_Orders_Shipper");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -323,11 +325,6 @@ public partial class PetStoreDBContext : DbContext
                 .HasConstraintName("FK_ResponseFeedback_Feedback");
         });
 
-        modelBuilder.Entity<ReturnRefund>(entity =>
-        {
-            entity.Property(e => e.ReturnId).ValueGeneratedNever();
-        });
-
         modelBuilder.Entity<Role>(entity =>
         {
             entity.Property(e => e.RoleId).ValueGeneratedNever();
@@ -344,8 +341,6 @@ public partial class PetStoreDBContext : DbContext
 
         modelBuilder.Entity<Shipper>(entity =>
         {
-            entity.Property(e => e.ShipperId).ValueGeneratedNever();
-
             entity.HasOne(d => d.Account).WithMany(p => p.Shippers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Shipper_Account");

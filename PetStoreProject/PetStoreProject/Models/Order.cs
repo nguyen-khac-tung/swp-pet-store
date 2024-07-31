@@ -55,7 +55,7 @@ public partial class Order
     [Column(TypeName = "datetime")]
     public DateTime? DeliveredTime { get; set; }
 
-    public float? ShippingFee { get; set; }
+    public float ShippingFee { get; set; }
 
     public int? ReturnId { get; set; }
 

@@ -27,22 +27,14 @@ namespace PetStoreProject.Repositories.ReturnRefund
             foreach (var imageData in returnRefund.images)
             {
                 maxImageId++;
+                ImageUploadResult result = await _cloudinary.UploadImage(imageData, "image_" + maxImageId);
                 Models.Image image = new Models.Image
                 {
                     ImageId = maxImageId,
-                    ReturnId = returnId
+                    ReturnId = returnId,
+                    ImageUrl = result.Url.ToString()
                 };
-                if (IsBase64String(imageData))
-                {
-                    ImageUploadResult result = await _cloudinary.UploadImage(imageData, "image_" + maxImageId);
-                    image.ImageUrl = result.Url.ToString();
-                }
-                else
-                {
-                    image.ImageUrl = imageData;
-                }
                 _context.Images.Add(image);
-
             }
         }
         private bool IsBase64String(string imageData)

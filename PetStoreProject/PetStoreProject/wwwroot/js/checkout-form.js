@@ -76,7 +76,7 @@ function ItemOrders(OrderId, ProductOptionId, Quantity, Price, PromotionId) {
 }
 
 function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderEmail, ConsigneeName,
-    ConsigneePhone, ConsigneeProvince, ConsigneeDistrict, ConsigneeWard, ConsigneeAddressDetail, PaymentMethod, TotalAmount, DiscountId, ShippingFee) {
+    ConsigneePhone, ConsigneeProvince, ConsigneeDistrict, ConsigneeWard, ConsigneeAddressDetail, PaymentMethod, TotalAmount, DiscountId, ShippingFee, OwnDiscountId) {
     this.CheckoutId = 0;
     this.OrderItems = OrderItems;
     this.OrderName = OrderName;
@@ -92,6 +92,7 @@ function CheckOutViewModel(CheckoutId, OrderItems, OrderName, OrderPhone, OrderE
     this.TotalAmount = TotalAmount;
     this.DiscountId = DiscountId;
     this.ShippingFee = ShippingFee;
+    this.OwnDiscountId = OwnDiscountId;
 }
 
 function AddOrderItems() {
@@ -180,7 +181,8 @@ function ProcessPay() {
         paymentMethod,
         moneyToCheckout,
         discountId,
-        shippingFee
+        shippingFee,
+        ownDiscountId
     );
 
     processInfoCheckout(checkoutViewModel);
@@ -261,7 +263,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 let title = '';
 let reduce = 0;
+let ownReduce = 0;
 let discountId = 0;
+let ownDiscountId = 0;
 function showDiscount(event) {
     event.preventDefault()
     $('#staticBackdrop').modal('show')
@@ -269,10 +273,80 @@ function showDiscount(event) {
 
 function chooseDiscount() {
     title = $(this).parent().find('input[name="title"]').val();
-    discountId = $(this).val();
-    $('#title').text("Giảm " + title);
-    $('#title').parent().removeClass('hide')
     reduce = $(this).parent().find('input[name="reduce"]').val();
+    discountId = $(this).val();
+    let totalAmount = parseFloat($("#moneyToCheckout").val()) - parseFloat(reduce);
+    $.ajax({
+        url: "/checkout/getowndiscounts",
+        type: "POST",
+        data: { TotalAmount: totalAmount },
+        success: function (response) {
+            if (response != "Faile") {
+                console.log(response.ownDiscounts)
+                $('#list-own-discounts').empty();
+                for (let item of response.ownDiscounts) {
+                    console.log(item)
+                    let div_discount = `
+                            <div class="discount-card ${item.status == false ? 'out-of-stock' : ""}">
+                                <div style="width: 89%">
+                                    <div class="header">
+                                        <img src="../img/coupon.png" />
+                                        <span class="title">${item.discountType.id != 2 ? "Giảm " + item.value + "% Giảm tối đa " + item.maxValue?.toLocaleString("en-US") + " VND" : "Giảm " + item.value?.toLocaleString("en-US") + " VND"}</span>
+                                    </div>
+                                    <div class="content">
+                                        <div class="description">Đơn Tối Thiểu ${parseFloat(item.minPurchase).toLocaleString("en-US")} VND</div>
+                                    </div>
+                                    <div class="text-tiny">Giới hạn sử dụng: ${item.maxUse} lượt, HSD: ${new Date(item.endDate).toLocaleDateString('vi-VN')}</div>
+                                    <div class="footer">
+                                        <div class="warning">${item.statusString == null ? '' : item.statusString}</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <input type="radio" name="ownDiscount" value="${item.id}}" onclick="chooseOwnDiscount.call(this)" ${item.id == ownDiscountId ? "checked" : ""}></input>
+                                    <input type="hidden" name="title" value="${item.title}"></input>
+                                    <input type="hidden" name="ownReduce" value="${item.reduce}"></input>
+                                </div>
+                            </div>`
+                    if (item.id == ownDiscountId) {
+                        ownReduce = item.reduce
+                    }
+                    $('#list-own-discounts').append(div_discount)
+                }
+            }
+        }
+    })
+    let total_reduce = parseFloat(reduce) + parseFloat(ownReduce);
+    if (ownDiscountId != 0) {
+        $('#number_discount').text('2')
+    }
+    else {
+        $('#number_discount').text('1')
+    }
+
+    $('#title').text("Giảm -" + parseFloat(total_reduce).toLocaleString('en-US'));
+    $('#title').parent().removeClass('hide')
+    console.log(title);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function chooseOwnDiscount() {
+    title = $(this).parent().find('input[name="title"]').val();
+    ownReduce = $(this).parent().find('input[name="ownReduce"]').val();
+    console.log(ownReduce)
+    console.log(reduce)
+    ownDiscountId = $(this).val();
+    let total_reduce = parseFloat(reduce) + parseFloat(ownReduce);
+    if (discountId != 0) {
+        $('#number_discount').text('2')
+    }
+    else {
+        $('#number_discount').text('1')
+    }
+    $('#title').text("Giảm -" + parseFloat(total_reduce).toLocaleString('en-US'));
+    $('#title').parent().removeClass('hide')
     console.log(title);
 }
 
@@ -282,10 +356,10 @@ function useDiscount() {
 
     let moneyShip = Number($("#moneyToShip").val());
     console.log('use_discount:' + moneyShip);
-
-    moneyToCheckout = parseFloat(moneyToCheckout) - reduce + moneyShip;
+    let total_reduce = parseFloat(reduce) + parseFloat(ownReduce);
+    moneyToCheckout = parseFloat(moneyToCheckout) - reduce - ownReduce + moneyShip;
 
     $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")
     $('#moneyToCheckout').val(moneyToCheckout)
-    $('#save').text(title)
+    $('#save').text('-' + total_reduce.toLocaleString('en-US') +' VND')
 }

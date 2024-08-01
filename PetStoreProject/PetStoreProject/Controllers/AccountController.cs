@@ -503,6 +503,7 @@ namespace PetStoreProject.Controllers
             var customer = _customer.GetCustomer(email);
 
             orderCondition.UserId = customer.CustomerId;
+            orderCondition.pageSize = 0;
 
             var listOrderHistory = _order.GetOrderDetailByCondition(orderCondition);
             foreach (var order in listOrderHistory)

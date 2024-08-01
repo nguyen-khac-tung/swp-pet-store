@@ -70,7 +70,10 @@ namespace PetStoreProject.Repositories.Order
         public List<OrderDetailViewModel> GetOrderDetailByCondition(OrderModel orderModel)
         {
             var orders = GetOrderDetailExcuteCondition(orderModel);
-
+            if(orderModel.pageSize == 0)
+            {
+                return orders;
+            }
             orders = orders.Skip((orderModel.pageIndex - 1) * orderModel.pageSize).Take(orderModel.pageSize).ToList();
 
             return orders;

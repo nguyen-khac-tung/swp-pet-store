@@ -130,6 +130,10 @@ namespace PetStoreProject.Controllers
                     amount -= priceReduce;
                 }
             }
+            if(checkout.ShippingFee != 0)
+            {
+                amount += checkout.ShippingFee;
+            }
             foreach (var itemCart in checkout.OrderItems)
             {
                 var quantityInStock = _productOption.QuantityOfProductOption(itemCart.ProductOptionId);

@@ -5,6 +5,8 @@
     double totalMoney = 0;
     var province = Model.ConsigneeAddressDetail.Split(",")[0].Trim();
     var district = Model.ConsigneeAddressDetail.Split(",")[1].Trim();
+    var orderDate = Model.OrderDate;
+    var formattedOrderDate = orderDate.ToString("yyyy-MM-dd");
 }
 
 @using PetStoreProject.ViewModels;
@@ -458,6 +460,7 @@
         <div class="flex items-center gap10 flex-wrap">
             <div class="radio-buttons">
                 <input type="hidden" value="@Model.Status" id="statusOrder" />
+                <input type="hidden" value="@Model.OrderDate.ToString("yyyy-MM-dd")" id="orderDateTime"/>
                 @if (Model.Status == "Chờ xác nhận" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ giao hàng")
                 {
                     if (Model.PaymentMethod == "COD")
@@ -614,6 +617,7 @@
 
 
 <script>
+
     var returnRefund = {
         orderId: 0,
         reasonReturn: "",
@@ -663,12 +667,14 @@
 
     }
 
+    //Event cancel detail return refund 
     function detailReturnRefundCancel() {
         $('#detailRefund').modal('hide');
         $('#modal-body-orderDetail').css('opacity', '1');
         $('#modal-header-style').css('opacity', '1');
     }
 
+    //Event click radio status of order
     var radios = document.querySelectorAll('input[name="admin-language"]');
     radios.forEach(function (radio) {
         radio.addEventListener('click', function () {
@@ -711,6 +717,25 @@
                 if (radio.value == "Trả hàng") {
                     var statusOrder = $('#statusOrder').val();
                     if (statusOrder != "Trả hàng") {
+                        console.log('dateOrder: ' + $('#orderDateTime').val());
+
+                        var orderDate = new Date($('#orderDateTime').val());
+                        console.log("orderDate: " + orderDate);
+                        var currentDate = new Date();
+
+                        // Calculate the difference in time
+                        var timeDiff = currentDate.getTime() - orderDate.getTime();
+                        console.log("timeDiff: " + timeDiff);
+                        // Convert time difference to days
+                        var dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        console.log('dayDiff: ' + dayDiff);
+                        // Check if the difference is greater than 3 days
+                        if (dayDiff > 3) {
+                            alert("Yêu cầu trả hàng chỉ có thể thực hiện trong vòng 3 ngày kể từ ngày đặt hàng.");
+                            $('#admin-language4').prop("checked", true);
+                            $('#admin-language5').prop("checked", false);
+                            return;
+                        }
                         $('#returnRefund').modal('show');
                         $('#modal-body-orderDetail').css('opacity', '0.2');
                         $('#modal-header-style').css('opacity', '0.2');
@@ -722,6 +747,7 @@
         });
     });
 
+    //View detail return refund 
     function DetailReturnRefund(returnId) {
         $('#modal-body-orderDetail').css('opacity', '0.2');
         $('#modal-header-style').css('opacity', '0.2');
@@ -760,6 +786,7 @@
         });
     }
 
+    //Load image detail return refund 
     function LoadImg(imgs) {
         var html = "";
         imgs.forEach(function (item) {
@@ -769,6 +796,7 @@
         return html; // Ensure the HTML is returned
     }
 
+    //Update status for order
     function UpdateStatusOrder(orderId, status) {
         $.ajax({
             url: '/account/UpdateStatusOrder',
@@ -787,7 +815,10 @@
         });
     }
 
+    //Send required return refund
     function SendReturnRefund() {
+        
+
         var imgs = returnRefund.images;
         if (imgs.length == 0) {
             alert("Vui lòng gửi hình ảnh để có thể yêu cầu trả hàng!");
@@ -864,6 +895,7 @@
             reader.readAsDataURL(file);
         }
     }
+
     function addImageToList(src) {
         var listImage = $('#list-image');
         var isExists = false;
@@ -943,6 +975,7 @@
             }
         }
     }
+
     function updateListImage() {
         let previewContainer = document.getElementById('preview-image');
         let images = previewContainer.getElementsByTagName('img');

@@ -40,6 +40,8 @@ namespace PetStoreProject.Areas.Admin.ViewModels
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
+        public int? ShipperId { get; set; }
 
+        public List<int>? Districts { get; set; } 
     }
 }

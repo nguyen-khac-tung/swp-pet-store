@@ -111,7 +111,6 @@ namespace PetStoreProject.Areas.Admin.Controllers
                                 kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
                 return Json(new { success = false, errors });
             }
-
         }
 
         [HttpPost]
@@ -201,11 +200,114 @@ namespace PetStoreProject.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public IActionResult AddShipper(AccountViewModel shipper)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isExistEmail = _account.CheckEmailExist(shipper.Email);
+                bool isAssignDuplicateDistrict = _shipper.CheckAssignDuplicatedDistrict(shipper);
+                bool isValidPhone = PhoneNumber.isValid(shipper.Phone);
+
+                if (isExistEmail)
+                {
+                    var emailMess = "Email này đã tồn tại trong hệ thống!\n Vui lòng sử dụng email khác.";
+
+                    return Json(new { success = false, errors = "email", message = emailMess });
+                }
+                else if (isValidPhone == false)
+                {
+                    var phoneMess = "Số điện thoại không hợp lệ! Vui lòng nhập lại.";
+
+                    return Json(new { success = false, errors = "phone", message = phoneMess });
+                }
+                else if (isAssignDuplicateDistrict)
+                {
+                    var districtMess = "Hai nhân viên giao hàng không thể phụ trách cùng một quận!";
+                    return Json(new { success = false, errors = "district", message = districtMess });
+                }
+                else
+                {
+                    var password = GeneratePassword.GenerateAutoPassword(10);
+
+                    var emailTitle = "Thông báo! Mật khẩu ứng dụng.";
+
+                    var emailBody = "Mật khẩu: " + password;
+
+                    _emailService.SendEmail(shipper.Email, emailTitle, emailBody);
+
+                    shipper.Password = password;
+
+                    _shipper.AddNewShipper(shipper);
+
+                    return Json(new { success = true });
+                }
+            }
+            else
+            {
+                var errors = ModelState.ToDictionary(kvp => kvp.Key,
+                                kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return Json(new { success = false, errors });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateShipper(AccountViewModel shipper)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isExistEmail = false;
+                Models.Shipper shipperDetail = _shipper.GetShipperByID(shipper.ShipperId);
+                if (shipperDetail.Email != shipper.Email)
+                {
+                    isExistEmail = _account.CheckEmailExist(shipper.Email);
+                }
+                bool isAssignDuplicateDistrict = _shipper.CheckAssignDuplicatedDistrict(shipper);
+                bool isValidPhone = PhoneNumber.isValid(shipper.Phone);
+
+                if (isExistEmail)
+                {
+                    var emailMess = "Email này đã tồn tại trong hệ thống!\n Vui lòng sử dụng email khác.";
+
+                    return Json(new { success = false, errors = "email", message = emailMess });
+                }
+                else if (isValidPhone == false)
+                {
+                    var phoneMess = "Số điện thoại không hợp lệ! Vui lòng nhập lại.";
+
+                    return Json(new { success = false, errors = "phone", message = phoneMess });
+                }
+                else if (isAssignDuplicateDistrict)
+                {
+                    var districtMess = "Hai nhân viên giao hàng không thể phụ trách cùng một quận!";
+                    return Json(new { success = false, errors = "district", message = districtMess });
+                }
+                else
+                {
+                    _shipper.UpdateShipper(shipper);
+
+                    return Json(new { success = true });
+                }
+            }
+            else
+            {
+                var errors = ModelState.ToDictionary(kvp => kvp.Key,
+                                kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                return Json(new { success = false, errors });
+            }
+        }
+
+        public IActionResult SelectDistrictIframe()
+        {
+            ViewData["ListDistrict"] = _district.GetDistricts();
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult DeleteShipper(string password, int shipperId)
         {
             var emailAdmin = HttpContext.Session.GetString("userEmail");
             Account accountAdmin = _account.GetAccount(emailAdmin, password);
-            if(accountAdmin == null)
+            if (accountAdmin == null)
             {
                 return Json(new { message = "Fail" });
             }

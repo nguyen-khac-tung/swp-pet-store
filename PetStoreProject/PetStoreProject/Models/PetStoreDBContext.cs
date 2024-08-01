@@ -41,6 +41,8 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<Image> Images { get; set; }
 
+    public virtual DbSet<LoyaltyLevel> LoyaltyLevels { get; set; }
+
     public virtual DbSet<News> News { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -138,6 +140,8 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.Customers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_Account");
+
+            entity.HasOne(d => d.LoyaltyLevel).WithMany(p => p.Customers).HasConstraintName("FK_Customer_LoyaltyLevels");
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -160,9 +164,7 @@ public partial class PetStoreDBContext : DbContext
         {
             entity.Property(e => e.DistrictId).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Shipper).WithMany(p => p.Districts)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_District_Shipper");
+            entity.HasOne(d => d.Shipper).WithMany(p => p.Districts).HasConstraintName("FK_District_Shipper");
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -195,6 +197,11 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Return).WithMany(p => p.Images).HasConstraintName("FK_Image_ReturnRefund");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Images).HasConstraintName("FK_Image_Service");
+        });
+
+        modelBuilder.Entity<LoyaltyLevel>(entity =>
+        {
+            entity.Property(e => e.LevelID).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<News>(entity =>

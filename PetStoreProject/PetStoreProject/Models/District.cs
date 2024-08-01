@@ -18,7 +18,7 @@ public partial class District
     [StringLength(50)]
     public string Name { get; set; }
 
-    public int ShipperId { get; set; }
+    public int? ShipperId { get; set; }
 
     [ForeignKey("ShipperId")]
     [InverseProperty("Districts")]

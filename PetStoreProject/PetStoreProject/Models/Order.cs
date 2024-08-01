@@ -59,6 +59,8 @@ public partial class Order
 
     public int? ReturnId { get; set; }
 
+    public int? OwnDiscountId { get; set; }
+
     [ForeignKey("CustomerId")]
     [InverseProperty("Orders")]
     public virtual Customer Customer { get; set; }

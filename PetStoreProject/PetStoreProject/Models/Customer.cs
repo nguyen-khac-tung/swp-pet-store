@@ -34,7 +34,14 @@ public partial class Customer
 
     public bool? IsDelete { get; set; }
 
+    public int? LoyaltyLevelID { get; set; }
+
+    [Column(TypeName = "decimal(18, 3)")]
+    public decimal? TotalAmountSpent { get; set; }
+
     public int AccountId { get; set; }
+
+    public bool? isLoyalty { get; set; }
 
     [ForeignKey("AccountId")]
     [InverseProperty("Customers")]
@@ -42,6 +49,10 @@ public partial class Customer
 
     [InverseProperty("Customer")]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
+    [ForeignKey("LoyaltyLevelID")]
+    [InverseProperty("Customers")]
+    public virtual LoyaltyLevel LoyaltyLevel { get; set; }
 
     [InverseProperty("Customer")]
     public virtual ICollection<OrderService> OrderServices { get; set; } = new List<OrderService>();

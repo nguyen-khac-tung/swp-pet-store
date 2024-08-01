@@ -165,6 +165,7 @@ function ProcessPay() {
         ' ' + orderEmail + ' address ' + consigneeAddress + ' amount: ' + moneyToCheckout + ' payment: ' + paymentMethod);
 
     AddOrderItems();
+    console.log('OrderItems: ' + OrderItems);
 
     checkoutViewModel = new CheckOutViewModel(
         0,

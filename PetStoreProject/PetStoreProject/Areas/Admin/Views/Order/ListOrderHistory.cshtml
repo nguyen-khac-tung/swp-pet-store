@@ -56,16 +56,13 @@
                         <div class="body-title no-select" onclick="SortByOrderName()">Người đặt<i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li>
-                        <div class="body-title">SĐT đặt</div>
+                        <div class="body-title">Thanh toán</div>
                     </li>
                     <li>
                         <div class="body-title no-select" onclick="SortByOrderDate()">Ngày đặt<i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li>
-                        <div class="body-title no-select" onclick="SortByConsigneeName()">Người nhận<i class="bi bi-chevron-expand"></i></div>
-                    </li>
-                    <li>
-                        <div class="body-title">SĐT nhận</div>
+                        <div class="body-title no-select" onclick="SortByConsigneeName()">Trạng thái<i class="bi bi-chevron-expand"></i></div>
                     </li>
                     <li>
                         <div class="body-title no-select" onclick="SortByTotalOrder()">Sản phẩm<i class="bi bi-chevron-expand"></i></div>
@@ -165,6 +162,11 @@
         return sortingOrder[nextIndex];
     }
 
+    function cycleSortStatus(currentOrder) {
+        let nextIndex = (sortingStatus.indexOf(currentOrder) + 1) % sortingStatus.length;
+        return sortingStatus[nextIndex];
+    }
+
     window.addEventListener('load', function () {
         LoadOrderHistory(optionOrders);
     })
@@ -186,7 +188,7 @@
                     $('#total-order').html('Tổng: ' + response.totalOrder + ' đơn hàng ');
                 } else {
                     $('#list-order-history').html(`<div class="empty-order-history"><i class="fas fa-box-open" id="icon-box-empty"></i>
-                                                    <h6>Lịch sử đơn hàng hiện tại trống.</h6></div>`);
+                                                        <h6>Lịch sử đơn hàng hiện tại trống.</h6></div>`);
                     $('#pagination').empty();
                     $('#total-order').empty();
                 }
@@ -210,21 +212,33 @@
         let dateOnlyString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
         html += `<li class="countries-item gap14" data-order='${encodeURIComponent(JSON.stringify(order))}'>
-                            <div class="">#${order.orderId}</div>
-                            <div class="name">${order.fullName}</div>
-                            <div class="body-text">${order.phone}</div>
-                            <div class="body-text">${dateOnlyString}</div>
-                            <div class="body-text">${order.consigneeName}</div>
-                            <div class="body-text">${order.consigneePhone}</div>
-                            <div class="body-text">${order.totalOrderItems}</div>
-                            <div class="body-text">${amount} VND
-                            </div>
-                            <div class="list-icon-function">
-                                <div class="item eye">
-                                    <i class="icon-eye" onclick="OrderDetail(this.parentElement.parentElement.parentElement)"></i>
+                                <div class="">#${order.orderId}</div>
+                                <div class="name">${order.fullName}</div>
+                                <div class="body-text">${order.paymentMethod}</div>
+                                <div class="body-text">${dateOnlyString}</div>`;
+        if (order.status == 'Chờ lấy hàng') {
+            html += `<div class="block-pending"> ${order.status} </div>`;
+        } else if (order.status == 'Chờ xác nhận') {
+            html += `<div class="block-green">${order.status}</div>`;
+        } else if (order.status == 'Chờ giao hàng') {
+            html += `<div class="block-orage">${order.status}</div>`;
+        } else if (order.status == 'Đã giao hàng') {
+            html += `<div class="block-available">${order.status}</div>`;
+        } else if (order.status == 'Trả hàng') {
+            html += `<div class="block-not-available">${order.status}</div>`;
+        } else if (order.status == 'Đã hoàn thành') {
+            html += `<div class="block-published">${order.status}</div>`;
+        } else if (order.status == 'Đã hủy') {
+            html += `<div class="block-not-available">${order.status}</div>`;
+        }
+        html+=`<div class="body-text">${order.totalOrderItems}</div>
+                                <div class="body-text">${amount} VND
                                 </div>
-                            </div>
-                        </li>`;
+                                <div class="list-icon-function">
+                                    <div class="item eye">
+                                        <i class="icon-eye" onclick="OrderDetail(this.parentElement.parentElement.parentElement)"></i>
+                                    </div>
+                                </li>`;
         return html;
     }
 
@@ -297,7 +311,7 @@
     }
     function SortByConsigneeName() {
         resetOptionOrder();
-        sortConsigneeName = cycleSortOrder(sortConsigneeName);
+        sortConsigneeName = cycleSortStatus(sortConsigneeName);
         optionOrders.SortConsigneeName = sortConsigneeName;
         LoadOrderHistory(optionOrders);
     }

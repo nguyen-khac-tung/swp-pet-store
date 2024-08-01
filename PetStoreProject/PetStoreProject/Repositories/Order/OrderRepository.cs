@@ -108,6 +108,22 @@ namespace PetStoreProject.Repositories.Order
                 orders = orders.Where(o => o.ConsigneeName.ToLower().Contains(orderModel.SearchConsigneeName.ToLower())).ToList();
             }
 
+            if (orderModel.SortConsigneeName == "Chờ xác nhận")
+                orders = orders.Where(o => o.Status.Contains("Chờ xác nhận")).ToList();
+            else if (orderModel.SortConsigneeName == "Đã hủy")
+                orders = orders.Where(o => o.Status.Contains("Đã hủy")).ToList();
+            else if (orderModel.SortConsigneeName == "Đã giao hàng")
+                orders = orders.Where(o => o.Status.Contains("Đã giao hàng")).ToList();
+            else if (orderModel.SortConsigneeName == "Chờ giao hàng")
+                orders = orders.Where(o => o.Status.Contains("Chờ giao hàng")).ToList();
+            else if (orderModel.SortConsigneeName == "Đã nhận hàng")
+                orders = orders.Where(o => o.Status.Contains("Đã nhận hàng")).ToList();
+            else if (orderModel.SortConsigneeName == "Đã hoàn thành")
+                orders = orders.Where(o => o.Status.Contains("Đã hoàn thành")).ToList();
+            else if (orderModel.SortConsigneeName == "Trả hàng")
+                orders = orders.Where(o => o.Status.Contains("Trả hàng")).ToList();
+
+
             if (orderModel.SortOrderId == "abc")
                 orders = orders.OrderBy(o => o.OrderId).ToList();
             else if (orderModel.SortOrderId == "zxy")
@@ -133,10 +149,7 @@ namespace PetStoreProject.Repositories.Order
             else if (orderModel.SortPrice == "zxy")
                 orders = orders.OrderByDescending(o => o.TotalAmount).ToList();
 
-            if (orderModel.SortConsigneeName == "abc")
-                orders = orders.OrderBy(o => o.ConsigneeName).ToList();
-            else if (orderModel.SortConsigneeName == "zxy")
-                orders = orders.OrderByDescending(o => o.ConsigneeName).ToList();
+
 
             return orders;
         }

@@ -218,7 +218,7 @@ namespace PetStoreProject.Controllers
             if (checkoutInfoCookie != null)
             {
                 checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
-                checkoutInfo.Status = "Chờ xác nhận";
+
             }
 
             //Xóa phần tử trong database || cookie
@@ -230,6 +230,7 @@ namespace PetStoreProject.Controllers
 
             if (email != null)
             {
+                checkoutInfo.Status = "Chờ xác nhận";
                 //Thêm order, orderItem
                 var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, customerID, email);
                 if (!resultCheckout.Equals("Thanh toán thành công"))
@@ -251,6 +252,7 @@ namespace PetStoreProject.Controllers
             }
             else
             {
+                checkoutInfo.Status = "Chờ lấy hàng";
                 //Thêm order, orderItem
                 var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, null, null);
                 if (!resultCheckout.Equals("Thanh toán thành công"))
@@ -402,7 +404,6 @@ namespace PetStoreProject.Controllers
             if (checkoutInfoCookie != null)
             {
                 checkoutInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckoutViewModel>(checkoutInfoCookie);
-                checkoutInfo.Status = "Chờ lấy hàng";
             }
 
 
@@ -416,6 +417,7 @@ namespace PetStoreProject.Controllers
 
             if (email != null)
             {
+                checkoutInfo.Status = "Chờ lấy hàng";
                 //Thêm order, orderItem
                 var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, customerID, email);
                 if (!resultCheckout.Equals("Thanh toán thành công"))
@@ -437,6 +439,7 @@ namespace PetStoreProject.Controllers
             }
             else
             {
+                checkoutInfo.Status = "Đã hoàn thành";
                 //Thêm order, orderItem
                 var resultCheckout = await _checkout.ProcessCheckOut(checkoutInfo, null, null);
                 if (!resultCheckout.Equals("Thanh toán thành công"))

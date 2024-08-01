@@ -109,19 +109,19 @@ namespace PetStoreProject.Repositories.Order
             }
 
             if (orderModel.SortConsigneeName == "Chờ xác nhận")
-                orders = orders.Where(o => o.Status.Contains("Chờ xác nhận")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Chờ xác nhận")).ToList();
             else if (orderModel.SortConsigneeName == "Đã hủy")
-                orders = orders.Where(o => o.Status.Contains("Đã hủy")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Đã hủy")).ToList();
             else if (orderModel.SortConsigneeName == "Đã giao hàng")
-                orders = orders.Where(o => o.Status.Contains("Đã giao hàng")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Đã giao hàng")).ToList();
             else if (orderModel.SortConsigneeName == "Chờ giao hàng")
-                orders = orders.Where(o => o.Status.Contains("Chờ giao hàng")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Chờ giao hàng")).ToList();
             else if (orderModel.SortConsigneeName == "Đã nhận hàng")
-                orders = orders.Where(o => o.Status.Contains("Đã nhận hàng")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Đã nhận hàng")).ToList();
             else if (orderModel.SortConsigneeName == "Đã hoàn thành")
-                orders = orders.Where(o => o.Status.Contains("Đã hoàn thành")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Đã hoàn thành")).ToList();
             else if (orderModel.SortConsigneeName == "Trả hàng")
-                orders = orders.Where(o => o.Status.Contains("Trả hàng")).ToList();
+                orders = orders.Where(o => o.Status.Equals("Trả hàng")).ToList();
 
 
             if (orderModel.SortOrderId == "abc")

@@ -88,6 +88,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
             }
             var checkoutDetail = new CheckoutViewModel
             {
+                UserId = order.CustomerId,
                 OrderId = long.Parse(order.OrderId),
                 OrderEmail = order.Email,
                 OrderName = order.FullName,

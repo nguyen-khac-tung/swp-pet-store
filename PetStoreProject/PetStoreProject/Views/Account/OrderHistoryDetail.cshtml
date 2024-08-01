@@ -474,9 +474,9 @@
             <div class="radio-buttons">
                 <input type="hidden" value="@Model.Status" id="statusOrder" />
                 <input type="hidden" value="@Model.OrderDate.ToString("yyyy-MM-dd")" id="orderDateTime" />
-                @if (Model.Status == "Chờ xác nhận" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ giao hàng")
+                @if(province.Contains("Hà Nội") && district.Contains("Quận"))
                 {
-                    if (Model.PaymentMethod == "COD")
+                    if(Model.PaymentMethod == "COD" && Model.Status != "Chờ giao hàng" && Model.Status != "Đã giao hàng")
                     {
                         <div class="item">
                             <input type="radio" name="admin-language" value="Đã hủy" id="admin-language7"
@@ -502,16 +502,73 @@
                         @(Model.Status == "Chờ giao hàng" ? "checked" : "") disabled="" />
                         <label for="admin-language3"><span class="body-title-2">Chờ giao hàng</span></label>
                     </div>
-                }
-                @if (Model.Status == "Đã giao hàng")
+@*                     @if(Model.Status == "Chờ lấy hàng")
+                    {
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã giao hàng" id="admin-language4" readonly
+                            @(Model.Status == "Đã giao hàng" ? "checked" : "") disabled="">
+                            <label for="admin-language4"><span class="body-title-2">Đã giao hàng</span></label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
+                            @(Model.Status == "Trả hàng" ? "checked" : "") disabled=""
+                            @(Model.Status == "Đã hoàn thành" ? "disabled" : "")>
+                            <label for="admin-language5"><span class="body-title-2">Trả hàng</span></label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã hoàn thành" id="admin-language6"
+                            @(Model.Status == "Đã hoàn thành" ? "checked" : "") disabled=""
+                            @(Model.Status == "Trả hàng" ? "disabled" : "")>
+                            <label for="admin-language6"><span class="body-title-2">Hoàn thành</span></label>
+                        </div>
+                    } *@
+                    @if(Model.Status == "Chờ giao hàng")
+                    {
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã giao hàng" id="admin-language4" readonly
+                            @(Model.Status == "Đã giao hàng" ? "checked" : "") disabled="">
+                            <label for="admin-language4"><span class="body-title-2">Đã giao hàng</span></label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
+                            @(Model.Status == "Trả hàng" ? "checked" : "") disabled=""
+                            @(Model.Status == "Đã hoàn thành" ? "disabled" : "")>
+                            <label for="admin-language5"><span class="body-title-2">Trả hàng</span></label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã hoàn thành" id="admin-language6"
+                            @(Model.Status == "Đã hoàn thành" ? "checked" : "") disabled =""
+                            @(Model.Status == "Trả hàng" ? "disabled" : "")>
+                            <label for="admin-language6"><span class="body-title-2">Hoàn thành</span></label>
+                        </div>
+                    }
+                    @if(Model.Status == "Đã giao hàng")
+                    {
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã giao hàng" id="admin-language4" readonly
+                            @(Model.Status == "Đã giao hàng" ? "checked" : "") disabled="">
+                            <label for="admin-language4"><span class="body-title-2">Đã giao hàng</span></label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
+                            @(Model.Status == "Trả hàng" ? "checked" : "")
+                            @(Model.Status == "Đã hoàn thành" ? "disabled" : "")>
+                            <label for="admin-language5"><span class="body-title-2">Trả hàng</span></label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã hoàn thành" id="admin-language6"
+                            @(Model.Status == "Đã hoàn thành" ? "checked" : "")
+                            @(Model.Status == "Trả hàng" ? "disabled" : "")>
+                            <label for="admin-language6"><span class="body-title-2">Hoàn thành</span></label>
+                        </div>
+                    }
+                }else
                 {
                     <div class="item">
-                        <input type="radio" name="admin-language" value="Đã giao hàng" id="admin-language4" readonly
-                        @(Model.Status == "Đã giao hàng" ? "checked" : "") disabled="">
-                        <label for="admin-language4"><span class="body-title-2">Đã giao hàng</span></label>
+                        <input type="radio" name="admin-language" value="Chờ lấy hàng" id="admin-language2"
+                        @(Model.Status == "Chờ lấy hàng" ? "checked" : "") disabled="" >
+                        <label for="admin-language2"><span class="body-title-2">Chờ lấy hàng</span></label>
                     </div>
-
-
                     <div class="item">
                         <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
                         @(Model.Status == "Trả hàng" ? "checked" : "")
@@ -525,14 +582,8 @@
                         <label for="admin-language6"><span class="body-title-2">Hoàn thành</span></label>
                     </div>
                 }
-                @if (Model.Status == "Trả hàng")
+                @if(Model.Status == "Trả hàng")
                 {
-                    <div class="item">
-                        <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
-                        @(Model.Status == "Trả hàng" ? "checked" : "")
-                        @(Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" ? "disabled" : "")>
-                        <label for="admin-language5"><span class="body-title-2">Trả hàng</span></label>
-                    </div>
                     <div class="item">
                         <button class="btn btn-primary" onclick="DetailReturnRefund(@Model.ReturnId)">Chi tiết trả hàng</button>
                     </div>
@@ -610,7 +661,8 @@
                         <fieldset class="name">
                             <label class="body-title mb-10"><strong>Trạng thái phản hồi trả hàng</strong></label>
                             <select id="selectStatusReturn" disabled>
-                                <option value="Xác nhận trả hàng" selected>Xác nhận trả hàng</option>
+                                <option value="" selected>Chưa phản hồi</option>
+                                <option value="Xác nhận trả hàng" >Xác nhận trả hàng</option>
                                 <option value="Từ chối trả hàng">Từ chối trả hàng</option>
                             </select>
                         </fieldset>
@@ -630,6 +682,8 @@
 
 
 <script>
+
+    var numberViewProduct = 1;
 
     var returnRefund = {
         orderId: 0,
@@ -672,7 +726,8 @@
         $('#orderDetail').modal('hide');
     }
     function CloseReasonRefund() {
-        $('#admin-language4').prop("checked", true);
+        $('#orderDetail').modal('show');
+        $('#admin-language2').prop("checked", true);
         $('#admin-language5').prop("checked", false);
         $('#returnRefund').modal('hide');
         $('#modal-body-orderDetail').css('opacity', '1');
@@ -690,8 +745,9 @@
     //Event click radio status of order
     var radios = document.querySelectorAll('input[name="admin-language"]');
     radios.forEach(function (radio) {
+        let radioChecked = document.querySelector('input[name="admin-language"]:checked').value;
         radio.addEventListener('click', function () {
-            let radioChecked = document.querySelector('input[name="admin-language"]:checked').value;
+            console.log('radiochecked: ' + radioChecked);
             let orderId = $('#orderId').val();
             console.log("orderID: " + orderId);
             if (!radio.disabled) {
@@ -745,7 +801,7 @@
                         // Check if the difference is greater than 3 days
                         if (dayDiff > 3) {
                             alert("Yêu cầu trả hàng chỉ có thể thực hiện trong vòng 3 ngày kể từ ngày đặt hàng.");
-                            $('#admin-language4').prop("checked", true);
+                            $('#admin-language2').prop("checked", true);
                             $('#admin-language5').prop("checked", false);
                             return;
                         }
@@ -1011,7 +1067,8 @@
     function CloseReasonRefund() {
         // Đóng popup hiện tại
         $('#returnRefund').modal('hide');
-
+        $('#admin-language4').prop("checked", true);
+        $('#admin-language5').prop("checked", false);
         // Mở popup sau
         $('#orderDetail').modal('show');
         $('#modal-body-orderDetail').css('opacity', '1');

@@ -158,6 +158,11 @@ function ProcessPay() {
 
     var paymentMethod = $('input[name="pay-method"]:checked').val();
 
+    if (paymentMethod == null) {
+        alert("Vui lòng chọn phương thức thanh toán!");
+        return;
+    }
+
     var shippingFee = $('#moneyToShip').val();
 
     console.log(orderName + ' ' + orderPhone + ' ' + consigneeName + ' ' + consigneePhone +
@@ -363,5 +368,6 @@ function useDiscount() {
     console.log(x, reduce, ownReduce, total_reduce, moneyShip)
     $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")
     $('#moneyToCheckout').val(moneyToCheckout)
-    $('#save').text('-' + total_reduce.toLocaleString('en-US') +' VND')
+    $('#save').text('-' + total_reduce.toLocaleString('en-US') + ' VND')
+    $('#moneySave').val(total_reduce);
 }

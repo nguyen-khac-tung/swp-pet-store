@@ -106,8 +106,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\js\order-history-customer.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Shipper\Controllers\" />
-    <Folder Include="Areas\Shipper\Models\" />
+    <Folder Include="Areas\Shipper\ViewModels\" />
   </ItemGroup>
 
 </Project>

@@ -94,7 +94,7 @@
                     <select id="loyal-level" disabled>
                         @foreach (var item in loyalTypes)
                         {
-                            <option value="@item.LevelId">@item.LevelName</option>
+                            <option value="@item.LevelID">@item.LevelName</option>
                         }
                     </select>
                 </fieldset>
@@ -170,7 +170,7 @@
         })
 
         $('#loyal-level').find('option').each(function () {
-            if ($(this).attr('value') == @discount.Loyal.LevelId) {
+            if ($(this).attr('value') == @discount.Loyal.LevelID) {
                 $(this).attr('selected', true)
                 return false
             }

@@ -56,7 +56,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
                     {
                         if (level.MinTotalAmount < (decimal?)transaction.TotalAmount && level.MaxTotalAmount >= (decimal?)transaction.TotalAmount)
                         {
-                            customer.LoyaltyLevelId = level.LevelId;
+                            customer.LoyaltyLevelID = level.LevelID;
                         }
                     }
                 }
@@ -66,8 +66,8 @@ namespace PetStoreProject.Areas.Employee.Controllers
         }
 
         public List<LoyalCustomerViewModel> GetListLoyalCustomers() => (from c in _dbContext.Customers
-                                                                        join l in _dbContext.LoyaltyLevels on c.LoyaltyLevelId equals l.LevelId
-                                                                        where c.IsLoyalty == true
+                                                                        join l in _dbContext.LoyaltyLevels on c.LoyaltyLevelID equals l.LevelID
+                                                                        where c.isLoyalty == true
                                                                         select new LoyalCustomerViewModel
                                                                         {
                                                                             CustomerId = c.CustomerId,

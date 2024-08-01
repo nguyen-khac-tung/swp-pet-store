@@ -48,7 +48,7 @@ namespace PetStoreProject.Repositories.Discount
                     MaxUse = discount.MaxUse,
                     Used = 0,
                     Status = true,
-                    LevelId = discount.DiscountTypeId != 4 ? 0 : discount.LevelId
+                    LevelID = discount.DiscountTypeId != 4 ? 0 : discount.LevelID
                 };
                 _context.Discounts.Add(dis);
                 _context.SaveChanges();
@@ -66,7 +66,7 @@ namespace PetStoreProject.Repositories.Discount
             discount.CreatedAt = DateTime.Now.ToString();
             discount.Status = true;
             discount.Used = d.Used;
-            discount.LevelId = d.LevelId;
+            discount.LevelID = d.LevelID;
             _context.Discounts.Add(discount);
             _context.SaveChanges();
             return discount.Code;
@@ -76,7 +76,7 @@ namespace PetStoreProject.Repositories.Discount
         {
             var discount = (from d in _context.Discounts
                             join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
-                            join l in _context.LoyaltyLevels on d.LevelId equals l.LevelId
+                            join l in _context.LoyaltyLevels on d.LevelID equals l.LevelID
                             where d.DiscountId == id
                             select new DiscountViewModel
                             {
@@ -99,7 +99,7 @@ namespace PetStoreProject.Repositories.Discount
                                 Description = d.Description,
                                 Loyal = new LoyaltyLevel
                                 {
-                                    LevelId = (int)d.LevelId,
+                                    LevelID = (int)d.LevelID,
                                     LevelName = l.LevelName,
                                 }
                             }).FirstOrDefault();
@@ -186,7 +186,7 @@ namespace PetStoreProject.Repositories.Discount
             var now = DateOnly.FromDateTime(DateTime.Now);
             var discountsQuery = from d in _context.Discounts
                                  join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
-                                 where d.EndDate >= now && d.Status == true && d.StartDate <= now && d.LevelId == 0
+                                 where d.EndDate >= now && d.Status == true && d.StartDate <= now && d.LevelID == 0
                                  select new DiscountViewModel
                                  {
                                      Id = d.DiscountId,
@@ -304,8 +304,8 @@ namespace PetStoreProject.Repositories.Discount
                 var now = DateOnly.FromDateTime(DateTime.Now);
                 var discountsQuery = from d in _context.Discounts
                                      join dt in _context.DiscountTypes on d.DiscountTypeId equals dt.DiscountTypeId
-                                     join c in _context.Customers on d.LevelId equals c.LevelId
-                                     where d.EndDate >= now && d.Status == true && d.StartDate <= now && d.LevelId == c.LevelId && c.CustomerId == customerId
+                                     join c in _context.Customers on d.LevelID equals c.LoyaltyLevelID
+                                     where d.EndDate >= now && d.Status == true && d.StartDate <= now && d.LevelID == c.LoyaltyLevelID && c.CustomerId == customerId
                                      select new DiscountViewModel
                                      {
                                          Id = d.DiscountId,

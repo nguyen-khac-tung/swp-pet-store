@@ -4,6 +4,7 @@
     double moneyToCheckout = 0;
     int index = 0;
     var discounts = ViewData["Discounts"] as List<DiscountViewModel>;
+    var ownDiscounts = ViewData["OwnDiscounts"] as List<DiscountViewModel>;
     int shipMoney = 0;
 }
 
@@ -554,11 +555,11 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Mã giảm giá</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @if (discounts == null)
+                <h5 class="modal-title" id="staticBackdropLabel">Mã giảm giá</h5>
+                @if (discounts.Count == 0)
                 {
                     <span>Không có mã giảm giá nào</span>
                 }
@@ -619,11 +620,41 @@
 
                     }
                 }
+                @if(ownDiscounts.Count != 0)
+                {
+                    <h5 class="modal-title">Mã của bạn</h5>
+                    <div id="list-own-discounts">
+                        @foreach (var item in ownDiscounts)
+                        {
+                            <div class="discount-card @(item.Status == false ? "out-of-stock" : "")">
+                                <div style="width: 89%">
+                                    <div class="header">
+                                        <img src="~/img/coupon.png" />
+                                        <span class="title">@(item.DiscountType.Id != 2 ? "Giảm " + (int)item.Value + "% Giảm tối đa " + item.MaxValue?.ToString("#,###") + " VND" : "Giảm " + item.Value?.ToString("#,###") + " VND")</span>
+                                    </div>
+                                    <div class="content">
+                                        <div class="description">Đơn Tối Thiểu @(((decimal)item.MinPurchase).ToString("#,###.###")) VND</div>
+                                    </div>
+                                    <div class="text-tiny">Giới hạn sử dụng: @item.MaxUse lượt, HSD: @item.EndDate.ToString()</div>
+                                    <div class="footer">
+                                        <div class="warning">@item.StatusString</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <input type="radio" name="ownDiscount" value="@item.Id" onclick="chooseOwnDiscount.call(this)"></input>
+                                    <input type="hidden" name="title" value="@item.Title"></input>
+                                    <input type="hidden" name="ownReduce" value="@item.Reduce"></input>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                }
             </div>
             <div class="modal-footer" style="justify-content: space-between">
                 <div style="width: 60%">
                     <div class="hide">
-                        <span>1 mã giảm giá được áp dụng. </span>
+                        <span><span id="number_discount"></span> mã giảm giá được áp dụng. </span>
                         <span id="title"></span>
                     </div>
                 </div>
@@ -770,7 +801,8 @@
                                     }
                                 }
                                 let moneyShip = $('#moneyToShip').val();
-                                let totalMoney = Number(moneyToCheckout) + Number(moneyShip);
+                                let x = $('#moneyToCheckout').val()
+                                let totalMoney = Number(x) + Number(moneyShip);
                                 $('#moneyToCheckout').val(totalMoney);
                                 const formatter = new Intl.NumberFormat('en-US'); 
                                 const formattedNumber = formatter.format(totalMoney);

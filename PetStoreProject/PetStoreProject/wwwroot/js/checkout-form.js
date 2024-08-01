@@ -184,7 +184,6 @@ function ProcessPay() {
         shippingFee,
         ownDiscountId
     );
-
     processInfoCheckout(checkoutViewModel);
     //console.log($('#product_index').val());
     //console.log(OrderItems);
@@ -192,6 +191,7 @@ function ProcessPay() {
 }
 
 function processInfoCheckout(checkoutViewModel) {
+    console.log(checkoutViewModel.OwnDiscountId)
     $.ajax({
         url: '/Checkout/ProcessCheckout',
         type: 'post',
@@ -275,7 +275,7 @@ function chooseDiscount() {
     title = $(this).parent().find('input[name="title"]').val();
     reduce = $(this).parent().find('input[name="reduce"]').val();
     discountId = $(this).val();
-    let totalAmount = parseFloat($("#moneyToCheckout").val()) - parseFloat(reduce);
+    let totalAmount = parseFloat($("#order_value").val()) - parseFloat(reduce);
     $.ajax({
         url: "/checkout/getowndiscounts",
         type: "POST",
@@ -302,7 +302,7 @@ function chooseDiscount() {
                                     </div>
                                 </div>
                                 <div>
-                                    <input type="radio" name="ownDiscount" value="${item.id}}" onclick="chooseOwnDiscount.call(this)" ${item.id == ownDiscountId ? "checked" : ""}></input>
+                                    <input type="radio" name="ownDiscount" value="${item.id}" onclick="chooseOwnDiscount.call(this)" ${item.id == ownDiscountId ? "checked" : ""}></input>
                                     <input type="hidden" name="title" value="${item.title}"></input>
                                     <input type="hidden" name="ownReduce" value="${item.reduce}"></input>
                                 </div>
@@ -338,6 +338,7 @@ function chooseOwnDiscount() {
     console.log(ownReduce)
     console.log(reduce)
     ownDiscountId = $(this).val();
+    console.log(ownDiscountId)
     let total_reduce = parseFloat(reduce) + parseFloat(ownReduce);
     if (discountId != 0) {
         $('#number_discount').text('2')
@@ -352,13 +353,13 @@ function chooseOwnDiscount() {
 
 function useDiscount() {
     $('#staticBackdrop').modal('hide')
-    let moneyToCheckout = $('#cost').text().replace(/,/g, '');
-
-    let moneyShip = Number($("#moneyToShip").val());
+    let moneyToCheckout = $('#order_value').val()
+    let x = moneyToCheckout
+    let moneyShip = parseFloat($("#moneyToShip").val());
     console.log('use_discount:' + moneyShip);
     let total_reduce = parseFloat(reduce) + parseFloat(ownReduce);
-    moneyToCheckout = parseFloat(moneyToCheckout) - reduce - ownReduce + moneyShip;
-
+    moneyToCheckout = parseFloat(moneyToCheckout) - total_reduce + moneyShip;
+    console.log(x, reduce, ownReduce, total_reduce, moneyShip)
     $('#money').text(moneyToCheckout.toLocaleString('en', 'US') + " VND")
     $('#moneyToCheckout').val(moneyToCheckout)
     $('#save').text('-' + total_reduce.toLocaleString('en-US') +' VND')

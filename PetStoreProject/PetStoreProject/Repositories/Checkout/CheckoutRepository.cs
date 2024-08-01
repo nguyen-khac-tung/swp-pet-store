@@ -1,5 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using PetStoreProject.Models;
+﻿using PetStoreProject.Models;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
 using PetStoreProject.Repositories.Product;
@@ -48,7 +47,8 @@ namespace PetStoreProject.Repositories.Checkout
                         + checkoutInfo.ConsigneeWard,
                         DiscountId = checkoutInfo.DiscountId,
                         ShippingFee = checkoutInfo.ShippingFee,
-                        Status = checkoutInfo.Status
+                        Status = checkoutInfo.Status,
+                        OwnDiscountId = checkoutInfo.OwnDiscountId
                     };
 
                     if (checkoutInfo.ConsigneeAddressDetail != null) order.ShipAddress += ", " + checkoutInfo.ConsigneeAddressDetail;
@@ -60,7 +60,8 @@ namespace PetStoreProject.Repositories.Checkout
                     if (checkoutInfo.OrderEmail != null)
                     {
                         order.Email = checkoutInfo.OrderEmail;
-                    }else if(email != null)
+                    }
+                    else if (email != null)
                     {
                         order.Email = email;
                     }

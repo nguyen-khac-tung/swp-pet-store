@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-[Keyless]
 public partial class LoyaltyLevel
 {
+    [Key]
+    [Column("LevelID")]
     public int LevelId { get; set; }
 
     [StringLength(100)]

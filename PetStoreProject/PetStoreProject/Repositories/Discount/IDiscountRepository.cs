@@ -11,7 +11,9 @@ namespace PetStoreProject.Repositories.Discount
         public string Edit(Models.Discount discount);
         public List<DiscountViewModel> GetDiscounts(double total_amount, string email);
 
+        public List<DiscountViewModel> GetOwnDiscount(double total_amount, int customerId);
         public float GetDiscountPrice(double total_amount, int discountId);
+
         public void DeleteDiscount(int id);
     }
 }

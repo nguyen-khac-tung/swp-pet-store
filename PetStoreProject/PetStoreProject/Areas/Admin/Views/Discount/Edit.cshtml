@@ -333,7 +333,7 @@
                 }
             }
 
-            if (type != 3 || type != 4) {
+            if (!(type == 3 || type == 4)) {
                 if (quantity == '') {
                     $('#error-quantity').text('Vui lòng nhập số lượng')
                     isValid = false

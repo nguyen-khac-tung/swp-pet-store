@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Areas.Admin.Service.Cloudinary;
-using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Filters;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
@@ -513,6 +512,13 @@ namespace PetStoreProject.Controllers
                     var priceReduce = _discount.GetDiscountPrice(order.TotalAmount, order.DiscountId.Value);
                     order.TotalAmount = order.TotalAmount - priceReduce;
                 }
+                if (order.OwnDiscountId != null && order.OwnDiscountId != 0)
+                {
+                    var priceReduce = _discount.GetDiscountPrice(order.TotalAmount, order.OwnDiscountId.Value);
+                    order.TotalAmount = order.TotalAmount - priceReduce;
+                }
+
+                order.TotalAmount += order.ShippingFee;
             }
             return View(listOrderHistory);
         }
@@ -550,6 +556,7 @@ namespace PetStoreProject.Controllers
                 ShippingFee = order.ShippingFee,
                 Status = order.Status,
                 ReturnId = order.ReturnId,
+                OwnDiscountId = order.OwnDiscountId
             };
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
 
@@ -566,12 +573,18 @@ namespace PetStoreProject.Controllers
                 }
                 totalAmount += price;
             }
+            var priceDiscount = 0.0;
+            var ownDiscount = 0.0;
             if (order.DiscountId.HasValue)
             {
-                var priceDiscount = _discount.GetDiscountPrice(totalAmount, order.DiscountId.Value);
-                ViewBag.priceDiscount = priceDiscount;
+                priceDiscount = _discount.GetDiscountPrice(totalAmount, order.DiscountId.Value);
             }
 
+            if (order.OwnDiscountId.HasValue && order.OwnDiscountId.Value != 0)
+            {
+                ownDiscount = _discount.GetDiscountPrice(totalAmount - priceDiscount, order.OwnDiscountId.Value);
+            }
+            ViewBag.priceDiscount = priceDiscount + ownDiscount;
             ViewBag.listItemOrder = listItemOrder;
 
             return View(checkoutDetail);
@@ -594,7 +607,7 @@ namespace PetStoreProject.Controllers
 
             await _returnRefund.CreateNewReturnRefund(returnRefund);
 
-            if(returnRefund.OrderId != 0)
+            if (returnRefund.OrderId != 0)
             {
                 var order = _order.GetOrderDetailById(returnRefund.OrderId);
                 var status = "Trả hàng";
@@ -602,7 +615,7 @@ namespace PetStoreProject.Controllers
                 var returnLast = _returnRefund.GetReturnRefunds().Last();
                 _order.UpdateReturnOrder(returnRefund.OrderId, returnLast.ReturnId);
             }
-            return Json(new { success = true});
+            return Json(new { success = true });
         }
     }
 }

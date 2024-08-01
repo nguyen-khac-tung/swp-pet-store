@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PetStoreProject.Helpers;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.Accounts;
 using PetStoreProject.Repositories.Cart;
 using PetStoreProject.Repositories.Checkout;
 using PetStoreProject.Repositories.Customers;
@@ -26,9 +27,12 @@ namespace PetStoreProject.Controllers
         private readonly ICheckoutRepository _checkout;
         private readonly IProductRepository _product;
         private readonly IProductOptionRepository _productOption;
+        private readonly IAccountRepository _account;
 
         public CheckoutController(ICustomerRepository customer, IConfiguration configuration,
-            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context, ICheckoutRepository checkout, IProductRepository product, IProductOptionRepository productOption)
+            ICartRepository cart, IOrderRepository order, IOrderItemRepository orderItem, IDiscountRepository discount, PetStoreDBContext context, ICheckoutRepository checkout, IProductRepository product, IProductOptionRepository productOption,
+            IAccountRepository account
+            )
         {
             _customer = customer;
             _configuration = configuration;
@@ -40,6 +44,7 @@ namespace PetStoreProject.Controllers
             _checkout = checkout;
             _product = product;
             _productOption = productOption;
+            _account = account;
         }
 
         [HttpPost]
@@ -100,7 +105,11 @@ namespace PetStoreProject.Controllers
                     total_amount += priceItem * item.Quantity;
                 }
 
+                var customerId = GetCustomerId();
                 var discounts = _discount.GetDiscounts(total_amount, email);
+                var ownDiscounts = _discount.GetOwnDiscount(total_amount, customerId);
+
+                ViewData["OwnDiscounts"] = ownDiscounts;
                 ViewData["Discounts"] = discounts;
                 return View(selectedProductCheckout);
             }
@@ -109,6 +118,36 @@ namespace PetStoreProject.Controllers
                 return View(null);
             }
 
+        }
+
+        public int GetCustomerId()
+        {
+            var email = HttpContext.Session.GetString("userEmail");
+            if (email != null)
+            {
+                var roles = _account.GetUserRoles(email);
+                if (roles == "Customer")
+                {
+                    var customerID = _customer.GetCustomerId(email);
+                    return customerID;
+                }
+            }
+            return -1;
+        }
+
+        [HttpPost]
+        public JsonResult GetOwnDiscounts(float TotalAmount)
+        {
+            var customerId = GetCustomerId();
+            if (customerId == -1)
+            {
+                return Json("Faile");
+            }
+            else
+            {
+                var ownDiscounts = _discount.GetOwnDiscount(TotalAmount, customerId);
+                return Json(new { ownDiscounts = ownDiscounts });
+            }
         }
 
         [HttpPost]
@@ -122,18 +161,24 @@ namespace PetStoreProject.Controllers
 
             var priceReduce = 0;
             var discountId = checkout.DiscountId;
+            var ownDiscountId = checkout.OwnDiscountId;
+
             if (discountId != null && discountId != 0)
             {
                 priceReduce = (int)_discount.GetDiscountPrice(checkout.TotalAmount, (int)discountId);
-                if (priceReduce > 0)
-                {
-                    amount -= priceReduce;
-                }
+                amount -= priceReduce;
             }
-            if(checkout.ShippingFee != 0)
+            if (ownDiscountId != null && ownDiscountId != 0)
             {
-                amount += checkout.ShippingFee;
+                priceReduce = (int)_discount.GetDiscountPrice(amount, (int)ownDiscountId);
+                amount -= priceReduce;
             }
+
+            if (checkout.ShippingFee != null)
+            {
+                amount += (int)checkout.ShippingFee;
+            }
+
             foreach (var itemCart in checkout.OrderItems)
             {
                 var quantityInStock = _productOption.QuantityOfProductOption(itemCart.ProductOptionId);

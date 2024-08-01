@@ -79,6 +79,9 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<WorkingTime> WorkingTimes { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("name=PetStoreDBContext");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -197,6 +200,11 @@ public partial class PetStoreDBContext : DbContext
             entity.HasOne(d => d.Return).WithMany(p => p.Images).HasConstraintName("FK_Image_ReturnRefund");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Images).HasConstraintName("FK_Image_Service");
+        });
+
+        modelBuilder.Entity<LoyaltyLevel>(entity =>
+        {
+            entity.Property(e => e.LevelId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<News>(entity =>

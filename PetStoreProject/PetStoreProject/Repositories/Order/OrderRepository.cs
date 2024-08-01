@@ -38,7 +38,8 @@ namespace PetStoreProject.Repositories.Order
                               DiscountId = o.DiscountId,
                               Status = o.Status,
                               ShippingFee = o.ShippingFee,
-                              ReturnId = o.ReturnId
+                              ReturnId = o.ReturnId,
+                              OwnDiscountId = o.OwnDiscountId
                           }).ToList();
             }
             else
@@ -61,7 +62,8 @@ namespace PetStoreProject.Repositories.Order
                               DiscountId = o.DiscountId,
                               Status = o.Status,
                               ShippingFee = o.ShippingFee,
-                              ReturnId = o.ReturnId
+                              ReturnId = o.ReturnId,
+                              OwnDiscountId = o.OwnDiscountId
                           }).ToList();
             }
             return orders;
@@ -70,7 +72,7 @@ namespace PetStoreProject.Repositories.Order
         public List<OrderDetailViewModel> GetOrderDetailByCondition(OrderModel orderModel)
         {
             var orders = GetOrderDetailExcuteCondition(orderModel);
-            if(orderModel.pageSize == 0)
+            if (orderModel.pageSize == 0)
             {
                 return orders;
             }
@@ -148,7 +150,7 @@ namespace PetStoreProject.Repositories.Order
 
         public void AddOrder(Models.Order order)
         {
-            if(order.DiscountId == 0)
+            if (order.DiscountId == 0)
             {
                 order.DiscountId = null;
             }
@@ -184,7 +186,8 @@ namespace PetStoreProject.Repositories.Order
                     DiscountId = o.DiscountId,
                     Status = o.Status,
                     ShippingFee = o.ShippingFee,
-                    ReturnId = o.ReturnId
+                    ReturnId = o.ReturnId,
+                    OwnDiscountId = o.OwnDiscountId
                 })
                 .FirstOrDefault();
 
@@ -200,18 +203,19 @@ namespace PetStoreProject.Repositories.Order
                 order.ShipperId = shipper;
                 _context.SaveChanges();
             }
-            else if(shipper == -1)
+            else if (shipper == -1)
             {
                 var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
                 order.Status = status;
                 _context.SaveChanges();
-            }else
+            }
+            else
             {
                 var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
                 order.Status = status;
                 order.ShipperId = null;
                 _context.SaveChanges();
-                if(status == "Đã hủy")
+                if (status == "Đã hủy")
                 {
                     var orderItem = _context.OrderItems.Where(oi => oi.OrderId == orderId).ToList();
                     foreach (var item in orderItem)

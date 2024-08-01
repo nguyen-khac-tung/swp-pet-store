@@ -38,6 +38,8 @@ namespace PetStoreProject.ViewModels
 
         public int? DiscountId { get; set; }
 
+        public int? OwnDiscountId { get; set; }
+
         public float ShippingFee { get; set; }
 
         public string? Status { get; set; }

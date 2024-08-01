@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PetStoreProject.Models;
 
-public partial class PetStoreDBContext : DbContext
+public partial class SWP_PROJECTContext : DbContext
 {
-    public PetStoreDBContext(DbContextOptions<PetStoreDBContext> options)
+    public SWP_PROJECTContext(DbContextOptions<SWP_PROJECTContext> options)
         : base(options)
     {
     }

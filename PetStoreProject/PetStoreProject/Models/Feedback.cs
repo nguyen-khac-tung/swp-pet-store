@@ -29,7 +29,7 @@ public partial class Feedback
     [StringLength(150)]
     public string? Email { get; set; }
 
-    public int Rating { get; set; }
+    public double Rating { get; set; }
 
     [StringLength(500)]
     public string Content { get; set; } = null!;

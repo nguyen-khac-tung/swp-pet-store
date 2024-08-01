@@ -206,7 +206,7 @@
 
         let dateOnlyString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-        html += `<li class="countries-item gap14" >
+        html += `<li class="countries-item gap14" data-order='${encodeURIComponent(JSON.stringify(order))}'>
                                 <div class="">#${order.orderId}</div>
                                 <div class="name">${order.fullName}</div>
                                 <div class="body-text">${order.paymentMethod}</div>

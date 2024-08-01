@@ -233,7 +233,7 @@
                     </div>
                     @if (Model.ShippingFee != 0)
                     {
-                        totalMoney = totalAmount + Model.ShippingFee;
+                        totalMoney = totalMoney + Model.ShippingFee;
                         <div class="form-group col-xl-4 text-right">+ @Model.ShippingFee.ToString("#,###")VND</div>
                     }
                     else
@@ -297,7 +297,7 @@
                         <div class="item">
                             <input type="radio" name="admin-language" value="Đã hoàn thành" id="admin-language6"
                             @(Model.Status == "Đã hoàn thành" ? "checked" : "")
-                            @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã giao hàng" ? "disabled" : "")>
+                            @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã giao hàng" || Model.Status == "Đã hủy" ? "disabled" : "")>
                             <label for="admin-language6"><span class="body-title-2">Đã hoàn thành</span></label>
                         </div>
                     </div>
@@ -369,7 +369,7 @@
 <div class="modal fade" id="detailRefund" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-style">
         <div class="modal-content modal-content-style">
-            <div class="modal-header">
+            <div class="modal-header" style="padding-bottom: 10px">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="padding:0px">

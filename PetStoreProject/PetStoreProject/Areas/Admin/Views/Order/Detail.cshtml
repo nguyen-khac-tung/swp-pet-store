@@ -205,7 +205,7 @@
             <div class="form-group col-xl-8">
                 <p class="margin_0px">Mã giảm giá:</p>
             </div>
-            @if (ViewBag.priceDiscount != null)
+            @if (ViewBag.priceDiscount != null && ViewBag.priceDiscount != 0)
             {
                 totalMoney = totalAmount - ViewBag.priceDiscount;
                 <div class="form-group col-xl-4 text-right">- @ViewBag.priceDiscount.ToString("#,###")VND</div>

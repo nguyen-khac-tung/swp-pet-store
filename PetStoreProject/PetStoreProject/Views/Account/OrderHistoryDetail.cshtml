@@ -427,18 +427,18 @@
         }
     </div>
 
-    <div class="row margin_0px padding_10px" id="money_order">
+    <div class="row border_radi margin_0px padding_10px" id="money_order">
         <div class="row">
             <div class="form-group col-xl-8">
-                <p class="margin_0px">Tổng tiền:</p>
+                <span>Tổng tiền:</span>
             </div>
             <div class="form-group col-xl-4 text-right">@totalAmount.ToString("#,###")VND</div>
         </div>
         <div class="row">
             <div class="form-group col-xl-8">
-                <p class="margin_0px">Mã giảm giá:</p>
+                <span class="margin_0px">Mã giảm giá:</span>
             </div>
-            @if (ViewBag.priceDiscount != null)
+            @if (ViewBag.priceDiscount != null && ViewBag.priceDiscount != 0)
             {
                 totalMoney = totalAmount - ViewBag.priceDiscount;
                 <div class="form-group col-xl-4 text-right">- @ViewBag.priceDiscount.ToString("#,###")VND</div>
@@ -450,17 +450,30 @@
         </div>
         <div class="row">
             <div class="form-group col-xl-8">
-                <strong class="margin_0px">Thành tiền:</strong>
+                <span>Phí vận chuyển:</span>
+            </div>
+            @if (Model.ShippingFee != 0)
+            {
+                totalMoney = totalMoney + Model.ShippingFee;
+                <div class="form-group col-xl-4 text-right">+ @Model.ShippingFee.ToString("#,###")VND</div>
+            }
+            else
+            {
+                <div class="form-group col-xl-4 text-right">+ 0VND</div>
+            }
+        </div>
+        <div class="row">
+            <div class="form-group col-xl-8">
+                <strong>Thành tiền:</strong>
             </div>
             <div class="form-group col-xl-4 text-right"><strong>@totalMoney.ToString("#,###")VND</strong></div>
         </div>
-
     </div>
     <div class="row" id="radio-button-@Model.OrderId">
         <div class="flex items-center gap10 flex-wrap">
             <div class="radio-buttons">
                 <input type="hidden" value="@Model.Status" id="statusOrder" />
-                <input type="hidden" value="@Model.OrderDate.ToString("yyyy-MM-dd")" id="orderDateTime"/>
+                <input type="hidden" value="@Model.OrderDate.ToString("yyyy-MM-dd")" id="orderDateTime" />
                 @if (Model.Status == "Chờ xác nhận" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ giao hàng")
                 {
                     if (Model.PaymentMethod == "COD")
@@ -667,7 +680,7 @@
 
     }
 
-    //Event cancel detail return refund 
+    //Event cancel detail return refund
     function detailReturnRefundCancel() {
         $('#detailRefund').modal('hide');
         $('#modal-body-orderDetail').css('opacity', '1');
@@ -747,7 +760,7 @@
         });
     });
 
-    //View detail return refund 
+    //View detail return refund
     function DetailReturnRefund(returnId) {
         $('#modal-body-orderDetail').css('opacity', '0.2');
         $('#modal-header-style').css('opacity', '0.2');
@@ -786,7 +799,7 @@
         });
     }
 
-    //Load image detail return refund 
+    //Load image detail return refund
     function LoadImg(imgs) {
         var html = "";
         imgs.forEach(function (item) {
@@ -817,7 +830,7 @@
 
     //Send required return refund
     function SendReturnRefund() {
-        
+
 
         var imgs = returnRefund.images;
         if (imgs.length == 0) {
@@ -854,6 +867,13 @@
     function previewImage(event) {
         isUploadFile = true;
         var files = event.target.files;
+        var file = files[0];
+        console.log(file.type)
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+        if (!validImageTypes.includes(file.type)) {
+            alert('Vui lòng tải lên một tệp hình ảnh hợp lệ (JPEG, PNG, GIF, JPG).')
+            return false;
+        }
         var uploadImage = $('#upload-image');
         var previewImage = $('#preview-image');
         previewImage.empty();

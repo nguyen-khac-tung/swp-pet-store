@@ -38,14 +38,29 @@
         });
 
         function previewThumbnail(event) {
-            var reader = new FileReader();
-            reader.onload = function () {
-                var output = document.getElementById('thumbnailPreview');
-                output.src = reader.result;
-                output.style.display = 'block';
-            };
-            reader.readAsDataURL(event.target.files[0]);
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const errorMessage = document.getElementById('error-message');
+
+            if (file) {
+                const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+
+                if (!validImageTypes.includes(file.type)) {
+                    errorMessage.textContent = "Please upload a valid image file (JPEG, PNG, GIF, BMP, WebP).";
+                    fileInput.value = "";
+                } else {
+                    errorMessage.textContent = "";
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        var output = document.getElementById('thumbnailPreview');
+                        output.src = reader.result;
+                        output.style.display = 'block';
+                    };
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            }
         }
+
         function validateForm() {
             const title = document.getElementById('title').value;
             const summary = document.getElementById('summary').value;
@@ -171,6 +186,7 @@
                     <fieldset>
                         <div class="body-title mb-10">Thumbnail <span class="tf-color-1">*</span></div>
                         <input type="file" id="thumbnail" accept="image/*" name="Thumbnail" value="@Model.url_thumnail" onchange="previewThumbnail(event)" />
+                        <div id="error-message" class="error" style="color: red"></div>
                         <div class="img-container">
                             <img id="thumbnailPreview" class="thumbnail-preview" src="@Model.url_thumnail" alt="Thumbnail Preview" style=" width: 250px; height: 250px;" />
                         </div>

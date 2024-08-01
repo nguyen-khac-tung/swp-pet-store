@@ -161,6 +161,32 @@
                         <img class="img-account-profile rounded-circle mb-2" src="~/img/profile-user-2.png" alt="">
                         <!-- Profile picture help block-->
                         <div id="profile-full-name" class="profile-name">@name</div>
+                        Hội viên:
+                        @if (TempData["Rank"] != null)
+                        {
+                            var rank = TempData["Rank"].ToString();
+                            <b>@rank</b>
+                            @switch (rank)
+                            {
+                                case "Thân thiết":
+                                    <i class="fas fa-user-friends" style="color: green;"></i>
+                                    break;
+                                case "Bạc":
+                                    <i class="fas fa-medal" style="color: silver;"></i>
+                                    break;
+                                case "Titan":
+                                    <i class="fas fa-medal" style="color: gray;"></i>
+                                    break;
+                                case "Vàng":
+                                    <i class="fas fa-medal" style="color: gold;"></i>
+                                    break;
+                                case "Kim Cương":
+                                    <i class="fas fa-gem" style="color: deepskyblue;"></i>
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                         <!-- Profile picture upload button-->
                     </div>
                     <div class="card-footer">

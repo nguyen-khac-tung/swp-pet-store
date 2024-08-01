@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Employee\Views\News\EditNews.cshtml" />
+    <None Include="Areas\Admin\Views\LoyalCustomer\Index.cshtml" />
     <None Include="Areas\Employee\Views\News\ListNews.cshtml" />
     <None Include="Views\News\Detail.cshtml" />
     <None Include="Views\WishList\Detail.cshtml" />

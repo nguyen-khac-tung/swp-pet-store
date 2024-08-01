@@ -41,6 +41,12 @@ namespace PetStoreProject.Areas.Admin.Controllers
                     var priceReduce = _discount.GetDiscountPrice(order.TotalAmount, order.DiscountId.Value);
                     order.TotalAmount = order.TotalAmount - priceReduce;
                 }
+                if (order.OwnDiscountId.HasValue && order.OwnDiscountId.Value != 0)
+                {
+                    var priceReduce = _discount.GetDiscountPrice(order.TotalAmount, order.OwnDiscountId.Value);
+                    order.TotalAmount = order.TotalAmount - priceReduce;
+                }
+                order.TotalAmount += order.ShippingFee;
             }
 
             var totalOrder = _order.GetCountOrder(orderCondition);
@@ -88,11 +94,11 @@ namespace PetStoreProject.Areas.Admin.Controllers
                 OrderDate = order.OrderDate,
                 Status = order.Status,
                 DiscountId = order.DiscountId,
-                ShippingFee = order.ShippingFee
+                ShippingFee = order.ShippingFee,
+                OwnDiscountId = order.OwnDiscountId
             };
 
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
-
 
             var totalAmount = 0.0;
 
@@ -106,11 +112,19 @@ namespace PetStoreProject.Areas.Admin.Controllers
 
                 totalAmount += price;
             }
+            var priceDiscount = 0.0;
+            var ownDiscount = 0.0;
             if (order.DiscountId.HasValue)
             {
-                var priceDiscount = _discount.GetDiscountPrice(totalAmount, order.DiscountId.Value);
-                ViewBag.priceDiscount = priceDiscount;
+                priceDiscount = _discount.GetDiscountPrice(totalAmount, order.DiscountId.Value);
             }
+
+            if (order.OwnDiscountId.HasValue && order.OwnDiscountId.Value != 0)
+            {
+                ownDiscount = _discount.GetDiscountPrice(totalAmount - priceDiscount, order.OwnDiscountId.Value);
+            }
+
+            ViewBag.priceDiscount = priceDiscount + ownDiscount;
 
             ViewBag.listItemOrder = listItemOrder;
             return View(checkoutDetail);

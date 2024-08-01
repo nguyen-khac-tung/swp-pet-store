@@ -1,4 +1,6 @@
-﻿namespace PetStoreProject.Areas.Admin.ViewModels
+﻿using PetStoreProject.Models;
+
+namespace PetStoreProject.Areas.Admin.ViewModels
 {
     public class DiscountViewModel
     {
@@ -19,5 +21,6 @@
         public bool? Status { get; set; }
         public string? StatusString { get; set; }
         public decimal? Reduce { get; set; }
+        public LoyaltyLevel Loyal { get; set; }
     }
 }

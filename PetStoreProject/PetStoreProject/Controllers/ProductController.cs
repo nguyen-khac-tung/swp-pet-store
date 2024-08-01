@@ -60,6 +60,7 @@ namespace PetStoreProject.Controllers
                 listResult = listSearch.Results
             });
         }
+
         public int GetCustomerId()
         {
             var email = HttpContext.Session.GetString("userEmail");

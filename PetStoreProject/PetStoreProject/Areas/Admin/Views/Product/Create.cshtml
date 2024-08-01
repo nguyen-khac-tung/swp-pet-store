@@ -379,6 +379,13 @@
         function previewImage(event) {
             isUploadFile = true;
             var files = event.target.files;
+            var file = files[0];
+            console.log(file.type)
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+            if (!validImageTypes.includes(file.type)) {
+                alert('Vui lòng tải lên một tệp hình ảnh hợp lệ (JPEG, PNG, GIF, JPG).')
+                return false;
+            }
             var uploadImage = $('#upload-image');
             var previewImage = $('#preview-image');
             previewImage.empty();

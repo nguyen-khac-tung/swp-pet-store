@@ -11,10 +11,11 @@ namespace PetStoreProject.Models;
 public partial class LoyaltyLevel
 {
     [Key]
-    public int LevelID { get; set; }
+    [Column("LevelID")]
+    public int LevelId { get; set; }
 
     [StringLength(100)]
-    public string LevelName { get; set; }
+    public string? LevelName { get; set; }
 
     [Column(TypeName = "decimal(18, 3)")]
     public decimal? MinTotalAmount { get; set; }

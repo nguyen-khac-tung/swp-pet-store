@@ -1,6 +1,4 @@
-﻿using PetStoreProject.Models;
-
-namespace PetStoreProject.Areas.Admin.ViewModels
+﻿namespace PetStoreProject.Areas.Admin.ViewModels
 {
     public class OrderDetailViewModel
     {
@@ -29,6 +27,8 @@ namespace PetStoreProject.Areas.Admin.ViewModels
         public int totalOrderItems { get; set; } = 0;
 
         public int? DiscountId { get; set; }
+
+        public int? OwnDiscountId { get; set; }
 
         public string? Status { get; set; }
         public float ShippingFee { get; set; }

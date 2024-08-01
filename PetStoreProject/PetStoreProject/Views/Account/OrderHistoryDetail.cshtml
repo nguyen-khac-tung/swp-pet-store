@@ -5,6 +5,8 @@
     double totalMoney = 0;
     var province = Model.ConsigneeAddressDetail.Split(",")[0].Trim();
     var district = Model.ConsigneeAddressDetail.Split(",")[1].Trim();
+    var orderDate = Model.OrderDate;
+    var formattedOrderDate = orderDate.ToString("yyyy-MM-dd");
 }
 
 @using PetStoreProject.ViewModels;
@@ -264,11 +266,12 @@
             min-height: 220px;
             padding: 0 30px;
         }
-        .btn-remove {
+
+    .btn-remove {
         position: absolute;
         top: 0px;
         left: 66px;
-        }
+    }
 </style>
 
 <div class="modal-header" id="modal-header-style">
@@ -456,22 +459,26 @@
     <div class="row" id="radio-button-@Model.OrderId">
         <div class="flex items-center gap10 flex-wrap">
             <div class="radio-buttons">
+                <input type="hidden" value="@Model.Status" id="statusOrder" />
+                <input type="hidden" value="@Model.OrderDate.ToString("yyyy-MM-dd")" id="orderDateTime"/>
                 @if (Model.Status == "Chờ xác nhận" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ giao hàng")
                 {
-                    <div class="item">
-                        <input type="radio" name="admin-language" value="Đã hủy" id="admin-language7"
-                        @(Model.Status == "Đã hủy" ? "checked" : "")
-                        @(Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã hủy" || Model.Status == "Đã giao hàng" || Model.Status == "Chờ giao hàng" ? "disabled" : "")>
-                        <label for="admin-language7"><span class="body-title-2">Hủy đơn hàng</span></label>
-                    </div>
+                    if (Model.PaymentMethod == "COD")
+                    {
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Đã hủy" id="admin-language7"
+                            @(Model.Status == "Đã hủy" ? "checked" : "")
+                            @(Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã hủy" || Model.Status == "Đã giao hàng" || Model.Status == "Chờ giao hàng" ? "disabled" : "")>
+                            <label for="admin-language7"><span class="body-title-2">Hủy đơn hàng</span></label>
+                        </div>
 
-                    <div class="item">
-                        <input type="radio" name="admin-language" value="Chờ xác nhận" id="admin-language1" readonly
-                        @(Model.Status == "Chờ xác nhận" ? "checked" : "") disabled="" />
+                        <div class="item">
+                            <input type="radio" name="admin-language" value="Chờ xác nhận" id="admin-language1" readonly
+                            @(Model.Status == "Chờ xác nhận" ? "checked" : "") disabled="" />
 
-                        <label for="admin-language1"><span class="body-title-2">Chờ xác nhận</span></label>
-                    </div>
-
+                            <label for="admin-language1"><span class="body-title-2">Chờ xác nhận</span></label>
+                        </div>
+                    }
                     <div class="item">
                         <input type="radio" name="admin-language" value="Chờ lấy hàng" id="admin-language2" readonly
                         @(Model.Status == "Chờ lấy hàng" ? "checked" : "") disabled="" />
@@ -505,7 +512,18 @@
                         <label for="admin-language6"><span class="body-title-2">Hoàn thành</span></label>
                     </div>
                 }
-
+                @if (Model.Status == "Trả hàng")
+                {
+                    <div class="item">
+                        <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
+                        @(Model.Status == "Trả hàng" ? "checked" : "")
+                        @(Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" ? "disabled" : "")>
+                        <label for="admin-language5"><span class="body-title-2">Trả hàng</span></label>
+                    </div>
+                    <div class="item">
+                        <button class="btn btn-primary" onclick="DetailReturnRefund(@Model.ReturnId)">Chi tiết trả hàng</button>
+                    </div>
+                }
             </div>
 
         </div>
@@ -541,13 +559,12 @@
                         </fieldset>
                         <fieldset>
                             <div id="preview-image" class="upload-image">
-
                             </div>
                         </fieldset>
                     </div>
                     <div class="" style="padding-top: 10px">
                         <label for="reasonReturn">Lý do trả hàng</label>
-                        <textarea  id="reasonReturn" style="width: 100%"></textarea>
+                        <textarea id="reasonReturn" style="width: 100%"></textarea>
                     </div>
                     <div class="">
                         <button type="button" class="btn btn-secondary" onclick="CloseReasonRefund()">Hủy</button>
@@ -559,8 +576,48 @@
     </div>
 </div>
 
+<div class="modal fade" id="detailRefund" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-style">
+        <div class="modal-content modal-content-style" style="box-shadow: 10px 10px 20px #aaaaaa;border: 1px solid black">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 10px 20px 0px;">
+                <div class="form-add-product">
+                    <div class="wg-box">
+                        <input type="hidden" value="@Model.ReturnId" id="returnID" />
+                        <fieldset>
+                            <label class="body-title mb-10"><strong>Hình ảnh sản phẩm</strong></label>
+                            <div id="img_product_return" style="max-height: 525px; overflow-x: auto; white-space: nowrap;"></div>
+                        </fieldset>
+                        <fieldset>
+                            <label class="body-title mb-10"><strong>Lý do trả hàng</strong></label>
+                            <textarea id="reasonRefund" disabled style="width:100%"></textarea>
+                        </fieldset>
+                        <fieldset class="name">
+                            <label class="body-title mb-10"><strong>Trạng thái phản hồi trả hàng</strong></label>
+                            <select id="selectStatusReturn" disabled>
+                                <option value="Xác nhận trả hàng" selected>Xác nhận trả hàng</option>
+                                <option value="Từ chối trả hàng">Từ chối trả hàng</option>
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label class="body-title mb-10"><strong>Phản hồi trả hàng</strong></label>
+                            <textarea id="responseReturn" style="width:100%" disabled></textarea>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="tf-button style-1" onclick="detailReturnRefundCancel()">Thoát</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
+
     var returnRefund = {
         orderId: 0,
         reasonReturn: "",
@@ -610,6 +667,14 @@
 
     }
 
+    //Event cancel detail return refund 
+    function detailReturnRefundCancel() {
+        $('#detailRefund').modal('hide');
+        $('#modal-body-orderDetail').css('opacity', '1');
+        $('#modal-header-style').css('opacity', '1');
+    }
+
+    //Event click radio status of order
     var radios = document.querySelectorAll('input[name="admin-language"]');
     radios.forEach(function (radio) {
         radio.addEventListener('click', function () {
@@ -650,21 +715,91 @@
                     }
                 }
                 if (radio.value == "Trả hàng") {
-                    $('#returnRefund').modal('show');
-                    $('#modal-body-orderDetail').css('opacity', '0.4');
-                    $('#modal-header-style').css('opacity', '0.4');
+                    var statusOrder = $('#statusOrder').val();
+                    if (statusOrder != "Trả hàng") {
+                        console.log('dateOrder: ' + $('#orderDateTime').val());
 
+                        var orderDate = new Date($('#orderDateTime').val());
+                        console.log("orderDate: " + orderDate);
+                        var currentDate = new Date();
 
-                    // var result = confirm("Bạn có chắc muốn trả đơn hàng này!");
-
+                        // Calculate the difference in time
+                        var timeDiff = currentDate.getTime() - orderDate.getTime();
+                        console.log("timeDiff: " + timeDiff);
+                        // Convert time difference to days
+                        var dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                        console.log('dayDiff: ' + dayDiff);
+                        // Check if the difference is greater than 3 days
+                        if (dayDiff > 3) {
+                            alert("Yêu cầu trả hàng chỉ có thể thực hiện trong vòng 3 ngày kể từ ngày đặt hàng.");
+                            $('#admin-language4').prop("checked", true);
+                            $('#admin-language5').prop("checked", false);
+                            return;
+                        }
+                        $('#returnRefund').modal('show');
+                        $('#modal-body-orderDetail').css('opacity', '0.2');
+                        $('#modal-header-style').css('opacity', '0.2');
+                    } else {
+                        $('#detailRefund').modal('show');
+                    }
                 }
             }
         });
     });
 
+    //View detail return refund 
+    function DetailReturnRefund(returnId) {
+        $('#modal-body-orderDetail').css('opacity', '0.2');
+        $('#modal-header-style').css('opacity', '0.2');
+        $('#detailRefund').modal('show');
+
+        console.log('returnId:', returnId);
+
+        if (!returnId) { // This check covers both `null` and `0`
+            alert("Không có thông tin trả hàng!");
+            return;
+        }
+
+        $.ajax({
+            url: '/employee/order/detailRefund',
+            type: 'post',
+            data: { returnId: returnId },
+            success: function (response) {
+                $('#detailRefund').modal('show');
+                $('#reasonRefund').val(response.reasonReturn);
+                console.log('reason: ' + response.reasonReturn);
+                var html = LoadImg(response.images);
+                $('#img_product_return').html(html);
+                if (response.responseContent != null && response.statusReturn != "Yêu cầu trả hàng") {
+                    $('#responseReturn').val(response.responseContent);
+                    $('#selectStatusReturn').val(response.statusReturn);
+                    $('#UpdateRefundButton').prop('disabled', true);
+                    $('#responseReturn').prop('disabled', true);
+                    $('#UpdateRefundButton').hide();
+                }
+                console.log("ly do: " + response.statusReturn);
+                console.log("thanh cong");
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    //Load image detail return refund 
+    function LoadImg(imgs) {
+        var html = "";
+        imgs.forEach(function (item) {
+            html += `<img src="${item}" alt="Product Image" style="height:180px"/>`;
+            // console.log(item);
+        });
+        return html; // Ensure the HTML is returned
+    }
+
+    //Update status for order
     function UpdateStatusOrder(orderId, status) {
         $.ajax({
-            url: 'UpdateStatusOrder',
+            url: '/account/UpdateStatusOrder',
             type: 'post',
             contentType: 'application/x-www-form-urlencoded',  // Đặt header Content-Type
             data: $.param({ orderId: orderId, status: status }),
@@ -680,14 +815,17 @@
         });
     }
 
+    //Send required return refund
     function SendReturnRefund() {
+        
+
         var imgs = returnRefund.images;
-        if(imgs.length == 0) {
+        if (imgs.length == 0) {
             alert("Vui lòng gửi hình ảnh để có thể yêu cầu trả hàng!");
             return;
         }
         var reason_Return = $('#reasonReturn').val();
-        if(reason_Return == '') {
+        if (reason_Return == '') {
             alert("Vui lòng nhập lý do trả hàng để có thể gửi yêu cầu trả hàng!");
             return;
         }
@@ -699,10 +837,13 @@
         $.ajax({
             url: '/account/ReturnRefund',
             type: 'post',
-            data: {returnRefund: returnRefund},
+            data: { returnRefund: returnRefund },
             success: function (response) {
+                $('#status_' + orderID).html("Trả hàng");
                 $('#returnRefund').modal('hide');
                 alert("Gửi thông tin trả hàng thành công. Chúng tôi sẽ liên hệ lại với bạn sớm nhât.");
+                $('#modal-body-orderDetail').css('opacity', '1');
+                $('#modal-header-style').css('opacity', '1');
             },
             error: function (xhr, status, error) {
                 console.log(error);
@@ -754,6 +895,7 @@
             reader.readAsDataURL(file);
         }
     }
+
     function addImageToList(src) {
         var listImage = $('#list-image');
         var isExists = false;
@@ -833,6 +975,7 @@
             }
         }
     }
+
     function updateListImage() {
         let previewContainer = document.getElementById('preview-image');
         let images = previewContainer.getElementsByTagName('img');

@@ -36,5 +36,16 @@ namespace PetStoreProject.Repositories.Image
             await _context.SaveChangesAsync();
             return imageId.ToString();
         }
+
+        public  List<String> GetImagesByReturnRefundId(int returnRefundId)
+        {
+            List<String> images = new List<String>();
+            var imageList = _context.Images.Where(i => i.ReturnId == returnRefundId).ToList();
+            foreach (var image in imageList)
+            {
+                images.Add(image.ImageUrl);
+            }
+            return images;
+        }
     }
 }

@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = "Tạo mã giảm giá";
     var discountTypes = ViewData["discountType"] as List<DiscountTypeViewModel>;
+    var loyalTypes = ViewData["loyalType"] as List<LoyaltyLevel>;
 }
 @section HeadOptional {
 
@@ -84,10 +85,19 @@
                     </fieldset>
                 </div>
                 
-                <fieldset>
+                <fieldset class="quantity-discount">
                     <label class="body-title mb-10">Số lượng<span class="tf-color-1">*</span></label>
                     <input type="text" id="quantity" />
                     <span id="error-quantity" class="text-danger"></span>
+                </fieldset>
+                <fieldset class="loyal-level hidden">
+                    <label class="body-title mb-10">Khách hàng áp dụng</label>
+                    <select id="loyal-level">
+                        @foreach (var item in loyalTypes)
+                        {
+                            <option value="@item.LevelId">@item.LevelName</option>
+                        }
+                    </select>
                 </fieldset>
                 <fieldset>
                     <label class="body-title mb-10">Giới hạn sử dụng<span class="tf-color-1">*</span></label>
@@ -182,6 +192,7 @@
             if(type == 2){
                 $('#max-value').parent().parent().addClass('hide')
                 $('#value').parent().find('button').text('VND')
+                $('.loyal-level').addClass('hidden')
             }
             else{
                 $('#max-value').parent().parent().removeClass('hide')
@@ -194,7 +205,7 @@
                 $('#max-use').val('1');
                 $('#quantity').attr('readonly', true)
                 $('#max-use').attr('readonly', true)
-
+                $('.loyal-level').addClass('hidden')
             }
             else{
                 $('#date2').addClass('hide')
@@ -203,6 +214,15 @@
                 $('#max-use').val('')
                 $('#quantity').attr('readonly', false)
                 $('#max-use').attr('readonly', false)
+            }
+
+            if(type == 4){
+                $('.quantity-discount').addClass('hidden')
+                $('.loyal-level').removeClass('hidden')
+            }
+            else{
+                $('.quantity-discount').removeClass('hidden')
+                $('.loyal-level').addClass('hidden')
             }
         }
 
@@ -238,18 +258,18 @@
                 $('#error-value').text('Vui lòng nhập giá trị')
                 isValid = false
             }
-            else if( (type == 1 && !numberRegex.test(value)) || (type == 2 && !decimalRegex.test(value))){
+            else if (((type == 1 || type == 4) && !numberRegex.test(value)) || (type == 2 && !decimalRegex.test(value))) {
                 $('#error-value').text('Giá trị phải là số')
                 isValid = false
             }
-            else if ((type == 1 && (value < 1 || value > 100)) || (type == 2 && value < 1000)) {
+            else if (((type == 1 || type == 4) && (value < 1 || value > 100)) || (type == 2 && value < 1000)) {
                 $('#error-value').text('Giá trị không phù hợp')
                 isValid = false
             }
             else{
                 $('#error-value').text('')
             }
-            if(type == 1){
+            if (type == 1 || type == 4) {
                 if (maxValue == '') {
                     $('#error-max-value').text('Vui lòng nhập giá trị giảm tối đa')
                     isValid = false
@@ -285,7 +305,7 @@
                 }
             }
 
-            if (type != 3) {
+            if (!(type == 3 || type == 4)) {
                 if (quantity == '') {
                     $('#error-quantity').text('Vui lòng nhập số lượng')
                     isValid = false
@@ -335,6 +355,16 @@
                 $('#error-min-purchase').text('')
             }
 
+            console.log(type)
+
+            var loyalLevel = null;
+
+            if(type == 4){
+                loyalLevel =$('#loyal-level').val()
+            }
+
+            console.log(loyalLevel)
+
             if(isValid){
                 var data = {
                     Code: code,
@@ -346,7 +376,8 @@
                     MaxUse: maxUse,
                     MinPurchase: minPurchase,
                     DiscountTypeId: type,
-                    Description: description
+                    Description: description,
+                    LevelId: loyalLevel
                 }
 
                 $.ajax({
@@ -364,7 +395,7 @@
                     error: function (xhr, status, error) {
                         alert('Tạo mã giảm giá thất bại')
                         // Handle AJAX error
-                        console.error("AJAX error: " + error);
+                        console.error("Tạo mã thất bại.");
                     }
 
                 })

@@ -79,6 +79,9 @@ public partial class PetStoreDBContext : DbContext
 
     public virtual DbSet<WorkingTime> WorkingTimes { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("name=PetStoreDBContext");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>

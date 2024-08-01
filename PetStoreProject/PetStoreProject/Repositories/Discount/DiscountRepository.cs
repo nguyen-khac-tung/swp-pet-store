@@ -327,8 +327,6 @@ namespace PetStoreProject.Repositories.Discount
                                          Status = d.Status
                                      };
 
-                bool isFirstOrder = true;
-
                 var discounts = discountsQuery.ToList();
                 foreach (var item in discounts)
                 {

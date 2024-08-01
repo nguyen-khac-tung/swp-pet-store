@@ -21,48 +21,83 @@ namespace PetStoreProject.Repositories.ReturnRefund
 
         public async Task AddImageToReturnRefund(int returnId, ViewModels.CreateReturnRefund returnRefund)
         {
+            // Fetch the max ImageId once before the loop to avoid concurrency issues.
             int maxImageId = (from i in _context.Images
                               orderby i.ImageId descending
                               select i.ImageId).FirstOrDefault();
+
             foreach (var imageData in returnRefund.images)
             {
                 maxImageId++;
-                ImageUploadResult result = await _cloudinary.UploadImage(imageData, "image_" + maxImageId);
-                Models.Image image = new Models.Image
+                var image = new Models.Image
                 {
                     ImageId = maxImageId,
                     ReturnId = returnId,
-                    ImageUrl = result.Url.ToString()
+                    ServiceId = null,
+                    NewsId = null,
+                    OrderId = null,
                 };
 
-                _context.Images.Add(image);
+                try
+                {
+                    ImageUploadResult result = await _cloudinary.UploadImage(imageData, "image_" + maxImageId);
+                    image.ImageUrl = result.Url.ToString();
+                    _context.Images.Add(image);
+                }
+                catch (Exception ex)
+                {
+                    // Handle specific exceptions (e.g., upload failures) if necessary.
+                    throw new Exception("Error uploading image: " + ex.Message, ex);
+                }
             }
+
+            // Save changes after adding all images
+            await _context.SaveChangesAsync();
         }
 
-
-        public void CreateReturnRefund(ViewModels.CreateReturnRefund returnRefund)
+        public async Task CreateNewReturnRefund(ViewModels.CreateReturnRefund returnRefund)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    Models.ReturnRefund returnRef = new Models.ReturnRefund
+                    var returnRef = new Models.ReturnRefund
                     {
                         ReasonReturn = returnRefund.reasonReturn,
                         Status = "Yêu cầu trả hàng",
                         ResponseContent = null
                     };
+
                     _context.ReturnRefunds.Add(returnRef);
-                    _context.SaveChanges();
-                    var returnId = returnRef.ReturnId;
-                    AddImageToReturnRefund(returnId, returnRefund);
-                    transaction.Commit();
+                    await _context.SaveChangesAsync();
+
+                    await AddImageToReturnRefund(returnRef.ReturnId, returnRefund);
+
+                    // Commit transaction if all operations succeed
+                    await transaction.CommitAsync();
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    transaction.Rollback();
-                    throw e;
+                    await transaction.RollbackAsync();
+                    // Log the exception or handle it as needed
+                    throw new Exception("Error creating return/refund request: " + ex.Message, ex);
                 }
+            }
+        }
+
+        public Models.ReturnRefund GetReturnRefundById(int returnId)
+        {
+            return _context.ReturnRefunds.Find(returnId);
+        }
+
+        public void UpdateReturnRefund(int returnId, string status, string reponseContent)
+        {
+            var returnRefund = _context.ReturnRefunds.Find(returnId);
+            if (returnRefund != null)
+            {
+                returnRefund.Status = status;
+                returnRefund.ResponseContent = reponseContent;
+                _context.SaveChanges();
             }
         }
     }

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Areas.Employee.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.Discount;
+using PetStoreProject.Repositories.Image;
 using PetStoreProject.Repositories.Order;
 using PetStoreProject.Repositories.OrderItem;
+using PetStoreProject.Repositories.ReturnRefund;
 using PetStoreProject.Repositories.Shipper;
 using PetStoreProject.ViewModels;
 using System.Diagnostics.Eventing.Reader;
@@ -18,14 +21,19 @@ namespace PetStoreProject.Areas.Employee.Controllers
         private readonly IDiscountRepository _discount;
         private readonly IOrderItemRepository _orderItem;
         private readonly IShipperRepository _shipper;
+        private readonly IImageRepository _image;
+        private readonly IReturnRefundRepository _returnRefund;
 
-        public OrderController(IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem, IShipperRepository shipper, PetStoreDBContext context)
+        public OrderController(IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem, IShipperRepository shipper, 
+            PetStoreDBContext context, IImageRepository image, IReturnRefundRepository returnRefund)
         {
             _order = order;
             _discount = discount;
             _orderItem = orderItem;
             _shipper = shipper;
             _context = context;
+            _image = image;
+            _returnRefund = returnRefund;
         }
 
         [HttpGet]
@@ -95,7 +103,8 @@ namespace PetStoreProject.Areas.Employee.Controllers
                 OrderDate = order.OrderDate,
                 Status = order.Status,
                 DiscountId = order.DiscountId,
-                ShippingFee = order.ShippingFee
+                ShippingFee = order.ShippingFee,
+                ReturnId = order.ReturnId
             };
 
             var listItemOrder = _orderItem.GetOrderItemByOrderId(long.Parse(order.OrderId));
@@ -143,16 +152,19 @@ namespace PetStoreProject.Areas.Employee.Controllers
             return Json(new { success = true });
         }
 
-        [HttpGet]
+        [HttpPost]        
         public IActionResult DetailRefund(int returnId)
         {
-            var returnRefund = _context.ReturnRefunds.Find(returnId);
-            var images = _context.Images.Where(i => i.ReturnId == returnId).ToList();
-            return Json(new
-            {
-                returnRefund = returnRefund,
-                images = images
-            });
+            var returnRefund = _returnRefund.GetReturnRefundById(returnId);
+            var imgs = _image.GetImagesByReturnRefundId(returnId);
+            return Json(new { reasonReturn = returnRefund.ReasonReturn, returnID = returnId, images = imgs, statusReturn = returnRefund.Status, responseContent = returnRefund.ResponseContent });
+        }
+
+        [HttpPost]
+        public IActionResult UpdateReturnRefund(int returnId, string statusResponse, string responseContent)
+        {
+            _returnRefund.UpdateReturnRefund(returnId, statusResponse, responseContent);
+            return Json(new { success = true });
         }
     }
 }

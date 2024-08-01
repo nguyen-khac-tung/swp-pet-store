@@ -741,6 +741,8 @@
                                         }
 
                                     }else {
+                                        $('#shipMoney').text('+0 VND');
+                                        $('#moneyToShip').val(0);
                                         $('#COD_Tag').show();
                                         $('#paymentMethod').prop('checked', false);
                                         $('#COD').prop('disabled', false);
@@ -752,7 +754,7 @@
                                     $('#paymentMethod').prop('checked', true);
                                     $('#COD').prop('disabled', true);
                                     let price = Number($('#order_value').val());
-                                    console.log(price);
+                                    // console.log(price);
                                     if (price >= 0 && price <= 200000) {
                                         $('#shipMoney').text('+20,000 VND');
                                         $('#moneyToShip').val(20000);

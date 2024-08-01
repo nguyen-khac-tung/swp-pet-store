@@ -250,7 +250,6 @@
             </div>
             <div class="row">
                 <div class="flex items-center gap10 flex-wrap">
-                    <p>Trạng thái</p>
                     <div class="radio-buttons">
                         @if (province.Contains("Hà Nội") && district.Contains("Quận") && Model.PaymentMethod == "COD")
                         {
@@ -284,26 +283,27 @@
                             <div class="item">
                                 <input type="radio" name="admin-language" value="Đã giao hàng" id="admin-language4"
                                 @(Model.Status == "Đã giao hàng" ? "checked" : "")
-                                @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã hủy" ? "disabled" : "")>
+                                @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã hủy" || Model.Status == "Đã giao hàng" ? "disabled" : "")>
                                 <label for="admin-language4"><span class="body-title-2">Đã giao hàng</span></label>
                             </div>
                         }
                         <div class="item">
                             <input type="radio" name="admin-language" value="Trả hàng" id="admin-language5"
                             @(Model.Status == "Trả hàng" ? "checked" : "")
-                            @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Đã hủy" ? "disabled" : "")>
+                            @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Đã hủy" || Model.Status == "Đã giao hàng" || Model.Status == "Trả hàng" ? "disabled" : "")
+                            @((Model.Status == "Trả hàng") ? $"onclick='DetailReturnRefund({Model.ReturnId})'" : "") />
                             <label for="admin-language5"><span class="body-title-2">Trả hàng</span></label>
                         </div>
                         <div class="item">
                             <input type="radio" name="admin-language" value="Đã hoàn thành" id="admin-language6"
                             @(Model.Status == "Đã hoàn thành" ? "checked" : "")
-                            @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" ? "disabled" : "")>
+                            @(Model.Status == "Chờ giao hàng" || Model.Status == "Chờ lấy hàng" || Model.Status == "Chờ xác nhận" || Model.Status == "Đã hoàn thành" || Model.Status == "Trả hàng" || Model.Status == "Đã giao hàng" ? "disabled" : "")>
                             <label for="admin-language6"><span class="body-title-2">Đã hoàn thành</span></label>
                         </div>
                     </div>
                     @if (Model.Status == "Trả hàng" && Model.ReturnId != 0)
                     {
-                        <button class="tf-button style-1" style="padding: 0px 10px" onclick="DetailReturnRefund(@Model.ReturnId)">Chi tiết trả hàng</button>
+                        <button type="button" class="tf-button style-1" style="padding: 0px 5px" onclick="ReturnRefundDetail(@Model.ReturnId)">Chi tiết trả hàng</button>
                     }
                 </div>
             </div>
@@ -336,7 +336,14 @@
                                         }
                                     }
                                     districtOfShipper += ")";
-                                    <option value="@shipper.ShipperId">@shipper.FullName  @districtOfShipper</option>
+                                    @if(province.Contains("Hà Nội") && districtOfShipper.Contains(district))
+                                    {
+                                        <option value="@shipper.ShipperId" selected>@shipper.FullName  @districtOfShipper</option>
+                                    }else
+                                    {
+                                        <option value="@shipper.ShipperId">@shipper.FullName  @districtOfShipper</option>
+                                    }
+
                                 }
                             </select>
                         </fieldset>
@@ -365,30 +372,40 @@
             <div class="modal-header">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding:0px">
                 <div class="form-add-product">
                     <div class="wg-box">
+                        <input type="hidden" value="@Model.ReturnId" id="returnID" />
+                        <fieldset>
+                            <label class="body-title mb-10">Hình ảnh sản phẩm<span class="tf-color-1">*</span></label>
+                            <div id="img_product_return" style="max-height: 525px; overflow-x: auto; white-space: nowrap;"></div>
+                        </fieldset>
+                        <fieldset>
+                            <label class="body-title mb-10">Lý do trả hàng<span class="tf-color-1">*</span></label>
+                            <textarea id="reasonReturn" disabled style="width:100%"></textarea>
+                        </fieldset>
                         <fieldset class="name">
                             <label class="body-title mb-10">Trạng thái phản hồi trả hàng<span class="tf-color-1">*</span></label>
                             <select id="selectStatusReturn">
-                                <option value="Xác nhận">Xác nhận</option>
-                                <option value="Không chấp nhận trả hàng">Không chấp nhận trả hàng</option>
+                                <option value="Xác nhận trả hàng" selected>Xác nhận trả hàng</option>
+                                <option value="Từ chối trả hàng">Từ chối trả hàng</option>
                             </select>
                         </fieldset>
                         <fieldset>
                             <label class="body-title mb-10">Phản hồi trả hàng<span class="tf-color-1">*</span></label>
-                            <textarea id="responseReturn"></textarea>
+                            <textarea id="responseReturn" style="width:100%"></textarea>
                         </fieldset>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-primary" onclick="UpdateRefund()">Lưu</button>
+                        <button type="button" class="tf-button style-1" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="tf-button" id="UpdateRefundButton" onclick="UpdateRefund()">Phản hồi trả hàng</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     var numberViewProduct = 1;
     function AddViewItem() {
@@ -482,23 +499,78 @@
         });
     }
 
-    function DetailReturnRefund(returnId) {
-        if (returnId == 0 || returnId == null) {
+    function ReturnRefundDetail(returnId) {
+        console.log('returnId:', returnId);
+
+        if (!returnId) { // This check covers both `null` and `0`
             alert("Không có thông tin trả hàng!");
             return;
         }
+
         $.ajax({
-            url: '/employee/order/DetailRefund',
-            type: 'get',
+            url: '/employee/order/detailRefund',
+            type: 'post',
             data: { returnId: returnId },
             success: function (response) {
                 $('#detailRefund').modal('show');
-
+                $('#reasonReturn').val(response.reasonReturn);
+                var html = LoadImg(response.images);
+                $('#img_product_return').html(html);
+                if(response.responseContent != null && response.statusReturn != "Yêu cầu trả hàng") {
+                    $('#responseReturn').val(response.responseContent);
+                    $('#selectStatusReturn').val(response.statusReturn);
+                    $('#UpdateRefundButton').prop('disabled', true);
+                    $('#responseReturn').prop('disabled', true);
+                    $('#UpdateRefundButton').hide();
+                }
+                console.log("ly do: " + response.statusReturn);
+                console.log("thanh cong");
             },
             error: function (xhr, status, error) {
                 console.log(error);
             }
         });
     }
+
+    function LoadImg(imgs) {
+        var html = "";
+        imgs.forEach(function (item) {
+            html += `<img src="${item}" alt="Product Image" style="height:180px"/>`;
+            // console.log(item);
+        });
+        return html; // Ensure the HTML is returned
+    }
+
+    function UpdateRefund() {
+        var returnId = $('#returnID').val();
+        var statusResponse = $('#selectStatusReturn').val();
+        if (statusResponse == "") {
+            alert("Bạn cần phải chọn trạng thái phản hồi trả hàng");
+            return;
+        }
+        var responseReturn = $('#responseReturn').val().trim();
+        if (responseReturn == "") {
+            alert("Bạn không được để trống phản hồi trả hàng!");
+            return;
+        }
+        $.ajax({
+            url: '/employee/order/updateReturnRefund',
+            type: 'post',
+            data: { returnId: returnId, statusResponse: statusResponse, responseContent: responseReturn },
+            success: function (response) {
+                if (response.success) {
+                    alert("Phản hồi trả hành thành công");
+                    $('#selectStatusReturn').prop('disabled', true);
+                    $('#responseReturn').prop('disabled', true);
+                    $('#UpdateRefundButton').prop('disabled', true);
+                    $('#UpdateRefundButton').hide();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
 
 </script>

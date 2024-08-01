@@ -1,15 +1,18 @@
 ﻿using PetStoreProject.Areas.Admin.ViewModels;
 using PetStoreProject.Models;
+using PetStoreProject.Repositories.ProductOption;
 
 namespace PetStoreProject.Repositories.Order
 {
     public class OrderRepository : IOrderRepository
     {
         private readonly PetStoreDBContext _context;
+        private readonly IProductOptionRepository _productOptionRepository;
 
-        public OrderRepository(PetStoreDBContext dBContext)
+        public OrderRepository(PetStoreDBContext dBContext, IProductOptionRepository productOptionRepository)
         {
             _context = dBContext;
+            _productOptionRepository = productOptionRepository;
         }
         public List<OrderDetailViewModel> GetOrderDetailByCustomerId(int customerId)
         {
@@ -205,6 +208,16 @@ namespace PetStoreProject.Repositories.Order
                 order.Status = status;
                 order.ShipperId = null;
                 _context.SaveChanges();
+                if(status == "Đã hủy")
+                {
+                    var orderItem = _context.OrderItems.Where(oi => oi.OrderId == orderId).ToList();
+                    foreach (var item in orderItem)
+                    {
+                        var productOption = _context.ProductOptions.FirstOrDefault(po => po.ProductOptionId == item.ProductOptionId);
+                        productOption.Quantity += item.Quantity;
+                        _context.SaveChanges();
+                    }
+                }
             }
         }
 

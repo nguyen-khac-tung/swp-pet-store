@@ -586,12 +586,12 @@ namespace PetStoreProject.Controllers
 
         [RoleAuthorize("Customer")]
         [HttpPost]
-        public IActionResult ReturnRefund(CreateReturnRefund returnRefund)
+        public async Task<IActionResult> ReturnRefund(CreateReturnRefund returnRefund)
         {
             var email = HttpContext.Session.GetString("userEmail");
             var customer = _customer.GetCustomer(email);
 
-            _returnRefund.CreateReturnRefund(returnRefund);
+            await _returnRefund.CreateNewReturnRefund(returnRefund);
 
             if(returnRefund.OrderId != 0)
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PetStoreProject.Areas.Admin.Service.Cloudinary;
 using PetStoreProject.Filters;
 using PetStoreProject.Helpers;
@@ -29,10 +30,11 @@ namespace PetStoreProject.Controllers
         private readonly IOrderItemRepository _orderItem;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IReturnRefundRepository _returnRefund;
+        private readonly PetStoreDBContext _dbContext;
 
         public AccountController(IAccountRepository accountRepo, EmailService emailService, ICustomerRepository customer,
             IServiceRepository service, IOrderRepository order, IDiscountRepository discount, IOrderItemRepository orderItem,
-            ICloudinaryService cloudinaryService, IReturnRefundRepository returnRefund)
+            ICloudinaryService cloudinaryService, IReturnRefundRepository returnRefund, PetStoreDBContext dbContext)
         {
             _account = accountRepo;
             _emailService = emailService;
@@ -43,6 +45,7 @@ namespace PetStoreProject.Controllers
             _orderItem = orderItem;
             _cloudinaryService = cloudinaryService;
             _returnRefund = returnRefund;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
@@ -281,6 +284,17 @@ namespace PetStoreProject.Controllers
         [RoleAuthorize("Customer")]
         public IActionResult Profile()
         {
+            var email = HttpContext.Session.GetString("userEmail");
+            var customer = _customer.GetCustomer(email);
+            LoyaltyLevel l = _dbContext.LoyaltyLevels.FirstOrDefault(l => l.LevelID == customer.LoyaltyLevelID);
+            if (l == null)
+            {
+                TempData["Rank"] = "---";
+            }
+            else
+            {
+                TempData["Rank"] = l.LevelName;
+            }
             return View();
         }
 

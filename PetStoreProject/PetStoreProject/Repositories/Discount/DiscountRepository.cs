@@ -333,7 +333,7 @@ namespace PetStoreProject.Repositories.Discount
                 foreach (var item in discounts)
                 {
                     var number_used = (from o in _context.Orders
-                                       join d in _context.Discounts on o.DiscountId equals d.DiscountId
+                                       join d in _context.Discounts on o.OwnDiscountId equals d.DiscountId
                                        where d.Code == item.Code
                                        select o).Count();
 

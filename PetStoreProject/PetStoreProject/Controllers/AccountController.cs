@@ -75,6 +75,12 @@ namespace PetStoreProject.Controllers
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("ListOrderService", "Service", new { area = "Employee" });
                 }
+                else if (role == "Shipper")
+                {
+                    var userName = _account.GetUserName(acc.Email, "Shipper");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("List", "Order", new { area = "Shipper" });
+                }
                 else
                 {
                     var userName = _account.GetUserName(acc.Email, "Customer");
@@ -195,6 +201,12 @@ namespace PetStoreProject.Controllers
                     HttpContext.Session.SetString("userName", userName);
                     return RedirectToAction("ListOrderService", "Service", new { area = "Employee" });
                 }
+                else if (role == "Shipper")
+                {
+                    var userName = _account.GetUserName(ResetPasswordVM.Email, "Shipper");
+                    HttpContext.Session.SetString("userName", userName);
+                    return RedirectToAction("List", "Shipper", new { area = "Shipper" });
+                }
                 else
                 {
                     var userName = _account.GetUserName(ResetPasswordVM.Email, "Customer");
@@ -252,6 +264,12 @@ namespace PetStoreProject.Controllers
                         var userName = _account.GetUserName(email, "Employee");
                         HttpContext.Session.SetString("userName", userName);
                         return RedirectToAction("ListOrderService", "Service", new { area = "Employee" });
+                    }
+                    else if (role == "Shipper")
+                    {
+                        var userName = _account.GetUserName(email, "Shipper");
+                        HttpContext.Session.SetString("userName", userName);
+                        return RedirectToAction("List", "Shipper", new { area = "Shipper" });
                     }
                     else
                     {
@@ -417,9 +435,9 @@ namespace PetStoreProject.Controllers
         {
             var orderService = _service.GetOrderServiceDetail(orderServiceId);
             ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderService.OrderDate, orderService.OrderTime);
-            ViewData["Services"] = _service.GetListServices();
-            ViewData["PetTypes"] = _service.GetFistServiceOption(orderService.ServiceId).PetTypes;
-            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderService.ServiceId, orderService.PetType).Weights;
+            ViewData["Services"] = _service.GetListServicesForUpdate(orderServiceId);
+            ViewData["PetTypes"] = _service.GetFistServiceOptionForUpdate(orderService.ServiceId, orderServiceId).PetTypes;
+            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetTypeForUpdate(orderService.ServiceId, orderService.PetType, orderServiceId).Weights;
             return View(orderService);
         }
 
@@ -442,9 +460,9 @@ namespace PetStoreProject.Controllers
             }
 
 
-            ViewData["Services"] = _service.GetListServices();
-            ViewData["PetTypes"] = _service.GetFistServiceOption(orderServiceInfo.ServiceId).PetTypes;
-            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderServiceInfo.ServiceId, orderServiceInfo.PetType).Weights;
+            ViewData["Services"] = _service.GetListServicesForUpdate((int)orderServiceInfo.OrderServiceId);
+            ViewData["PetTypes"] = _service.GetFistServiceOptionForUpdate(orderServiceInfo.ServiceId, (int)orderServiceInfo.OrderServiceId).PetTypes;
+            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetTypeForUpdate(orderServiceInfo.ServiceId, orderServiceInfo.PetType, (int)orderServiceInfo.OrderServiceId).Weights;
             if (ModelState.IsValid)
             {
                 bool isPhoneValid = PhoneNumber.isValid(orderServiceInfo.Phone);
@@ -480,21 +498,18 @@ namespace PetStoreProject.Controllers
             }
         }
 
-        [RoleAuthorize("Customer")]
         [HttpGet]
-        public ServiceOptionViewModel GetServiceOptionByChangeService(int serviceId)
+        public ServiceOptionViewModel GetServiceOptionByChangeService(int serviceId, int orderServiceId)
         {
-            return _service.GetFistServiceOption(serviceId);
+            return _service.GetFistServiceOptionForUpdate(serviceId, orderServiceId);
         }
 
-        [RoleAuthorize("Customer")]
         [HttpGet]
-        public ServiceOptionViewModel GetServiceOptionByChangePetType(int serviceId, string petType)
+        public ServiceOptionViewModel GetServiceOptionByChangePetType(int serviceId, string petType, int orderServiceId)
         {
-            return _service.GetFirstServiceAndListWeightOfPetType(serviceId, petType);
+            return _service.GetFirstServiceAndListWeightOfPetTypeForUpdate(serviceId, petType, orderServiceId);
         }
 
-        [RoleAuthorize("Customer")]
         [HttpGet]
         public ServiceOptionViewModel GetServiceOptionByChangeWeight(int serviceId, string petType, string weight)
         {

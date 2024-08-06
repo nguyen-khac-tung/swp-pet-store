@@ -268,13 +268,13 @@
                         response.listShipper.forEach(function (shipper) {
                             let encodedShipper = encodeURIComponent(JSON.stringify(shipper));
                             content += `<li id="shipper-${shipper.shipperId}" class="countries-item">
-                                                                                                                <div class="body-text">
-                                                                                                                    <img src="/areas/images/logo_user/user-avatar.svg.png" alt="Image" />
-                                                                                                                    <div class="fullName">${shipper.fullName}</div>
-                                                                                                                </div>
-                                                                                                                <div class="body-text">${shipper.phone}</div>
-                                                                                                                <div class="body-text">${shipper.totalDeliveredQuantity}</div>
-                                                                                                                <div class="body-text">`;
+                                            <div class="body-text">
+                                                <img src="/areas/images/logo_user/user-avatar.svg.png" alt="Image" />
+                                                <div class="fullName">${shipper.fullName}</div>
+                                            </div>
+                                            <div class="body-text">${shipper.phone}</div>
+                                            <div class="body-text">${shipper.totalDeliveredQuantity}</div>
+                                            <div class="body-text">`;
                             let listDistrict = '';
                             shipper.districts.forEach(function (district) {
                                 listDistrict += district.name + ", ";
@@ -310,9 +310,9 @@
                     } else {
                         $('#table-shipper').empty();
                         let content = `<div class="empty-order-history">
-                                                                                                                    <i class="fas fa-box-open"></i>
-                                                                                                                    <h6>Không có dữ liệu.</h6>
-                                                                                                                </div>`;
+                                            <i class="fas fa-box-open"></i>
+                                            <h6>Không có dữ liệu.</h6>
+                                        </div>`;
                         $('#table-shipper').html(content);
                         $("#paging-navigation").empty();
                     }

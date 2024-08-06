@@ -52,7 +52,7 @@ namespace PetStoreProject.Areas.Employee.Controllers
         {
             ViewData["ListServiceId"] = _service.GetAllServiceId();
             ViewData["ServiceDetail"] = _service.GetServiceDetail(serviceId);
-            ViewData["FirstServiceOption"] = _service.GetFistServiceOption(serviceId);
+            ViewData["FirstServiceOption"] = _service.GetFistServiceOptionForAdmin(serviceId);
             ViewData["ListServiceOption"] = _service.GetServiceOptions(serviceId);
             return View();
         }
@@ -98,9 +98,9 @@ namespace PetStoreProject.Areas.Employee.Controllers
         {
             var orderService = _service.GetOrderServiceDetail(orderServiceId);
             ViewData["WorkingTime"] = _service.GetWorkingTimeByDateForUpdate(orderService.OrderDate, orderService.OrderTime);
-            ViewData["Services"] = _service.GetListServices();
-            ViewData["PetTypes"] = _service.GetFistServiceOption(orderService.ServiceId).PetTypes;
-            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderService.ServiceId, orderService.PetType).Weights;
+            ViewData["Services"] = _service.GetListServicesForUpdate(orderServiceId);
+            ViewData["PetTypes"] = _service.GetFistServiceOptionForUpdate(orderService.ServiceId, orderServiceId).PetTypes;
+            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetTypeForUpdate(orderService.ServiceId, orderService.PetType, orderServiceId).Weights;
             return View(orderService);
         }
 
@@ -121,9 +121,9 @@ namespace PetStoreProject.Areas.Employee.Controllers
                 ViewData["WorkingTime"] = _service.GetWorkingTimeByDate(orderServiceInfo.OrderDate);
             }
 
-            ViewData["Services"] = _service.GetListServices();
-            ViewData["PetTypes"] = _service.GetFistServiceOption(orderServiceInfo.ServiceId).PetTypes;
-            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetType(orderServiceInfo.ServiceId, orderServiceInfo.PetType).Weights;
+            ViewData["Services"] = _service.GetListServicesForUpdate((int)orderServiceInfo.OrderServiceId);
+            ViewData["PetTypes"] = _service.GetFistServiceOptionForUpdate(orderServiceInfo.ServiceId, (int)orderServiceInfo.OrderServiceId).PetTypes;
+            ViewData["Weights"] = _service.GetFirstServiceAndListWeightOfPetTypeForUpdate(orderServiceInfo.ServiceId, orderServiceInfo.PetType, (int)orderServiceInfo.OrderServiceId).Weights;
             if (ModelState.IsValid)
             {
                 bool isPhoneValid = PhoneNumber.isValid(orderServiceInfo.Phone);

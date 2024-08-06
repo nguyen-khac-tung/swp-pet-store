@@ -116,8 +116,105 @@ namespace PetStoreProject.Repositories.Service
             };
         }
 
+        public List<ServiceViewModel> GetListServicesForUpdate(int orderServiceId)
+        {
+            var serviceOfOrder = (from o in _context.OrderServices
+                                  join so in _context.ServiceOptions on o.ServiceOptionId equals so.ServiceOptionId
+                                  join s in _context.Services on so.ServiceId equals s.ServiceId 
+                                  where o.OrderServiceId == orderServiceId
+                                  select s).FirstOrDefault();
 
-        public ServiceOptionViewModel GetFistServiceOptionOfAdmin(int serviceId)
+            var services = (from s in _context.Services
+                            where s.IsDelete == false
+                            select new ServiceViewModel
+                            {
+                                ServiceId = s.ServiceId,
+                                Name = s.Name,
+                            }).ToList();
+
+            if(!services.Select(s => s.Name).Contains(serviceOfOrder.Name))
+            {
+                services.Add(new ServiceViewModel
+                {
+                    ServiceId = serviceOfOrder.ServiceId,
+                    Name = serviceOfOrder.Name
+                });
+            }
+
+            return services;
+        }
+
+        public ServiceOptionViewModel GetFistServiceOptionForUpdate(int serviceId, int orderServiceId)
+        {
+            var orderDetail = (from o in _context.OrderServices
+                                  join so in _context.ServiceOptions on o.ServiceOptionId equals so.ServiceOptionId
+                                  where o.OrderServiceId == orderServiceId
+                                  select so).FirstOrDefault();
+
+            var listPetType = (from s in _context.Services
+                               join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
+                               where s.ServiceId == serviceId && so.IsDelete == false
+                               select so.PetType).Distinct().ToList();
+            
+            if(serviceId == orderDetail.ServiceId)
+            {
+                if (listPetType.IsNullOrEmpty() || !listPetType.Contains(orderDetail.PetType))
+                {
+                    listPetType.Add(orderDetail.PetType);
+                }
+            }
+
+            var petType = listPetType.FirstOrDefault();
+
+            var firstServiceOption = GetFirstServiceAndListWeightOfPetTypeForUpdate(serviceId, petType, orderServiceId);
+
+            firstServiceOption.PetTypes = listPetType;
+
+            return firstServiceOption;
+        }
+
+        public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetTypeForUpdate(int serviceId, string petType, int orderServiceId)
+        {
+            var orderDetail = (from o in _context.OrderServices
+                               join so in _context.ServiceOptions on o.ServiceOptionId equals so.ServiceOptionId
+                               where o.OrderServiceId == orderServiceId
+                               select so).FirstOrDefault();
+
+            var firstServiceOption = (from so in _context.ServiceOptions
+                                      where so.ServiceId == serviceId && so.PetType == petType && so.IsDelete == false
+                                      select so).FirstOrDefault();
+
+            if (firstServiceOption == null)
+            {
+                firstServiceOption = orderDetail;
+            }
+
+            var listWeight = (from so in _context.ServiceOptions
+                              where so.ServiceId == serviceId && so.PetType == petType && so.IsDelete == false
+                              orderby so.ServiceOptionId ascending
+                              select so.Weight).ToList();
+
+            if (orderDetail.ServiceId == serviceId && orderDetail.PetType == petType)
+            {
+                if(listWeight.IsNullOrEmpty() || !listWeight.Contains(orderDetail.Weight))
+                {
+                    listWeight.Add(orderDetail.Weight);
+                }
+            }
+
+            return new ServiceOptionViewModel
+            {
+                ServiceId = firstServiceOption.ServiceId,
+                ServiceOptionId = firstServiceOption.ServiceOptionId,
+                PetType = firstServiceOption.PetType,
+                Weight = firstServiceOption.Weight,
+                Price = firstServiceOption.Price,
+                IsDelete = firstServiceOption.IsDelete,
+                Weights = listWeight
+            };
+        }
+
+        public ServiceOptionViewModel GetFistServiceOptionForAdmin(int serviceId)
         {
             var listPetType = (from s in _context.Services
                                join so in _context.ServiceOptions on s.ServiceId equals so.ServiceId
@@ -126,14 +223,14 @@ namespace PetStoreProject.Repositories.Service
 
             var petType = listPetType.FirstOrDefault();
 
-            var firstServiceOption = GetFirstServiceAndListWeightOfPetTypeOfAdmin(serviceId, petType);
+            var firstServiceOption = GetFirstServiceAndListWeightOfPetTypeForAdmin(serviceId, petType);
 
             firstServiceOption.PetTypes = listPetType;
 
             return firstServiceOption;
         }
 
-        public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetTypeOfAdmin(int serviceId, string petType)
+        public ServiceOptionViewModel GetFirstServiceAndListWeightOfPetTypeForAdmin(int serviceId, string petType)
         {
             var firstServiceOption = (from so in _context.ServiceOptions
                                       where so.ServiceId == serviceId && so.PetType == petType

@@ -443,13 +443,14 @@
         }
 
         function changeService() {
+            var orderServiceId = $("#OrderServiceId").val();
             var serviceSelected = $("#ServiceName").find(":selected");
             var serviceId = serviceSelected.attr("data-serviceid");
 
             $.ajax({
                 type: 'GET',
                 url: '@Url.Action("GetServiceOptionByChangeService", "Account")',
-                data: { serviceId: serviceId },
+                data: { serviceId: serviceId, orderServiceId: orderServiceId },
 
                 success: function (response) {
                     let listPetType = '';
@@ -482,6 +483,7 @@
         }
 
         function changePetType() {
+            var orderServiceId = $("#OrderServiceId").val();
             var serviceSelected = $("#ServiceName").find(":selected");
             var serviceId = serviceSelected.attr("data-serviceid");
             var petTypeSelected = $("#PetType").find(":selected");
@@ -490,7 +492,7 @@
             $.ajax({
                 type: 'GET',
                 url: '@Url.Action("GetServiceOptionByChangePetType", "Account")',
-                data: { serviceId: serviceId, petType: petType },
+                data: { serviceId: serviceId, petType: petType, orderServiceId: orderServiceId },
 
                 success: function (response) {
                     let listWeight = '';

@@ -550,6 +550,78 @@
             });
         }
 
+        function changeServiceForUpdate() {
+            var orderServiceId = $("#OrderServiceId").val();
+            var serviceSelected = $("#ServiceName").find(":selected");
+            var serviceId = serviceSelected.attr("data-serviceid");
+
+            $.ajax({
+                type: 'GET',
+                url: '/Account/GetServiceOptionByChangeService',
+                data: { serviceId: serviceId, orderServiceId: orderServiceId },
+
+                success: function (response) {
+                    let listPetType = '';
+                    response.petTypes.forEach(function (petType) {
+                        let isSelected = (response.petType === petType);
+                        listPetType += '<option value="' + petType + '"';
+                        listPetType += isSelected ? ' selected>' : '>';
+                        listPetType += petType + '</option>';
+                    });
+
+                    let listWeight = '';
+                    response.weights.forEach(function (weight) {
+                        let isSelected = (response.weight === weight);
+                        listWeight += '<option value="' + weight + '"';
+                        listWeight += isSelected ? ' selected>' : '>';
+                        listWeight += weight + '</option>';
+                    });
+
+                    $("#PetType").html(listPetType);
+                    $("#Weight").html(listWeight);
+                    $("#Price").val(response.price.toLocaleString('en-US') + ' VND');
+                    $("#ServiceId").val(response.serviceId);
+                    $("#ServiceOptionId").val(response.serviceOptionId);
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function changePetTypeForUpdate() {
+            var orderServiceId = $("#OrderServiceId").val();
+            var serviceSelected = $("#ServiceName").find(":selected");
+            var serviceId = serviceSelected.attr("data-serviceid");
+            var petTypeSelected = $("#PetType").find(":selected");
+            var petType = petTypeSelected.val();
+
+            $.ajax({
+                type: 'GET',
+                url: '/Account/GetServiceOptionByChangePetType',
+                data: { serviceId: serviceId, petType: petType, orderServiceId: orderServiceId },
+
+                success: function (response) {
+                    let listWeight = '';
+                    response.weights.forEach(function (weight) {
+                        let isSelected = (response.weight === weight);
+                        listWeight += '<option value="' + weight + '"';
+                        listWeight += isSelected ? ' selected>' : '>';
+                        listWeight += weight + '</option>';
+                    });
+
+                    $("#Weight").html(listWeight);
+                    $("#Price").val(response.price.toLocaleString('en-US') + ' VND');
+                    $("#ServiceOptionId").val(response.serviceOptionId);
+                },
+
+                error(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+
         function changeWeight() {
             var serviceSelected = $("#ServiceName").find(":selected");
             var serviceId = serviceSelected.attr("data-serviceid");

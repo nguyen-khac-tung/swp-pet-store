@@ -1,6 +1,11 @@
-﻿using PetStoreProject.Areas.Admin.ViewModels;
+﻿using CloudinaryDotNet.Actions;
+using PetStoreProject.Areas.Admin.Service.Cloudinary;
+using PetStoreProject.Areas.Admin.ViewModels;
+using PetStoreProject.Areas.Shipper.ViewModels;
 using PetStoreProject.Models;
 using PetStoreProject.Repositories.ProductOption;
+using System.Globalization;
+using System.Net;
 
 namespace PetStoreProject.Repositories.Order
 {
@@ -8,11 +13,13 @@ namespace PetStoreProject.Repositories.Order
     {
         private readonly PetStoreDBContext _context;
         private readonly IProductOptionRepository _productOptionRepository;
+        private readonly ICloudinaryService _cloudinary;
 
-        public OrderRepository(PetStoreDBContext dBContext, IProductOptionRepository productOptionRepository)
+        public OrderRepository(PetStoreDBContext dBContext, IProductOptionRepository productOptionRepository, ICloudinaryService cloudinary)
         {
             _context = dBContext;
             _productOptionRepository = productOptionRepository;
+            _cloudinary = cloudinary;
         }
         public List<OrderDetailViewModel> GetOrderDetailByCustomerId(int customerId)
         {
@@ -246,6 +253,112 @@ namespace PetStoreProject.Repositories.Order
             var order = _context.Orders.FirstOrDefault(order => order.OrderId == orderId);
             order.ReturnId = returnId;
             _context.SaveChanges();
+        }
+
+        public List<OrderViewModel> GetTotalOrderForShipper(string shipperEmail, OrderFilterViewModel orderFilterVM)
+        {
+            var shipperId = _context.Shippers.FirstOrDefault(s => s.Email == shipperEmail).ShipperId;
+
+            string? orderId = string.IsNullOrEmpty(orderFilterVM.OrderId) ? null : orderFilterVM.OrderId;
+            string? name = string.IsNullOrEmpty(orderFilterVM.Name) ? null : orderFilterVM.Name;
+            string? phone = string.IsNullOrEmpty(orderFilterVM.Phone) ? null : orderFilterVM.Phone;
+            DateTime? orderDate = null;
+            if (DateTime.TryParseExact(orderFilterVM.OrderDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                orderDate = parsedDate;
+            }
+
+            var orders = (from o in _context.Orders
+                          where o.ShipperId == shipperId
+                          && (orderId == null || o.OrderId.ToString().Contains(orderId))
+                          && (name == null || o.ConsigneeFullName.ToLower().Contains(name.ToLower()))
+                          && (phone == null || o.Phone.Contains(phone))
+                          && (orderDate == null || o.OrderDate.Date == orderDate.Value.Date)
+                          && (orderFilterVM.Status == null || o.Status == orderFilterVM.Status)
+                          && (orderFilterVM.PaymetMethod == null || o.PaymetMethod == orderFilterVM.PaymetMethod)
+                          select new OrderViewModel
+                          {
+                              OrderId = o.OrderId.ToString(),
+                              CustomerId = o.CustomerId,
+                              ConsigneeFullName = o.ConsigneeFullName,
+                              ConsigneePhone = o.ConsigneePhone,
+                              ShipAddress = o.ShipAddress,
+                              PaymetMethod = o.PaymetMethod,
+                              TotalAmount = o.TotalAmount,
+                              Status = o.Status,
+                              OrderDate = o.OrderDate,
+                              DeliveredTime = o.DeliveredTime,
+                              ShippingFee = o.ShippingFee,
+                          }).ToList();
+            return orders;
+        }
+
+        public List<OrderViewModel> GetOrderForShipper(string shipperEmail, OrderFilterViewModel orderFilterVM, int pageIndex, int pageSize)
+        {
+            List<OrderViewModel> orders = GetTotalOrderForShipper(shipperEmail, orderFilterVM);
+
+            if (orders != null)
+            {
+                if (orderFilterVM.SortOrderId != null)
+                {
+                    if (orderFilterVM.SortOrderId == "Ascending")
+                        orders = orders.OrderBy(o => o.OrderId).ToList();
+                    else
+                        orders = orders.OrderByDescending(o => o.OrderId).ToList();
+                }
+
+                if (orderFilterVM.SortName != null)
+                {
+                    if (orderFilterVM.SortName == "Ascending")
+                        orders = orders.OrderBy(o => o.ConsigneeFullName).ToList();
+                    else
+                        orders = orders.OrderByDescending(o => o.ConsigneeFullName).ToList();
+                }
+
+                if (orderFilterVM.SortOrderDate != null)
+                {
+                    if (orderFilterVM.SortOrderDate == "Ascending")
+                        orders = orders.OrderBy(o => o.OrderDate).ToList();
+                    else
+                        orders = orders.OrderByDescending(o => o.OrderDate).ToList();
+                }
+
+                if (orderFilterVM.SortTotalAmount != null)
+                {
+                    if (orderFilterVM.SortTotalAmount == "Ascending")
+                        orders = orders.OrderBy(o => o.TotalAmount).ToList();
+                    else
+                        orders = orders.OrderByDescending(o => o.TotalAmount).ToList();
+                }
+            }
+
+            var orderDisplay = orders.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return orderDisplay;
+        }
+
+        public async Task ConfirmDelivery(string orderId, string imageData, string status)
+        {
+            var order = _context.Orders.FirstOrDefault(o => o.OrderId.ToString().Equals(orderId));
+            order.Status = status;
+            order.DeliveredTime = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            int maxImageId = (from i in _context.Images
+                              orderby i.ImageId descending
+                              select i.ImageId).FirstOrDefault();
+            maxImageId++;
+            ImageUploadResult result = await _cloudinary.UploadImage(imageData, "image_" + maxImageId);
+            Models.Image image = new Models.Image()
+            {
+                ImageId = maxImageId,
+                OrderId = long.Parse(orderId),
+                ImageUrl = result.Url.ToString()
+            };
+
+            _context.Images.Add(image);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

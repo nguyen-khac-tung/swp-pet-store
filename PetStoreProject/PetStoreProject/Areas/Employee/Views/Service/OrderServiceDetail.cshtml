@@ -53,7 +53,7 @@
     <div class="row">
         <div class="col-md-6 form-group">
             <label asp-for="ServiceName" class="form-label">Dịch vụ</label>
-            <select asp-for="ServiceName" class="form-select" onchange="changeService()" disabled="@(Model.Status == "Đã thanh toán")">
+            <select asp-for="ServiceName" class="form-select" onchange="changeServiceForUpdate()" disabled="@(Model.Status == "Đã thanh toán")">
                 @foreach (var service in listServices)
                 {
                     <option value="@service.Name" data-serviceid="@service.ServiceId"
@@ -63,7 +63,7 @@
         </div>
         <div class="col-md-6 form-group">
             <label asp-for="PetType" class="form-label">Loại thú cưng</label>
-            <select asp-for="PetType" class="form-select" onchange="changePetType()" disabled="@(Model.Status == "Đã thanh toán")">
+            <select asp-for="PetType" class="form-select" onchange="changePetTypeForUpdate()" disabled="@(Model.Status == "Đã thanh toán")">
                 @foreach (var petType in listPetType)
                 {
                     <option value="@petType" selected="@(Model.PetType == petType)">@petType</option>

@@ -160,6 +160,13 @@ namespace PetStoreProject.Repositories.Accounts
                             where a.Email == email
                             select e.FullName).FirstOrDefault();
             }
+            else if (userRole == "Shipper")
+            {
+                userName = (from a in _context.Accounts
+                            join s in _context.Shippers on a.AccountId equals s.AccountId
+                            where a.Email == email
+                            select s.FullName).FirstOrDefault();
+            }
             else
             {
                 userName = (from a in _context.Accounts
